@@ -9,6 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r hist, echo=FALSE}
-x <- rnorm(1000)
-hist(x, col = "lightgray", main = "", xlab = "")
+step <- read.csv("C:/Users/unit/Desktop/step.txt")
+x <- as.numeric(step$step)
+hist(x, 30, col = "lightgray", main = "", xlab = "")
 ```
