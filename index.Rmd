@@ -1,0 +1,14 @@
+---
+title: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r hist, echo=FALSE}
+x <- rnorm(1000)
+hist(x, col = "lightgray", main = "", xlab = "")
+```
