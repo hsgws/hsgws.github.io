@@ -104,7 +104,7 @@ h6 {
 }
 </style>
 
-<link href="data:text/css;charset=utf-8,h1%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Ah2%7B%0Amargin%3A40px%200%200%200%3B%0Apadding%2Dbottom%3A%20%2E25em%3B%0Aborder%2Dbottom%3A%201%2E5px%20solid%20%23ccc%3B%0A%0A%7D%0Ah3%7B%0Amargin%3A15pt%200%205pt%200%3B%0Apadding%3A0%20%2E5em%3B%0Aborder%2Dleft%3A%204px%20solid%20%23ccc%3B%0A%7D%0Ah4%7B%0Amargin%3A15pt%200%205pt%200%3B%0A%7D%0A" rel="stylesheet" type="text/css" />
+<link href="data:text/css;charset=utf-8,h1%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Ah2%7B%0Amargin%3A40px%200%2010pt%200%3B%0Apadding%2Dbottom%3A%20%2E25em%3B%0Aborder%2Dbottom%3A%201%2E5px%20solid%20%23ccc%3B%0A%0A%7D%0Ah3%7B%0Amargin%3A15pt%200%2010pt%200%3B%0Apadding%3A0%20%2E5em%3B%0Aborder%2Dleft%3A%204px%20solid%20%23ccc%3B%0A%7D%0Ah4%7B%0Amargin%3A15pt%200%205pt%200%3B%0A%7D%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -367,6 +367,9 @@ Dataset.m &lt;-<span class="st"> </span><span class="kw">mlogit.data</span>(Data
 ## Log-Likelihood: -2357.8
 ## McFadden R^2:  0.38494 
 ## Likelihood ratio test : chisq = 2951.2 (p.value = &lt; 2.22e-16)</code></pre>
+<ul>
+<li><code>reflevel = &quot;C&quot;</code> で基準ブランドを選択（＝基準ブランドの切片 <code>C:(intercept)</code> を0に固定）</li>
+</ul>
 </div>
 </div>
 <div class="section level3">
@@ -383,10 +386,17 @@ p.nd &lt;-<span class="st"> </span><span class="kw">predict</span>(result.m, <sp
 <pre><code>##         C         A         B 
 ## 0.5472336 0.1432815 0.3094849</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 価格弾力性の計算</span>
-eta &lt;-<span class="st"> </span>result.m<span class="op">$</span>coefficients[<span class="dv">3</span>]<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p.nd)
+eta &lt;-<span class="st"> </span>result.m<span class="op">$</span>coefficients[<span class="kw">c</span>(<span class="st">&quot;log(Price)&quot;</span>)]<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p.nd)
 <span class="kw">print</span>(eta)</code></pre></div>
 <pre><code>##         C         A         B 
 ## -3.387721 -6.410201 -5.166622</code></pre>
+</div>
+<div class="section level3">
+<h3>山積み陳列とチラシ掲載のオッズ比の計算</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">od &lt;-<span class="st"> </span><span class="kw">exp</span>(result.m<span class="op">$</span>coefficients[<span class="kw">c</span>(<span class="st">&quot;Display&quot;</span>,<span class="st">&quot;Ad&quot;</span>)])
+<span class="kw">print</span>(od)</code></pre></div>
+<pre><code>##  Display       Ad 
+## 1.359634 2.270210</code></pre>
 </div>
 </div>
 <div class="section level2">
