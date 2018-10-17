@@ -275,7 +275,7 @@ result &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw"
              <span class="dt">data =</span> Dataset)
 <span class="kw">summary</span>(result)
 
-<span class="co"># モデルの簡略表記。上のresultと結果は同一。</span>
+<span class="co"># モデルの簡略表記（&quot;.&quot;でデータセット内の全ての変数を表し，&quot;-&quot;で不要な変数を除く）</span>
 <span class="co"># result2 &lt;- lm(log(MOVE1)~.-WEEK-FULLCUST, data = Dataset)</span></code></pre></div>
 <pre><code>## 
 ## Call:
