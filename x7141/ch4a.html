@@ -448,77 +448,12 @@ odds_raio &lt;-<span class="st"> </span><span class="kw">exp</span>(result.m<spa
 </div>
 </div>
 <div class="section level2">
-<h2>(2) 二項ロジットモデル（参考）</h2>
+<h2>(2) ネスティッド・ロジットモデル（参考）</h2>
 <div id="-1" class="section level3">
 <h3>データ</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setwd</span>(<span class="st">&quot;D:/R_Appendix&quot;</span>)
-Dataset &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data_logit.csv&quot;</span>)
-<span class="kw">head</span>(Dataset)</code></pre></div>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["use"],"name":[2],"type":["int"],"align":["right"]},{"label":["age"],"name":[3],"type":["int"],"align":["right"]},{"label":["gender"],"name":[4],"type":["int"],"align":["right"]},{"label":["edu"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"3","4":"1","5":"2","_rn_":"1"},{"1":"2","2":"0","3":"3","4":"1","5":"2","_rn_":"2"},{"1":"3","2":"0","3":"4","4":"1","5":"2","_rn_":"3"},{"1":"4","2":"1","3":"1","4":"1","5":"2","_rn_":"4"},{"1":"5","2":"0","3":"3","4":"1","5":"3","_rn_":"5"},{"1":"6","2":"1","3":"1","4":"1","5":"2","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<p><strong>スマホニュースアプリの利用調査データ</strong>（架空データ） → <a href="https://drive.google.com/open?id=1Pe5ZRp6T6SYdO6WMzpizIIAqIbUFMot8">data_logit.csv</a></p>
-<ul>
-<li>id：回答者ID</li>
-<li>use：アプリの利用有無（<span class="math inline">\(y_i\)</span>, 0＝利用なし，1＝利用あり）</li>
-<li>age：年代（<span class="math inline">\(x_1\)</span>, 1＝20代以下，2＝30代，3＝40代，4＝50代以上）</li>
-<li>gender：性別（<span class="math inline">\(x_2\)</span>, 0＝女性，1＝男性）</li>
-<li>edu：学歴（<span class="math inline">\(x_3\)</span>, 1＝中卒，2＝高卒，3＝短大卒・大卒）</li>
-</ul>
+<p>上記の多項ロジットモデルと同じく醤油のID付POSデータ（<a href="https://drive.google.com/open?id=1WoB9UJqX4uU0TkDRBPYLhMtymBUkKP1D">sec4_choice_a.csv</a>）を利用するが，<strong>「ブランドAとBがナショナルブランド（NB），ブランドCがプライベートブランド（PB）」</strong>という情報を利用する。</p>
 </div>
 <div id="-1" class="section level3">
-<h3>モデル</h3>
-<p><span class="math display">\[
-U_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \varepsilon_i
-\]</span></p>
-<ul>
-<li>ニュースアプリを利用するかどうかを説明するモデル</li>
-<li>効用 <span class="math inline">\(U_i\)</span> が，<span class="math inline">\(U_i \le 0\)</span> なら利用なし <span class="math inline">\((y_i = 0)\)</span>，<span class="math inline">\(U_i &gt; 0\)</span> なら利用あり <span class="math inline">\((y_i = 1)\)</span></li>
-<li><strong>選択肢が3個以上の場合は多項ロジットモデル，2個の場合は二項ロジットモデルを用いる</strong></li>
-</ul>
-</div>
-<div id="-1" class="section level3">
-<h3>分析</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">glm</span>(use <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>gender<span class="op">+</span><span class="st"> </span>edu, <span class="dt">family =</span> <span class="kw">binomial</span>(logit), <span class="dt">data =</span> Dataset)
-<span class="kw">summary</span>(result)</code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = use ~ age + gender + edu, family = binomial(logit), 
-##     data = Dataset)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -2.4052  -0.4218  -0.1359   0.5546   2.6262  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   1.4165     0.5924   2.391   0.0168 *  
-## age          -2.3052     0.2057 -11.209  &lt; 2e-16 ***
-## gender        0.5999     0.2812   2.133   0.0329 *  
-## edu           1.0414     0.2508   4.152 3.29e-05 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 631.31  on 499  degrees of freedom
-## Residual deviance: 333.61  on 496  degrees of freedom
-## AIC: 341.61
-## 
-## Number of Fisher Scoring iterations: 6</code></pre>
-<!-- #### 参考文献   -->
-<!-- - aa -->
-</div>
-</div>
-<div class="section level2">
-<h2>(3) ネスティッド・ロジットモデル（参考）</h2>
-<div id="-2" class="section level3">
-<h3>データ</h3>
-<p>上記の多項ロジットモデルと同じく<strong>醤油のID付POSデータ</strong>（<a href="https://drive.google.com/open?id=1WoB9UJqX4uU0TkDRBPYLhMtymBUkKP1D">sec4_choice_a.csv</a>）を利用するが，<strong>「ブランドAとBがナショナルブランド（NB），ブランドCがプライベートブランド（PB）」</strong>という情報を利用する。</p>
-</div>
-<div id="-2" class="section level3">
 <h3>モデル</h3>
 <div style="text-align: center;">
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyoAAAGaCAMAAAGgRXc/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJnUExURf///wAAAImJiUdHR+zs7Hp6emlpacPDw6enp93d3ZiYmFdXVyMjIxEREbW1tTQ0NNDQ0EBAQAEBAQICAgMDAwQEBAUFBQYGBgcHBwgICAkJCQoKCgsLCwwMDA0NDQ4ODg8PDxAQEBISEhMTExQUFBUVFRYWFhcXFxgYGBkZGRoaGhsbGxwcHB0dHR4eHh8fHyAgICEhISIiIiQkJCUlJSYmJicnJygoKCkpKSoqKisrKywsLC0tLS4uLi8vLzAwMDExMTIyMjMzMzU1NTY2Njc3Nzg4ODk5OTo6Ojs7Ozw8PD09PT4+Pj8/P0FBQUJCQkNDQ0REREVFRUZGRkhISHBwcP7+/v39/fz8/Pv7+/r6+vn5+fj4+Pf39/b29vX19fT09PPz8/Ly8vHx8fDw8O/v7+7u7u3t7evr6+rq6unp6ejo6Ofn5+bm5uXl5eTk5OPj4+Li4uHh4eDg4N/f397e3tzc3Nvb29ra2tnZ2djY2NfX19bW1tXV1dTU1NPT09LS0tHR0c/Pz87Ozs3NzczMzMvLy8rKysnJycjIyMfHx8bGxsXFxcTExMLCwsHBwcDAwL+/v76+vr29vby8vLu7u7q6urm5ubi4uLe3t7a2tt7r9//yzD5BRZ6nr6q0vS0wMlthZkdDOTQxKldTRqeehomCbnp0Yt3SsR4gIiMhHNDFpg8QEHd+hbXAyZGaouzgvcO5nGlkVBEQDsDM1piQekxQVGpwds3Z5YSMk7WskU1NTdrj82htdD0/RJuhrMrS4Y+VnywuMr3F07K5xlpdZIKHkXV6g0pNUw8PEB4fIaeuugAAAGm1jZsAAADNdFJOU///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////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" width="60%"></p>
@@ -528,7 +463,7 @@ U_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \varepsilon_i
 <li>第2階層：NB内でのブランド選択</li>
 </ul>
 </div>
-<div id="-2" class="section level3">
+<div id="-1" class="section level3">
 <h3>分析</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result.nl &lt;-<span class="st"> </span><span class="kw">mlogit</span>(Choice <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(Price) <span class="op">+</span><span class="st"> </span>Display <span class="op">+</span><span class="st"> </span>Ad, <span class="dt">data =</span> Dataset.m, <span class="dt">reflevel =</span> <span class="st">&quot;C&quot;</span>,
                     <span class="dt">nests =</span> <span class="kw">list</span>(<span class="dt">NB =</span> <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="dt">PB =</span> <span class="st">&quot;C&quot;</span>), <span class="dt">unscaled =</span> <span class="ot">TRUE</span>)
@@ -577,6 +512,71 @@ U_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \varepsilon_i
 <li><a href="http://cran.r-project.org/web/packages/mlogit/vignettes/mlogit.pdf">Estimation of multinomial logit models in R: The mlogit Packages</a> <!-- - [Package 'mlogit'](https://cran.r-project.org/web/packages/mlogit/mlogit.pdf) --></li>
 </ul>
 </div>
+</div>
+</div>
+<div class="section level2">
+<h2>(3) 二項ロジットモデル（参考）</h2>
+<div id="-2" class="section level3">
+<h3>データ</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setwd</span>(<span class="st">&quot;D:/R_Appendix&quot;</span>)
+Dataset &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data_logit.csv&quot;</span>)
+<span class="kw">head</span>(Dataset)</code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["use"],"name":[2],"type":["int"],"align":["right"]},{"label":["age"],"name":[3],"type":["int"],"align":["right"]},{"label":["gender"],"name":[4],"type":["int"],"align":["right"]},{"label":["edu"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"3","4":"1","5":"2","_rn_":"1"},{"1":"2","2":"0","3":"3","4":"1","5":"2","_rn_":"2"},{"1":"3","2":"0","3":"4","4":"1","5":"2","_rn_":"3"},{"1":"4","2":"1","3":"1","4":"1","5":"2","_rn_":"4"},{"1":"5","2":"0","3":"3","4":"1","5":"3","_rn_":"5"},{"1":"6","2":"1","3":"1","4":"1","5":"2","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><strong>スマホニュースアプリの利用調査データ</strong>（架空データ） → <a href="https://drive.google.com/open?id=1Pe5ZRp6T6SYdO6WMzpizIIAqIbUFMot8">data_logit.csv</a></p>
+<ul>
+<li>id：回答者ID</li>
+<li>use：アプリの利用有無（<span class="math inline">\(y_i\)</span>, 0＝利用なし，1＝利用あり）</li>
+<li>age：年代（<span class="math inline">\(x_1\)</span>, 1＝20代以下，2＝30代，3＝40代，4＝50代以上）</li>
+<li>gender：性別（<span class="math inline">\(x_2\)</span>, 0＝女性，1＝男性）</li>
+<li>edu：学歴（<span class="math inline">\(x_3\)</span>, 1＝中卒，2＝高卒，3＝短大卒・大卒）</li>
+</ul>
+</div>
+<div id="-2" class="section level3">
+<h3>モデル</h3>
+<p><span class="math display">\[
+U_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \varepsilon_i
+\]</span></p>
+<ul>
+<li>ニュースアプリを利用するかどうかを説明するモデル</li>
+<li>効用 <span class="math inline">\(U_i\)</span> が，<span class="math inline">\(U_i \le 0\)</span> なら利用なし <span class="math inline">\((y_i = 0)\)</span>，<span class="math inline">\(U_i &gt; 0\)</span> なら利用あり <span class="math inline">\((y_i = 1)\)</span></li>
+<li><strong>選択肢が3個以上の場合は多項ロジットモデル，2個の場合は二項ロジットモデルを用いる</strong></li>
+</ul>
+</div>
+<div id="-2" class="section level3">
+<h3>分析</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">glm</span>(use <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>gender<span class="op">+</span><span class="st"> </span>edu, <span class="dt">family =</span> <span class="kw">binomial</span>(logit), <span class="dt">data =</span> Dataset)
+<span class="kw">summary</span>(result)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = use ~ age + gender + edu, family = binomial(logit), 
+##     data = Dataset)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.4052  -0.4218  -0.1359   0.5546   2.6262  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   1.4165     0.5924   2.391   0.0168 *  
+## age          -2.3052     0.2057 -11.209  &lt; 2e-16 ***
+## gender        0.5999     0.2812   2.133   0.0329 *  
+## edu           1.0414     0.2508   4.152 3.29e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 631.31  on 499  degrees of freedom
+## Residual deviance: 333.61  on 496  degrees of freedom
+## AIC: 341.61
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<!-- #### 参考文献   -->
+<!-- - aa -->
 </div>
 </div>
 
