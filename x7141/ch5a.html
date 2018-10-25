@@ -279,12 +279,12 @@ Dataset &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span cla
 <li>line_ex：ライン拡張（1＝ライン拡張製品，0＝それ以外）</li>
 <li>multi_br：マルチブランド（1＝マルチブランド，0＝それ以外）</li>
 <li>br_ex：ブランド拡張（1＝ブランド拡張，0＝それ以外）</li>
-<li>ave_price_ind：発売後4週間の平均値引率（価格掛け率）</li>
+<li>ave_price_ind：発売後4週間の平均価格掛け率<strong>（利用しない）</strong></li>
 <li>sum_disp：発売後4週間の山積み陳列実施日数</li>
 <li>sum_flier：発売後4週間のチラシ掲載日数</li>
 <li>ave_PI：発売後4週間の平均点数PI（1000人当たり販売数）</li>
 <li>max_price：最大売価</li>
-<li>ave_disc：発売後4週間の平均値引き率</li>
+<li>ave_disc：発売後4週間の平均値引き率（= 1 - ave_price_ind）</li>
 </ul>
 </div>
 <div class="section level3">
@@ -333,9 +333,10 @@ model &lt;-<span class="st"> </span><span class="kw">survreg</span>(<span class=
 </ul>
 <div id="aic" class="section level4">
 <h4>AICの計算</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># &quot;exponential&quot; 以外（パラメータ数 = 回帰係数 + 分散）</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># &quot;dist = exponential&quot; 以外</span>
 AIC &lt;-<span class="st"> </span><span class="op">-</span><span class="dv">2</span><span class="op">*</span>model<span class="op">$</span>loglik[<span class="dv">2</span>]<span class="op">+</span><span class="dv">2</span><span class="op">*</span>(<span class="kw">length</span>(model<span class="op">$</span>coefficients)<span class="op">+</span><span class="dv">1</span>) 
-<span class="co"># &quot;exponential&quot; の場合（パラメータ数 = 回帰係数）</span>
+
+<span class="co"># &quot;dist = exponential&quot; の場合</span>
 <span class="co"># AIC &lt;- -2*model$loglik[2]+2*length(model$coefficients)  </span>
 <span class="kw">print</span>(AIC)</code></pre></div>
 <pre><code>## [1] 167110.8</code></pre>
