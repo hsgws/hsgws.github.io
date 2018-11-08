@@ -325,7 +325,7 @@ result &lt;-<span class="st"> </span><span class="kw">initFlexmix</span>(All <sp
 <li><code>All ~ .</code>：Dataset.aから，Allを目的変数，それ以外を説明変数と指定</li>
 <li><code>k = 1:5</code>：推定するクラスタ数として1～5を指定</li>
 </ul></li>
-<li>潜在クラスモデルは，<code>model = FLXMRglm()</code> の部分を変更することで線形回帰分析などにも適用可能</li>
+<li><code>model = FLXMRglm()</code> の部分を変更することで線形回帰分析などにも適用可能</li>
 </ul>
 </div>
 <div class="section level4">
@@ -376,7 +376,7 @@ best.model &lt;-<span class="st"> </span><span class="kw">getModel</span>(result
 <!-- 消費支出データ（学部マーケティング論） -->
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setwd</span>(<span class="st">&quot;D:/R_Appendix&quot;</span>)
 df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data_cluster.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
-df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">scale</span>(df))
+df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">scale</span>(df)) <span class="co"># scale関数でデータを平均0，標準偏差1に正規化</span>
 <span class="kw">head</span>(df)</code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
