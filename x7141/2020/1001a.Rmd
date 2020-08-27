@@ -1,0 +1,87 @@
+---
+title: "回帰分析"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plotly)
+sec3_reg <- read.csv("data/sec3_reg.csv")
+```
+
+## 1. 分析例
+### データ
+**スーパーマーケットでの醤油2商品（A，B）の日次売上データ**（データの一部のみ表示）
+
+```{r, echo=FALSE}
+head(sec3_reg)
+```
+- Date： 日付
+- LogPI_A ($y$)： 商品Aの点数PI（来店客1000人当たり販売点数）の対数値
+- LogPriceIndex_A ($x_{1}$)： 商品Aの価格掛率の対数値 ⇒ 0なら定価販売，割引率が大きくなるほどマイナスに大きくなる
+- LogPriceIndex_B ($x_{2}$)： 商品Bの価格掛率の対数値
+- Display_A ($x_{3}$)： 商品Aの山積み陳列実施の有無 ⇒ 1なら実施，0なら非実施
+- Display_B ($x_{4}$)： 商品Bの山積み陳列実施の有無
+
+**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店
+
+
+### モデル
+$$
+y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon; \quad
+\varepsilon \sim N(0, \sigma^2)
+$$
+
+#### 回帰係数の意味
+- $\beta_0$ ： ベースとなる点数PI水準（切片）
+- $\beta_1$ ： 自己商品（商品A）の価格弾力性
+- $\beta_2$ ： 競合商品（商品B）の交差価格弾力性
+- $\beta_3$ ： 自己商品（商品A）の山積み陳列の影響
+- $\beta_4$ ： 競合商品（商品B）の山積み陳列の影響
+
+多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「LogPriceIndex_A ($x_{1}$) ：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，**$\beta_1$ の係数はマイナスが期待される**（マイナス×マイナス＝プラスで目的変数 $y$ に対して販売点数増加の影響）。
+競合商品価格「LogPriceIndex_B ($x_{2}$)： 商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，**$\beta_2$ の係数はプラスが期待される**。
+
+同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響 **$\beta_3$ の係数はプラス**，競合商品Bの山積み陳列の影響 **$\beta_4$ の係数はマイナスが期待される**。
+
+目的変数 ($y$) と価格に関わる説明変数 ($x_{1}$・$x_{2}$) は対数を取っているため，回帰係数 $\beta_1$・$\beta_2$ の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが $\beta_1$  ($\beta_2$) ％変化する」となる。また，山積み陳列実施の回帰係数 $\beta_3$・$\beta_4$ の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが $\beta_3$  ($\beta_4$) $\times 100$ ％だけ変化する」となる。
+
+### Rコード
+```{r, results='hide'}
+# データ sec3_reg は "Import Dataset" で読込済みとする
+# 回帰分析の実行
+result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg)
+
+# 分析結果の表示
+summary(result)
+```
+
+
+回帰分析は `lm(formula, data)` で分析できる。括弧の中の引数の意味は以下の通り。
+
+**`formula` ：分析モデルの記述**  
+「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する。説明変数が2個以上ある場合は，`+` で追加していく。
+
+**`data` ：分析データの指定**  
+
+
+### 分析結果
+```{r, echo=FALSE}
+# データ sec3_reg は "Import Dataset" で読込済みとする
+# 回帰分析の実行
+result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg)
+
+# 分析結果の表示
+summary(result)
+```
