@@ -1,5 +1,5 @@
 ---
-title: "回帰分析"
+title: "回帰分析（10/01）"
 output:
   html_document:
     toc: true
@@ -8,15 +8,22 @@ output:
     df_print: "paged"
     highlight: pygments
     # theme: lumen
+    md_extensions: -ascii_identifiers
     css: "template/style_ch.css"
     includes:
       in_header: "template/head.html"
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# packages
 library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
 sec3_reg <- read.csv("data/sec3_reg.csv")
 ```
 
@@ -24,15 +31,30 @@ sec3_reg <- read.csv("data/sec3_reg.csv")
 ### データ
 **スーパーマーケットでの醤油2商品（A，B）の日次売上データ**（データの一部のみ表示）
 
+- 説明
+- 説明
+
 ```{r, echo=FALSE}
 head(sec3_reg)
 ```
-- Date： 日付
-- LogPI_A ($y$)： 商品Aの点数PI（来店客1000人当たり販売点数）の対数値
-- LogPriceIndex_A ($x_{1}$)： 商品Aの価格掛率の対数値 ⇒ 0なら定価販売，割引率が大きくなるほどマイナスに大きくなる
-- LogPriceIndex_B ($x_{2}$)： 商品Bの価格掛率の対数値
-- Display_A ($x_{3}$)： 商品Aの山積み陳列実施の有無 ⇒ 1なら実施，0なら非実施
-- Display_B ($x_{4}$)： 商品Bの山積み陳列実施の有無
+
+<!-- #### データ定義 -->
+<!-- - Date： 日付 -->
+<!-- - LogPI_A ($y$)： 商品Aの点数PI（来店客1000人当たり販売点数）の対数値 -->
+<!-- - LogPriceIndex_A ($x_{1}$)： 商品Aの価格掛率の対数値 ⇒ 0なら定価販売，割引率が大きくなるほどマイナスに大きくなる -->
+<!-- - LogPriceIndex_B ($x_{2}$)： 商品Bの価格掛率の対数値 -->
+<!-- - Display_A ($x_{3}$)： 商品Aの山積み陳列実施の有無 ⇒ 1なら実施，0なら非実施 -->
+<!-- - Display_B ($x_{4}$)： 商品Bの山積み陳列実施の有無 -->
+
+| 変数名                    | 内容                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| Date                      | 日付                                                         |
+| LogPI_A ($y$)             | 商品Aの点数PI（来店客1000人当たり販売点数）の対数値          |
+| LogPriceIndex_A ($x_{1}$) | 商品Aの価格掛率の対数値 ⇒ 0なら定価販売，割引率が大きくなるほどマイナスに大きくなる |
+| LogPriceIndex_B ($x_{2}$) | 商品Bの価格掛率の対数値                                      |
+| Display_A ($x_{3}$)       | 商品Aの山積み陳列実施の有無 ⇒ 1なら実施，0なら非実施         |
+| Display_B ($x_{4}$)       | 商品Bの山積み陳列実施の有無                                  |
+
 
 **データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店
 
@@ -67,21 +89,39 @@ result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B
 summary(result)
 ```
 
-
 回帰分析は `lm(formula, data)` で分析できる。括弧の中の引数の意味は以下の通り。
 
-**`formula` ：分析モデルの記述**  
-「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する。説明変数が2個以上ある場合は，`+` で追加していく。
+**`formula` ：分析モデルの記述**
+
+- 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+- 説明変数が2個以上ある場合は，`+` で追加する
 
 **`data` ：分析データの指定**  
+
+#### Rコードの出力
+```{r, echo=FALSE}
+result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg) %>% 
+  summary() %>% 
+  print()
+```
 
 
 ### 分析結果
 ```{r, echo=FALSE}
-# データ sec3_reg は "Import Dataset" で読込済みとする
-# 回帰分析の実行
 result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg)
-
-# 分析結果の表示
-summary(result)
+tidy(result) %>% kable(format = "markdown",
+                       digits = 3,
+                       col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
+
+
+## 2. レポート課題
+### データ
+
+tuna data （2018と同じデータ，MOVEを対数変換）
+
+
+### 課題
+
+
+

@@ -1,0 +1,49 @@
+---
+title: "生存時間解析（10/22）"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+
+```
+
+
+
+customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub
+https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv
+
+Telco Customer Churn | Kaggle
+https://www.kaggle.com/blastchar/telco-customer-churn
+
+Business Analytics - IBM Business Analytics Community
+https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4
+
+Cognos Analytics - IBM Business Analytics Community
+https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets
+
+
+
+## 見出し1
+
+### 見出し2
+
