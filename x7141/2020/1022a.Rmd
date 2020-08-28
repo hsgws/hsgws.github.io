@@ -24,10 +24,19 @@ library(broom)
 library(knitr)
 
 # data
-
+data_churn <- read.csv("data/data_churn.csv")
 ```
 
+## 1. 分析例
+### データ
+**電話回線の契約データ**（データの一部のみ表示）
 
+- 説明
+- 説明
+
+```{r, echo=FALSE}
+head(data_churn)
+```
 
 customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub
 https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv
@@ -41,9 +50,4 @@ https://community.ibm.com/community/user/businessanalytics/participate/blogs/blo
 Cognos Analytics - IBM Business Analytics Community
 https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets
 
-
-
-## 見出し1
-
-### 見出し2
 

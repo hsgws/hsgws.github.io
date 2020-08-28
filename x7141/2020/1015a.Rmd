@@ -27,7 +27,7 @@ library(knitr)
 data_email <- read.csv("data/data_email.csv")
 ```
 
-## 1. 分析例①：二項ロジット
+## 1. 分析例
 ### データ
 **メールマーケティングの配信データ**（データの一部のみ表示）
 
