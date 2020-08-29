@@ -114,6 +114,8 @@ tidy(result) %>% kable(format = "markdown",
                        col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
+### [参考] 予測
+
 
 ## 2. レポート課題
 ### データ

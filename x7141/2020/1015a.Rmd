@@ -99,3 +99,6 @@ tidy(result) %>% kable(format = "markdown",
 分析例と同じデータ
 
 ### 課題
+
+
+## [参考] 多項ロジット
