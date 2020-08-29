@@ -75,8 +75,7 @@ summary(result)
 
 ##### Rコードの出力
 ```{r, echo=FALSE}
-result <- glm(visit ~ recency + log(history) + segment + newbie,
-              family = "binomial", data = data_email) %>% 
+result %>% 
   summary() %>% 
   print()
 ```
@@ -85,11 +84,11 @@ result <- glm(visit ~ recency + log(history) + segment + newbie,
 
 ### 分析結果
 ```{r, echo=FALSE}
-result <- glm(visit ~ recency + log(history) + segment + newbie,
-              family = "binomial", data = data_email)
-tidy(result) %>% kable(format = "markdown",
-                       digits = 3,
-                       col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
+result %>% 
+  tidy() %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
 
@@ -101,4 +100,4 @@ tidy(result) %>% kable(format = "markdown",
 ### 課題
 
 
-## [参考] 多項ロジット
+## （参考）多項ロジット

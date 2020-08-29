@@ -100,7 +100,7 @@ summary(result)
 
 #### Rコードの出力
 ```{r, echo=FALSE}
-result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg) %>% 
+result %>% 
   summary() %>% 
   print()
 ```
@@ -108,13 +108,14 @@ result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B
 
 ### 分析結果
 ```{r, echo=FALSE}
-result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg)
-tidy(result) %>% kable(format = "markdown",
-                       digits = 3,
-                       col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
+result %>%
+  tidy() %>%
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
-### [参考] 予測
+### （参考）目的変数の予測
 
 
 ## 2. レポート課題
