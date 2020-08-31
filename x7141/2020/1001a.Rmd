@@ -24,18 +24,20 @@ library(broom)
 library(knitr)
 
 # data
-sec3_reg <- read.csv("data/sec3_reg.csv")
+sec3_reg1 <- read.csv("data/sec3_reg1.csv")
+sec3_reg2 <- read.csv("data/sec3_reg2.csv")
 ```
 
 ## 1. 分析例
 ### データ
-**スーパーマーケットでの醤油2商品（A，B）の日次売上データ**（データの一部のみ表示）
+**醤油の日次販売データ**
 
-- 説明
-- 説明
+- sec3_reg1.csv：2000/01/02～2003/07/31（パラメータ推定用データ，1278日間）
+- sec3_reg2.csv：2003/08/01～2003/09/05（予測用データ，36日間）
+- 以下の表は sec3_reg1.csv の一部のみを表示
 
 ```{r, echo=FALSE}
-head(sec3_reg)
+head(sec3_reg1)
 ```
 
 <!-- #### データ定義 -->
@@ -52,7 +54,7 @@ head(sec3_reg)
 | LogPI_A ($y$)             | 商品Aの点数PI（来店客1000人当たり販売点数）の対数値          |
 | LogPriceIndex_A ($x_{1}$) | 商品Aの価格掛率の対数値 ⇒ 0なら定価販売，割引率が大きくなるほどマイナスに大きくなる |
 | LogPriceIndex_B ($x_{2}$) | 商品Bの価格掛率の対数値                                      |
-| Display_A ($x_{3}$)       | 商品Aの山積み陳列実施の有無 ⇒ 1なら実施，0なら非実施         |
+| Display_A ($x_{3}$)       | 商品Aの山積み陳列実施の有無（1＝実施，0＝非実施）         |
 | Display_B ($x_{4}$)       | 商品Bの山積み陳列実施の有無                                  |
 
 
@@ -81,11 +83,11 @@ $$
 
 ### Rコード
 ```{r, results='hide'}
-# データ sec3_reg は "Import Dataset" で読込済みとする
+# データ sec3_reg1 は "Import Dataset" で読込済みとする
 # 回帰分析の実行
-result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg)
+result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec3_reg1)
 
-# 分析結果の表示
+# 推定結果の表示
 summary(result)
 ```
 
@@ -106,7 +108,7 @@ result %>%
 ```
 
 
-### 分析結果
+### 推定結果
 ```{r, echo=FALSE}
 result %>%
   tidy() %>%
@@ -116,6 +118,20 @@ result %>%
 ```
 
 ### （参考）目的変数の予測
+```{r}
+# 予測の実行
+pred_y <- predict.lm(result, newdata = sec3_reg2, interval = "prediction")
+pred_y <- as.data.frame(pred_y)
+
+# 実績値との比較図
+plot(x = 1:36, y = sec3_reg2$LogPI_A, type = "b", ylim = c(-3, 3),
+     xlab = "Date", ylab = "LogPI_A") # 実績値
+lines(pred_y$fit, col = "red")  # 予測値
+lines(pred_y$lwr, col = "red", lty = "dashed")  # 予測値の95%区間（上側）
+lines(pred_y$upr, col = "red", lty = "dashed")  # 予測値の95%区間（下側）
+legend("topright", legend = c("実績値", "予測値", "95％区間"),
+       col = c("black", "red", "red"), lty = c("solid", "solid", "dashed"))
+```
 
 
 ## 2. レポート課題

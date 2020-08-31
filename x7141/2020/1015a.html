@@ -2883,8 +2883,8 @@ div.tocify {
 </div>
 
 
-<div id="分析例" class="section level2">
-<h2>1. 分析例</h2>
+<div id="分析例①二項ロジット" class="section level2">
+<h2>1. 分析例①：二項ロジット</h2>
 <div id="データ" class="section level3">
 <h3>データ</h3>
 <p><strong>メールマーケティングの配信データ</strong>（データの一部のみ表示）</p>
@@ -2959,7 +2959,7 @@ div.tocify {
 </tr>
 </tbody>
 </table>
-<p>（太字は以下の分析例で使用する変数。）</p>
+<p>（太字は以下の分析例で使用する変数）</p>
 <p><strong>データ出典</strong> ： <a href="https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html">MineThatData E-Mail Analytics And Data Mining Challenge dataset</a></p>
 </div>
 <div id="モデル" class="section level3">
@@ -2972,7 +2972,7 @@ div.tocify {
 <span id="cb1-3"><a href="#cb1-3"></a>result &lt;-<span class="st"> </span><span class="kw">glm</span>(visit <span class="op">~</span><span class="st"> </span>recency <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(history) <span class="op">+</span><span class="st"> </span>segment <span class="op">+</span><span class="st"> </span>newbie,</span>
 <span id="cb1-4"><a href="#cb1-4"></a>              <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="dt">data =</span> data_email)</span>
 <span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># 分析結果の表示</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb1-7"><a href="#cb1-7"></a><span class="kw">summary</span>(result)</span></code></pre></div>
 <div id="rコードの出力" class="section level5">
 <h5>Rコードの出力</h5>
@@ -3005,8 +3005,8 @@ div.tocify {
 ## Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
-<div id="分析結果" class="section level3">
-<h3>分析結果</h3>
+<div id="推定結果" class="section level3">
+<h3>推定結果</h3>
 <table>
 <thead>
 <tr class="header">
@@ -3064,18 +3064,188 @@ div.tocify {
 </table>
 </div>
 </div>
-<div id="レポート課題" class="section level2">
-<h2>2. レポート課題</h2>
+<div id="分析例②多項ロジット" class="section level2">
+<h2>2. 分析例②：多項ロジット</h2>
 <div id="データ-1" class="section level3">
 <h3>データ</h3>
-<p>分析例と同じデータ</p>
+<p><strong>醤油3製品の選択データ</strong>（データの一部のみ表示）</p>
+<ul>
+<li>説明</li>
+<li>説明</li>
+</ul>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["recency"],"name":[1],"type":["int"],"align":["right"]},{"label":["history_segment"],"name":[2],"type":["chr"],"align":["left"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[4],"type":["int"],"align":["right"]},{"label":["womens"],"name":[5],"type":["int"],"align":["right"]},{"label":["zip_code"],"name":[6],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[7],"type":["int"],"align":["right"]},{"label":["channel"],"name":[8],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[9],"type":["chr"],"align":["left"]},{"label":["visit"],"name":[10],"type":["int"],"align":["right"]},{"label":["conversion"],"name":[11],"type":["int"],"align":["right"]},{"label":["spend"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"2) $100 - $200","3":"142.44","4":"1","5":"0","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"1"},{"1":"6","2":"3) $200 - $350","3":"329.08","4":"1","5":"1","6":"Rural","7":"1","8":"Web","9":"No E-Mail","10":"0","11":"0","12":"0","_rn_":"2"},{"1":"7","2":"2) $100 - $200","3":"180.65","4":"0","5":"1","6":"Surburban","7":"1","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"3"},{"1":"9","2":"5) $500 - $750","3":"675.83","4":"1","5":"0","6":"Rural","7":"1","8":"Web","9":"Mens E-Mail","10":"0","11":"0","12":"0","_rn_":"4"},{"1":"2","2":"1) $0 - $100","3":"45.34","4":"1","5":"0","6":"Urban","7":"0","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"5"},{"1":"6","2":"2) $100 - $200","3":"134.83","4":"0","5":"1","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"1","11":"0","12":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th>変数名</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>消費者ID</td>
+</tr>
+<tr class="even">
+<td>Date</td>
+<td>購買日</td>
+</tr>
+<tr class="odd">
+<td>Choice</td>
+<td>購買ブランド（A，B，C）</td>
+</tr>
+<tr class="even">
+<td>Price.A</td>
+<td>ブランドAの価格掛率（定価＝1）</td>
+</tr>
+<tr class="odd">
+<td>Price.B</td>
+<td>ブランドBの価格掛率</td>
+</tr>
+<tr class="even">
+<td>Price.C</td>
+<td>ブランドCの価格掛率</td>
+</tr>
+<tr class="odd">
+<td>Display.A</td>
+<td>ブランドAの山積み陳列の有無（1＝実施，0＝非実施）</td>
+</tr>
+<tr class="even">
+<td>Display.B</td>
+<td>ブランドBの山積み陳列の有無</td>
+</tr>
+<tr class="odd">
+<td>Display.C</td>
+<td>ブランドCの山積み陳列の有無</td>
+</tr>
+<tr class="even">
+<td>Ad.A</td>
+<td>ブランドAのチラシ掲載の有無（1＝実施，0＝非実施）</td>
+</tr>
+<tr class="odd">
+<td>Ad.B</td>
+<td>ブランドBのチラシ掲載の有無</td>
+</tr>
+<tr class="even">
+<td>Ad.C</td>
+<td>ブランドCのチラシ掲載の有無</td>
+</tr>
+</tbody>
+</table>
+<p><strong>データ出典</strong> ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するため一部変更）</p>
+</div>
+<div id="モデル-1" class="section level3">
+<h3>モデル</h3>
+</div>
+<div id="rコード-1" class="section level3">
+<h3>Rコード</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># データ data_email は &quot;Import Dataset&quot; で読込済みとする</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">library</span>(mlogit)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># mlogit関数用にデータを加工</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>soydata &lt;-<span class="st"> </span><span class="kw">mlogit.data</span>(sec4_choice2, <span class="dt">choice =</span> <span class="st">&quot;Choice&quot;</span>,<span class="dt">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="dt">varying =</span> <span class="kw">c</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">12</span>), <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>result &lt;-<span class="st"> </span><span class="kw">mlogit</span>(Choice <span class="op">~</span><span class="st"> </span>Price <span class="op">+</span><span class="st"> </span>Display <span class="op">+</span><span class="st"> </span>Ad, <span class="dt">data =</span> soydata)</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<div id="rコードの出力-1" class="section level5">
+<h5>Rコードの出力</h5>
+<pre><code>## 
+## Call:
+## mlogit(formula = Choice ~ Price + Display + Ad, data = soydata, 
+##     method = &quot;nr&quot;)
+## 
+## Frequencies of alternatives:choice
+##       A       B       C 
+## 0.16395 0.40465 0.43140 
+## 
+## nr method
+## 6 iterations, 0h:0m:0s 
+## g&#39;(-H)^-1g = 1.1E-05 
+## successive function values within tolerance limits 
+## 
+## Coefficients :
+##                 Estimate Std. Error  z-value  Pr(&gt;|z|)    
+## (Intercept):B  -0.156091   0.072655  -2.1484 0.0316840 *  
+## (Intercept):C   2.385687   0.081173  29.3900 &lt; 2.2e-16 ***
+## Price         -10.047366   0.373369 -26.9100 &lt; 2.2e-16 ***
+## Display         0.275219   0.075820   3.6299 0.0002835 ***
+## Ad              0.963954   0.157353   6.1261 9.008e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Log-Likelihood: -2331
+## McFadden R^2:  0.39191 
+## Likelihood ratio test : chisq = 3004.6 (p.value = &lt; 2.22e-16)</code></pre>
+</div>
+</div>
+<div id="推定結果-1" class="section level3">
+<h3>推定結果</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">回帰係数</th>
+<th align="right">標準誤差</th>
+<th align="right">z 値</th>
+<th align="right">p 値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept):B</td>
+<td align="right">-0.156</td>
+<td align="right">0.073</td>
+<td align="right">-2.148</td>
+<td align="right">0.032</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):C</td>
+<td align="right">2.386</td>
+<td align="right">0.081</td>
+<td align="right">29.390</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Price</td>
+<td align="right">-10.047</td>
+<td align="right">0.373</td>
+<td align="right">-26.910</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Display</td>
+<td align="right">0.275</td>
+<td align="right">0.076</td>
+<td align="right">3.630</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Ad</td>
+<td align="right">0.964</td>
+<td align="right">0.157</td>
+<td align="right">6.126</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="レポート課題" class="section level2">
+<h2>3. レポート課題</h2>
+<div id="データ-2" class="section level3">
+<h3>データ</h3>
+<p>二項なら分析例と同じデータ，多項ならケチャップデータ</p>
 </div>
 <div id="課題" class="section level3">
 <h3>課題</h3>
 </div>
-</div>
-<div id="参考多項ロジット" class="section level2">
-<h2>（参考）多項ロジット</h2>
 </div>
 
 

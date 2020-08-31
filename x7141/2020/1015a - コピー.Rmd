@@ -25,16 +25,14 @@ library(knitr)
 
 # data
 data_email <- read.csv("data/data_email.csv")
-sec4_choice2 <- read.csv("data/sec4_choice2.csv")
 ```
 
-## 1. 分析例①：二項ロジット
+## 1. 分析例
 ### データ
 **メールマーケティングの配信データ**（データの一部のみ表示）
 
 - 説明
 - 説明
-
 
 ```{r, echo=FALSE}
 head(data_email)
@@ -54,7 +52,7 @@ head(data_email)
 | **visit**           | メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし） |
 | conversion      | メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし） |
 | spend           | 購入金額                                                     |
-（太字は以下の分析例で使用する変数）
+（太字は以下の分析例で使用する変数。）
 
 
 **データ出典** ： [MineThatData E-Mail Analytics And Data Mining Challenge dataset](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
@@ -70,7 +68,7 @@ head(data_email)
 result <- glm(visit ~ recency + log(history) + segment + newbie,
               family = "binomial", data = data_email)
 
-# 推定結果の表示
+# 分析結果の表示
 summary(result)
 ```
 
@@ -82,91 +80,24 @@ result %>%
   print()
 ```
 
-### 推定結果
+
+
+### 分析結果
 ```{r, echo=FALSE}
 result %>% 
   tidy() %>% 
   kable(format = "markdown",
         digits = 3,
-        col.names = c("説明変数", "回帰係数", "標準誤差", "z 値", "p 値"))
+        col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
 
-## 2. 分析例②：多項ロジット
 
+## 2. レポート課題
 ### データ
-**醤油3製品の選択データ**（データの一部のみ表示）
-
-- 説明
-- 説明
-
-```{r, echo=FALSE}
-head(data_email)
-```
-
-| 変数名    | 内容                                              |
-| --------- | ------------------------------------------------- |
-| id        | 消費者ID                                          |
-| Date      | 購買日                                            |
-| Choice    | 購買ブランド（A，B，C）                           |
-| Price.A   | ブランドAの価格掛率（定価＝1）                    |
-| Price.B   | ブランドBの価格掛率                               |
-| Price.C   | ブランドCの価格掛率                               |
-| Display.A | ブランドAの山積み陳列の有無（1＝実施，0＝非実施） |
-| Display.B | ブランドBの山積み陳列の有無                       |
-| Display.C | ブランドCの山積み陳列の有無                       |
-| Ad.A      | ブランドAのチラシ掲載の有無（1＝実施，0＝非実施） |
-| Ad.B      | ブランドBのチラシ掲載の有無                       |
-| Ad.C      | ブランドCのチラシ掲載の有無                       |
-
-**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するため一部変更）
-
-
-### モデル
-
-
-### Rコード
-```{r, results='hide', message=FALSE}
-# データ data_email は "Import Dataset" で読込済みとする
-library(mlogit)
-
-# mlogit関数用にデータを加工
-soydata <- mlogit.data(sec4_choice2, choice = "Choice",shape = "wide", varying = c(4:12), sep = ".")
-
-# 多項ロジットモデルの推定
-result <- mlogit(Choice ~ Price + Display + Ad, data = soydata)
-
-# 推定結果の表示
-summary(result)
-```
-
-
-##### Rコードの出力
-```{r, echo=FALSE}
-result %>% 
-  summary() %>% 
-  print()
-```
-
-
-### 推定結果
-```{r, echo=FALSE}
-coef <- result$coefficients
-std.err <- sqrt(-diag(solve(result$hessian)))
-zvalue <- coef/std.err
-pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
-result.df <- data.frame(coef, std.err, coef/std.err, pvalue) %>% 
-  kable(format = "markdown",
-        digits = 3,
-        col.names = c("回帰係数", "標準誤差", "z 値", "p 値"))
-result.df
-```
-
-
-## 3. レポート課題
-### データ
-二項なら分析例と同じデータ，多項ならケチャップデータ
+分析例と同じデータ
 
 ### 課題
 
 
+## （参考）多項ロジット
