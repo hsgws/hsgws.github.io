@@ -74,6 +74,17 @@ result <- glm(visit ~ recency + log(history) + segment + newbie,
 summary(result)
 ```
 
+**`glm(formula, family, data)` ：二項ロジットモデルの実行コマンド**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+  
+- **`family`**：分析モデル（データが従う確率分布）の指定
+  - 二項ロジットの場合はデータが二項分布に従うので `"binomial"` を指定
+  - `family` を変更すれば，ポアソン回帰などのその他の一般化線型モデルも実行可能
+
+- **`data`**：分析データの指定  
 
 ##### Rコードの出力
 ```{r, echo=FALSE}
@@ -88,11 +99,11 @@ result %>%
   tidy() %>% 
   kable(format = "markdown",
         digits = 3,
-        col.names = c("説明変数", "回帰係数", "標準誤差", "z 値", "p 値"))
+        col.names = c("", "回帰係数", "標準誤差", "z 値", "p 値"))
 ```
 
 
-## 2. 分析例②：多項ロジット
+## 2. 分析例②：多項ロジット*
 
 ### データ
 **醤油3製品の選択データ**（データの一部のみ表示）
@@ -101,7 +112,7 @@ result %>%
 - 説明
 
 ```{r, echo=FALSE}
-head(data_email)
+head(sec4_choice2)
 ```
 
 | 変数名    | 内容                                              |
@@ -119,7 +130,7 @@ head(data_email)
 | Ad.B      | ブランドBのチラシ掲載の有無                       |
 | Ad.C      | ブランドCのチラシ掲載の有無                       |
 
-**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するため一部変更）
+**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータの一部を変更）
 
 
 ### モデル
@@ -128,10 +139,11 @@ head(data_email)
 ### Rコード
 ```{r, results='hide', message=FALSE}
 # データ data_email は "Import Dataset" で読込済みとする
+# mlogit パッケージの読込み
 library(mlogit)
 
-# mlogit関数用にデータを加工
-soydata <- mlogit.data(sec4_choice2, choice = "Choice",shape = "wide", varying = c(4:12), sep = ".")
+# mlogit 関数用にデータを加工
+soydata <- mlogit.data(sec4_choice2, choice = "Choice", shape = "wide", varying = 4:12, sep = ".")
 
 # 多項ロジットモデルの推定
 result <- mlogit(Choice ~ Price + Display + Ad, data = soydata)
@@ -139,6 +151,23 @@ result <- mlogit(Choice ~ Price + Display + Ad, data = soydata)
 # 推定結果の表示
 summary(result)
 ```
+
+
+**`mlogit.data(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
+
+- **`data`**：
+- **`choice`**：
+- **`shape`**：
+- **`varying`**：
+- **`seq`**：
+
+**`mlogit(formula, data)`：多項ロジットモデルの実行**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+
+- **`data`**：`mlogit.data` コマンドで変換したデータの指定  
 
 
 ##### Rコードの出力
@@ -166,6 +195,8 @@ result.df
 ## 3. レポート課題
 ### データ
 二項なら分析例と同じデータ，多項ならケチャップデータ
+
+二項で conversion を目的変数
 
 ### 課題
 

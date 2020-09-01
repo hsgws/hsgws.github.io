@@ -2974,6 +2974,20 @@ div.tocify {
 <span id="cb1-5"><a href="#cb1-5"></a></span>
 <span id="cb1-6"><a href="#cb1-6"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb1-7"><a href="#cb1-7"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<p><strong><code>glm(formula, family, data)</code> ：二項ロジットモデルの実行コマンド</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，<code>~</code> の左側に目的変数，右側に説明変数を記述する</li>
+<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+</ul></li>
+<li><strong><code>family</code></strong>：分析モデル（データが従う確率分布）の指定
+<ul>
+<li>二項ロジットの場合はデータが二項分布に従うので <code>&quot;binomial&quot;</code> を指定</li>
+<li><code>family</code> を変更すれば，ポアソン回帰などのその他の一般化線型モデルも実行可能</li>
+</ul></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
 <div id="rコードの出力" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
@@ -3010,10 +3024,10 @@ div.tocify {
 <table>
 <thead>
 <tr class="header">
-<th align="left">説明変数</th>
+<th align="left"></th>
 <th align="right">回帰係数</th>
 <th align="right">標準誤差</th>
-<th align="right">t 値</th>
+<th align="right">z 値</th>
 <th align="right">p 値</th>
 </tr>
 </thead>
@@ -3065,7 +3079,7 @@ div.tocify {
 </div>
 </div>
 <div id="分析例②多項ロジット" class="section level2">
-<h2>2. 分析例②：多項ロジット</h2>
+<h2>2. 分析例②：多項ロジット*</h2>
 <div id="データ-1" class="section level3">
 <h3>データ</h3>
 <p><strong>醤油3製品の選択データ</strong>（データの一部のみ表示）</p>
@@ -3075,7 +3089,7 @@ div.tocify {
 </ul>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["recency"],"name":[1],"type":["int"],"align":["right"]},{"label":["history_segment"],"name":[2],"type":["chr"],"align":["left"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[4],"type":["int"],"align":["right"]},{"label":["womens"],"name":[5],"type":["int"],"align":["right"]},{"label":["zip_code"],"name":[6],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[7],"type":["int"],"align":["right"]},{"label":["channel"],"name":[8],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[9],"type":["chr"],"align":["left"]},{"label":["visit"],"name":[10],"type":["int"],"align":["right"]},{"label":["conversion"],"name":[11],"type":["int"],"align":["right"]},{"label":["spend"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"2) $100 - $200","3":"142.44","4":"1","5":"0","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"1"},{"1":"6","2":"3) $200 - $350","3":"329.08","4":"1","5":"1","6":"Rural","7":"1","8":"Web","9":"No E-Mail","10":"0","11":"0","12":"0","_rn_":"2"},{"1":"7","2":"2) $100 - $200","3":"180.65","4":"0","5":"1","6":"Surburban","7":"1","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"3"},{"1":"9","2":"5) $500 - $750","3":"675.83","4":"1","5":"0","6":"Rural","7":"1","8":"Web","9":"Mens E-Mail","10":"0","11":"0","12":"0","_rn_":"4"},{"1":"2","2":"1) $0 - $100","3":"45.34","4":"1","5":"0","6":"Urban","7":"0","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0","_rn_":"5"},{"1":"6","2":"2) $100 - $200","3":"134.83","4":"0","5":"1","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"1","11":"0","12":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["Date"],"name":[2],"type":["int"],"align":["right"]},{"label":["Choice"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Price.A"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Price.B"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Price.C"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Display.A"],"name":[7],"type":["int"],"align":["right"]},{"label":["Display.B"],"name":[8],"type":["int"],"align":["right"]},{"label":["Display.C"],"name":[9],"type":["int"],"align":["right"]},{"label":["Ad.A"],"name":[10],"type":["int"],"align":["right"]},{"label":["Ad.B"],"name":[11],"type":["int"],"align":["right"]},{"label":["Ad.C"],"name":[12],"type":["int"],"align":["right"]}],"data":[{"1":"100021","2":"20000224","3":"C","4":"0.8028169","5":"0.8464164","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0","_rn_":"1"},{"1":"100021","2":"20000312","3":"C","4":"1.0000000","5":"0.8464164","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0","_rn_":"2"},{"1":"100021","2":"20000401","3":"C","4":"0.9084507","5":"0.8996587","6":"1","7":"0","8":"1","9":"1","10":"0","11":"0","12":"0","_rn_":"3"},{"1":"100021","2":"20000406","3":"C","4":"0.9084507","5":"0.8464164","6":"1","7":"0","8":"1","9":"1","10":"0","11":"0","12":"0","_rn_":"4"},{"1":"100021","2":"20000427","3":"C","4":"1.0000000","5":"0.9488055","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0","_rn_":"5"},{"1":"100021","2":"20000518","3":"C","4":"0.9084507","5":"1.0000000","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <table>
@@ -3144,16 +3158,34 @@ div.tocify {
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># データ data_email は &quot;Import Dataset&quot; で読込済みとする</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">library</span>(mlogit)</span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># mlogit関数用にデータを加工</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a>soydata &lt;-<span class="st"> </span><span class="kw">mlogit.data</span>(sec4_choice2, <span class="dt">choice =</span> <span class="st">&quot;Choice&quot;</span>,<span class="dt">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="dt">varying =</span> <span class="kw">c</span>(<span class="dv">4</span><span class="op">:</span><span class="dv">12</span>), <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># 多項ロジットモデルの推定</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>result &lt;-<span class="st"> </span><span class="kw">mlogit</span>(Choice <span class="op">~</span><span class="st"> </span>Price <span class="op">+</span><span class="st"> </span>Display <span class="op">+</span><span class="st"> </span>Ad, <span class="dt">data =</span> soydata)</span>
-<span id="cb3-9"><a href="#cb3-9"></a></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># mlogit パッケージの読込み</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">library</span>(mlogit)</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>soydata &lt;-<span class="st"> </span><span class="kw">mlogit.data</span>(sec4_choice2, <span class="dt">choice =</span> <span class="st">&quot;Choice&quot;</span>, <span class="dt">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="dt">varying =</span> <span class="dv">4</span><span class="op">:</span><span class="dv">12</span>, <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>result &lt;-<span class="st"> </span><span class="kw">mlogit</span>(Choice <span class="op">~</span><span class="st"> </span>Price <span class="op">+</span><span class="st"> </span>Display <span class="op">+</span><span class="st"> </span>Ad, <span class="dt">data =</span> soydata)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<p><strong><code>mlogit.data(data, choice, shape, varying, sep)</code>：mlogit パッケージ用にデータを変換</strong></p>
+<ul>
+<li><strong><code>data</code></strong>：</li>
+<li><strong><code>choice</code></strong>：</li>
+<li><strong><code>shape</code></strong>：</li>
+<li><strong><code>varying</code></strong>：</li>
+<li><strong><code>seq</code></strong>：</li>
+</ul>
+<p><strong><code>mlogit(formula, data)</code>：多項ロジットモデルの実行</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，<code>~</code> の左側に目的変数，右側に説明変数を記述する</li>
+<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+</ul></li>
+<li><strong><code>data</code></strong>：<code>mlogit.data</code> コマンドで変換したデータの指定</li>
+</ul>
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 

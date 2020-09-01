@@ -91,14 +91,15 @@ result <- lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B
 summary(result)
 ```
 
-回帰分析は `lm(formula, data)` で分析できる。括弧の中の引数の意味は以下の通り。
 
-**`formula` ：分析モデルの記述**
+**`lm(formula, data)`：回帰分析の実行**
 
-- 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
-- 説明変数が2個以上ある場合は，`+` で追加する
+- **`formula`**：目的変数・説明変数の指定
 
-**`data` ：分析データの指定**  
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+
+- **`data`**：分析データの指定  
 
 #### Rコードの出力
 ```{r, echo=FALSE}
@@ -114,10 +115,10 @@ result %>%
   tidy() %>%
   kable(format = "markdown",
         digits = 3,
-        col.names = c("説明変数", "回帰係数", "標準誤差", "t 値", "p 値"))
+        col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
-### （参考）目的変数の予測
+### 目的変数の予測*
 ```{r}
 # 予測の実行
 pred_y <- predict.lm(result, newdata = sec3_reg2, interval = "prediction")
