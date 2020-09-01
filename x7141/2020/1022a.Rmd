@@ -29,7 +29,7 @@ data_churn <- read.csv("data/data_churn.csv")
 
 ## 1. 分析例
 ### データ
-**電話回線の契約データ**（データの一部のみ表示）
+**電話・インターネット回線の契約データ**
 
 - 説明
 - 説明
@@ -38,16 +38,103 @@ data_churn <- read.csv("data/data_churn.csv")
 head(data_churn)
 ```
 
-customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub
-https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv
+| 変数             | 内容                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| customerID       | 顧客ID                                                       |
+| gender           | 性別 (Male, Female)                                          |
+| SeniorCitizen    | 高齢者フラグ (1＝高齢者, 0＝それ以外)                        |
+| Partner          | パートナーの有無 (Yes, No)                                   |
+| Dependents       | 扶養家族の有無 (Yes, No)                                     |
+| **tenure**           | 契約月数                                                     |
+| PhoneService     | 電話回線サービスの契約 (Yes, No)                             |
+| MultipleLines    | 複数回線の契約 ("Yes", "No", "No phone service")             |
+| InternetService  | インターネット回線の契約 ("DSL", "Fiber optic", "No")        |
+| OnlineSecurity   | セキュリティ・サービスの契約 ("Yes", "No", "No internet service") |
+| OnlineBackup     | バックアップ・サービスの契約 ("Yes", "No", "No internet service") |
+| DeviceProtection | 機器保証サービスの契約 ("Yes", "No", "No internet service")  |
+| TechSupport      | 技術サポートの契約 ("Yes", "No", "No internet service")      |
+| StreamingTV      | TVストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| StreamingMovies  | 映画ストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| Contract         | 契約形態 ("Month-to-month"＝月次契約, "One year"＝1年契約,  "Two year"＝2年契約) |
+| PaperlessBilling | ペーパーレス請求書サービスの利用 ("Yes", "No")               |
+| PaymentMethod    | 料金支払い方法 </br> ("Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)") |
+| MonthlyCharges   | 月額料金                                                     |
+| TotalCharges     | 総支払い金額                                                 |
+| **Churn**            | 解約の有無 (1＝解約済み, 0＝契約中)                                     |
 
-Telco Customer Churn | Kaggle
-https://www.kaggle.com/blastchar/telco-customer-churn
+**データ出典** ：
 
-Business Analytics - IBM Business Analytics Community
-https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4
+- [Telco Customer Churn | Kaggle](https://www.kaggle.com/blastchar/telco-customer-churn)
+- [Cognos Analytics - IBM Business Analytics Community](https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets) 
 
-Cognos Analytics - IBM Business Analytics Community
-https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets
+（生存時間解析を行うため，契約月数が0ヶ月の顧客を削除）
+
+<!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
+<!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
+
+<!-- Business Analytics - IBM Business Analytics Community -->
+<!-- https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4 -->
+
+
+### モデル
+
+
+### Rコード
+
+<!-- ```{r, results='hide', message=FALSE} -->
+<!-- # データ data_churn は "Import Dataset" で読込済みとする -->
+<!-- # survival パッケージの読込み -->
+<!-- library(survival) -->
+
+<!-- # パラメトリックハザードモデル（ワイブル分布）の推定 -->
+<!-- result <- survreg(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + log(MonthlyCharges), -->
+<!--                   data = data_churn, dist = "weibull") -->
+
+<!-- # 推定結果の表示 -->
+<!-- summary(result) -->
+<!-- ``` -->
+
+
+```{r, results='hide', message=FALSE}
+# データ data_churn は "Import Dataset" で読込済みとする
+# survival パッケージの読込み
+library(survival)
+
+# Cox比例ハザードモデルの推定
+result <- coxph(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + log(MonthlyCharges),
+                data = data_churn)
+
+# 推定結果の表示
+summary(result)
+```
+
+
+
+##### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+coef <- result$coefficients
+exp_coef <- exp(result$coefficients)
+std.err <- sqrt(diag(result$var))
+zvalue <- coef/std.err
+pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+
+result.df <- data.frame(coef, exp_coef, std.err, zvalue, pvalue) %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
+result.df
+# result %>%
+#   tidy() %>%
+#   kable(format = "markdown",
+#         digits = 3)
+```
 
 
