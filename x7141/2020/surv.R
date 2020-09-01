@@ -12,7 +12,7 @@ data_churn <- read.csv("data/data_churn.csv")
 result <- survreg(Surv(tenure, Churn) ~ gender + MonthlyCharges + Contract,
                   data = data_churn)
 summary(result)
-
+# fit <- survfit(result)
 
 
 
@@ -26,6 +26,9 @@ summary(result)
 #       y = rev(seq(0.01, 0.99, by = 0.01)),
 #       col = "red",lty=2,lwd=2)
 
-# resultc <- coxph(Surv(tenure, Churn) ~ gender + MonthlyCharges + Contract,
-#                   data = data_churn)
-# summary(resultc)
+resultc <- coxph(Surv(tenure, Churn) ~ gender + MonthlyCharges + Contract,
+                  data = data_churn)
+summary(resultc)
+
+fitc <- survfit(resultc)
+summary(fitc)
