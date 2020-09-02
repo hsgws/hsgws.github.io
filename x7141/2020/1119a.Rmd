@@ -24,10 +24,123 @@ library(broom)
 library(knitr)
 
 # data
-
+data_csi <- read.csv("data/data_csi.csv")
 ```
 
-## 見出し1
+## 1. 分析例
+### データ
+**大学に対する満足度調査**
 
-### 見出し2
+- 説明
+- 説明
 
+```{r, echo=FALSE}
+head(data_csi)
+```
+
+| 変数 | 内容                                   |
+| ---- | -------------------------------------- |
+| CE1  | 入学前に期待していた大学の総合的な品質 |
+| CE2  | 入学前に期待していた学生生活の充実度   |
+| CE3  | 入学前に期待していた大学の信頼度       |
+| PQ1  | 現在感じている大学の総合的な品質       |
+| PQ2  | 現在感じている学生生活の充実度         |
+| PQ3  | 現在感じている大学の信頼度             |
+| CS1  | 大学に対する総合的な満足度             |
+| CS2  | 入学前の期待と比べた現在の大学の評価   |
+| CS3  | 他大学と比較したときの評価             |
+
+**データ出典**：法政大学の学部授業でアンケートを実施（2018年度）
+
+
+### モデル
+
+
+### Rコード
+```{r, results='hide', message=FALSE}
+# データ data_csi は "Import Dataset" で読込済みとする
+# lavaan パッケージの読込み
+library(lavaan)
+
+# モデル（パス図）定義
+model <- "
+  # 測定方程式
+    CE =~ CE1 + CE2 + CE3  # 顧客期待 (CE)
+    PQ =~ PQ1 + PQ2 + PQ3  # 知覚品質 (PQ)
+    CS =~ CS1 + CS2 + CS3  # 顧客満足 (CS)
+  # 構造方程式
+    PQ ~ CE
+    CS ~ CE + PQ
+"
+
+# パラメータ推定
+result <- sem(model, data = data_csi)
+
+# 推定結果の表示
+summary(result, fit.measures = TRUE, standardized = TRUE)
+## fit.measures = TRUE で各種モデル比較指標を表示
+## standardized = TRUE で標準解を表示
+```
+
+**`sem(model, data)`：共分散構造分析の実行**
+
+- **`model`**：モデル（パス図）定義
+  
+  - モデルは " "（または ' '）で囲んで定義する
+  - モデルの書き方は下記を参照
+  
+- **`data`**：分析データの指定  
+
+
+#### モデル（パス図）定義の書き方
+
+**測定方程式**
+
+- 「潜在変数 =~ 観測変数1 + 観測変数2」のように，`=~` の左側に潜在変数，右側に観測変数を記述する
+- 観測変数が2個以上ある場合は `+` で追加する
+
+
+**構造方程式**
+
+- 「潜在変数1 ~ 潜在変数2 + 潜在変数3」のように，`~` の左側に「矢印を受ける潜在変数（終点）」，「矢印を出す潜在変数（始点）」を記述する
+- 複数の始点がある場合は `+` で追加する
+- 潜在変数間の相関関係をモデル化したい場合は「潜在変数1 ~~ 潜在変数2」のように，`~~` で潜在変数をつなげる
+
+
+
+#### Rコードの出力
+```{r, echo=FALSE}
+smry <- summary(result, fit.measures = TRUE, standardized = TRUE)
+```
+
+
+### 推定結果
+（潜在変数間のパス係数のみ記載）
+```{r, echo=FALSE}
+par <- smry$PE
+result.df <- data.frame(rname = c("知覚品質 ← 顧客期待", "顧客満足 ← 顧客期待", "顧客満足 ← 知覚品質"), 
+                        par$est, par$std.all, par$se, par$z, par$pvalue)[10:12,] %>%
+  kable(format = "markdown",
+        row.names = FALSE,
+        col.names = c("", "係数", "標準化係数", "標準誤差", "z 値", "p 値"),
+        digits = 3)
+result.df
+```
+
+
+
+#### パス図
+```{r, message=FALSE, echo=FALSE}
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel")
+```
+
+
+```{r, message=FALSE, eval=FALSE}
+# semPlot パッケージによる作図プログラム
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel")
+```
+
+
+## 2. 課題
