@@ -30,11 +30,7 @@ sec4_choice2 <- read.csv("data/sec4_choice2.csv")
 
 ## 1. 分析例①：二項ロジット
 ### データ
-**メールマーケティングの配信データ**
-
-- 説明
-- 説明
-
+**プロモーションメールの配信データ**
 
 ```{r, echo=FALSE}
 head(data_email)
@@ -63,6 +59,9 @@ head(data_email)
 ### モデル
 
 
+#### 回帰係数の意味
+
+
 ### Rコード
 ```{r, results='hide'}
 # データ data_email は "Import Dataset" で読込済みとする
@@ -74,7 +73,7 @@ result <- glm(visit ~ recency + log(history) + segment + newbie,
 summary(result)
 ```
 
-**`glm(formula, family, data)` ：二項ロジットモデルの実行コマンド**
+**`glm(formula, family, data)` ：二項ロジットモデルの推定**
 
 - **`formula`**：目的変数・説明変数の指定
   - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
@@ -103,7 +102,7 @@ result %>%
 ```
 
 
-## 2. 分析例②：多項ロジット*
+## 2. 分析例②：多項ロジット
 
 ### データ
 **醤油3製品の選択データ**
@@ -136,6 +135,11 @@ head(sec4_choice2)
 ### モデル
 
 
+
+#### 回帰係数の意味
+
+
+
 ### Rコード
 ```{r, results='hide', message=FALSE}
 # データ sec4_choice2 は "Import Dataset" で読込済みとする
@@ -155,13 +159,13 @@ summary(result)
 
 **`mlogit.data(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
 
-- **`data`**：
-- **`choice`**：
-- **`shape`**：
-- **`varying`**：
-- **`seq`**：
+- **`data`**：データの指定
+- **`choice`**：データ内の選択結果を示す変数名
+- **`shape`**：データ形式の指定（`long` または `wide`） ⇒ 分析例の醤油データは1行が1購買機会を表す `wide` 形式
+- **`varying`**：説明変数の列番号（`4:12` は4～12列を表す）
+- **`seq`**：説明変数と選択肢を区切る文字の指定（Price.A，Price.B，Price.C の "."）
 
-**`mlogit(formula, data)`：多項ロジットモデルの実行**
+**`mlogit(formula, data)`：多項ロジットモデルの推定**
 
 - **`formula`**：目的変数・説明変数の指定
   - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
@@ -194,9 +198,8 @@ result.df
 
 ## 3. レポート課題
 ### データ
-二項なら分析例と同じデータ，多項ならケチャップデータ
+二項なら分析例と同じデータ，多項ならケチャップデータ	⇒ ケチャップデータで。
 
-二項で conversion を目的変数
 
 ### 課題
 
