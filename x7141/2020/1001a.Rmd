@@ -26,6 +26,7 @@ library(knitr)
 # data
 sec3_reg1 <- read.csv("data/sec3_reg1.csv")
 sec3_reg2 <- read.csv("data/sec3_reg2.csv")
+data_tuna <- read.csv("data/data_tuna.csv")
 ```
 
 ## 1. 分析例
@@ -129,10 +130,35 @@ legend("topright", legend = c("実績値", "予測値", "95％区間"),
 ## 2. レポート課題
 ### データ
 
-tuna data （2018と同じデータ，MOVEを対数変換）
+**ツナ缶の週次販売データ（338週）**
+
+```{r, echo=FALSE}
+head(data_tuna)
+```
+
+| 変数            | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| MOVE1           | ブランド1の週間販売数量の対数値                              |
+| NSALE1 ~ NSALE7 | ブランド1～7の週間特別陳列実施率（1週間の内で毎日実施していれば1） |
+| LPRICE1 ~ LPRICE7 | ブランド1～7の週間平均価格の対数値                           |
+
+**データ出典** ： bayesm パッケージの tuna データ（本課題用に一部修正）
 
 
 ### 課題
+以下の MOVE1（ブランド1の週間販売数量の対数値）を目的変数とした線形回帰モデルで，回帰係数 ($\alpha_0, \beta_1, \dots, \beta_7, \gamma_1, \dots, \gamma_7$) を推定し，結果を解釈せよ。
+
+#### モデル
+$$
+MOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7 \gamma_i LPRICE_i + \varepsilon; \quad
+\varepsilon \sim N(0, \sigma^2)
+$$
+
+**目的変数**：ブランド1の販売数量の対数値 (MOVE1)  
+**説明変数**：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)
 
 
-
+<!-- ```{r} -->
+<!-- out <- lm(MOVE1 ~ ., data = data_tuna) -->
+<!-- summary(out) -->
+<!-- ``` -->

@@ -27,6 +27,9 @@ library(knitr)
 data_churn <- read.csv("data/data_churn.csv")
 ```
 
+
+電話回線を課題，教科書データを分析例
+
 ## 1. 分析例
 ### データ
 **電話・インターネット回線の契約データ**

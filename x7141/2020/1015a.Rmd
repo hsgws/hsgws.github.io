@@ -26,6 +26,7 @@ library(knitr)
 # data
 data_email <- read.csv("data/data_email.csv")
 sec4_choice2 <- read.csv("data/sec4_choice2.csv")
+data_milk <- read.csv("data/data_milk.csv")
 ```
 
 ## 1. 分析例①：二項ロジット
@@ -114,20 +115,30 @@ result %>%
 head(sec4_choice2)
 ```
 
+<!-- | 変数名    | 内容                                              | -->
+<!-- | --------- | ------------------------------------------------- | -->
+<!-- | id        | 消費者ID                                          | -->
+<!-- | Date      | 購買日                                            | -->
+<!-- | Choice    | 購買ブランド（A，B，C）                           | -->
+<!-- | Price.A   | ブランドAの価格掛率（定価＝1）                    | -->
+<!-- | Price.B   | ブランドBの価格掛率                               | -->
+<!-- | Price.C   | ブランドCの価格掛率                               | -->
+<!-- | Display.A | ブランドAの山積み陳列の有無（1＝実施，0＝非実施） | -->
+<!-- | Display.B | ブランドBの山積み陳列の有無                       | -->
+<!-- | Display.C | ブランドCの山積み陳列の有無                       | -->
+<!-- | Ad.A      | ブランドAのチラシ掲載の有無（1＝実施，0＝非実施） | -->
+<!-- | Ad.B      | ブランドBのチラシ掲載の有無                       | -->
+<!-- | Ad.C      | ブランドCのチラシ掲載の有無                       | -->
+
 | 変数名    | 内容                                              |
 | --------- | ------------------------------------------------- |
 | id        | 消費者ID                                          |
 | Date      | 購買日                                            |
 | Choice    | 購買ブランド（A，B，C）                           |
-| Price.A   | ブランドAの価格掛率（定価＝1）                    |
-| Price.B   | ブランドBの価格掛率                               |
-| Price.C   | ブランドCの価格掛率                               |
-| Display.A | ブランドAの山積み陳列の有無（1＝実施，0＝非実施） |
-| Display.B | ブランドBの山積み陳列の有無                       |
-| Display.C | ブランドCの山積み陳列の有無                       |
-| Ad.A      | ブランドAのチラシ掲載の有無（1＝実施，0＝非実施） |
-| Ad.B      | ブランドBのチラシ掲載の有無                       |
-| Ad.C      | ブランドCのチラシ掲載の有無                       |
+| Price.A ~ Price.C    | ブランドA ~ Cの価格掛率（定価＝1）                    |
+| Display.A ~ Display.C | ブランドA ~ Cの山積み陳列の有無（1＝実施，0＝非実施） |
+| Ad.A ~ Ad.C      | ブランドA ~ Cのチラシ掲載の有無（1＝実施，0＝非実施） |
+
 
 **データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）
 
@@ -143,6 +154,10 @@ head(sec4_choice2)
 ### Rコード
 ```{r, results='hide', message=FALSE}
 # データ sec4_choice2 は "Import Dataset" で読込済みとする
+
+# mlogit パッケージのインストーラ（初回のみ実行）
+# install.packages("mlogit")
+
 # mlogit パッケージの読込み
 library(mlogit)
 
@@ -198,9 +213,34 @@ result.df
 
 ## 3. レポート課題
 ### データ
-二項なら分析例と同じデータ，多項ならケチャップデータ	⇒ ケチャップデータで。
+
+**パック牛乳に関する選択ベース・コンジョイントのアンケートデータ**
+
+```{r, echo=FALSE}
+head(data_milk)
+```
+
+| 変数              | 内容                                      |
+| ----------------- | ----------------------------------------- |
+| id                | 回答者ID                                  |
+| experiment        | 質問番号（1～8）                          |
+| choice            | 選択肢                                    |
+| int.A ~ int.C     | 切片（int.A = 0，int.B = 0，int.C = 1）   |
+| haccp.A ~ haccp.C | HACCPラベル（厳格な衛生管理の証明）の有無 |
+| eco.A ~ eco.C     | エコラベルの有無                          |
+| bb.A ~ bb.C       | 賞味期限（0＝6日間，1＝7日間）            |
+| price.A ~ price.C | 価格（145円，150円，155円，160円）        |
+
+
+**データ出典** ：[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html)  および [選択制コンジョイント分析](https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf)  
+（おそらく学習用の架空データ）
+
 
 
 ### 課題
 
-
+<!-- ```{r} -->
+<!-- milkdata <- mlogit.data(data_milk, choice = "choice", shape = "wide", varying = 4:18, sep = ".") -->
+<!-- out <- mlogit(choice ~ int + haccp + eco + bb + price -1, data = milkdata) -->
+<!-- summary(out) -->
+<!-- ``` -->
