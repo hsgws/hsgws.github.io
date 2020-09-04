@@ -17,6 +17,11 @@ result <- sem(model, data = data_csi)
 
 # 推定結果の表示
 summary(result, fit.measures = TRUE, standardized = TRUE)
+# a <- summary(result, fit.measures = TRUE, standardized = TRUE)
 
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel")
 
-a <- summary(result, fit.measures = TRUE, standardized = TRUE)
+library(lavaanPlot)
+lavaanPlot(model = result, coef = TRUE)
+
