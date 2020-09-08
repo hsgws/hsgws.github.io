@@ -59,7 +59,11 @@ y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \v
 \varepsilon \sim N(0, \sigma^2)
 $$
 
-#### 回帰係数の意味
+
+**目的変数**：商品Aの点数PI  
+**説明変数**：商品A・Bの価格掛率の対数値 ，商品A・Bの山積み陳列実施の有無 
+
+#### 回帰係数の解釈
 - $\beta_0$ ： ベースとなる点数PI水準（切片）
 - $\beta_1$ ： 自己商品（商品A）の価格弾力性
 - $\beta_2$ ： 競合商品（商品B）の交差価格弾力性
@@ -174,7 +178,13 @@ $$
 **説明変数**：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)
 
 
-<!-- ```{r} -->
-<!-- out <- lm(LMOVE1 ~ ., data = data_tuna) -->
-<!-- summary(out) -->
-<!-- ``` -->
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, results='hide'}
+out <- lm(LMOVE1 ~ NSALE1 + NSALE2 + NSALE3 + NSALE4 + NSALE5 + NSALE6 + NSALE7 +
+            LPRICE1 + LPRICE2 + LPRICE3 + LPRICE4 + LPRICE5 + LPRICE6 + LPRICE7, 
+          data = data_tuna)
+# または以下でも実行可能（"LMOVE1 ~ ." でLMOVE1以外の変数を全て説明変数として指定）
+# out <- lm(LMOVE1 ~ ., data = data_tuna)
+summary(out)
+```
+</div></details>

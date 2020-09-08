@@ -232,3 +232,38 @@ head(data_wom)
 
 ### 課題
 
+
+
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+library(lavaan)
+
+# モデル（パス図）定義
+model <- "
+  # 測定方程式
+    OPL =~ x1 + x2 + x3
+    eOPL =~ x4 + x5 + x6
+    WOM =~ x7 + x8
+    eWOM =~ x9 + x10
+    CLM =~ x11 + x12
+  # 構造方程式
+    WOM ~ OPL + eOPL
+    eWOM ~ OPL + eOPL
+    CLM ~ OPL + eOPL + WOM + eWOM
+  # 潜在変数間の相関
+    OPL ~~ eOPL
+"
+
+# パラメータ推定
+fit <- sem(model, data = data_wom)
+
+# 推定結果の表示
+summary(fit, fit.measures = TRUE, standardized = TRUE) 
+
+# semPlot パッケージによる作図プログラム
+library(semPlot)
+semPaths(fit, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE,
+         manifests = c("x1","x2","x3","x4","x5","x6","x7","x8","x11","x12","x9","x10"),
+         latents = c("OPL","eOPL","WOM","CLM","eWOM"))
+```
+</div></details>

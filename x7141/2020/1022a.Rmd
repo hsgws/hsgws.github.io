@@ -32,10 +32,7 @@ data_churn <- read.csv("data/data_churn.csv")
 
 ## 1. 分析例
 ### データ
-**電話・インターネット回線の契約データ**
-
-- 説明
-- 説明
+**電話・インターネット回線の契約データ** (data_churn.csv)
 
 ```{r, echo=FALSE}
 head(data_churn)
@@ -80,6 +77,10 @@ head(data_churn)
 
 
 ### モデル
+
+
+**目的変数**：契約月数（打ち切りデータを含む）  
+**説明変数**：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)
 
 
 ### Rコード
@@ -139,5 +140,10 @@ result.df
 #   kable(format = "markdown",
 #         digits = 3)
 ```
+
+
+## 2. レポート課題
+
+
 
 

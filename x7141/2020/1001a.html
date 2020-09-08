@@ -2939,8 +2939,10 @@ div.tocify {
 y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon; \quad
 \varepsilon \sim N(0, \sigma^2)
 \]</span></p>
-<div id="回帰係数の意味" class="section level4">
-<h4>回帰係数の意味</h4>
+<p><strong>目的変数</strong>：商品Aの点数PI<br />
+<strong>説明変数</strong>：商品A・Bの価格掛率の対数値 ，商品A・Bの山積み陳列実施の有無</p>
+<div id="回帰係数の解釈" class="section level4">
+<h4>回帰係数の解釈</h4>
 <ul>
 <li><span class="math inline">\(\beta_0\)</span> ： ベースとなる点数PI水準（切片）</li>
 <li><span class="math inline">\(\beta_1\)</span> ： 自己商品（商品A）の価格弾力性</li>
@@ -3119,10 +3121,17 @@ LMOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7 \gamma_i LPRICE
 \]</span></p>
 <p><strong>目的変数</strong>：ブランド1の販売数量の対数値 (LMOVE1)<br />
 <strong>説明変数</strong>：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)</p>
-<!-- ```{r} -->
-<!-- out <- lm(LMOVE1 ~ ., data = data_tuna) -->
-<!-- summary(out) -->
-<!-- ``` -->
+<details>
+<summary>Rコード（クリックで表示）</summary>
+<div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>out &lt;-<span class="st"> </span><span class="kw">lm</span>(LMOVE1 <span class="op">~</span><span class="st"> </span>NSALE1 <span class="op">+</span><span class="st"> </span>NSALE2 <span class="op">+</span><span class="st"> </span>NSALE3 <span class="op">+</span><span class="st"> </span>NSALE4 <span class="op">+</span><span class="st"> </span>NSALE5 <span class="op">+</span><span class="st"> </span>NSALE6 <span class="op">+</span><span class="st"> </span>NSALE7 <span class="op">+</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">            </span>LPRICE1 <span class="op">+</span><span class="st"> </span>LPRICE2 <span class="op">+</span><span class="st"> </span>LPRICE3 <span class="op">+</span><span class="st"> </span>LPRICE4 <span class="op">+</span><span class="st"> </span>LPRICE5 <span class="op">+</span><span class="st"> </span>LPRICE6 <span class="op">+</span><span class="st"> </span>LPRICE7, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>          <span class="dt">data =</span> data_tuna)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># または以下でも実行可能（&quot;LMOVE1 ~ .&quot; でLMOVE1以外の変数を全て説明変数として指定）</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># out &lt;- lm(LMOVE1 ~ ., data = data_tuna)</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="kw">summary</span>(out)</span></code></pre></div>
+</div>
+</details>
 </div>
 </div>
 </div>
