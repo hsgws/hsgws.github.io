@@ -13,19 +13,6 @@
 
 <title>生存時間解析（10/22）</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
-  }
-});
-</script>
 <script>/*! jQuery v1.11.3 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
 !function(a,b){"object"==typeof module&&"object"==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error("jQuery requires a window with a document");return b(a)}:b(a)}("undefined"!=typeof window?window:this,function(a,b){var c=[],d=c.slice,e=c.concat,f=c.push,g=c.indexOf,h={},i=h.toString,j=h.hasOwnProperty,k={},l="1.11.3",m=function(a,b){return new m.fn.init(a,b)},n=/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,o=/^-ms-/,p=/-([\da-z])/gi,q=function(a,b){return b.toUpperCase()};m.fn=m.prototype={jquery:l,constructor:m,selector:"",length:0,toArray:function(){return d.call(this)},get:function(a){return null!=a?0>a?this[a+this.length]:this[a]:d.call(this)},pushStack:function(a){var b=m.merge(this.constructor(),a);return b.prevObject=this,b.context=this.context,b},each:function(a,b){return m.each(this,a,b)},map:function(a){return this.pushStack(m.map(this,function(b,c){return a.call(b,c,b)}))},slice:function(){return this.pushStack(d.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(a){var b=this.length,c=+a+(0>a?b:0);return this.pushStack(c>=0&&b>c?[this[c]]:[])},end:function(){return this.prevObject||this.constructor(null)},push:f,sort:c.sort,splice:c.splice},m.extend=m.fn.extend=function(){var a,b,c,d,e,f,g=arguments[0]||{},h=1,i=arguments.length,j=!1;for("boolean"==typeof g&&(j=g,g=arguments[h]||{},h++),"object"==typeof g||m.isFunction(g)||(g={}),h===i&&(g=this,h--);i>h;h++)if(null!=(e=arguments[h]))for(d in e)a=g[d],c=e[d],g!==c&&(j&&c&&(m.isPlainObject(c)||(b=m.isArray(c)))?(b?(b=!1,f=a&&m.isArray(a)?a:[]):f=a&&m.isPlainObject(a)?a:{},g[d]=m.extend(j,f,c)):void 0!==c&&(g[d]=c));return g},m.extend({expando:"jQuery"+(l+Math.random()).replace(/\D/g,""),isReady:!0,error:function(a){throw new Error(a)},noop:function(){},isFunction:function(a){return"function"===m.type(a)},isArray:Array.isArray||function(a){return"array"===m.type(a)},isWindow:function(a){return null!=a&&a==a.window},isNumeric:function(a){return!m.isArray(a)&&a-parseFloat(a)+1>=0},isEmptyObject:function(a){var b;for(b in a)return!1;return!0},isPlainObject:function(a){var b;if(!a||"object"!==m.type(a)||a.nodeType||m.isWindow(a))return!1;try{if(a.constructor&&!j.call(a,"constructor")&&!j.call(a.constructor.prototype,"isPrototypeOf"))return!1}catch(c){return!1}if(k.ownLast)for(b in a)return j.call(a,b);for(b in a);return void 0===b||j.call(a,b)},type:function(a){return null==a?a+"":"object"==typeof a||"function"==typeof a?h[i.call(a)]||"object":typeof a},globalEval:function(b){b&&m.trim(b)&&(a.execScript||function(b){a.eval.call(a,b)})(b)},camelCase:function(a){return a.replace(o,"ms-").replace(p,q)},nodeName:function(a,b){return a.nodeName&&a.nodeName.toLowerCase()===b.toLowerCase()},each:function(a,b,c){var d,e=0,f=a.length,g=r(a);if(c){if(g){for(;f>e;e++)if(d=b.apply(a[e],c),d===!1)break}else for(e in a)if(d=b.apply(a[e],c),d===!1)break}else if(g){for(;f>e;e++)if(d=b.call(a[e],e,a[e]),d===!1)break}else for(e in a)if(d=b.call(a[e],e,a[e]),d===!1)break;return a},trim:function(a){return null==a?"":(a+"").replace(n,"")},makeArray:function(a,b){var c=b||[];return null!=a&&(r(Object(a))?m.merge(c,"string"==typeof a?[a]:a):f.call(c,a)),c},inArray:function(a,b,c){var d;if(b){if(g)return g.call(b,a,c);for(d=b.length,c=c?0>c?Math.max(0,d+c):c:0;d>c;c++)if(c in b&&b[c]===a)return c}return-1},merge:function(a,b){var c=+b.length,d=0,e=a.length;while(c>d)a[e++]=b[d++];if(c!==c)while(void 0!==b[d])a[e++]=b[d++];return a.length=e,a},grep:function(a,b,c){for(var d,e=[],f=0,g=a.length,h=!c;g>f;f++)d=!b(a[f],f),d!==h&&e.push(a[f]);return e},map:function(a,b,c){var d,f=0,g=a.length,h=r(a),i=[];if(h)for(;g>f;f++)d=b(a[f],f,c),null!=d&&i.push(d);else for(f in a)d=b(a[f],f,c),null!=d&&i.push(d);return e.apply([],i)},guid:1,proxy:function(a,b){var c,e,f;return"string"==typeof b&&(f=a[b],b=a,a=f),m.isFunction(a)?(c=d.call(arguments,2),e=function(){return a.apply(b||this,c.concat(d.call(arguments)))},e.guid=a.guid=a.guid||m.guid++,e):void 0},now:function(){return+new Date},support:k}),m.each("Boolean Number String Function Array Date RegExp Object Error".split(" "),function(a,b){h["[object "+b+"]"]=b.toLowerCase()});function r(a){var b="length"in a&&a.length,c=m.type(a);return"function"===c||m.isWindow(a)?!1:1===a.nodeType&&b?!0:"array"===c||0===b||"number"==typeof b&&b>0&&b-1 in a}var s=function(a){var b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u="sizzle"+1*new Date,v=a.document,w=0,x=0,y=ha(),z=ha(),A=ha(),B=function(a,b){return a===b&&(l=!0),0},C=1<<31,D={}.hasOwnProperty,E=[],F=E.pop,G=E.push,H=E.push,I=E.slice,J=function(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return c;return-1},K="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",L="[\\x20\\t\\r\\n\\f]",M="(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",N=M.replace("w","w#"),O="\\["+L+"*("+M+")(?:"+L+"*([*^$|!~]?=)"+L+"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|("+N+"))|)"+L+"*\\]",P=":("+M+")(?:\\((('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|((?:\\\\.|[^\\\\()[\\]]|"+O+")*)|.*)\\)|)",Q=new RegExp(L+"+","g"),R=new RegExp("^"+L+"+|((?:^|[^\\\\])(?:\\\\.)*)"+L+"+$","g"),S=new RegExp("^"+L+"*,"+L+"*"),T=new RegExp("^"+L+"*([>+~]|"+L+")"+L+"*"),U=new RegExp("="+L+"*([^\\]'\"]*?)"+L+"*\\]","g"),V=new RegExp(P),W=new RegExp("^"+N+"$"),X={ID:new RegExp("^#("+M+")"),CLASS:new RegExp("^\\.("+M+")"),TAG:new RegExp("^("+M.replace("w","w*")+")"),ATTR:new RegExp("^"+O),PSEUDO:new RegExp("^"+P),CHILD:new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\("+L+"*(even|odd|(([+-]|)(\\d*)n|)"+L+"*(?:([+-]|)"+L+"*(\\d+)|))"+L+"*\\)|)","i"),bool:new RegExp("^(?:"+K+")$","i"),needsContext:new RegExp("^"+L+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+L+"*((?:-\\d)?\\d*)"+L+"*\\)|)(?=[^-]|$)","i")},Y=/^(?:input|select|textarea|button)$/i,Z=/^h\d$/i,$=/^[^{]+\{\s*\[native \w/,_=/^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,aa=/[+~]/,ba=/'|\\/g,ca=new RegExp("\\\\([\\da-f]{1,6}"+L+"?|("+L+")|.)","ig"),da=function(a,b,c){var d="0x"+b-65536;return d!==d||c?b:0>d?String.fromCharCode(d+65536):String.fromCharCode(d>>10|55296,1023&d|56320)},ea=function(){m()};try{H.apply(E=I.call(v.childNodes),v.childNodes),E[v.childNodes.length].nodeType}catch(fa){H={apply:E.length?function(a,b){G.apply(a,I.call(b))}:function(a,b){var c=a.length,d=0;while(a[c++]=b[d++]);a.length=c-1}}}function ga(a,b,d,e){var f,h,j,k,l,o,r,s,w,x;if((b?b.ownerDocument||b:v)!==n&&m(b),b=b||n,d=d||[],k=b.nodeType,"string"!=typeof a||!a||1!==k&&9!==k&&11!==k)return d;if(!e&&p){if(11!==k&&(f=_.exec(a)))if(j=f[1]){if(9===k){if(h=b.getElementById(j),!h||!h.parentNode)return d;if(h.id===j)return d.push(h),d}else if(b.ownerDocument&&(h=b.ownerDocument.getElementById(j))&&t(b,h)&&h.id===j)return d.push(h),d}else{if(f[2])return H.apply(d,b.getElementsByTagName(a)),d;if((j=f[3])&&c.getElementsByClassName)return H.apply(d,b.getElementsByClassName(j)),d}if(c.qsa&&(!q||!q.test(a))){if(s=r=u,w=b,x=1!==k&&a,1===k&&"object"!==b.nodeName.toLowerCase()){o=g(a),(r=b.getAttribute("id"))?s=r.replace(ba,"\\$&"):b.setAttribute("id",s),s="[id='"+s+"'] ",l=o.length;while(l--)o[l]=s+ra(o[l]);w=aa.test(a)&&pa(b.parentNode)||b,x=o.join(",")}if(x)try{return H.apply(d,w.querySelectorAll(x)),d}catch(y){}finally{r||b.removeAttribute("id")}}}return i(a.replace(R,"$1"),b,d,e)}function ha(){var a=[];function b(c,e){return a.push(c+" ")>d.cacheLength&&delete b[a.shift()],b[c+" "]=e}return b}function ia(a){return a[u]=!0,a}function ja(a){var b=n.createElement("div");try{return!!a(b)}catch(c){return!1}finally{b.parentNode&&b.parentNode.removeChild(b),b=null}}function ka(a,b){var c=a.split("|"),e=a.length;while(e--)d.attrHandle[c[e]]=b}function la(a,b){var c=b&&a,d=c&&1===a.nodeType&&1===b.nodeType&&(~b.sourceIndex||C)-(~a.sourceIndex||C);if(d)return d;if(c)while(c=c.nextSibling)if(c===b)return-1;return a?1:-1}function ma(a){return function(b){var c=b.nodeName.toLowerCase();return"input"===c&&b.type===a}}function na(a){return function(b){var c=b.nodeName.toLowerCase();return("input"===c||"button"===c)&&b.type===a}}function oa(a){return ia(function(b){return b=+b,ia(function(c,d){var e,f=a([],c.length,b),g=f.length;while(g--)c[e=f[g]]&&(c[e]=!(d[e]=c[e]))})})}function pa(a){return a&&"undefined"!=typeof a.getElementsByTagName&&a}c=ga.support={},f=ga.isXML=function(a){var b=a&&(a.ownerDocument||a).documentElement;return b?"HTML"!==b.nodeName:!1},m=ga.setDocument=function(a){var b,e,g=a?a.ownerDocument||a:v;return g!==n&&9===g.nodeType&&g.documentElement?(n=g,o=g.documentElement,e=g.defaultView,e&&e!==e.top&&(e.addEventListener?e.addEventListener("unload",ea,!1):e.attachEvent&&e.attachEvent("onunload",ea)),p=!f(g),c.attributes=ja(function(a){return a.className="i",!a.getAttribute("className")}),c.getElementsByTagName=ja(function(a){return a.appendChild(g.createComment("")),!a.getElementsByTagName("*").length}),c.getElementsByClassName=$.test(g.getElementsByClassName),c.getById=ja(function(a){return o.appendChild(a).id=u,!g.getElementsByName||!g.getElementsByName(u).length}),c.getById?(d.find.ID=function(a,b){if("undefined"!=typeof b.getElementById&&p){var c=b.getElementById(a);return c&&c.parentNode?[c]:[]}},d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){return a.getAttribute("id")===b}}):(delete d.find.ID,d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){var c="undefined"!=typeof a.getAttributeNode&&a.getAttributeNode("id");return c&&c.value===b}}),d.find.TAG=c.getElementsByTagName?function(a,b){return"undefined"!=typeof b.getElementsByTagName?b.getElementsByTagName(a):c.qsa?b.querySelectorAll(a):void 0}:function(a,b){var c,d=[],e=0,f=b.getElementsByTagName(a);if("*"===a){while(c=f[e++])1===c.nodeType&&d.push(c);return d}return f},d.find.CLASS=c.getElementsByClassName&&function(a,b){return p?b.getElementsByClassName(a):void 0},r=[],q=[],(c.qsa=$.test(g.querySelectorAll))&&(ja(function(a){o.appendChild(a).innerHTML="<a id='"+u+"'></a><select id='"+u+"-\f]' msallowcapture=''><option selected=''></option></select>",a.querySelectorAll("[msallowcapture^='']").length&&q.push("[*^$]="+L+"*(?:''|\"\")"),a.querySelectorAll("[selected]").length||q.push("\\["+L+"*(?:value|"+K+")"),a.querySelectorAll("[id~="+u+"-]").length||q.push("~="),a.querySelectorAll(":checked").length||q.push(":checked"),a.querySelectorAll("a#"+u+"+*").length||q.push(".#.+[+~]")}),ja(function(a){var b=g.createElement("input");b.setAttribute("type","hidden"),a.appendChild(b).setAttribute("name","D"),a.querySelectorAll("[name=d]").length&&q.push("name"+L+"*[*^$|!~]?="),a.querySelectorAll(":enabled").length||q.push(":enabled",":disabled"),a.querySelectorAll("*,:x"),q.push(",.*:")})),(c.matchesSelector=$.test(s=o.matches||o.webkitMatchesSelector||o.mozMatchesSelector||o.oMatchesSelector||o.msMatchesSelector))&&ja(function(a){c.disconnectedMatch=s.call(a,"div"),s.call(a,"[s!='']:x"),r.push("!=",P)}),q=q.length&&new RegExp(q.join("|")),r=r.length&&new RegExp(r.join("|")),b=$.test(o.compareDocumentPosition),t=b||$.test(o.contains)?function(a,b){var c=9===a.nodeType?a.documentElement:a,d=b&&b.parentNode;return a===d||!(!d||1!==d.nodeType||!(c.contains?c.contains(d):a.compareDocumentPosition&&16&a.compareDocumentPosition(d)))}:function(a,b){if(b)while(b=b.parentNode)if(b===a)return!0;return!1},B=b?function(a,b){if(a===b)return l=!0,0;var d=!a.compareDocumentPosition-!b.compareDocumentPosition;return d?d:(d=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&d||!c.sortDetached&&b.compareDocumentPosition(a)===d?a===g||a.ownerDocument===v&&t(v,a)?-1:b===g||b.ownerDocument===v&&t(v,b)?1:k?J(k,a)-J(k,b):0:4&d?-1:1)}:function(a,b){if(a===b)return l=!0,0;var c,d=0,e=a.parentNode,f=b.parentNode,h=[a],i=[b];if(!e||!f)return a===g?-1:b===g?1:e?-1:f?1:k?J(k,a)-J(k,b):0;if(e===f)return la(a,b);c=a;while(c=c.parentNode)h.unshift(c);c=b;while(c=c.parentNode)i.unshift(c);while(h[d]===i[d])d++;return d?la(h[d],i[d]):h[d]===v?-1:i[d]===v?1:0},g):n},ga.matches=function(a,b){return ga(a,null,null,b)},ga.matchesSelector=function(a,b){if((a.ownerDocument||a)!==n&&m(a),b=b.replace(U,"='$1']"),!(!c.matchesSelector||!p||r&&r.test(b)||q&&q.test(b)))try{var d=s.call(a,b);if(d||c.disconnectedMatch||a.document&&11!==a.document.nodeType)return d}catch(e){}return ga(b,n,null,[a]).length>0},ga.contains=function(a,b){return(a.ownerDocument||a)!==n&&m(a),t(a,b)},ga.attr=function(a,b){(a.ownerDocument||a)!==n&&m(a);var e=d.attrHandle[b.toLowerCase()],f=e&&D.call(d.attrHandle,b.toLowerCase())?e(a,b,!p):void 0;return void 0!==f?f:c.attributes||!p?a.getAttribute(b):(f=a.getAttributeNode(b))&&f.specified?f.value:null},ga.error=function(a){throw new Error("Syntax error, unrecognized expression: "+a)},ga.uniqueSort=function(a){var b,d=[],e=0,f=0;if(l=!c.detectDuplicates,k=!c.sortStable&&a.slice(0),a.sort(B),l){while(b=a[f++])b===a[f]&&(e=d.push(f));while(e--)a.splice(d[e],1)}return k=null,a},e=ga.getText=function(a){var b,c="",d=0,f=a.nodeType;if(f){if(1===f||9===f||11===f){if("string"==typeof a.textContent)return a.textContent;for(a=a.firstChild;a;a=a.nextSibling)c+=e(a)}else if(3===f||4===f)return a.nodeValue}else while(b=a[d++])c+=e(b);return c},d=ga.selectors={cacheLength:50,createPseudo:ia,match:X,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(a){return a[1]=a[1].replace(ca,da),a[3]=(a[3]||a[4]||a[5]||"").replace(ca,da),"~="===a[2]&&(a[3]=" "+a[3]+" "),a.slice(0,4)},CHILD:function(a){return a[1]=a[1].toLowerCase(),"nth"===a[1].slice(0,3)?(a[3]||ga.error(a[0]),a[4]=+(a[4]?a[5]+(a[6]||1):2*("even"===a[3]||"odd"===a[3])),a[5]=+(a[7]+a[8]||"odd"===a[3])):a[3]&&ga.error(a[0]),a},PSEUDO:function(a){var b,c=!a[6]&&a[2];return X.CHILD.test(a[0])?null:(a[3]?a[2]=a[4]||a[5]||"":c&&V.test(c)&&(b=g(c,!0))&&(b=c.indexOf(")",c.length-b)-c.length)&&(a[0]=a[0].slice(0,b),a[2]=c.slice(0,b)),a.slice(0,3))}},filter:{TAG:function(a){var b=a.replace(ca,da).toLowerCase();return"*"===a?function(){return!0}:function(a){return a.nodeName&&a.nodeName.toLowerCase()===b}},CLASS:function(a){var b=y[a+" "];return b||(b=new RegExp("(^|"+L+")"+a+"("+L+"|$)"))&&y(a,function(a){return b.test("string"==typeof a.className&&a.className||"undefined"!=typeof a.getAttribute&&a.getAttribute("class")||"")})},ATTR:function(a,b,c){return function(d){var e=ga.attr(d,a);return null==e?"!="===b:b?(e+="","="===b?e===c:"!="===b?e!==c:"^="===b?c&&0===e.indexOf(c):"*="===b?c&&e.indexOf(c)>-1:"$="===b?c&&e.slice(-c.length)===c:"~="===b?(" "+e.replace(Q," ")+" ").indexOf(c)>-1:"|="===b?e===c||e.slice(0,c.length+1)===c+"-":!1):!0}},CHILD:function(a,b,c,d,e){var f="nth"!==a.slice(0,3),g="last"!==a.slice(-4),h="of-type"===b;return 1===d&&0===e?function(a){return!!a.parentNode}:function(b,c,i){var j,k,l,m,n,o,p=f!==g?"nextSibling":"previousSibling",q=b.parentNode,r=h&&b.nodeName.toLowerCase(),s=!i&&!h;if(q){if(f){while(p){l=b;while(l=l[p])if(h?l.nodeName.toLowerCase()===r:1===l.nodeType)return!1;o=p="only"===a&&!o&&"nextSibling"}return!0}if(o=[g?q.firstChild:q.lastChild],g&&s){k=q[u]||(q[u]={}),j=k[a]||[],n=j[0]===w&&j[1],m=j[0]===w&&j[2],l=n&&q.childNodes[n];while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if(1===l.nodeType&&++m&&l===b){k[a]=[w,n,m];break}}else if(s&&(j=(b[u]||(b[u]={}))[a])&&j[0]===w)m=j[1];else while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if((h?l.nodeName.toLowerCase()===r:1===l.nodeType)&&++m&&(s&&((l[u]||(l[u]={}))[a]=[w,m]),l===b))break;return m-=e,m===d||m%d===0&&m/d>=0}}},PSEUDO:function(a,b){var c,e=d.pseudos[a]||d.setFilters[a.toLowerCase()]||ga.error("unsupported pseudo: "+a);return e[u]?e(b):e.length>1?(c=[a,a,"",b],d.setFilters.hasOwnProperty(a.toLowerCase())?ia(function(a,c){var d,f=e(a,b),g=f.length;while(g--)d=J(a,f[g]),a[d]=!(c[d]=f[g])}):function(a){return e(a,0,c)}):e}},pseudos:{not:ia(function(a){var b=[],c=[],d=h(a.replace(R,"$1"));return d[u]?ia(function(a,b,c,e){var f,g=d(a,null,e,[]),h=a.length;while(h--)(f=g[h])&&(a[h]=!(b[h]=f))}):function(a,e,f){return b[0]=a,d(b,null,f,c),b[0]=null,!c.pop()}}),has:ia(function(a){return function(b){return ga(a,b).length>0}}),contains:ia(function(a){return a=a.replace(ca,da),function(b){return(b.textContent||b.innerText||e(b)).indexOf(a)>-1}}),lang:ia(function(a){return W.test(a||"")||ga.error("unsupported lang: "+a),a=a.replace(ca,da).toLowerCase(),function(b){var c;do if(c=p?b.lang:b.getAttribute("xml:lang")||b.getAttribute("lang"))return c=c.toLowerCase(),c===a||0===c.indexOf(a+"-");while((b=b.parentNode)&&1===b.nodeType);return!1}}),target:function(b){var c=a.location&&a.location.hash;return c&&c.slice(1)===b.id},root:function(a){return a===o},focus:function(a){return a===n.activeElement&&(!n.hasFocus||n.hasFocus())&&!!(a.type||a.href||~a.tabIndex)},enabled:function(a){return a.disabled===!1},disabled:function(a){return a.disabled===!0},checked:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&!!a.checked||"option"===b&&!!a.selected},selected:function(a){return a.parentNode&&a.parentNode.selectedIndex,a.selected===!0},empty:function(a){for(a=a.firstChild;a;a=a.nextSibling)if(a.nodeType<6)return!1;return!0},parent:function(a){return!d.pseudos.empty(a)},header:function(a){return Z.test(a.nodeName)},input:function(a){return Y.test(a.nodeName)},button:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&"button"===a.type||"button"===b},text:function(a){var b;return"input"===a.nodeName.toLowerCase()&&"text"===a.type&&(null==(b=a.getAttribute("type"))||"text"===b.toLowerCase())},first:oa(function(){return[0]}),last:oa(function(a,b){return[b-1]}),eq:oa(function(a,b,c){return[0>c?c+b:c]}),even:oa(function(a,b){for(var c=0;b>c;c+=2)a.push(c);return a}),odd:oa(function(a,b){for(var c=1;b>c;c+=2)a.push(c);return a}),lt:oa(function(a,b,c){for(var d=0>c?c+b:c;--d>=0;)a.push(d);return a}),gt:oa(function(a,b,c){for(var d=0>c?c+b:c;++d<b;)a.push(d);return a})}},d.pseudos.nth=d.pseudos.eq;for(b in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})d.pseudos[b]=ma(b);for(b in{submit:!0,reset:!0})d.pseudos[b]=na(b);function qa(){}qa.prototype=d.filters=d.pseudos,d.setFilters=new qa,g=ga.tokenize=function(a,b){var c,e,f,g,h,i,j,k=z[a+" "];if(k)return b?0:k.slice(0);h=a,i=[],j=d.preFilter;while(h){(!c||(e=S.exec(h)))&&(e&&(h=h.slice(e[0].length)||h),i.push(f=[])),c=!1,(e=T.exec(h))&&(c=e.shift(),f.push({value:c,type:e[0].replace(R," ")}),h=h.slice(c.length));for(g in d.filter)!(e=X[g].exec(h))||j[g]&&!(e=j[g](e))||(c=e.shift(),f.push({value:c,type:g,matches:e}),h=h.slice(c.length));if(!c)break}return b?h.length:h?ga.error(a):z(a,i).slice(0)};function ra(a){for(var b=0,c=a.length,d="";c>b;b++)d+=a[b].value;return d}function sa(a,b,c){var d=b.dir,e=c&&"parentNode"===d,f=x++;return b.first?function(b,c,f){while(b=b[d])if(1===b.nodeType||e)return a(b,c,f)}:function(b,c,g){var h,i,j=[w,f];if(g){while(b=b[d])if((1===b.nodeType||e)&&a(b,c,g))return!0}else while(b=b[d])if(1===b.nodeType||e){if(i=b[u]||(b[u]={}),(h=i[d])&&h[0]===w&&h[1]===f)return j[2]=h[2];if(i[d]=j,j[2]=a(b,c,g))return!0}}}function ta(a){return a.length>1?function(b,c,d){var e=a.length;while(e--)if(!a[e](b,c,d))return!1;return!0}:a[0]}function ua(a,b,c){for(var d=0,e=b.length;e>d;d++)ga(a,b[d],c);return c}function va(a,b,c,d,e){for(var f,g=[],h=0,i=a.length,j=null!=b;i>h;h++)(f=a[h])&&(!c||c(f,d,e))&&(g.push(f),j&&b.push(h));return g}function wa(a,b,c,d,e,f){return d&&!d[u]&&(d=wa(d)),e&&!e[u]&&(e=wa(e,f)),ia(function(f,g,h,i){var j,k,l,m=[],n=[],o=g.length,p=f||ua(b||"*",h.nodeType?[h]:h,[]),q=!a||!f&&b?p:va(p,m,a,h,i),r=c?e||(f?a:o||d)?[]:g:q;if(c&&c(q,r,h,i),d){j=va(r,n),d(j,[],h,i),k=j.length;while(k--)(l=j[k])&&(r[n[k]]=!(q[n[k]]=l))}if(f){if(e||a){if(e){j=[],k=r.length;while(k--)(l=r[k])&&j.push(q[k]=l);e(null,r=[],j,i)}k=r.length;while(k--)(l=r[k])&&(j=e?J(f,l):m[k])>-1&&(f[j]=!(g[j]=l))}}else r=va(r===g?r.splice(o,r.length):r),e?e(null,g,r,i):H.apply(g,r)})}function xa(a){for(var b,c,e,f=a.length,g=d.relative[a[0].type],h=g||d.relative[" "],i=g?1:0,k=sa(function(a){return a===b},h,!0),l=sa(function(a){return J(b,a)>-1},h,!0),m=[function(a,c,d){var e=!g&&(d||c!==j)||((b=c).nodeType?k(a,c,d):l(a,c,d));return b=null,e}];f>i;i++)if(c=d.relative[a[i].type])m=[sa(ta(m),c)];else{if(c=d.filter[a[i].type].apply(null,a[i].matches),c[u]){for(e=++i;f>e;e++)if(d.relative[a[e].type])break;return wa(i>1&&ta(m),i>1&&ra(a.slice(0,i-1).concat({value:" "===a[i-2].type?"*":""})).replace(R,"$1"),c,e>i&&xa(a.slice(i,e)),f>e&&xa(a=a.slice(e)),f>e&&ra(a))}m.push(c)}return ta(m)}function ya(a,b){var c=b.length>0,e=a.length>0,f=function(f,g,h,i,k){var l,m,o,p=0,q="0",r=f&&[],s=[],t=j,u=f||e&&d.find.TAG("*",k),v=w+=null==t?1:Math.random()||.1,x=u.length;for(k&&(j=g!==n&&g);q!==x&&null!=(l=u[q]);q++){if(e&&l){m=0;while(o=a[m++])if(o(l,g,h)){i.push(l);break}k&&(w=v)}c&&((l=!o&&l)&&p--,f&&r.push(l))}if(p+=q,c&&q!==p){m=0;while(o=b[m++])o(r,s,g,h);if(f){if(p>0)while(q--)r[q]||s[q]||(s[q]=F.call(i));s=va(s)}H.apply(i,s),k&&!f&&s.length>0&&p+b.length>1&&ga.uniqueSort(i)}return k&&(w=v,j=t),r};return c?ia(f):f}return h=ga.compile=function(a,b){var c,d=[],e=[],f=A[a+" "];if(!f){b||(b=g(a)),c=b.length;while(c--)f=xa(b[c]),f[u]?d.push(f):e.push(f);f=A(a,ya(e,d)),f.selector=a}return f},i=ga.select=function(a,b,e,f){var i,j,k,l,m,n="function"==typeof a&&a,o=!f&&g(a=n.selector||a);if(e=e||[],1===o.length){if(j=o[0]=o[0].slice(0),j.length>2&&"ID"===(k=j[0]).type&&c.getById&&9===b.nodeType&&p&&d.relative[j[1].type]){if(b=(d.find.ID(k.matches[0].replace(ca,da),b)||[])[0],!b)return e;n&&(b=b.parentNode),a=a.slice(j.shift().value.length)}i=X.needsContext.test(a)?0:j.length;while(i--){if(k=j[i],d.relative[l=k.type])break;if((m=d.find[l])&&(f=m(k.matches[0].replace(ca,da),aa.test(j[0].type)&&pa(b.parentNode)||b))){if(j.splice(i,1),a=f.length&&ra(j),!a)return H.apply(e,f),e;break}}}return(n||h(a,o))(f,b,!p,e,aa.test(a)&&pa(b.parentNode)||b),e},c.sortStable=u.split("").sort(B).join("")===u,c.detectDuplicates=!!l,m(),c.sortDetached=ja(function(a){return 1&a.compareDocumentPosition(n.createElement("div"))}),ja(function(a){return a.innerHTML="<a href='#'></a>","#"===a.firstChild.getAttribute("href")})||ka("type|href|height|width",function(a,b,c){return c?void 0:a.getAttribute(b,"type"===b.toLowerCase()?1:2)}),c.attributes&&ja(function(a){return a.innerHTML="<input/>",a.firstChild.setAttribute("value",""),""===a.firstChild.getAttribute("value")})||ka("value",function(a,b,c){return c||"input"!==a.nodeName.toLowerCase()?void 0:a.defaultValue}),ja(function(a){return null==a.getAttribute("disabled")})||ka(K,function(a,b,c){var d;return c?void 0:a[b]===!0?b.toLowerCase():(d=a.getAttributeNode(b))&&d.specified?d.value:null}),ga}(a);m.find=s,m.expr=s.selectors,m.expr[":"]=m.expr.pseudos,m.unique=s.uniqueSort,m.text=s.getText,m.isXMLDoc=s.isXML,m.contains=s.contains;var t=m.expr.match.needsContext,u=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,v=/^.[^:#\[\.,]*$/;function w(a,b,c){if(m.isFunction(b))return m.grep(a,function(a,d){return!!b.call(a,d,a)!==c});if(b.nodeType)return m.grep(a,function(a){return a===b!==c});if("string"==typeof b){if(v.test(b))return m.filter(b,a,c);b=m.filter(b,a)}return m.grep(a,function(a){return m.inArray(a,b)>=0!==c})}m.filter=function(a,b,c){var d=b[0];return c&&(a=":not("+a+")"),1===b.length&&1===d.nodeType?m.find.matchesSelector(d,a)?[d]:[]:m.find.matches(a,m.grep(b,function(a){return 1===a.nodeType}))},m.fn.extend({find:function(a){var b,c=[],d=this,e=d.length;if("string"!=typeof a)return this.pushStack(m(a).filter(function(){for(b=0;e>b;b++)if(m.contains(d[b],this))return!0}));for(b=0;e>b;b++)m.find(a,d[b],c);return c=this.pushStack(e>1?m.unique(c):c),c.selector=this.selector?this.selector+" "+a:a,c},filter:function(a){return this.pushStack(w(this,a||[],!1))},not:function(a){return this.pushStack(w(this,a||[],!0))},is:function(a){return!!w(this,"string"==typeof a&&t.test(a)?m(a):a||[],!1).length}});var x,y=a.document,z=/^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,A=m.fn.init=function(a,b){var c,d;if(!a)return this;if("string"==typeof a){if(c="<"===a.charAt(0)&&">"===a.charAt(a.length-1)&&a.length>=3?[null,a,null]:z.exec(a),!c||!c[1]&&b)return!b||b.jquery?(b||x).find(a):this.constructor(b).find(a);if(c[1]){if(b=b instanceof m?b[0]:b,m.merge(this,m.parseHTML(c[1],b&&b.nodeType?b.ownerDocument||b:y,!0)),u.test(c[1])&&m.isPlainObject(b))for(c in b)m.isFunction(this[c])?this[c](b[c]):this.attr(c,b[c]);return this}if(d=y.getElementById(c[2]),d&&d.parentNode){if(d.id!==c[2])return x.find(a);this.length=1,this[0]=d}return this.context=y,this.selector=a,this}return a.nodeType?(this.context=this[0]=a,this.length=1,this):m.isFunction(a)?"undefined"!=typeof x.ready?x.ready(a):a(m):(void 0!==a.selector&&(this.selector=a.selector,this.context=a.context),m.makeArray(a,this))};A.prototype=m.fn,x=m(y);var B=/^(?:parents|prev(?:Until|All))/,C={children:!0,contents:!0,next:!0,prev:!0};m.extend({dir:function(a,b,c){var d=[],e=a[b];while(e&&9!==e.nodeType&&(void 0===c||1!==e.nodeType||!m(e).is(c)))1===e.nodeType&&d.push(e),e=e[b];return d},sibling:function(a,b){for(var c=[];a;a=a.nextSibling)1===a.nodeType&&a!==b&&c.push(a);return c}}),m.fn.extend({has:function(a){var b,c=m(a,this),d=c.length;return this.filter(function(){for(b=0;d>b;b++)if(m.contains(this,c[b]))return!0})},closest:function(a,b){for(var c,d=0,e=this.length,f=[],g=t.test(a)||"string"!=typeof a?m(a,b||this.context):0;e>d;d++)for(c=this[d];c&&c!==b;c=c.parentNode)if(c.nodeType<11&&(g?g.index(c)>-1:1===c.nodeType&&m.find.matchesSelector(c,a))){f.push(c);break}return this.pushStack(f.length>1?m.unique(f):f)},index:function(a){return a?"string"==typeof a?m.inArray(this[0],m(a)):m.inArray(a.jquery?a[0]:a,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(a,b){return this.pushStack(m.unique(m.merge(this.get(),m(a,b))))},addBack:function(a){return this.add(null==a?this.prevObject:this.prevObject.filter(a))}});function D(a,b){do a=a[b];while(a&&1!==a.nodeType);return a}m.each({parent:function(a){var b=a.parentNode;return b&&11!==b.nodeType?b:null},parents:function(a){return m.dir(a,"parentNode")},parentsUntil:function(a,b,c){return m.dir(a,"parentNode",c)},next:function(a){return D(a,"nextSibling")},prev:function(a){return D(a,"previousSibling")},nextAll:function(a){return m.dir(a,"nextSibling")},prevAll:function(a){return m.dir(a,"previousSibling")},nextUntil:function(a,b,c){return m.dir(a,"nextSibling",c)},prevUntil:function(a,b,c){return m.dir(a,"previousSibling",c)},siblings:function(a){return m.sibling((a.parentNode||{}).firstChild,a)},children:function(a){return m.sibling(a.firstChild)},contents:function(a){return m.nodeName(a,"iframe")?a.contentDocument||a.contentWindow.document:m.merge([],a.childNodes)}},function(a,b){m.fn[a]=function(c,d){var e=m.map(this,b,c);return"Until"!==a.slice(-5)&&(d=c),d&&"string"==typeof d&&(e=m.filter(d,e)),this.length>1&&(C[a]||(e=m.unique(e)),B.test(a)&&(e=e.reverse())),this.pushStack(e)}});var E=/\S+/g,F={};function G(a){var b=F[a]={};return m.each(a.match(E)||[],function(a,c){b[c]=!0}),b}m.Callbacks=function(a){a="string"==typeof a?F[a]||G(a):m.extend({},a);var b,c,d,e,f,g,h=[],i=!a.once&&[],j=function(l){for(c=a.memory&&l,d=!0,f=g||0,g=0,e=h.length,b=!0;h&&e>f;f++)if(h[f].apply(l[0],l[1])===!1&&a.stopOnFalse){c=!1;break}b=!1,h&&(i?i.length&&j(i.shift()):c?h=[]:k.disable())},k={add:function(){if(h){var d=h.length;!function f(b){m.each(b,function(b,c){var d=m.type(c);"function"===d?a.unique&&k.has(c)||h.push(c):c&&c.length&&"string"!==d&&f(c)})}(arguments),b?e=h.length:c&&(g=d,j(c))}return this},remove:function(){return h&&m.each(arguments,function(a,c){var d;while((d=m.inArray(c,h,d))>-1)h.splice(d,1),b&&(e>=d&&e--,f>=d&&f--)}),this},has:function(a){return a?m.inArray(a,h)>-1:!(!h||!h.length)},empty:function(){return h=[],e=0,this},disable:function(){return h=i=c=void 0,this},disabled:function(){return!h},lock:function(){return i=void 0,c||k.disable(),this},locked:function(){return!i},fireWith:function(a,c){return!h||d&&!i||(c=c||[],c=[a,c.slice?c.slice():c],b?i.push(c):j(c)),this},fire:function(){return k.fireWith(this,arguments),this},fired:function(){return!!d}};return k},m.extend({Deferred:function(a){var b=[["resolve","done",m.Callbacks("once memory"),"resolved"],["reject","fail",m.Callbacks("once memory"),"rejected"],["notify","progress",m.Callbacks("memory")]],c="pending",d={state:function(){return c},always:function(){return e.done(arguments).fail(arguments),this},then:function(){var a=arguments;return m.Deferred(function(c){m.each(b,function(b,f){var g=m.isFunction(a[b])&&a[b];e[f[1]](function(){var a=g&&g.apply(this,arguments);a&&m.isFunction(a.promise)?a.promise().done(c.resolve).fail(c.reject).progress(c.notify):c[f[0]+"With"](this===d?c.promise():this,g?[a]:arguments)})}),a=null}).promise()},promise:function(a){return null!=a?m.extend(a,d):d}},e={};return d.pipe=d.then,m.each(b,function(a,f){var g=f[2],h=f[3];d[f[1]]=g.add,h&&g.add(function(){c=h},b[1^a][2].disable,b[2][2].lock),e[f[0]]=function(){return e[f[0]+"With"](this===e?d:this,arguments),this},e[f[0]+"With"]=g.fireWith}),d.promise(e),a&&a.call(e,e),e},when:function(a){var b=0,c=d.call(arguments),e=c.length,f=1!==e||a&&m.isFunction(a.promise)?e:0,g=1===f?a:m.Deferred(),h=function(a,b,c){return function(e){b[a]=this,c[a]=arguments.length>1?d.call(arguments):e,c===i?g.notifyWith(b,c):--f||g.resolveWith(b,c)}},i,j,k;if(e>1)for(i=new Array(e),j=new Array(e),k=new Array(e);e>b;b++)c[b]&&m.isFunction(c[b].promise)?c[b].promise().done(h(b,k,c)).fail(g.reject).progress(h(b,j,i)):--f;return f||g.resolveWith(k,c),g.promise()}});var H;m.fn.ready=function(a){return m.ready.promise().done(a),this},m.extend({isReady:!1,readyWait:1,holdReady:function(a){a?m.readyWait++:m.ready(!0)},ready:function(a){if(a===!0?!--m.readyWait:!m.isReady){if(!y.body)return setTimeout(m.ready);m.isReady=!0,a!==!0&&--m.readyWait>0||(H.resolveWith(y,[m]),m.fn.triggerHandler&&(m(y).triggerHandler("ready"),m(y).off("ready")))}}});function I(){y.addEventListener?(y.removeEventListener("DOMContentLoaded",J,!1),a.removeEventListener("load",J,!1)):(y.detachEvent("onreadystatechange",J),a.detachEvent("onload",J))}function J(){(y.addEventListener||"load"===event.type||"complete"===y.readyState)&&(I(),m.ready())}m.ready.promise=function(b){if(!H)if(H=m.Deferred(),"complete"===y.readyState)setTimeout(m.ready);else if(y.addEventListener)y.addEventListener("DOMContentLoaded",J,!1),a.addEventListener("load",J,!1);else{y.attachEvent("onreadystatechange",J),a.attachEvent("onload",J);var c=!1;try{c=null==a.frameElement&&y.documentElement}catch(d){}c&&c.doScroll&&!function e(){if(!m.isReady){try{c.doScroll("left")}catch(a){return setTimeout(e,50)}I(),m.ready()}}()}return H.promise(b)};var K="undefined",L;for(L in m(k))break;k.ownLast="0"!==L,k.inlineBlockNeedsLayout=!1,m(function(){var a,b,c,d;c=y.getElementsByTagName("body")[0],c&&c.style&&(b=y.createElement("div"),d=y.createElement("div"),d.style.cssText="position:absolute;border:0;width:0;height:0;top:0;left:-9999px",c.appendChild(d).appendChild(b),typeof b.style.zoom!==K&&(b.style.cssText="display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1",k.inlineBlockNeedsLayout=a=3===b.offsetWidth,a&&(c.style.zoom=1)),c.removeChild(d))}),function(){var a=y.createElement("div");if(null==k.deleteExpando){k.deleteExpando=!0;try{delete a.test}catch(b){k.deleteExpando=!1}}a=null}(),m.acceptData=function(a){var b=m.noData[(a.nodeName+" ").toLowerCase()],c=+a.nodeType||1;return 1!==c&&9!==c?!1:!b||b!==!0&&a.getAttribute("classid")===b};var M=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,N=/([A-Z])/g;function O(a,b,c){if(void 0===c&&1===a.nodeType){var d="data-"+b.replace(N,"-$1").toLowerCase();if(c=a.getAttribute(d),"string"==typeof c){try{c="true"===c?!0:"false"===c?!1:"null"===c?null:+c+""===c?+c:M.test(c)?m.parseJSON(c):c}catch(e){}m.data(a,b,c)}else c=void 0}return c}function P(a){var b;for(b in a)if(("data"!==b||!m.isEmptyObject(a[b]))&&"toJSON"!==b)return!1;
 
@@ -2571,18 +2558,19 @@ $(document).ready( function () {
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -2602,7 +2590,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -2883,15 +2871,390 @@ div.tocify {
 </div>
 
 
-<div id="分析例" class="section level2">
-<h2>1. 分析例</h2>
+<div id="分析例①cox比例ハザード" class="section level2">
+<h2>1. 分析例①：Cox比例ハザード</h2>
 <div id="データ" class="section level3">
 <h3>データ</h3>
-<p><strong>電話・インターネット回線の契約データ</strong></p>
+<strong>新商品の生存期間データ</strong> (sec5_survival.csv)
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["pro_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["time"],"name":[2],"type":["int"],"align":["right"]},{"label":["status"],"name":[3],"type":["int"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["int"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["int"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["int"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["int"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["int"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"23","3":"1","4":"1","5":"0","6":"0","7":"0.99675","8":"0","9":"0","10":"0.796825","11":"20","12":"0.00325","_rn_":"1"},{"1":"2","2":"15","3":"1","4":"1","5":"0","6":"0","7":"1.00000","8":"0","9":"0","10":"0.416575","11":"90","12":"0.00000","_rn_":"2"},{"1":"3","2":"15","3":"1","4":"0","5":"1","6":"0","7":"1.00000","8":"0","9":"0","10":"0.049350","11":"188","12":"0.00000","_rn_":"3"},{"1":"4","2":"15","3":"1","4":"0","5":"1","6":"0","7":"1.00000","8":"0","9":"0","10":"0.119400","11":"90","12":"0.00000","_rn_":"4"},{"1":"6","2":"21","3":"1","4":"1","5":"0","6":"0","7":"0.99550","8":"0","9":"0","10":"0.088550","11":"95","12":"0.00450","_rn_":"5"},{"1":"7","2":"12","3":"1","4":"1","5":"0","6":"0","7":"0.99550","8":"0","9":"0","10":"0.138150","11":"95","12":"0.00450","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th>変数</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pro_id</td>
+<td>商品ID</td>
+</tr>
+<tr class="even">
+<td><strong>time</strong></td>
+<td>生存期間（週数）</td>
+</tr>
+<tr class="odd">
+<td><strong>status</strong></td>
+<td>市場退出フラグ（1＝退出済み，0＝生存）</td>
+</tr>
+<tr class="even">
+<td>line_ex</td>
+<td>ライン拡張フラグ（1＝ライン拡張商品）</td>
+</tr>
+<tr class="odd">
+<td>multi_br</td>
+<td>マルチブランドフラグ（1＝マルチブランド商品）</td>
+</tr>
+<tr class="even">
+<td>br_ex</td>
+<td>ブランド拡張フラグ（1＝ブランド拡張商品）</td>
+</tr>
+<tr class="odd">
+<td>ave_price_ind</td>
+<td>発売後4週間平均価格掛率（1＝定価）⇒ 利用しない</td>
+</tr>
+<tr class="even">
+<td>sum_disp</td>
+<td>発売後4週間山積み陳列実施日数</td>
+</tr>
+<tr class="odd">
+<td>sum_flier</td>
+<td>発売後4週間チラシ掲載日数</td>
+</tr>
+<tr class="even">
+<td>ave_PI</td>
+<td>発売後4週間平均点数PI</td>
+</tr>
+<tr class="odd">
+<td>max_price</td>
+<td>最大売価</td>
+</tr>
+<tr class="even">
+<td>ave_disc</td>
+<td>発売後4週間平均値引き率</td>
+</tr>
+</tbody>
+</table>
+<p>（太字が生存時間と打ち切りインディケータ）</p>
+</div>
+<div id="モデル" class="section level3">
+<h3>モデル</h3>
+<p><strong>目的変数</strong>：<br />
+<strong>説明変数</strong>：</p>
+</div>
+<div id="rコード" class="section level3">
+<h3>Rコード</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># データ sec5_survival は &quot;Import Dataset&quot; で読込済みとする</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># survival パッケージの読込み</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(survival)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>result &lt;-<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(time, status) <span class="op">~</span><span class="st"> </span>line_ex <span class="op">+</span><span class="st"> </span>multi_br <span class="op">+</span><span class="st"> </span>br_ex <span class="op">+</span><span class="st"> </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">                  </span>ave_disc <span class="op">+</span><span class="st"> </span>sum_disp <span class="op">+</span><span class="st"> </span>sum_flier   <span class="op">+</span><span class="st"> </span>ave_PI <span class="op">+</span><span class="st"> </span>max_price,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>                <span class="dt">data =</span> sec5_survival)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<p><strong><code>coxph(fourmula, data)</code>：Cox比例ハザードモデルの推定</strong></p>
 <ul>
-<li>説明</li>
-<li>説明</li>
+<li><strong><code>fourmula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>目的変数は Survival オブジェクト <strong><code>Surv(time, event)</code></strong> で指定する</li>
+<li><strong><code>time</code></strong>：生存時間</li>
+<li><strong><code>event</code></strong>：打ち切りインディケータ（1＝観測期間内に死亡，0＝観測期間終了時点で生存）</li>
+</ul></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
 </ul>
+<div id="rコードの出力" class="section level5">
+<h5>Rコードの出力</h5>
+<pre><code>## Call:
+## coxph(formula = Surv(time, status) ~ line_ex + multi_br + br_ex + 
+##     ave_disc + sum_disp + sum_flier + ave_PI + max_price, data = sec5_survival)
+## 
+##   n= 23457, number of events= 19906 
+## 
+##                 coef  exp(coef)   se(coef)       z Pr(&gt;|z|)    
+## line_ex   -1.845e-01  8.315e-01  4.175e-02  -4.419 9.91e-06 ***
+## multi_br  -3.216e-02  9.683e-01  4.261e-02  -0.755   0.4504    
+## br_ex     -4.433e-01  6.419e-01  8.354e-02  -5.306 1.12e-07 ***
+## ave_disc  -1.355e+00  2.579e-01  1.200e-01 -11.295  &lt; 2e-16 ***
+## sum_disp   2.774e-02  1.028e+00  1.058e-03  26.210  &lt; 2e-16 ***
+## sum_flier -9.886e-02  9.059e-01  8.143e-03 -12.140  &lt; 2e-16 ***
+## ave_PI    -1.045e-01  9.008e-01  8.346e-03 -12.523  &lt; 2e-16 ***
+## max_price -1.148e-04  9.999e-01  5.551e-05  -2.068   0.0386 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##           exp(coef) exp(-coef) lower .95 upper .95
+## line_ex      0.8315     1.2026    0.7662    0.9024
+## multi_br     0.9683     1.0327    0.8908    1.0527
+## br_ex        0.6419     1.5578    0.5450    0.7561
+## ave_disc     0.2579     3.8777    0.2038    0.3263
+## sum_disp     1.0281     0.9726    1.0260    1.0303
+## sum_flier    0.9059     1.1039    0.8915    0.9204
+## ave_PI       0.9008     1.1102    0.8861    0.9156
+## max_price    0.9999     1.0001    0.9998    1.0000
+## 
+## Concordance= 0.569  (se = 0.002 )
+## Likelihood ratio test= 1044  on 8 df,   p=&lt;2e-16
+## Wald test            = 1048  on 8 df,   p=&lt;2e-16
+## Score (logrank) test = 1040  on 8 df,   p=&lt;2e-16</code></pre>
+</div>
+</div>
+<div id="推定結果" class="section level3">
+<h3>推定結果</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">回帰係数</th>
+<th align="right">exp(回帰係数)</th>
+<th align="right">標準誤差</th>
+<th align="right">z 値</th>
+<th align="right">p 値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">line_ex</td>
+<td align="right">-0.185</td>
+<td align="right">0.832</td>
+<td align="right">0.042</td>
+<td align="right">-4.419</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">multi_br</td>
+<td align="right">-0.032</td>
+<td align="right">0.968</td>
+<td align="right">0.043</td>
+<td align="right">-0.755</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">br_ex</td>
+<td align="right">-0.443</td>
+<td align="right">0.642</td>
+<td align="right">0.084</td>
+<td align="right">-5.306</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ave_disc</td>
+<td align="right">-1.355</td>
+<td align="right">0.258</td>
+<td align="right">0.120</td>
+<td align="right">-11.295</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">sum_disp</td>
+<td align="right">0.028</td>
+<td align="right">1.028</td>
+<td align="right">0.001</td>
+<td align="right">26.210</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">sum_flier</td>
+<td align="right">-0.099</td>
+<td align="right">0.906</td>
+<td align="right">0.008</td>
+<td align="right">-12.140</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ave_PI</td>
+<td align="right">-0.105</td>
+<td align="right">0.901</td>
+<td align="right">0.008</td>
+<td align="right">-12.523</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">max_price</td>
+<td align="right">0.000</td>
+<td align="right">1.000</td>
+<td align="right">0.000</td>
+<td align="right">-2.068</td>
+<td align="right">0.039</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="分析例②パラメトリックモデル" class="section level2">
+<h2>2. 分析例②：パラメトリックモデル*</h2>
+<div id="rコード-1" class="section level3">
+<h3>Rコード</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># データ sec5_survival は &quot;Import Dataset&quot; で読込済みとする</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># survival パッケージの読込み</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">library</span>(survival)</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># ワイブル分布モデルの推定</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>result &lt;-<span class="st"> </span><span class="kw">survreg</span>(<span class="kw">Surv</span>(time, status) <span class="op">~</span><span class="st"> </span>line_ex <span class="op">+</span><span class="st"> </span>multi_br <span class="op">+</span><span class="st"> </span>br_ex <span class="op">+</span><span class="st"> </span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="st">                    </span>ave_disc <span class="op">+</span><span class="st"> </span>sum_disp <span class="op">+</span><span class="st"> </span>sum_flier <span class="op">+</span><span class="st"> </span>ave_PI <span class="op">+</span><span class="st"> </span>max_price,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                <span class="dt">data =</span> sec5_survival, <span class="dt">dist =</span> <span class="st">&quot;weibull&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="kw">summary</span>(result)</span></code></pre></div>
+<p><strong><code>survreg(fourmula, data, dist)</code>：パラメトリックハザードモデルの推定</strong></p>
+<ul>
+<li><strong><code>fourmula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>目的変数は Survival オブジェクト <strong><code>Surv(time, event)</code></strong> で指定する</li>
+<li><strong><code>time</code></strong>：生存時間</li>
+<li><strong><code>event</code></strong>：打ち切りインディケータ（1＝観測期間内に死亡，0＝観測期間終了時点で生存）</li>
+</ul></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+<li><strong><code>dist</code></strong>：確率分布の指定</li>
+</ul>
+<div id="rコードの出力-1" class="section level5">
+<h5>Rコードの出力</h5>
+<pre><code>## 
+## Call:
+## survreg(formula = Surv(time, status) ~ line_ex + multi_br + br_ex + 
+##     ave_disc + sum_disp + sum_flier + ave_PI + max_price, data = sec5_survival, 
+##     dist = &quot;weibull&quot;)
+##                 Value Std. Error      z       p
+## (Intercept)  3.25e+00   3.00e-02 108.16 &lt; 2e-16
+## line_ex      1.21e-01   2.94e-02   4.14 3.5e-05
+## multi_br     5.69e-03   3.00e-02   0.19 0.84929
+## br_ex        3.11e-01   5.88e-02   5.30 1.2e-07
+## ave_disc     9.15e-01   8.46e-02  10.82 &lt; 2e-16
+## sum_disp    -1.99e-02   7.44e-04 -26.70 &lt; 2e-16
+## sum_flier    7.07e-02   5.72e-03  12.36 &lt; 2e-16
+## ave_PI       8.50e-02   5.97e-03  14.23 &lt; 2e-16
+## max_price    1.41e-04   3.93e-05   3.60 0.00031
+## Log(scale)  -3.52e-01   5.74e-03 -61.34 &lt; 2e-16
+## 
+## Scale= 0.703 
+## 
+## Weibull distribution
+## Loglik(model)= -85093.5   Loglik(intercept only)= -85658.7
+##  Chisq= 1130.39 on 8 degrees of freedom, p= 1e-238 
+## Number of Newton-Raphson Iterations: 5 
+## n= 23457</code></pre>
+</div>
+<div id="推定結果-1" class="section level4">
+<h4>推定結果</h4>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">係数</th>
+<th align="right">標準誤差</th>
+<th align="right">z 値</th>
+<th align="right">p 値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.247</td>
+<td align="right">0.030</td>
+<td align="right">108.160</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">line_ex</td>
+<td align="right">0.121</td>
+<td align="right">0.029</td>
+<td align="right">4.135</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">multi_br</td>
+<td align="right">0.006</td>
+<td align="right">0.030</td>
+<td align="right">0.190</td>
+<td align="right">0.849</td>
+</tr>
+<tr class="even">
+<td align="left">br_ex</td>
+<td align="right">0.311</td>
+<td align="right">0.059</td>
+<td align="right">5.300</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ave_disc</td>
+<td align="right">0.915</td>
+<td align="right">0.085</td>
+<td align="right">10.820</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">sum_disp</td>
+<td align="right">-0.020</td>
+<td align="right">0.001</td>
+<td align="right">-26.695</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">sum_flier</td>
+<td align="right">0.071</td>
+<td align="right">0.006</td>
+<td align="right">12.360</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ave_PI</td>
+<td align="right">0.085</td>
+<td align="right">0.006</td>
+<td align="right">14.233</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">max_price</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">3.603</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">Log(scale)</td>
+<td align="right">-0.352</td>
+<td align="right">0.006</td>
+<td align="right">-61.338</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<p>Scale = 0.703 であり，Scale パラメータが 1 以下の場合，生存時間が長くなるほど死亡率が下がる。</p>
+</div>
+</div>
+<div id="生存確率の推定" class="section level3">
+<h3>生存確率の推定</h3>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["pro_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["time"],"name":[2],"type":["int"],"align":["right"]},{"label":["status"],"name":[3],"type":["int"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["int"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["int"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["int"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["int"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["int"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0.51","8":"18","9":"0","10":"8.136825","11":"288","12":"0.49","_rn_":"49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"1.00","8":"0","9":"0","10":"0.086600","11":"288","12":"0.00","_rn_":"593"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"1.00","8":"28","9":"0","10":"0.027425","11":"288","12":"0.00","_rn_":"15751"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>row &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">49</span>, <span class="dv">593</span>, <span class="dv">15751</span>)  <span class="co"># 商品の行番号</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>pct &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">99</span><span class="op">/</span><span class="dv">100</span>           <span class="co"># 百分位数 (0.01 ~ 0.99)</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># 各百分位数における生存時間の推定</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>pred &lt;-<span class="st"> </span><span class="kw">predict</span>(result, <span class="dt">newdata =</span> sec5_survival[row,], <span class="dt">type =</span> <span class="st">&quot;quantile&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>                <span class="dt">p =</span> pct, <span class="dt">se =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co"># 生存確率のプロット</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">matplot</span>(<span class="dt">x =</span> <span class="kw">t</span>(pred<span class="op">$</span>fit), <span class="dt">y =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pct, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, </span>
+<span id="cb5-10"><a href="#cb5-10"></a>        <span class="dt">lty =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,</span>
+<span id="cb5-11"><a href="#cb5-11"></a>        <span class="dt">xlab =</span> <span class="st">&quot;週&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;生存確率&quot;</span>)</span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="dt">legend =</span> sec5_survival<span class="op">$</span>pro_id[row], <span class="dt">lty =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+</div>
+</div>
+<div id="レポート課題" class="section level2">
+<h2>3. レポート課題</h2>
+<div id="データ-1" class="section level3">
+<h3>データ</h3>
+<p><strong>電話・インターネット回線の契約データ</strong> (data_churn.csv)</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["customerID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[2],"type":["chr"],"align":["left"]},{"label":["SeniorCitizen"],"name":[3],"type":["int"],"align":["right"]},{"label":["Partner"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Dependents"],"name":[5],"type":["chr"],"align":["left"]},{"label":["tenure"],"name":[6],"type":["int"],"align":["right"]},{"label":["PhoneService"],"name":[7],"type":["chr"],"align":["left"]},{"label":["MultipleLines"],"name":[8],"type":["chr"],"align":["left"]},{"label":["InternetService"],"name":[9],"type":["chr"],"align":["left"]},{"label":["OnlineSecurity"],"name":[10],"type":["chr"],"align":["left"]},{"label":["OnlineBackup"],"name":[11],"type":["chr"],"align":["left"]},{"label":["DeviceProtection"],"name":[12],"type":["chr"],"align":["left"]},{"label":["TechSupport"],"name":[13],"type":["chr"],"align":["left"]},{"label":["StreamingTV"],"name":[14],"type":["chr"],"align":["left"]},{"label":["StreamingMovies"],"name":[15],"type":["chr"],"align":["left"]},{"label":["Contract"],"name":[16],"type":["chr"],"align":["left"]},{"label":["PaperlessBilling"],"name":[17],"type":["chr"],"align":["left"]},{"label":["PaymentMethod"],"name":[18],"type":["chr"],"align":["left"]},{"label":["MonthlyCharges"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["TotalCharges"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["Churn"],"name":[21],"type":["int"],"align":["right"]}],"data":[{"1":"7590-VHVEG","2":"Female","3":"0","4":"Yes","5":"No","6":"1","7":"No","8":"No phone service","9":"DSL","10":"No","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"29.85","20":"29.85","21":"0","_rn_":"1"},{"1":"5575-GNVDE","2":"Male","3":"0","4":"No","5":"No","6":"34","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"No","14":"No","15":"No","16":"One year","17":"No","18":"Mailed check","19":"56.95","20":"1889.50","21":"0","_rn_":"2"},{"1":"3668-QPYBK","2":"Male","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Mailed check","19":"53.85","20":"108.15","21":"1","_rn_":"3"},{"1":"7795-CFOCW","2":"Male","3":"0","4":"No","5":"No","6":"45","7":"No","8":"No phone service","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"Yes","14":"No","15":"No","16":"One year","17":"No","18":"Bank transfer (automatic)","19":"42.30","20":"1840.75","21":"0","_rn_":"4"},{"1":"9237-HQITU","2":"Female","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"Fiber optic","10":"No","11":"No","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"70.70","20":"151.65","21":"1","_rn_":"5"},{"1":"9305-CDSKC","2":"Female","3":"0","4":"No","5":"No","6":"8","7":"Yes","8":"Yes","9":"Fiber optic","10":"No","11":"No","12":"Yes","13":"No","14":"Yes","15":"Yes","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"99.65","20":"820.50","21":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3006,33 +3369,24 @@ div.tocify {
 <!-- Business Analytics - IBM Business Analytics Community -->
 <!-- https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4 -->
 </div>
-<div id="モデル" class="section level3">
-<h3>モデル</h3>
-</div>
-<div id="rコード" class="section level3">
-<h3>Rコード</h3>
-<!-- ```{r, results='hide', message=FALSE} -->
-<!-- # データ data_churn は "Import Dataset" で読込済みとする -->
-<!-- # survival パッケージの読込み -->
-<!-- library(survival) -->
-<!-- # パラメトリックハザードモデル（ワイブル分布）の推定 -->
-<!-- result <- survreg(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + log(MonthlyCharges), -->
-<!--                   data = data_churn, dist = "weibull") -->
-<!-- # 推定結果の表示 -->
-<!-- summary(result) -->
-<!-- ``` -->
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># データ data_churn は &quot;Import Dataset&quot; で読込済みとする</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># survival パッケージの読込み</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(survival)</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a>result &lt;-<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(tenure, Churn) <span class="op">~</span><span class="st"> </span>gender <span class="op">+</span><span class="st"> </span>SeniorCitizen <span class="op">+</span><span class="st"> </span>Partner <span class="op">+</span><span class="st"> </span>Dependents <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(MonthlyCharges),</span>
-<span id="cb1-7"><a href="#cb1-7"></a>                <span class="dt">data =</span> data_churn)</span>
-<span id="cb1-8"><a href="#cb1-8"></a></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">summary</span>(result)</span></code></pre></div>
-<div id="rコードの出力" class="section level5">
-<h5>Rコードの出力</h5>
+<div id="課題" class="section level3">
+<h3>課題</h3>
+<p><strong>目的変数</strong>：<br />
+<strong>説明変数</strong>：</p>
+</br>
+<details>
+<summary>Rコード（クリックで表示）</summary>
+<div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># データ data_churn は &quot;Import Dataset&quot; で読込済みとする</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># survival パッケージの読込み</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">library</span>(survival)</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>result &lt;-<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(tenure, Churn) <span class="op">~</span><span class="st"> </span>gender <span class="op">+</span><span class="st"> </span>SeniorCitizen <span class="op">+</span><span class="st"> </span>Partner <span class="op">+</span><span class="st"> </span>Dependents <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(MonthlyCharges),</span>
+<span id="cb6-7"><a href="#cb6-7"></a>                <span class="dt">data =</span> data_churn)</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">summary</span>(result)</span></code></pre></div>
 <pre><code>## Call:
 ## coxph(formula = Surv(tenure, Churn) ~ gender + SeniorCitizen + 
 ##     Partner + Dependents + log(MonthlyCharges), data = data_churn)
@@ -3060,63 +3414,7 @@ div.tocify {
 ## Wald test            = 598.2  on 5 df,   p=&lt;2e-16
 ## Score (logrank) test = 641.2  on 5 df,   p=&lt;2e-16</code></pre>
 </div>
-</div>
-<div id="推定結果" class="section level3">
-<h3>推定結果</h3>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">回帰係数</th>
-<th align="right">exp(回帰係数)</th>
-<th align="right">標準誤差</th>
-<th align="right">z 値</th>
-<th align="right">p 値</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">genderMale</td>
-<td align="right">-0.006</td>
-<td align="right">0.994</td>
-<td align="right">0.046</td>
-<td align="right">-0.140</td>
-<td align="right">0.889</td>
-</tr>
-<tr class="even">
-<td align="left">SeniorCitizen</td>
-<td align="right">0.360</td>
-<td align="right">1.433</td>
-<td align="right">0.055</td>
-<td align="right">6.498</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">PartnerYes</td>
-<td align="right">-0.880</td>
-<td align="right">0.415</td>
-<td align="right">0.054</td>
-<td align="right">-16.329</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">DependentsYes</td>
-<td align="right">-0.357</td>
-<td align="right">0.700</td>
-<td align="right">0.068</td>
-<td align="right">-5.222</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">log(MonthlyCharges)</td>
-<td align="right">0.431</td>
-<td align="right">1.539</td>
-<td align="right">0.047</td>
-<td align="right">9.204</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
+</details>
 </div>
 </div>
 
