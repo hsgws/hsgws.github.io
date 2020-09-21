@@ -1726,14 +1726,14 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#データの読み込み"><strong>データの読み込み</strong></a></li>
-<li><a href="#女性向けメール配信を除いたデータmail_dfの作成"><strong>女性向けメール配信を除いたデータ（mail_df）の作成</strong></a></li>
+<li><a href="#女性向けメール配信を除いたデータmale_dfの作成"><strong>女性向けメール配信を除いたデータ（male_df）の作成</strong></a></li>
 <li><a href="#バイアスのあるデータbiased_dataの作成"><strong>バイアスのあるデータ（biased_data）の作成</strong></a></li>
 </ul>
 </div>
 
 <div id="データの読み込み" class="section level3">
 <h3><strong>データの読み込み</strong></h3>
-<p>毎回 http からcsvファイルをダウンロードすると時間がかかるので，PCにファイルを保存しておき，それを読み込むこと推奨。</p>
+<p>毎回 http からcsvファイルをダウンロードすると時間がかかるので，PCにファイルを保存しておき，それを読み込むことを推奨。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># パッケージの読み出し</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(<span class="st">&quot;tidyverse&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -1741,7 +1741,7 @@ summary {
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co"># email_data &lt;- read_csv(&quot;http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv&quot;)</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a>email_data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;d://Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv&quot;</span>)</span>
 <span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># 以下での説明簡略化のため行番号の追加 + 必要な列のみ抽出（実際の分析時には不要）</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># 以下での説明簡略化のため行番号(id)の追加 + 必要な列のみ抽出（実際の分析時には不要）</span></span>
 <span id="cb1-9"><a href="#cb1-9"></a>email_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">NROW</span>(email_data), email_data) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb1-10"><a href="#cb1-10"></a><span class="st">  </span><span class="kw">select</span>(id, segment, history, recency, channel)</span>
 <span id="cb1-11"><a href="#cb1-11"></a></span>
@@ -1754,8 +1754,8 @@ summary {
 </div>
 <p></br></p>
 </div>
-<div id="女性向けメール配信を除いたデータmail_dfの作成" class="section level3">
-<h3><strong>女性向けメール配信を除いたデータ（mail_df）の作成</strong></h3>
+<div id="女性向けメール配信を除いたデータmale_dfの作成" class="section level3">
+<h3><strong>女性向けメール配信を除いたデータ（male_df）の作成</strong></h3>
 <p><code>treatment</code> は，男性向けメールが配信 (<code>segment == &quot;Mens E-Mail&quot;</code>) されていれば「1」，未配信なら「0」をとる変数。</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 女性向けメール配信データの削除 + treatment列の追加</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>male_df &lt;-<span class="st"> </span>email_data <span class="op">%&gt;%</span><span class="st"> </span></span>
@@ -1784,11 +1784,11 @@ summary {
 <li>メール未配信グループ (<code>treatment == 0</code>) ⇒ 優良顧客の条件を<strong>満たす</strong>消費者を半分削除</li>
 <li>メール配信グループ (<code>treatment == 1</code>) ⇒ 優良顧客の条件を<strong>満たさない</strong>消費者を半分削除</li>
 </ul>
-<p>つまり，「メール未配信グループは優良顧客の割合を減らす」，「メール配信グループは優良顧客の割合を増やす」操作を行っている。乱数を使って削除するかどうかを決めているため，きっちり半分に削除しているわけではない。<br />
+<p>つまり，「メール未配信グループは優良顧客の割合を減らす」，「メール配信グループは優良顧客の割合を増やす」操作を行っている。乱数を使って削除するかどうかを決めているため，該当するデータからきっちり半分だけ削除しているわけではない。<br />
 </br></p>
 <div id="乱数の追加" class="section level4">
 <h4><strong>乱数の追加</strong></h4>
-<p><code>runif</code> で0～1の間の値を取る一様乱数を発生</p>
+<p><code>runif</code> は0～1の間の値を取る一様乱数を発生させるコマンド。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 再現性確保のため乱数シードを固定</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -1801,7 +1801,7 @@ summary {
 <span id="cb3-10"><a href="#cb3-10"></a>         <span class="dt">obs_rate_t =</span> <span class="kw">if_else</span>((history <span class="op">&gt;</span><span class="st"> </span><span class="dv">300</span>) <span class="op">|</span><span class="st"> </span>(recency <span class="op">&lt;</span><span class="st"> </span><span class="dv">6</span>) <span class="op">|</span><span class="st"> </span>(channel <span class="op">==</span><span class="st"> &quot;Multichannel&quot;</span>), <span class="dv">1</span>, obs_rate_t),</span>
 <span id="cb3-11"><a href="#cb3-11"></a>         <span class="dt">random_number =</span> <span class="kw">runif</span>(<span class="dt">n =</span> <span class="kw">NROW</span>(male_df)))</span>
 <span id="cb3-12"><a href="#cb3-12"></a></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># loyal変数（優良顧客の条件を満たせば1）の追加</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># 優良顧客の条件を満たせば1となる loyal 変数の追加（実際の分析時には不要）</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a>biased_data0 &lt;-<span class="st"> </span>biased_data0 <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb3-15"><a href="#cb3-15"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">loyal =</span> <span class="kw">if_else</span>((history <span class="op">&gt;</span><span class="st"> </span><span class="dv">300</span>) <span class="op">|</span><span class="st"> </span>(recency <span class="op">&lt;</span><span class="st"> </span><span class="dv">6</span>) <span class="op">|</span><span class="st"> </span>(channel <span class="op">==</span><span class="st"> &quot;Multichannel&quot;</span>), <span class="dv">1</span>, <span class="dv">0</span>))</span>
 <span id="cb3-16"><a href="#cb3-16"></a></span>
