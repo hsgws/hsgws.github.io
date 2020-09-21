@@ -1,0 +1,134 @@
+---
+title: "バイアスデータについて"
+output: 
+  html_document:
+    toc: true
+    df_print: "paged"
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### **データの読み込み**
+
+毎回 http からcsvファイルをダウンロードすると時間がかかるので，PCにファイルを保存しておき，それを読み込むこと推奨。
+
+```{r, message=FALSE, rownames.print=FALSE}
+# パッケージの読み出し
+library("tidyverse")
+
+# データの読み込み
+# email_data <- read_csv("http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv")
+email_data <- read_csv("d://Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv")
+
+# 以下での説明簡略化のため行番号の追加 + 必要な列のみ抽出（実際の分析時には不要）
+email_data <- data.frame(id = 1:NROW(email_data), email_data) %>% 
+  select(id, segment, history, recency, channel)
+
+# データの表示（20行目まで）
+head(email_data, 20)
+```
+</br>
+
+### **女性向けメール配信を除いたデータ（mail_df）の作成**
+
+`treatment` は，男性向けメールが配信 (`segment == "Mens E-Mail"`) されていれば「1」，未配信なら「0」をとる変数。
+
+```{r, message=FALSE, rownames.print=FALSE}
+# 女性向けメール配信データの削除 + treatment列の追加
+male_df <- email_data %>% 
+  filter(segment != "Womens E-Mail") %>%
+  mutate(treatment = if_else(segment == "Mens E-Mail", 1, 0))
+
+# データの表示（20行目まで）
+head(male_df, 20)
+```
+</br>
+
+### **バイアスのあるデータ（biased_data）の作成**
+
+優良顧客の条件
+
+- 昨年の購入額が $300 より高い (`history > 300`)
+- 前回購入からの経過が6ヶ月未満 (`recency < 6`) → 教科書の文章では3ヶ月未満となっているが，コードに従い6ヶ月未満とする
+- 複数チャネルからの購入あり (`channel == "Multichannel"`)
+
+バイアスの作り方
+
+- メール未配信グループ (`treatment == 0`) ⇒ 優良顧客の条件を**満たす**消費者を半分削除
+- メール配信グループ (`treatment == 1`) ⇒ 優良顧客の条件を**満たさない**消費者を半分削除
+
+
+つまり，「メール未配信グループは優良顧客の割合を減らす」，「メール配信グループは優良顧客の割合を増やす」操作を行っている。乱数を使って削除するかどうかを決めているため，該当するデータをきっちり半分だけ削除しているわけではない。  
+</br>
+
+#### **乱数の追加**
+
+`runif` で0～1の間の値を取る一様乱数を発生
+
+
+```{r, message=FALSE, rownames.print=FALSE}
+# 再現性確保のため乱数シードを固定
+set.seed(1)
+
+obs_rate_c <- 0.5   # control群（メール未配信グループ）で残すサンプルの割合
+obs_rate_t <- 0.5   # treatment群（メール配信グループ）で残すサンプルの割合
+
+# 教科書 p.31 上部コードの前半部分
+biased_data0 <- male_df %>% 
+  mutate(obs_rate_c = if_else((history > 300) | (recency < 6) | (channel == "Multichannel"), obs_rate_c, 1),
+         obs_rate_t = if_else((history > 300) | (recency < 6) | (channel == "Multichannel"), 1, obs_rate_t),
+         random_number = runif(n = NROW(male_df)))
+
+# loyal変数（優良顧客の条件を満たせば1）の追加
+biased_data0 <- biased_data0 %>% 
+  mutate(loyal = if_else((history > 300) | (recency < 6) | (channel == "Multichannel"), 1, 0))
+
+# データ削除前の treatment と loyal のクロス表（割合）
+table(biased_data0[,c("treatment", "loyal")])/NROW(biased_data0)
+
+# データの表示（20行目まで）
+head(biased_data0, 20)
+```
+</br>
+
+
+#### **乱数に基づくデータの削除**
+
+データ削除のルール
+
+- メール未配信グループ (`treatment == 0`) ⇒ 優良顧客の割合を減らす
+  - 非優良顧客のデータ (`loyal == 0`) は全て残す 
+  - 優良顧客のデータ (`loyal == 1`) で乱数が 0.5 未満 (`random_number < 0.5`) なら残し，乱数が 0.5 以上なら削除  
+
+
+- メール配信グループ (`treatment == 1`) ⇒ 優良顧客の割合を増やす
+  - 非優良顧客のデータ (`loyal == 0`) で乱数が 0.5 未満 (`random_number < 0.5`) なら残し，乱数が 0.5 以上なら削除
+  - 優良顧客のデータ (`loyal == 1`) は全て残す  
+
+
+例  
+
+- id=2 ：「メール未配信 (`treatment == 0`)」の「優良顧客 (`loyal == 1`)」で乱数が 0.2655 のため残す
+- id=16 ：「メール未配信 (`treatment == 0`)」の「優良顧客 (`loyal == 1`)」で乱数が 0.8984 のため削除
+- id=18 ：「メール配信 (`treatment == 1`)」の「非優良顧客 (`loyal == 0`)」で乱数が 0.6608 のため削除
+- id=22 ：「メール配信 (`treatment == 1`)」の「非優良顧客 (`loyal == 0`)」で乱数が 0.1766 のため残す
+
+
+データ削除のルールによって削除する前と後のクロス表を比較すると，削除後はメール未配信グループで優良顧客の割合が減り（クロス表の右上），メール配信グループで優良顧客の割合が増えていることが分かる（クロス表の右下）。
+
+```{r, message=FALSE, rownames.print=FALSE}
+# 教科書 p.31 上部コードの後半部分
+biased_data <- biased_data0 %>% 
+  filter( ((treatment == 0) & (random_number < obs_rate_c)) |
+            ((treatment == 1) & (random_number < obs_rate_t)) )
+
+# データ削除後の treatment と loyal のクロス表（割合）
+table(biased_data[,c("treatment", "loyal")])/NROW(biased_data)
+
+# データの表示（20行目まで）
+head(biased_data, 20)
+```
