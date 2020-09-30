@@ -148,7 +148,7 @@ legend("topright", legend = c("実績値", "予測値", "95％区間"),
 ## 2. レポート課題
 ### データ
 
-**ツナ缶の週次販売データ（338週）**
+**ツナ缶の週次販売データ（338週）**（data_tuna.csv）
 
 ```{r, echo=FALSE}
 head(data_tuna)
