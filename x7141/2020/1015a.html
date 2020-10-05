@@ -3409,6 +3409,7 @@ U_C &amp;= \beta_{0} + \varepsilon_C
 <ul>
 <li>データ data_milk.csv は，「2. 分析例②：多項ロジット」で扱った醤油3製品の選択データ (sec4_choice2.csv) と同じく <code>wide</code> 形式のデータである。</li>
 <li><code>mlogit</code> 関数では自動的に切片を計算するが，本データはデータ内に切片 (int) が含まれている。よって，<code>mlogit</code> 関数で分析する際には引数の <code>formula</code> は <code>y ~ x-1</code> のように <code>-1</code> を追加して，関数内で自動的に追加される切片を除外する必要がある。</li>
+<li>説明変数の「HACCPラベル」，「エコラベル」，「賞味期限」は全てダミー変数で同じスケールのため，係数の推定値の大小はそのまま比較できる。</li>
 </ul>
 </br>
 <details>
