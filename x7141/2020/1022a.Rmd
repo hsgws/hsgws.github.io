@@ -33,6 +33,7 @@ data_churn <- read.csv("data/data_churn.csv")
 ### データ
 
 **新商品の生存期間データ** (sec5_survival.csv)
+
 ```{r, echo=FALSE}
 head(sec5_survival)
 ```
@@ -40,7 +41,7 @@ head(sec5_survival)
 | 変数          | 内容                                          |
 | ------------- | --------------------------------------------- |
 | pro_id        | 商品ID                                        |
-| **time**          | 生存期間（週数）                              |
+| **time**          | 商品の市場退出までの週数（生存時間）                              |
 | **status**        | 市場退出フラグ（1＝退出済み，0＝生存）        |
 | line_ex       | ライン拡張フラグ（1＝ライン拡張商品）         |
 | multi_br      | マルチブランドフラグ（1＝マルチブランド商品） |
@@ -52,15 +53,14 @@ head(sec5_survival)
 | max_price     | 最大売価                                      |
 | ave_disc      | 発売後4週間平均値引き率                       |
 
-（太字が生存時間と打ち切りインディケータ）
+- データに含まれる商品は主にスーパーマーケット等で販売されている食品や日用品である
+- 太字は生存時間と打ち切りインディケータである
 
 
 ### モデル
 
-
-**目的変数**：  
-**説明変数**：
-
+**目的変数**：time（商品の市場退出までの週数）  
+**説明変数**：line_ex, multi_br, br_ex, sum_disp, sum_flier, ave_PI, max_price, ave_disc
 
 
 ### Rコード
@@ -72,7 +72,7 @@ library(survival)
 
 # Cox比例ハザードモデルの推定
 result <- coxph(Surv(time, status) ~ line_ex + multi_br + br_ex + 
-                  ave_disc + sum_disp + sum_flier	+ ave_PI + max_price,
+                  sum_disp + sum_flier	+ ave_PI + max_price + ave_disc,
                 data = sec5_survival)
 
 # 推定結果の表示
@@ -111,8 +111,37 @@ result.df <- data.frame(coef, exp_coef, std.err, zvalue, pvalue) %>%
 result.df
 ```
 
+Cox比例ハザードモデルでは，係数の符号は「プラスはイベントが起きる確率が増える（＝市場退出までの期間が短くなる）」ことを，「マイナスはイベントが起きる確率が減る（＝市場退出までの期間が長くなる）」ことを意味する。  
+</br>
+
+**新製品のタイプ**
+
+ライン拡張（line_ex），マルチブランド（multi_br），ブランド拡張（br_ex）は，新ブランドを基準としたダミー変数のため，解釈は「新ブランドの生存時間に与える効果と比較した効果」となる。
+ライン拡張（line_ex）とブランド拡張（br_ex）の回帰係数は5％有意水準で有意に推定されており，係数がマイナスのため，「新ブランドに比べて市場退出までの期間が長い」ことを意味する。
+一方，マルチブランド（multi_br）は，p値が 0.450 であり，有意ではなく，「新ブランドとの差はない」ことを意味する。
+
+新ブランドと比較してどの程度退出しやすいかは，exp(回帰係数）から評価することができる。
+ライン拡張（line_ex）の exp(回帰係数） は 0.832 と計算されており，「ライン拡張は新ブランドに比べて，他の変数が同じ条件なら市場退出の確率は 0.832 倍」と解釈できる。
+同様にブランド拡張（br_ex）は，0.642 倍である。
+よって，退出しやすさは「新ブランド≒マルチブランド＞ライン拡張＞ブランド拡張」となる。
+
+新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。  
+
+
+**プロモーション・価格**
+
+プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。
+山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。
+
+価格については，最大売価（max_price）は有意に推定されているが，係数はほぼゼロであり，市場退出までの期間には影響を与えていない。一方で，値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。
+exp(回帰係数) は1単位増えた場合に，生存確率が何倍になるかを表す指標なので，値引き率で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。
+
+発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。
+
 
 ## 2. 分析例②：パラメトリックモデル*
+
+
 
 ### Rコード
 ```{r, results='hide', message=FALSE}
@@ -120,10 +149,10 @@ result.df
 # survival パッケージの読込み
 library(survival)
 
-# ワイブル分布モデルの推定
+# 指数分布モデルの推定
 result <- survreg(Surv(time, status) ~ line_ex + multi_br + br_ex + 
                     ave_disc + sum_disp + sum_flier	+ ave_PI + max_price,
-                data = sec5_survival, dist = "weibull")
+                data = sec5_survival, dist = "exponential")
 
 # 推定結果の表示
 summary(result)
@@ -149,8 +178,8 @@ result %>%
 
 #### 推定結果
 ```{r, echo=FALSE}
-coef <- c(result$coefficients, log(result$scale))
-names(coef)[10] <- "Log(scale)"
+coef <- result$coefficients
+#names(coef)[10] <- "Log(scale)"
 std.err <- sqrt(diag(result$var))
 zvalue <- coef/std.err
 pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
@@ -162,11 +191,9 @@ result.df <- data.frame(coef, std.err, zvalue, pvalue) %>%
 result.df
 ```
 
-Scale = 0.703 であり，Scale パラメータが 1 以下の場合，生存時間が長くなるほど死亡率が下がる。
-
 
 ### 生存確率の推定
-最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523} の3商品の生存確率の計算と比較を行う。データと生存確率の計算コードは以下の通りである。
+最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523} の3商品の生存確率の計算と比較を行う。3商品のデータと生存確率の計算コードは以下の通りである。
 
 ```{r, echo=FALSE}
 row <- c(49, 593, 15751)
@@ -188,7 +215,7 @@ matplot(x = t(pred$fit), y = 1 - pct, type = "l",
 legend("topright", legend = sec5_survival$pro_id[row], lty = 1, col = 1:3)
 ```
 
-生存確率が50％となる週は，ID 52が51週，ID 686が24週，ID 20523が12週である。
+生存確率が50％となる週は，ID 52が50週，ID 686が21週，ID 20523が9週である。
 
 
 ## 3. レポート課題
