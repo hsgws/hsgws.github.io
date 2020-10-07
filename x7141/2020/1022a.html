@@ -2555,6 +2555,78 @@ $(document).ready( function () {
 })
 </script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      code.sourceCode > span { display: inline-block; line-height: 1.25; }
+  code.sourceCode > span { color: inherit; text-decoration: inherit; }
+  code.sourceCode > span:empty { height: 1.2em; }
+  .sourceCode { overflow: visible; }
+  code.sourceCode { white-space: pre; position: relative; }
+  div.sourceCode { margin: 1em 0; }
+  pre.sourceCode { margin: 0; }
+  @media screen {
+  div.sourceCode { overflow: auto; }
+  }
+  @media print {
+  code.sourceCode { white-space: pre-wrap; }
+  code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+  }
+  pre.numberSource code
+    { counter-reset: source-line 0; }
+  pre.numberSource code > span
+    { position: relative; left: -4em; counter-increment: source-line; }
+  pre.numberSource code > span > a:first-child::before
+    { content: counter(source-line);
+      position: relative; left: -1em; text-align: right; vertical-align: baseline;
+      border: none; display: inline-block;
+      -webkit-touch-callout: none; -webkit-user-select: none;
+      -khtml-user-select: none; -moz-user-select: none;
+      -ms-user-select: none; user-select: none;
+      padding: 0 4px; width: 4em;
+      color: #aaaaaa;
+    }
+  pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+  div.sourceCode
+    {   }
+  @media screen {
+  code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+  }
+  code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+  code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+  code span.at { color: #7d9029; } /* Attribute */
+  code span.bn { color: #40a070; } /* BaseN */
+  code span.bu { } /* BuiltIn */
+  code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+  code span.ch { color: #4070a0; } /* Char */
+  code span.cn { color: #880000; } /* Constant */
+  code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+  code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+  code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+  code span.dt { color: #902000; } /* DataType */
+  code span.dv { color: #40a070; } /* DecVal */
+  code span.er { color: #ff0000; font-weight: bold; } /* Error */
+  code span.ex { } /* Extension */
+  code span.fl { color: #40a070; } /* Float */
+  code span.fu { color: #06287e; } /* Function */
+  code span.im { } /* Import */
+  code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+  code span.op { color: #666666; } /* Operator */
+  code span.ot { color: #007020; } /* Other */
+  code span.pp { color: #bc7a00; } /* Preprocessor */
+  code span.sc { color: #4070a0; } /* SpecialChar */
+  code span.ss { color: #bb6688; } /* SpecialString */
+  code span.st { color: #4070a0; } /* String */
+  code span.va { color: #19177c; } /* Variable */
+  code span.vs { color: #4070a0; } /* VerbatimString */
+  code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    </style>
+
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -2895,11 +2967,11 @@ div.tocify {
 </tr>
 <tr class="even">
 <td><strong>time</strong></td>
-<td>商品の市場退出までの週数（生存時間）</td>
+<td><strong>商品の市場退出までの週数（生存時間）</strong></td>
 </tr>
 <tr class="odd">
 <td><strong>status</strong></td>
-<td>市場退出フラグ（1＝退出済み，0＝生存）</td>
+<td><strong>市場退出フラグ（1＝観測期間内に退出済み，0＝観測終了時点で生存）</strong></td>
 </tr>
 <tr class="even">
 <td>line_ex</td>
@@ -2941,12 +3013,12 @@ div.tocify {
 </table>
 <ul>
 <li>データに含まれる商品は主にスーパーマーケット等で販売されている食品や日用品である</li>
-<li>太字は生存時間と打ち切りインディケータである</li>
+<li>太字は目的変数の生存時間と打ち切りの有無を表す変数である</li>
 </ul>
 </div>
 <div id="モデル" class="section level3">
 <h3>モデル</h3>
-<p><strong>目的変数</strong>：time（商品の市場退出までの週数）<br />
+<p><strong>目的変数</strong>：time（商品の市場退出までの週数），status（市場退出フラグ）<br />
 <strong>説明変数</strong>：line_ex, multi_br, br_ex, sum_disp, sum_flier, ave_PI, max_price, ave_disc</p>
 </div>
 <div id="rコード" class="section level3">
@@ -3093,14 +3165,21 @@ div.tocify {
 <p><strong>新製品のタイプ</strong></p>
 <p>ライン拡張（line_ex），マルチブランド（multi_br），ブランド拡張（br_ex）は，新ブランドを基準としたダミー変数のため，解釈は「新ブランドの生存時間に与える効果と比較した効果」となる。 ライン拡張（line_ex）とブランド拡張（br_ex）の回帰係数は5％有意水準で有意に推定されており，係数がマイナスのため，「新ブランドに比べて市場退出までの期間が長い」ことを意味する。 一方，マルチブランド（multi_br）は，p値が 0.450 であり，有意ではなく，「新ブランドとの差はない」ことを意味する。</p>
 <p>新ブランドと比較してどの程度退出しやすいかは，exp(回帰係数）から評価することができる。 ライン拡張（line_ex）の exp(回帰係数） は 0.832 と計算されており，「ライン拡張は新ブランドに比べて，他の変数が同じ条件なら市場退出の確率は 0.832 倍」と解釈できる。 同様にブランド拡張（br_ex）は，0.642 倍である。 よって，退出しやすさは「新ブランド≒マルチブランド＞ライン拡張＞ブランド拡張」となる。</p>
-<p>新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。<br />
-</br></p>
+<p>新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。</p>
 <p><strong>プロモーション・価格</strong></p>
-<p>発売後のスタートダッシュに成功した商品は，長生きする</p>
+<p>プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。 山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。</p>
+<p>価格については，最大売価（max_price）は有意に推定されているが，係数はほぼゼロであり，市場退出までの期間には影響を与えていない。一方で，値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。 exp(回帰係数) は1単位増えた場合に，生存確率が何倍になるかを表す指標なので，値引き率で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。</p>
+<p>発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。</p>
 </div>
 </div>
 <div id="分析例②パラメトリックモデル" class="section level2">
 <h2>2. 分析例②：パラメトリックモデル*</h2>
+<p>パラメトリックモデルによる生存時間解析は授業のレベルを超えるため，以下では指数分布モデルを用いたパラメトリックモデルの分析方法の紹介のみにとどめる。 パラメトリックモデルは週ごとの生存確率を確率分布によって計算ができるが，選択する確率分布の違いによってパラメータの解釈も異なり，確率分布を選択にも注意が必要となる。</p>
+<p>経営学を含む社会科学分野でパラメトリックモデルによる生存時間解析を説明している文献として，以下を紹介する。</p>
+<ul>
+<li><a href="http://www.asakura.co.jp/books/isbn/978-4-254-12853-6/">佐藤（2015）「マーケティングの統計モデル（5章）」朝倉書店</a></li>
+<li><a href="https://www.nippyo.co.jp/shop/book/6554.html">森田（2014）「実証分析入門（15章）」日本評論社</a></li>
+</ul>
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># データ sec5_survival は &quot;Import Dataset&quot; で読込済みとする</span></span>
@@ -3229,6 +3308,7 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<p>指数分布モデルでの係数の符号の解釈はCox比例ハザードモデルとは逆になり，プラスならイベントが起きる確率が減ることを，マイナスならイベントが起きる確率が増えることを意味する。</p>
 </div>
 </div>
 <div id="生存確率の推定" class="section level3">
@@ -3282,24 +3362,24 @@ div.tocify {
 <td>顧客ID</td>
 </tr>
 <tr class="even">
-<td>gender</td>
-<td>性別 (Male, Female)</td>
+<td><strong>gender</strong></td>
+<td><strong>性別 (Male, Female)</strong></td>
 </tr>
 <tr class="odd">
-<td>SeniorCitizen</td>
-<td>高齢者フラグ (1＝高齢者, 0＝それ以外)</td>
+<td><strong>SeniorCitizen</strong></td>
+<td><strong>高齢者フラグ (1＝高齢者, 0＝それ以外)</strong></td>
 </tr>
 <tr class="even">
-<td>Partner</td>
-<td>パートナーの有無 (Yes, No)</td>
+<td><strong>Partner</strong></td>
+<td><strong>パートナーの有無 (Yes, No)</strong></td>
 </tr>
 <tr class="odd">
-<td>Dependents</td>
-<td>扶養家族の有無 (Yes, No)</td>
+<td><strong>Dependents</strong></td>
+<td><strong>扶養家族の有無 (Yes, No)</strong></td>
 </tr>
 <tr class="even">
 <td><strong>tenure</strong></td>
-<td>契約月数</td>
+<td><strong>契約月数</strong></td>
 </tr>
 <tr class="odd">
 <td>PhoneService</td>
@@ -3350,8 +3430,8 @@ div.tocify {
 <td>料金支払い方法 </br> (“Electronic check”, “Mailed check”, “Bank transfer (automatic)”, “Credit card (automatic)”)</td>
 </tr>
 <tr class="odd">
-<td>MonthlyCharges</td>
-<td>月額料金</td>
+<td><strong>MonthlyCharges</strong></td>
+<td><strong>月額料金</strong></td>
 </tr>
 <tr class="even">
 <td>TotalCharges</td>
@@ -3359,16 +3439,18 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td><strong>Churn</strong></td>
-<td>解約の有無 (1＝解約済み, 0＝契約中)</td>
+<td><strong>解約の有無 (1＝解約済み, 0＝契約中) </strong></td>
 </tr>
 </tbody>
 </table>
+<p>（太字は分析で利用する変数）<br />
+</br></p>
 <p><strong>データ出典</strong> ：</p>
 <ul>
 <li><a href="https://www.kaggle.com/blastchar/telco-customer-churn">Telco Customer Churn | Kaggle</a></li>
 <li><a href="https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets">Cognos Analytics - IBM Business Analytics Community</a></li>
 </ul>
-<p>（生存時間解析を行うため，契約月数が0ヶ月の顧客を削除）</p>
+<p>（生存時間解析を行うため，契約月数が0ヶ月の顧客を削除した）</p>
 <!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
 <!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
 <!-- Business Analytics - IBM Business Analytics Community -->
@@ -3376,8 +3458,9 @@ div.tocify {
 </div>
 <div id="課題" class="section level3">
 <h3>課題</h3>
-<p><strong>目的変数</strong>：<br />
-<strong>説明変数</strong>：</p>
+<p>以下のモデルでCox比例ハザードモデルを推定し，各説明変数が解約までの時間に与える影響を考察せよ。 MonthlyCharges（月額料金）以外はダミー変数のため，基準となっている値に注意すること。</p>
+<p><strong>目的変数</strong>：tenure（契約月数），Churn（解約の有無）<br />
+<strong>説明変数</strong>：gender, SeniorCitizen, Partner, Dependents, MonthlyCharges</p>
 </br>
 <details>
 <summary>Rコード（クリックで表示）</summary>
@@ -3387,37 +3470,37 @@ div.tocify {
 <span id="cb6-3"><a href="#cb6-3"></a><span class="kw">library</span>(survival)</span>
 <span id="cb6-4"><a href="#cb6-4"></a></span>
 <span id="cb6-5"><a href="#cb6-5"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a>result &lt;-<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(tenure, Churn) <span class="op">~</span><span class="st"> </span>gender <span class="op">+</span><span class="st"> </span>SeniorCitizen <span class="op">+</span><span class="st"> </span>Partner <span class="op">+</span><span class="st"> </span>Dependents <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(MonthlyCharges),</span>
+<span id="cb6-6"><a href="#cb6-6"></a>result &lt;-<span class="st"> </span><span class="kw">coxph</span>(<span class="kw">Surv</span>(tenure, Churn) <span class="op">~</span><span class="st"> </span>gender <span class="op">+</span><span class="st"> </span>SeniorCitizen <span class="op">+</span><span class="st"> </span>Partner <span class="op">+</span><span class="st"> </span>Dependents <span class="op">+</span><span class="st"> </span>MonthlyCharges,</span>
 <span id="cb6-7"><a href="#cb6-7"></a>                <span class="dt">data =</span> data_churn)</span>
 <span id="cb6-8"><a href="#cb6-8"></a></span>
 <span id="cb6-9"><a href="#cb6-9"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb6-10"><a href="#cb6-10"></a><span class="kw">summary</span>(result)</span></code></pre></div>
 <pre><code>## Call:
 ## coxph(formula = Surv(tenure, Churn) ~ gender + SeniorCitizen + 
-##     Partner + Dependents + log(MonthlyCharges), data = data_churn)
+##     Partner + Dependents + MonthlyCharges, data = data_churn)
 ## 
 ##   n= 7032, number of events= 1869 
 ## 
-##                          coef exp(coef)  se(coef)       z Pr(&gt;|z|)    
-## genderMale          -0.006477  0.993543  0.046316  -0.140    0.889    
-## SeniorCitizen        0.359557  1.432695  0.055333   6.498 8.14e-11 ***
-## PartnerYes          -0.879958  0.414800  0.053890 -16.329  &lt; 2e-16 ***
-## DependentsYes       -0.356844  0.699882  0.068331  -5.222 1.77e-07 ***
-## log(MonthlyCharges)  0.430883  1.538615  0.046815   9.204  &lt; 2e-16 ***
+##                      coef  exp(coef)   se(coef)       z Pr(&gt;|z|)    
+## genderMale     -0.0100883  0.9899624  0.0463170  -0.218    0.828    
+## SeniorCitizen   0.3892448  1.4758657  0.0555232   7.010 2.37e-12 ***
+## PartnerYes     -0.8689878  0.4193758  0.0539500 -16.107  &lt; 2e-16 ***
+## DependentsYes  -0.3762043  0.6864621  0.0683589  -5.503 3.73e-08 ***
+## MonthlyCharges  0.0054506  1.0054655  0.0008228   6.624 3.49e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-##                     exp(coef) exp(-coef) lower .95 upper .95
-## genderMale             0.9935     1.0065    0.9073    1.0880
-## SeniorCitizen          1.4327     0.6980    1.2854    1.5968
-## PartnerYes             0.4148     2.4108    0.3732    0.4610
-## DependentsYes          0.6999     1.4288    0.6122    0.8002
-## log(MonthlyCharges)    1.5386     0.6499    1.4037    1.6865
+##                exp(coef) exp(-coef) lower .95 upper .95
+## genderMale        0.9900     1.0101    0.9041    1.0840
+## SeniorCitizen     1.4759     0.6776    1.3237    1.6455
+## PartnerYes        0.4194     2.3845    0.3773    0.4662
+## DependentsYes     0.6865     1.4567    0.6004    0.7849
+## MonthlyCharges    1.0055     0.9946    1.0038    1.0071
 ## 
-## Concordance= 0.665  (se = 0.006 )
-## Likelihood ratio test= 649  on 5 df,   p=&lt;2e-16
-## Wald test            = 598.2  on 5 df,   p=&lt;2e-16
-## Score (logrank) test = 641.2  on 5 df,   p=&lt;2e-16</code></pre>
+## Concordance= 0.663  (se = 0.006 )
+## Likelihood ratio test= 601.5  on 5 df,   p=&lt;2e-16
+## Wald test            = 560.7  on 5 df,   p=&lt;2e-16
+## Score (logrank) test = 602  on 5 df,   p=&lt;2e-16</code></pre>
 </div>
 </details>
 </div>

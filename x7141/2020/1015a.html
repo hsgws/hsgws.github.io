@@ -2555,6 +2555,78 @@ $(document).ready( function () {
 })
 </script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      code.sourceCode > span { display: inline-block; line-height: 1.25; }
+  code.sourceCode > span { color: inherit; text-decoration: inherit; }
+  code.sourceCode > span:empty { height: 1.2em; }
+  .sourceCode { overflow: visible; }
+  code.sourceCode { white-space: pre; position: relative; }
+  div.sourceCode { margin: 1em 0; }
+  pre.sourceCode { margin: 0; }
+  @media screen {
+  div.sourceCode { overflow: auto; }
+  }
+  @media print {
+  code.sourceCode { white-space: pre-wrap; }
+  code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+  }
+  pre.numberSource code
+    { counter-reset: source-line 0; }
+  pre.numberSource code > span
+    { position: relative; left: -4em; counter-increment: source-line; }
+  pre.numberSource code > span > a:first-child::before
+    { content: counter(source-line);
+      position: relative; left: -1em; text-align: right; vertical-align: baseline;
+      border: none; display: inline-block;
+      -webkit-touch-callout: none; -webkit-user-select: none;
+      -khtml-user-select: none; -moz-user-select: none;
+      -ms-user-select: none; user-select: none;
+      padding: 0 4px; width: 4em;
+      color: #aaaaaa;
+    }
+  pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+  div.sourceCode
+    {   }
+  @media screen {
+  code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+  }
+  code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+  code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+  code span.at { color: #7d9029; } /* Attribute */
+  code span.bn { color: #40a070; } /* BaseN */
+  code span.bu { } /* BuiltIn */
+  code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+  code span.ch { color: #4070a0; } /* Char */
+  code span.cn { color: #880000; } /* Constant */
+  code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+  code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+  code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+  code span.dt { color: #902000; } /* DataType */
+  code span.dv { color: #40a070; } /* DecVal */
+  code span.er { color: #ff0000; font-weight: bold; } /* Error */
+  code span.ex { } /* Extension */
+  code span.fl { color: #40a070; } /* Float */
+  code span.fu { color: #06287e; } /* Function */
+  code span.im { } /* Import */
+  code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+  code span.op { color: #666666; } /* Operator */
+  code span.ot { color: #007020; } /* Other */
+  code span.pp { color: #bc7a00; } /* Preprocessor */
+  code span.sc { color: #4070a0; } /* SpecialChar */
+  code span.ss { color: #bb6688; } /* SpecialString */
+  code span.st { color: #4070a0; } /* String */
+  code span.va { color: #19177c; } /* Variable */
+  code span.vs { color: #4070a0; } /* VerbatimString */
+  code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    </style>
+
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -3201,7 +3273,7 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j \quad (
 </ul></li>
 <li><strong><code>data</code></strong>：<code>mlogit.data</code> コマンドで変換したデータの指定<br />
 </li>
-<li><strong><code>reflevel</code></strong>：切片を0に基準化する選択肢の指定（省略可能）</li>
+<li><strong><code>reflevel</code></strong>：切片を0に基準化する選択肢の指定</li>
 </ul>
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
@@ -3340,7 +3412,7 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j \quad (
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong> ：<a href="https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html">続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト</a> 内の <a href="https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf">選択制コンジョイント分析</a><br />
+<p><strong>データ出典</strong> ：<a href="https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html">続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト</a> 内の <a href="https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf">選択型コンジョイント分析</a><br />
 </br></p>
 <div id="補足説明" class="section level4">
 <h4>補足説明</h4>
@@ -3372,20 +3444,20 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j \quad (
 </tbody>
 </table>
 <p>コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選考に与える影響を分析する。牛乳データでは，3属性とそれぞれの水準数を掛け合わせて，2×2×2×4＝32通りの製品案が作成される。実際には，直行表を使うことによって，製品案を32通りから8通りまで減らすことができる。</p>
-<p>消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。回答負荷を減らす方法として，選択ベース・コンジョイントと呼ばれる手法があり，1人の消費者に対して以下の手順で製品案に対する選好を調査する。</p>
+<p>消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。回答負荷を減らす方法として，選択型コンジョイント（または選択ベース・コンジョイント）と呼ばれる手法があり，1人の消費者に対して以下の手順で製品案に対する選好を調査する。</p>
 <ol style="list-style-type: decimal">
 <li>全ての製品案から2つの製品案をランダムに選ぶ</li>
 <li>2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう</li>
 <li>同じ消費者に1と2を何回か繰り返す</li>
 </ol>
-<p>牛乳データの場合は，回答者10人に対して，1人につき1と2を8回繰り返して，3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。このようにして集めたデータにロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。</p>
-<p>コンジョイント分析に関しては，以下の参考文献または，データ出典に挙げたリンクを参照されたい。<strong>特に，<a href="https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf">選択制コンジョイント分析</a> は課題に取り組む前に一読すること。</strong></p>
+<p>牛乳データの場合は，回答者10人に対して，1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。このようにして集めたデータに多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。</p>
+<p>コンジョイント分析に関しては，以下の参考文献または，データ出典に挙げたリンクを参照されたい。<strong>特に，<a href="https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf">選択型コンジョイント分析</a> は課題に取り組む前に一読すること。</strong></p>
 <p><strong>参考文献</strong>：<a href="http://www.yuhikaku.co.jp/books/detail/9784641164161">照井・佐藤（2013）『現代マーケティング・リサーチ』有斐閣</a>，第8章</p>
 </div>
 </div>
 <div id="課題" class="section level3">
 <h3>課題</h3>
-<p>以下のモデルで多項ロジットモデルを推定し，消費者の牛乳選択における各属性の影響を考察せよ。</p>
+<p>以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。</p>
 <p><strong>目的変数</strong>：選択結果 (choice)<br />
 <strong>説明変数</strong>：切片 (int)，HACCPラベル (haccp)，エコラベルの有無 (eco)，賞味期限 (bb)，1リットルあたり価格 (price)</p>
 <div id="効用関数-2" class="section level4">
@@ -3408,8 +3480,9 @@ U_C &amp;= \beta_{0} + \varepsilon_C
 <p><strong>注意点</strong></p>
 <ul>
 <li>データ data_milk.csv は，「2. 分析例②：多項ロジット」で扱った醤油3製品の選択データ (sec4_choice2.csv) と同じく <code>wide</code> 形式のデータである。</li>
-<li><code>mlogit</code> 関数では自動的に切片を計算するが，本データはデータ内に切片 (int) が含まれている。よって，<code>mlogit</code> 関数で分析する際には引数の <code>formula</code> は <code>y ~ x-1</code> のように <code>-1</code> を追加して，関数内で自動的に追加される切片を除外する必要がある。</li>
+<li><code>mlogit</code> 関数では自動的に切片を計算するが，本データはデータ内に切片 (int) が含まれている。よって，<code>mlogit</code> 関数で分析する際には引数の <strong><code>formula</code> は <code>y ~ x-1</code> のように <code>-1</code> を追加して，関数内で自動的に追加される切片を除外する必要がある。</strong></li>
 <li>説明変数の「HACCPラベル」，「エコラベル」，「賞味期限」は全てダミー変数で同じスケールのため，係数の推定値の大小はそのまま比較できる。</li>
+<li>今回のデータでは利用できないが，Rの <code>conjoint</code> パッケージを利用すれば，直行表を利用したプロファイルの作成からパラメータの推定までを行うことが出来る。詳細は <code>conjoint</code> のヘルプを参照。</li>
 </ul>
 </br>
 <details>

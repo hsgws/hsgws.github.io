@@ -62,7 +62,7 @@ library(plotly)
 実行したい部分を選択してエディタ上部の ![](fig/rstudio/rstudio_run.png) ボタンをクリック（または Ctrl+Enter）
 
 #### 全てを一括で実行
-エディタ上部の ![](fig/rstudio/rstudio_source.png) ボタンをクリック（または Ctrl+Shift+Enter）
+エディタ上部の ![](fig/rstudio/rstudio_source.png) ボタンの逆三角から Source with Echo をクリック（または Ctrl+Shift+Enter）
 
 <br />
 Rプログラム実行後の画面
