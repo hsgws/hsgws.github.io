@@ -3180,6 +3180,10 @@ div.tocify {
 <li><a href="http://www.asakura.co.jp/books/isbn/978-4-254-12853-6/">佐藤（2015）「マーケティングの統計モデル（5章）」朝倉書店</a></li>
 <li><a href="https://www.nippyo.co.jp/shop/book/6554.html">森田（2014）「実証分析入門（15章）」日本評論社</a></li>
 </ul>
+<div id="データ-1" class="section level3">
+<h3>データ</h3>
+<p><strong>新商品の生存期間データ</strong> (sec5_survival.csv) ⇒ 分析例①と同じデータ</p>
+</div>
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># データ sec5_survival は &quot;Import Dataset&quot; で読込済みとする</span></span>
@@ -3337,7 +3341,7 @@ div.tocify {
 </div>
 <div id="レポート課題" class="section level2">
 <h2>3. レポート課題</h2>
-<div id="データ-1" class="section level3">
+<div id="データ-2" class="section level3">
 <h3>データ</h3>
 <p><strong>電話・インターネット回線の契約データ</strong> (data_churn.csv)</p>
 <div data-pagedtable="false">
@@ -3475,32 +3479,6 @@ div.tocify {
 <span id="cb6-8"><a href="#cb6-8"></a></span>
 <span id="cb6-9"><a href="#cb6-9"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb6-10"><a href="#cb6-10"></a><span class="kw">summary</span>(result)</span></code></pre></div>
-<pre><code>## Call:
-## coxph(formula = Surv(tenure, Churn) ~ gender + SeniorCitizen + 
-##     Partner + Dependents + MonthlyCharges, data = data_churn)
-## 
-##   n= 7032, number of events= 1869 
-## 
-##                      coef  exp(coef)   se(coef)       z Pr(&gt;|z|)    
-## genderMale     -0.0100883  0.9899624  0.0463170  -0.218    0.828    
-## SeniorCitizen   0.3892448  1.4758657  0.0555232   7.010 2.37e-12 ***
-## PartnerYes     -0.8689878  0.4193758  0.0539500 -16.107  &lt; 2e-16 ***
-## DependentsYes  -0.3762043  0.6864621  0.0683589  -5.503 3.73e-08 ***
-## MonthlyCharges  0.0054506  1.0054655  0.0008228   6.624 3.49e-11 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-##                exp(coef) exp(-coef) lower .95 upper .95
-## genderMale        0.9900     1.0101    0.9041    1.0840
-## SeniorCitizen     1.4759     0.6776    1.3237    1.6455
-## PartnerYes        0.4194     2.3845    0.3773    0.4662
-## DependentsYes     0.6865     1.4567    0.6004    0.7849
-## MonthlyCharges    1.0055     0.9946    1.0038    1.0071
-## 
-## Concordance= 0.663  (se = 0.006 )
-## Likelihood ratio test= 601.5  on 5 df,   p=&lt;2e-16
-## Wald test            = 560.7  on 5 df,   p=&lt;2e-16
-## Score (logrank) test = 602  on 5 df,   p=&lt;2e-16</code></pre>
 </div>
 </details>
 </div>
