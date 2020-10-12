@@ -90,7 +90,7 @@ $$
 ```{r, results='hide'}
 # データ data_email は "Import Dataset" で読込済みとする
 # ロジットモデルの実行
-result <- glm(visit ~ recency + log(history) + segment + newbie,
+result <- glm(visit ~ recency + log(history) + newbie + segment,
               family = "binomial", data = data_email)
 
 # 推定結果の表示
