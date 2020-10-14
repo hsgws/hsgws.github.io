@@ -1,0 +1,354 @@
+---
+title: "ロジットモデル（10/15）"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+data_email <- read.csv("data/data_email.csv")
+sec4_choice2 <- read.csv("data/sec4_choice2.csv")
+data_milk <- read.csv("data/data_milk.csv")
+```
+
+## 1. 分析例①：二項ロジット
+### データ
+**プロモーションメールの配信データ** (data_email.csv)
+
+```{r, echo=FALSE}
+head(data_email)
+```
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| **recency** ($x_1$)        | 最終購買からの経過月数                                       |
+| history_segment | 昨年の購買金額の階級                                         |
+| **history** ($x_2$)       | 昨年の購入金額                                               |
+| mens            | 昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| womens          | 昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| zip_code        | 居住地区の分類（Rural，Surburban，Urban）                    |
+| **newbie** ($x_3$)         | 過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）         |
+| channel         | 昨年の購買チャネル（Multichannel，Phone，Web）               |
+| **segment** ($x_4$)        | 配信したプロモーションメールの種類（Womens Email，Mens Email） <br>⇒ Mens Email が基準のダミー変数 |
+| visit          | メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし） |
+| **conversion** ($y$)     | メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし） |
+| spend           | 購入金額                                                     |
+（太字は以下の分析例で使用する変数）
+
+
+**データ出典** ： [MineThatData E-Mail Analytics And Data Mining Challenge dataset](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
+（本分析例のため一部変更）
+
+
+### モデル
+
+#### 効用関数
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- U & = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \beta_5 x_{5} + \varepsilon \\ -->
+<!-- & = V + \varepsilon -->
+<!-- \end{align} -->
+<!-- $$ -->
+
+$$
+U = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon
+$$
+
+#### サイト訪問確率
+$$
+Pr(y=1) = \frac{\exp(V)}{1+\exp(V)}
+$$
+$$
+V = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} + \beta_4 x_{4}
+$$
+
+**目的変数**：メール配信後2週間以内の商品購買の有無  
+**説明変数**：最終購買からの経過月数，昨年の購入金額，過去12ヶ月以内の新規顧客，配信したプロモーションメールの種類
+
+- history ($x_2$) は，消費者によって金額が大きく異なるため対数値を説明変数とする。
+- segment ($x_4$) の係数 $\beta_4$ はダミー変数の定義により，Mens Email を基準とした Womens Email の相対的な効果を意味する。
+
+
+### Rコード
+```{r, results='hide'}
+# データ data_email は "Import Dataset" で読込済みとする
+# ロジットモデルの実行
+result <- glm(conversion ~ recency + log(history) + newbie + segment,
+              family = "binomial", data = data_email)
+
+# 推定結果の表示
+summary(result)
+```
+
+**`glm(formula, family, data)` ：二項ロジットモデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+  
+- **`family`**：分析モデル（データが従う確率分布）の指定
+  - 二項ロジットの場合はデータが二項分布に従うので `"binomial"` を指定
+  - `family` を変更すれば，ポアソン回帰などのその他の一般化線型モデルも実行可能
+
+- **`data`**：分析データの指定  
+
+##### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+### 推定結果
+```{r, echo=FALSE}
+result %>% 
+  tidy() %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "標準誤差", "z 値", "p 値"))
+```
+
+p値より全ての説明変数が5%有意水準で有意と判断され，商品購買の有無へ影響があることが分かる。
+
+recency（最終購買からの経過月数）の係数は符号がマイナスに推定されている。最終購買からの経過月数が長いほど，すでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。
+
+newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。
+
+segment（配信したプロモーションメールの種類）に関する係数は，前述の通り，Mens Email を基準とした相対的な効果を意味する。よって，Mens Email (= 0) の方が，Womens E-Mail (= -0.355)より効果が高い。
+
+ロジットモデルでは，オッズ比によって説明変数が $\Delta x$ 単位増えた場合の選択確率の変化を評価することが出来る。
+$\Delta x$ 単位増えた場合のオッズ比は，$\exp(\Delta x \times \beta)$ で計算できる（1単位増加の場合は $\exp(\beta)$，0.5単位増加の場合は$\exp(0.5 \times \beta)$）。
+newbie は，$\exp(\beta_3) = \exp(-0.209) = 0.811$ となり，新規顧客はそれ以外の既存顧客に比べて，商品購買確率が 0.811 倍となる。
+recency については，最終購買からの経過月数が6ヶ月増えると，商品購買確率が $\exp(\beta_2) = \exp(6 \times -0.049) = 0.745$ 倍となる。
+
+
+## 2. 分析例②：多項ロジット
+
+### データ
+**醤油3製品の選択データ** (sec4_choice2.csv)
+
+```{r, echo=FALSE}
+head(sec4_choice2)
+```
+
+| 変数名    | 内容                                              |
+| --------- | ------------------------------------------------- |
+| id        | 消費者ID                                          |
+| Date      | 購買日                                            |
+| Choice    | 購買ブランド（A，B，C）                           |
+| Price.A ~ Price.C    | ブランドA ~ Cの価格掛率（定価＝1）                    |
+| Display.A ~ Display.C | ブランドA ~ Cの山積み陳列の有無（1＝実施，0＝非実施） |
+| Ad.A ~ Ad.C      | ブランドA ~ Cのチラシ掲載の有無（1＝実施，0＝非実施） |
+
+
+**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）
+
+
+### モデル
+#### 効用関数
+$$
+\begin{align}
+U_A &= \beta_A + \beta_1 Price_A + \beta_2 Display_A + \beta_3 Ad_A + \varepsilon_A \\
+U_B &= \beta_B + \beta_1 Price_B + \beta_2 Display_B + \beta_3 Ad_B + \varepsilon_B \\
+U_C &= 0 + \beta_1 Price_C + \beta_2 Display_C + \beta_3 Ad_C + \varepsilon_C
+\end{align}
+$$
+
+#### ブランド選択確率
+$$
+Pr(Choice=A) = \frac{\exp(V_A)}{\exp(V_A)+\exp(V_B)+\exp(V_C)}
+$$
+$$
+V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad (j = A, B, C)
+$$
+
+**目的変数**：購買ブランド（A，B，C）  
+**説明変数**：価格掛率の対数値，山積み陳列，チラシ掲載
+
+- 各ブランドのブランド切片 ($\beta_A, \beta_B, \beta_C$) は，マーケティング変数に依らないブランドの魅力度を表し，ブランドロイヤリティとも呼ばれる。
+- 多項ロジットモデルではモデルの識別性のため，ブランド切片のどれかひとつをゼロに基準化する必要がある。ここではブランドCの切片を $\beta_C = 0$ とした。
+
+
+### Rコード
+```{r, results='hide', message=FALSE}
+# データ sec4_choice2 は "Import Dataset" で読込済みとする
+
+# mlogit パッケージのインストール（初回のみ実行）
+# install.packages("mlogit")
+
+# mlogit パッケージの読込み
+library(mlogit)
+
+# mlogit 関数用にデータを加工
+soydata <- mlogit.data(sec4_choice2, choice = "Choice", shape = "wide", varying = 4:12, sep = ".")
+
+# 多項ロジットモデルの推定
+result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
+
+# 推定結果の表示
+summary(result)
+```
+
+
+**`mlogit.data(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
+
+- **`data`**：データの指定
+- **`choice`**：データ内の選択結果を示す変数名
+- **`shape`**：データ形式の指定（`long` または `wide`） ⇒ 分析例の醤油データは1行が1購買機会を表す `wide` 形式
+- **`varying`**：説明変数の列番号（`4:12` は4～12列を表す）
+- **`seq`**：説明変数と選択肢を区切る文字の指定（Price.A，Price.B，Price.C の "."）
+
+**`mlogit(formula, data, reflevel)`：多項ロジットモデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+
+- **`data`**：`mlogit.data` コマンドで変換したデータの指定  
+- **`reflevel`**：切片を0に基準化する選択肢の指定
+
+
+##### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+coef <- result$coefficients
+std.err <- sqrt(-diag(solve(result$hessian)))
+zvalue <- coef/std.err
+pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+result.df <- data.frame(coef, std.err, coef/std.err, pvalue) %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("回帰係数", "標準誤差", "z 値", "p 値"))
+result.df
+```
+
+ブランド切片は，ブランドAが $\beta_A = -2.386$，ブランドBが $\beta_B = -2.542$ となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。
+
+マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。商品価格の10％値引きは，オッズ比 $\exp(-10.047 \times -0.1) = 2.731$ より，選択確率を2.731倍に上昇させることが分かる。
+ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がプロモーション効果が高いと分かる。
+
+
+## 3. レポート課題
+### データ
+
+**牛乳に関する選択ベース・コンジョイントのアンケートデータ** (data_milk.csv)
+
+```{r, echo=FALSE}
+head(data_milk)
+```
+
+| 変数              | 内容                                      |
+| ----------------- | ----------------------------------------- |
+| id                | 回答者ID                                  |
+| experiment        | 質問番号（1～8）                          |
+| choice            | 選択結果                                    |
+| int.A ~ int.C     | 切片（int.A = 0，int.B = 0，int.C = 1）   |
+| haccp.A ~ haccp.C | HACCPラベル（厳格な衛生管理の証明）の有無 |
+| eco.A ~ eco.C     | エコラベルの有無                          |
+| bb.A ~ bb.C       | 賞味期限（0＝6日間，1＝7日間）            |
+| price.A ~ price.C | 1リットルあたり価格（145円，150円，155円，160円）        |
+
+
+**データ出典** ：[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html)  内の [選択型コンジョイント分析](https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf)  
+</br>
+
+
+#### 補足説明
+コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では，以下の属性と水準を考える。
+
+| 属性              | 水準                                      |
+| ----------- | ---------------------------|
+| HACCPラベル	| あり，なし （2水準）	|
+| エコラベル	| あり，なし （2水準）			|
+| 賞味期限		| 6日間，7日間 （2水準）		|
+| 1リットルあたり価格	| 145円，150円，155円，160円 （4水準）	|
+
+コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選考に与える影響を分析する。牛乳データでは，3属性とそれぞれの水準数を掛け合わせて，2×2×2×4＝32通りの製品案が作成される。実際には，直行表を使うことによって，製品案を32通りから8通りまで減らすことができる。
+
+消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。回答負荷を減らす方法として，選択型コンジョイント（または選択ベース・コンジョイント）と呼ばれる手法があり，1人の消費者に対して以下の手順で製品案に対する選好を調査する。
+
+1. 全ての製品案から2つの製品案をランダムに選ぶ
+2. 2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう
+3. 同じ消費者に1と2を何回か繰り返す
+
+牛乳データの場合は，回答者10人に対して，1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。このようにして集めたデータに多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。
+
+コンジョイント分析に関しては，以下の参考文献または，データ出典に挙げたリンクを参照されたい。**特に，[選択型コンジョイント分析](https://www.pref.miyagi.jp/uploaded/attachment/617762.pdf) は課題に取り組む前に一読すること。**
+
+**参考文献**：[照井・佐藤（2013）『現代マーケティング・リサーチ』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641164161)，第8章
+
+### 課題
+以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。
+
+
+**目的変数**：選択結果 (choice)  
+**説明変数**：切片 (int)，HACCPラベル (haccp)，エコラベルの有無 (eco)，賞味期限 (bb)，1リットルあたり価格 (price)
+
+
+#### 効用関数
+$$
+\begin{align} 
+U_j &= \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} + \beta_{3}x_{bb.j} + \beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\
+U_C &= \beta_{0} + \varepsilon_C
+\end{align}
+$$
+
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- U_A \ or \ U_B &= \begin{cases} \beta_{1} & (HACCPあり) \\ 0 & (HACCPなし) \end{cases}  -->
+<!-- + \begin{cases} \beta_{2} & (エコラベルあり) \\ 0 & (エコラベルなし) \end{cases} -->
+<!-- + \begin{cases} \beta_{3} & (7日) \\ 0 & (6日) \end{cases} -->
+<!-- + \beta_{41} x_{price.j} + \varepsilon_j\\ -->
+<!-- U_C &= \alpha + \varepsilon_C -->
+<!-- \end{align} -->
+<!-- $$ -->
+
+**注意点**  
+
+- データ data_milk.csv は，「2. 分析例②：多項ロジット」で扱った醤油3製品の選択データ (sec4_choice2.csv) と同じく `wide` 形式のデータである。
+- `mlogit` 関数では自動的に切片を計算するが，本データはデータ内に切片 (int) が含まれている。よって，`mlogit` 関数で分析する際には引数の **`formula` は `y ~ x-1` のように `-1` を追加して，関数内で自動的に追加される切片を除外する必要がある。**
+- 説明変数の「HACCPラベル」，「エコラベル」，「賞味期限」は全てダミー変数で同じスケールのため，係数の推定値の大小はそのまま比較できる。
+- オッズ比は `exp` 関数で計算できる。
+- 今回のデータでは利用できないが，Rの `conjoint` パッケージを利用すれば，直行表を利用したプロファイルの作成からパラメータの推定までを行うことが出来る。詳細は `conjoint` のヘルプを参照。
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+library(mlogit)
+
+# mlogit 関数用にデータを加工
+milkdata <- mlogit.data(data_milk, choice = "choice", shape = "wide", varying = 4:18, sep = ".")
+
+# 多項ロジットモデルの推定
+result <- mlogit(choice ~ int + haccp + eco + bb + price - 1, data = milkdata)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
