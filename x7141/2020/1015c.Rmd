@@ -23,6 +23,8 @@ library(broom)
 # library(pander)
 library(knitr)
 
+options(repos = structure(c(CRAN = "http://cran.ism.ac.jp/")))
+
 # data
 data_email <- read.csv("data/data_email.csv")
 sec4_choice2 <- read.csv("data/sec4_choice2.csv")
@@ -192,7 +194,7 @@ $$
 # データ sec4_choice2 は "Import Dataset" で読込済みとする
 
 # mlogit パッケージのインストール（初回のみ実行）
-# install.packages("mlogit")
+install.packages("mlogit")
 
 # mlogit パッケージの読込み
 library(mlogit)
