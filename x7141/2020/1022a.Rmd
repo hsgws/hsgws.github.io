@@ -272,7 +272,6 @@ head(data_churn)
 - [Telco Customer Churn | Kaggle](https://www.kaggle.com/blastchar/telco-customer-churn)
 - [Cognos Analytics - IBM Business Analytics Community](https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets) 
 
-（生存時間解析を行うため，契約月数が0ヶ月の顧客を削除した）  
 
 <!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
 <!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
