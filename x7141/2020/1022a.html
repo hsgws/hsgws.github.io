@@ -3343,7 +3343,7 @@ div.tocify {
 <h2>3. レポート課題</h2>
 <div id="データ-2" class="section level3">
 <h3>データ</h3>
-<p><strong>電話・インターネット回線の契約データ</strong> (data_churn.csv)</p>
+<p><strong>電話回線の契約データ</strong> (data_churn.csv)</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["customerID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[2],"type":["chr"],"align":["left"]},{"label":["SeniorCitizen"],"name":[3],"type":["int"],"align":["right"]},{"label":["Partner"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Dependents"],"name":[5],"type":["chr"],"align":["left"]},{"label":["tenure"],"name":[6],"type":["int"],"align":["right"]},{"label":["PhoneService"],"name":[7],"type":["chr"],"align":["left"]},{"label":["MultipleLines"],"name":[8],"type":["chr"],"align":["left"]},{"label":["InternetService"],"name":[9],"type":["chr"],"align":["left"]},{"label":["OnlineSecurity"],"name":[10],"type":["chr"],"align":["left"]},{"label":["OnlineBackup"],"name":[11],"type":["chr"],"align":["left"]},{"label":["DeviceProtection"],"name":[12],"type":["chr"],"align":["left"]},{"label":["TechSupport"],"name":[13],"type":["chr"],"align":["left"]},{"label":["StreamingTV"],"name":[14],"type":["chr"],"align":["left"]},{"label":["StreamingMovies"],"name":[15],"type":["chr"],"align":["left"]},{"label":["Contract"],"name":[16],"type":["chr"],"align":["left"]},{"label":["PaperlessBilling"],"name":[17],"type":["chr"],"align":["left"]},{"label":["PaymentMethod"],"name":[18],"type":["chr"],"align":["left"]},{"label":["MonthlyCharges"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["TotalCharges"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["Churn"],"name":[21],"type":["int"],"align":["right"]}],"data":[{"1":"7590-VHVEG","2":"Female","3":"0","4":"Yes","5":"No","6":"1","7":"No","8":"No phone service","9":"DSL","10":"No","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"29.85","20":"29.85","21":"0","_rn_":"1"},{"1":"5575-GNVDE","2":"Male","3":"0","4":"No","5":"No","6":"34","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"No","14":"No","15":"No","16":"One year","17":"No","18":"Mailed check","19":"56.95","20":"1889.50","21":"0","_rn_":"2"},{"1":"3668-QPYBK","2":"Male","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Mailed check","19":"53.85","20":"108.15","21":"1","_rn_":"3"},{"1":"7795-CFOCW","2":"Male","3":"0","4":"No","5":"No","6":"45","7":"No","8":"No phone service","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"Yes","14":"No","15":"No","16":"One year","17":"No","18":"Bank transfer (automatic)","19":"42.30","20":"1840.75","21":"0","_rn_":"4"},{"1":"9237-HQITU","2":"Female","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"Fiber optic","10":"No","11":"No","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"70.70","20":"151.65","21":"1","_rn_":"5"},{"1":"9305-CDSKC","2":"Female","3":"0","4":"No","5":"No","6":"8","7":"Yes","8":"Yes","9":"Fiber optic","10":"No","11":"No","12":"Yes","13":"No","14":"Yes","15":"Yes","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"99.65","20":"820.50","21":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3383,7 +3383,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td><strong>tenure</strong></td>
-<td><strong>契約月数</strong></td>
+<td><strong>電話回線の契約月数</strong></td>
 </tr>
 <tr class="odd">
 <td>PhoneService</td>
@@ -3443,7 +3443,7 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td><strong>Churn</strong></td>
-<td><strong>解約の有無 (1＝解約済み, 0＝契約中) </strong></td>
+<td><strong>電話回線の解約の有無 (1＝解約済み, 0＝契約中) </strong></td>
 </tr>
 </tbody>
 </table>
@@ -3463,7 +3463,7 @@ div.tocify {
 <div id="課題" class="section level3">
 <h3>課題</h3>
 <p>以下のモデルでCox比例ハザードモデルを推定し，各説明変数が解約までの時間に与える影響を考察せよ。 MonthlyCharges（月額料金）以外はダミー変数のため，基準となっている値に注意すること。</p>
-<p><strong>目的変数</strong>：tenure（契約月数），Churn（解約の有無）<br />
+<p><strong>目的変数</strong>：tenure（電話回線の契約月数），Churn（電話回線の解約の有無）<br />
 <strong>説明変数</strong>：gender, SeniorCitizen, Partner, Dependents, MonthlyCharges</p>
 </br>
 <details>
