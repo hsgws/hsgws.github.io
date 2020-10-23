@@ -3007,7 +3007,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td>ave_disc</td>
-<td>発売後4週間平均値引き率</td>
+<td>発売後4週間平均値引き率（0＝定価販売）</td>
 </tr>
 </tbody>
 </table>
@@ -3096,67 +3096,67 @@ div.tocify {
 <tbody>
 <tr class="odd">
 <td align="left">line_ex</td>
-<td align="right">-0.185</td>
-<td align="right">0.832</td>
-<td align="right">0.042</td>
-<td align="right">-4.419</td>
-<td align="right">0.000</td>
+<td align="right">-0.1845</td>
+<td align="right">0.8315</td>
+<td align="right">0.0418</td>
+<td align="right">-4.4192</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="even">
 <td align="left">multi_br</td>
-<td align="right">-0.032</td>
-<td align="right">0.968</td>
-<td align="right">0.043</td>
-<td align="right">-0.755</td>
-<td align="right">0.450</td>
+<td align="right">-0.0322</td>
+<td align="right">0.9683</td>
+<td align="right">0.0426</td>
+<td align="right">-0.7548</td>
+<td align="right">0.4504</td>
 </tr>
 <tr class="odd">
 <td align="left">br_ex</td>
-<td align="right">-0.443</td>
-<td align="right">0.642</td>
-<td align="right">0.084</td>
-<td align="right">-5.306</td>
-<td align="right">0.000</td>
+<td align="right">-0.4433</td>
+<td align="right">0.6419</td>
+<td align="right">0.0835</td>
+<td align="right">-5.3060</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="even">
 <td align="left">sum_disp</td>
-<td align="right">0.028</td>
-<td align="right">1.028</td>
-<td align="right">0.001</td>
-<td align="right">26.210</td>
-<td align="right">0.000</td>
+<td align="right">0.0277</td>
+<td align="right">1.0281</td>
+<td align="right">0.0011</td>
+<td align="right">26.2099</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="odd">
 <td align="left">sum_flier</td>
-<td align="right">-0.099</td>
-<td align="right">0.906</td>
-<td align="right">0.008</td>
-<td align="right">-12.140</td>
-<td align="right">0.000</td>
+<td align="right">-0.0989</td>
+<td align="right">0.9059</td>
+<td align="right">0.0081</td>
+<td align="right">-12.1400</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="even">
 <td align="left">ave_PI</td>
-<td align="right">-0.105</td>
-<td align="right">0.901</td>
-<td align="right">0.008</td>
-<td align="right">-12.523</td>
-<td align="right">0.000</td>
+<td align="right">-0.1045</td>
+<td align="right">0.9008</td>
+<td align="right">0.0083</td>
+<td align="right">-12.5229</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="odd">
 <td align="left">max_price</td>
-<td align="right">0.000</td>
-<td align="right">1.000</td>
-<td align="right">0.000</td>
-<td align="right">-2.068</td>
-<td align="right">0.039</td>
+<td align="right">-0.0001</td>
+<td align="right">0.9999</td>
+<td align="right">0.0001</td>
+<td align="right">-2.0682</td>
+<td align="right">0.0386</td>
 </tr>
 <tr class="even">
 <td align="left">ave_disc</td>
-<td align="right">-1.355</td>
-<td align="right">0.258</td>
-<td align="right">0.120</td>
-<td align="right">-11.295</td>
-<td align="right">0.000</td>
+<td align="right">-1.3552</td>
+<td align="right">0.2579</td>
+<td align="right">0.1200</td>
+<td align="right">-11.2949</td>
+<td align="right">0.0000</td>
 </tr>
 </tbody>
 </table>
@@ -3168,7 +3168,8 @@ div.tocify {
 <p>新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。</p>
 <p><strong>プロモーション・価格</strong></p>
 <p>プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。 山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。</p>
-<p>価格については，最大売価（max_price）は有意に推定されているが，係数はほぼゼロであり，市場退出までの期間には影響を与えていない。一方で，値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。 exp(回帰係数) は1単位増えた場合に，生存確率が何倍になるかを表す指標なので，値引き率で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。</p>
+<p>価格については，最大売価（max_price）の係数が -0.0001 とほぼゼロで有意に推定されているが，1円単位の効果のため解釈には注意が必要である。 符号はマイナスのため，高価格な商品ほど退出までの期間が長いことを意味する。 ただし，最大売価については，全23,457商品の価格幅が10～1500円と広いが，約96％が400円以下である。 300円と400円の影響を比較すると，<span class="math inline">\(\exp(-0.0001 \times 300) = 0.970\)</span>，<span class="math inline">\(\exp(-0.0001 \times 400) = 0.961\)</span> と計算されるため，最大売価の影響は限定的であるとも考えられる。 本データには商品カテゴリの情報がないが，商品カテゴリを絞って分析を行うと価格帯も近くなるため，最大売価の影響は異なる結果が得られる可能性もある。</p>
+<p>一方で，値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。 exp(回帰係数) は1単位増えた場合に，退出確率が何倍になるかを表す指標なので，値引き率（0＝定価）で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。</p>
 <p>発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。</p>
 </div>
 </div>
@@ -3192,7 +3193,7 @@ div.tocify {
 <span id="cb3-4"><a href="#cb3-4"></a></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co"># 指数分布モデルの推定</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a>result &lt;-<span class="st"> </span><span class="kw">survreg</span>(<span class="kw">Surv</span>(time, status) <span class="op">~</span><span class="st"> </span>line_ex <span class="op">+</span><span class="st"> </span>multi_br <span class="op">+</span><span class="st"> </span>br_ex <span class="op">+</span><span class="st"> </span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="st">                    </span>ave_disc <span class="op">+</span><span class="st"> </span>sum_disp <span class="op">+</span><span class="st"> </span>sum_flier <span class="op">+</span><span class="st"> </span>ave_PI <span class="op">+</span><span class="st"> </span>max_price,</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="st">                    </span>sum_disp <span class="op">+</span><span class="st"> </span>sum_flier    <span class="op">+</span><span class="st"> </span>ave_PI <span class="op">+</span><span class="st"> </span>max_price <span class="op">+</span><span class="st"> </span>ave_disc,</span>
 <span id="cb3-8"><a href="#cb3-8"></a>                <span class="dt">data =</span> sec5_survival, <span class="dt">dist =</span> <span class="st">&quot;exponential&quot;</span>)</span>
 <span id="cb3-9"><a href="#cb3-9"></a></span>
 <span id="cb3-10"><a href="#cb3-10"></a><span class="co"># 推定結果の表示</span></span>
@@ -3213,18 +3214,18 @@ div.tocify {
 <pre><code>## 
 ## Call:
 ## survreg(formula = Surv(time, status) ~ line_ex + multi_br + br_ex + 
-##     ave_disc + sum_disp + sum_flier + ave_PI + max_price, data = sec5_survival, 
+##     sum_disp + sum_flier + ave_PI + max_price + ave_disc, data = sec5_survival, 
 ##     dist = &quot;exponential&quot;)
 ##                 Value Std. Error      z       p
 ## (Intercept)  3.19e+00   4.27e-02  74.85 &lt; 2e-16
 ## line_ex      1.49e-01   4.18e-02   3.58 0.00035
 ## multi_br     1.57e-02   4.26e-02   0.37 0.71190
 ## br_ex        3.73e-01   8.35e-02   4.47 7.9e-06
-## ave_disc     1.05e+00   1.18e-01   8.90 &lt; 2e-16
 ## sum_disp    -2.31e-02   1.04e-03 -22.15 &lt; 2e-16
 ## sum_flier    8.63e-02   8.12e-03  10.62 &lt; 2e-16
 ## ave_PI       9.67e-02   8.33e-03  11.61 &lt; 2e-16
 ## max_price    1.40e-04   5.53e-05   2.53 0.01143
+## ave_disc     1.05e+00   1.18e-01   8.90 &lt; 2e-16
 ## 
 ## Scale fixed at 1 
 ## 
@@ -3249,70 +3250,70 @@ div.tocify {
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">3.193</td>
-<td align="right">0.043</td>
-<td align="right">74.848</td>
-<td align="right">0.000</td>
+<td align="right">3.1933</td>
+<td align="right">0.0427</td>
+<td align="right">74.8480</td>
+<td align="right">0.0000</td>
 </tr>
 <tr class="even">
 <td align="left">line_ex</td>
-<td align="right">0.149</td>
-<td align="right">0.042</td>
-<td align="right">3.577</td>
-<td align="right">0.000</td>
+<td align="right">0.1494</td>
+<td align="right">0.0418</td>
+<td align="right">3.5772</td>
+<td align="right">0.0003</td>
 </tr>
 <tr class="odd">
 <td align="left">multi_br</td>
-<td align="right">0.016</td>
-<td align="right">0.043</td>
-<td align="right">0.369</td>
-<td align="right">0.712</td>
+<td align="right">0.0157</td>
+<td align="right">0.0426</td>
+<td align="right">0.3693</td>
+<td align="right">0.7119</td>
 </tr>
 <tr class="even">
 <td align="left">br_ex</td>
-<td align="right">0.373</td>
-<td align="right">0.084</td>
-<td align="right">4.468</td>
-<td align="right">0.000</td>
+<td align="right">0.3732</td>
+<td align="right">0.0835</td>
+<td align="right">4.4675</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="odd">
+<td align="left">sum_disp</td>
+<td align="right">-0.0231</td>
+<td align="right">0.0010</td>
+<td align="right">-22.1480</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="even">
+<td align="left">sum_flier</td>
+<td align="right">0.0863</td>
+<td align="right">0.0081</td>
+<td align="right">10.6219</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="odd">
+<td align="left">ave_PI</td>
+<td align="right">0.0967</td>
+<td align="right">0.0083</td>
+<td align="right">11.6127</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="even">
+<td align="left">max_price</td>
+<td align="right">0.0001</td>
+<td align="right">0.0001</td>
+<td align="right">2.5293</td>
+<td align="right">0.0114</td>
 </tr>
 <tr class="odd">
 <td align="left">ave_disc</td>
-<td align="right">1.051</td>
-<td align="right">0.118</td>
-<td align="right">8.901</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">sum_disp</td>
-<td align="right">-0.023</td>
-<td align="right">0.001</td>
-<td align="right">-22.148</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">sum_flier</td>
-<td align="right">0.086</td>
-<td align="right">0.008</td>
-<td align="right">10.622</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">ave_PI</td>
-<td align="right">0.097</td>
-<td align="right">0.008</td>
-<td align="right">11.613</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">max_price</td>
-<td align="right">0.000</td>
-<td align="right">0.000</td>
-<td align="right">2.529</td>
-<td align="right">0.011</td>
+<td align="right">1.0514</td>
+<td align="right">0.1181</td>
+<td align="right">8.9007</td>
+<td align="right">0.0000</td>
 </tr>
 </tbody>
 </table>
-<p>指数分布モデルでの係数の符号の解釈はCox比例ハザードモデルとは逆になり，プラスならイベントが起きる確率が減ることを，マイナスならイベントが起きる確率が増えることを意味する。</p>
+<p>Rでのパラメトリックモデルは加速故障モデル (accelerated failure time model) という方法で説明変数の係数が推定されており，係数の符号の解釈はCox比例ハザードモデルとは逆になる。 プラスなら生存時間が長くなることを，マイナスなら生存時間が短くなることを意味する。</p>
 </div>
 </div>
 <div id="生存確率の推定" class="section level3">
@@ -3343,7 +3344,7 @@ div.tocify {
 <h2>3. レポート課題</h2>
 <div id="データ-2" class="section level3">
 <h3>データ</h3>
-<p><strong>電話・インターネット回線の契約データ</strong> (data_churn.csv)</p>
+<p><strong>電話回線の契約データ</strong> (data_churn.csv)</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["customerID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["gender"],"name":[2],"type":["chr"],"align":["left"]},{"label":["SeniorCitizen"],"name":[3],"type":["int"],"align":["right"]},{"label":["Partner"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Dependents"],"name":[5],"type":["chr"],"align":["left"]},{"label":["tenure"],"name":[6],"type":["int"],"align":["right"]},{"label":["PhoneService"],"name":[7],"type":["chr"],"align":["left"]},{"label":["MultipleLines"],"name":[8],"type":["chr"],"align":["left"]},{"label":["InternetService"],"name":[9],"type":["chr"],"align":["left"]},{"label":["OnlineSecurity"],"name":[10],"type":["chr"],"align":["left"]},{"label":["OnlineBackup"],"name":[11],"type":["chr"],"align":["left"]},{"label":["DeviceProtection"],"name":[12],"type":["chr"],"align":["left"]},{"label":["TechSupport"],"name":[13],"type":["chr"],"align":["left"]},{"label":["StreamingTV"],"name":[14],"type":["chr"],"align":["left"]},{"label":["StreamingMovies"],"name":[15],"type":["chr"],"align":["left"]},{"label":["Contract"],"name":[16],"type":["chr"],"align":["left"]},{"label":["PaperlessBilling"],"name":[17],"type":["chr"],"align":["left"]},{"label":["PaymentMethod"],"name":[18],"type":["chr"],"align":["left"]},{"label":["MonthlyCharges"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["TotalCharges"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["Churn"],"name":[21],"type":["int"],"align":["right"]}],"data":[{"1":"7590-VHVEG","2":"Female","3":"0","4":"Yes","5":"No","6":"1","7":"No","8":"No phone service","9":"DSL","10":"No","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"29.85","20":"29.85","21":"0","_rn_":"1"},{"1":"5575-GNVDE","2":"Male","3":"0","4":"No","5":"No","6":"34","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"No","14":"No","15":"No","16":"One year","17":"No","18":"Mailed check","19":"56.95","20":"1889.50","21":"0","_rn_":"2"},{"1":"3668-QPYBK","2":"Male","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"DSL","10":"Yes","11":"Yes","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Mailed check","19":"53.85","20":"108.15","21":"1","_rn_":"3"},{"1":"7795-CFOCW","2":"Male","3":"0","4":"No","5":"No","6":"45","7":"No","8":"No phone service","9":"DSL","10":"Yes","11":"No","12":"Yes","13":"Yes","14":"No","15":"No","16":"One year","17":"No","18":"Bank transfer (automatic)","19":"42.30","20":"1840.75","21":"0","_rn_":"4"},{"1":"9237-HQITU","2":"Female","3":"0","4":"No","5":"No","6":"2","7":"Yes","8":"No","9":"Fiber optic","10":"No","11":"No","12":"No","13":"No","14":"No","15":"No","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"70.70","20":"151.65","21":"1","_rn_":"5"},{"1":"9305-CDSKC","2":"Female","3":"0","4":"No","5":"No","6":"8","7":"Yes","8":"Yes","9":"Fiber optic","10":"No","11":"No","12":"Yes","13":"No","14":"Yes","15":"Yes","16":"Month-to-month","17":"Yes","18":"Electronic check","19":"99.65","20":"820.50","21":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3383,7 +3384,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td><strong>tenure</strong></td>
-<td><strong>契約月数</strong></td>
+<td><strong>電話回線の契約月数</strong></td>
 </tr>
 <tr class="odd">
 <td>PhoneService</td>
@@ -3443,7 +3444,7 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td><strong>Churn</strong></td>
-<td><strong>解約の有無 (1＝解約済み, 0＝契約中) </strong></td>
+<td><strong>電話回線の解約の有無 (1＝解約済み, 0＝契約中) </strong></td>
 </tr>
 </tbody>
 </table>
@@ -3454,7 +3455,6 @@ div.tocify {
 <li><a href="https://www.kaggle.com/blastchar/telco-customer-churn">Telco Customer Churn | Kaggle</a></li>
 <li><a href="https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets">Cognos Analytics - IBM Business Analytics Community</a></li>
 </ul>
-<p>（生存時間解析を行うため，契約月数が0ヶ月の顧客を削除した）</p>
 <!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
 <!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
 <!-- Business Analytics - IBM Business Analytics Community -->
@@ -3463,8 +3463,10 @@ div.tocify {
 <div id="課題" class="section level3">
 <h3>課題</h3>
 <p>以下のモデルでCox比例ハザードモデルを推定し，各説明変数が解約までの時間に与える影響を考察せよ。 MonthlyCharges（月額料金）以外はダミー変数のため，基準となっている値に注意すること。</p>
-<p><strong>目的変数</strong>：tenure（契約月数），Churn（解約の有無）<br />
+<p><strong>目的変数</strong>：tenure（電話回線の契約月数），Churn（電話回線の解約の有無）<br />
 <strong>説明変数</strong>：gender, SeniorCitizen, Partner, Dependents, MonthlyCharges</p>
+<p></br> <strong>注意点</strong></p>
+<p>gender や Partner などの文字データの変数を，R のモデル式 (fourmula) の説明変数にそのまま指定すれば，R の内部で自動的にダミー変数化され，回帰係数が出力される。推定結果を解釈する際には，どの水準がダミー変数の基準になっているかを注意する必要がある。</p>
 </br>
 <details>
 <summary>Rコード（クリックで表示）</summary>
