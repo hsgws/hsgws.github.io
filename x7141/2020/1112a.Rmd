@@ -24,13 +24,86 @@ library(broom)
 library(knitr)
 
 # data
+<<<<<<< Updated upstream
 data_email <- read.csv("data/data_email.csv")
+=======
+seg <- read.table("data/seg.txt")
+data_bf <- read.csv("data/data_bf.csv")
+# data_wom <- read.csv("data/data_wom.csv")
+>>>>>>> Stashed changes
 ```
 
 ## 分析例①：クラスター分析
+### データ
+**Big Five（個人のパーソナリティ）に関するアンケートデータ** (data_bf.csv)
+
+```{r, echo=FALSE}
+head(data_bf)
+```
+
+**データ出典** ：[Open psychology data: Raw data from online personality tests](https://openpsychometrics.org/_rawdata/)
+
+- 上記サイトの "Answers to the Big Five Personality Test, constructed with items from the International Personality Item Pool." を利用
+- 本分析例のため元データの一部を修正・削除した
+
+| 変数名   | 内容                                             |
+| -------- | ------------------------------------------------ |
+| age      | 年齢                                             |
+| gender   | 性別（0＝男性，1＝女性）                         |
+| E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
+| N1 ~ N10 | 神経症系傾向（Neuroticism）に関する質問項目      |
+| A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
+| C1 ~ C10 | 勤勉性（Conscientiousness）に関する質問項目      |
+| O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
+
+⇒ [質問項目の詳細](1112b.html)
 
 
+</br>
 
+#### **補足説明**
+Big Five とは～～～
+
+以下の分析例では，因子分析を行った後～～～
+
+
+### Rコード（因子分析）
+```{r, results='hide'}
+# 因子分析
+fa <- factanal(data_bf[,3:52], factors = 5, scores = "regression")
+
+# 因子負荷量
+print(fa$loadings)
+```
+
+##### Rコードの出力
+```{r, echo=FALSE}
+print(fa$loadings)
+```
+
+
+### Rコード（クラスター分析）
+```{r, results='hide'}
+# クラスター分析（kmens法，クラスター数4）
+cluster <- kmeans(fa$scores, centers = 4)
+
+# 各クラスタの因子スコア (Big Five) 平均値
+print(cluster$centers)
+
+# 各クラスタの人数比
+n <- nrow(data_bf)  # 回答者数
+print(cluster$size/n)
+```
+
+
+##### Rコードの出力
+```{r, echo=FALSE}
+print(cluster$size/n)
+print(cluster$centers)
+```
+
+
+<<<<<<< Updated upstream
 ## 分析例②：潜在クラスモデル*
 
 潜在クラスモデル（有限混合モデル）は授業のレベルを超えるため，分析例の紹介のみにとどめる。
@@ -96,9 +169,39 @@ result2 <- flexmix(cbind(visit, 1 - visit) ~ recency + log(history) + segment + 
                    model = FLXMRglm(family = "binomial"))
 summary(result2)
 ```
+=======
+## 分析例②：潜在クラスモデル
+### データ
+
+
+### Rコード
+
+
+##### Rコードの出力
+
+
+### 推定結果
+>>>>>>> Stashed changes
 
 
 ## 課題
 クラスター分析 ⇒ NRIデータ？
 
 
+| 変数     | 定義                                                         |
+| -------- | ------------------------------------------------------------ |
+| SampleID | 回答者ID                                                     |
+| X1       | 友人や近所の人と映画についてよく話しをする                   |
+| X2       | 友人や近所の人に映画の情報を教える方だ                       |
+| X3       | 友人や近所の人から映画についての情報を求められる方だ         |
+| X4       | インターネット上で映画について投稿したり読んだりする方だ     |
+| X5       | インターネット上で映画の情報を教える方だ                     |
+| X6       | インターネット上で人から映画についての情報を求められる方だ   |
+| X7       | 満足，面白いと思った映画について友人などに伝える             |
+| X8       | 不満，面白くないと思った映画について友人などに伝える         |
+| X9       | 満足，面白いと思った映画についてインターネットの掲示板などに書き込む |
+| X10      | 不満，面白くないと思った映画についてインターネットの掲示板などに書き込む |
+| X11      | 不満，面白くないと思った映画について映画，配給元に電話する   |
+| X12      | 不満，面白くないと思った映画について映画，配給元にメールする |
+| age      | 年齢                                                         |
+| gender   | 性別（女性＝1，男性＝0）                                     |
