@@ -47,7 +47,7 @@ head(data_bf)
 | age      | 年齢                                             |
 | gender   | 性別（0＝男性，1＝女性）                         |
 | E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
-| N1 ~ N10 | 神経症系傾向（Neuroticism）に関する質問項目      |
+| N1 ~ N10 | 神経症的傾向（Neuroticism）に関する質問項目      |
 | A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
 | C1 ~ C10 | 勤勉性（Conscientiousness）に関する質問項目      |
 | O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
@@ -61,6 +61,10 @@ head(data_bf)
 Big Five とは～～～
 
 以下の分析例では，因子分析を行った後～～～
+
+
+参考
+- [ビッグファイブ (心理学) - Wikipedia](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))
 
 
 ### Rコード（因子分析）
