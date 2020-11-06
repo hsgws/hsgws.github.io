@@ -129,8 +129,27 @@ print(ratio_gender)
 
 
 ### 推定結果（クラスター分析）
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
+center.df <- data.frame(clstr$centers) %>% 
+  kable(format = "markdown",
+        digits = 4,
+        col.names = c("外向性", "神経症的傾向", "協調性", "勤勉性", "開放性"),
+        row.names = 1:4)
+center.df
+```
 
+
+```{r, echo=FALSE, warning=FALSE}
+prof.df <- data.frame(n = c(clstr$size, n),
+                      nr = c(clstr$size/n, 1),
+                      age = c(average_age, mean(data_bf$age)),
+                      gen = c(ratio_gender, mean(data_bf$gender)))
+rownames(prof.df) <- c(1:4, "all")
+prof.df <- prof.df %>% 
+  kable(format = "markdown",
+        digits = 4,
+        col.names = c("人数", "人数比", "平均年齢", "女性比率"))
+prof.df
 ```
 
 
