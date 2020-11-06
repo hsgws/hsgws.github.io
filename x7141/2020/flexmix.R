@@ -40,3 +40,5 @@ prop.table(xtabs(~zip_code+cluster, data = data), 2)
 prop.table(data$zip_code, data$cluster)
 
 
+
+

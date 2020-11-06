@@ -69,6 +69,8 @@ Big Five とは～～～
 
 ### Rコード（因子分析）
 ```{r, results='hide'}
+set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
+
 # 因子分析
 fa <- factanal(data_bf[,3:52], factors = 5, scores = "regression")
 
@@ -81,26 +83,56 @@ print(fa$loadings)
 print(fa$loadings)
 ```
 
+### 推定結果（因子分析）
+
 
 ### Rコード（クラスター分析）
 ```{r, results='hide'}
-# クラスター分析（kmens法，クラスター数4）
-cluster <- kmeans(fa$scores, centers = 4)
+# クラスター分析（kmens法，クラスター数＝4）
+clstr <- kmeans(fa$scores, centers = 4)
 
 # 各クラスタの因子スコア (Big Five) 平均値
-print(cluster$centers)
+print(clstr$centers)
 
 # 各クラスタの人数比
 n <- nrow(data_bf)  # 回答者数
-print(cluster$size/n)
+print(clstr$size/n)
+
+# 各クラスタのプロファイリング（平均年齢，女性比率）
+average_age <- tapply(data_bf$age, clstr$cluster, mean)
+ratio_gender <- tapply(data_bf$gender, clstr$cluster, mean)
+print(average_age)
+print(ratio_gender)
 ```
 
 
 ##### Rコードの出力
+各クラスタの因子スコア (Big Five) 平均値
 ```{r, echo=FALSE}
-print(cluster$size/n)
-print(cluster$centers)
+print(clstr$centers)
 ```
+
+人数比
+```{r, echo=FALSE}
+print(clstr$size/n)
+```
+
+平均年齢
+```{r, echo=FALSE}
+print(average_age)
+```
+
+女性比率
+```{r, echo=FALSE}
+print(ratio_gender)
+```
+
+
+### 推定結果（クラスター分析）
+```{r, echo=FALSE}
+
+```
+
 
 
 ## 分析例②：潜在クラスモデル
