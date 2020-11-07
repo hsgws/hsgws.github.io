@@ -24,8 +24,8 @@ library(broom)
 library(knitr)
 
 # data
-seg <- read.table("data/seg.txt")
-data_bf <- read.csv("data/data_bf.csv")
+seg <- read.csv("data/seg.csv")
+data_bf <- read.csv("data/data_bf1.csv")
 sec6_mixture <- read.csv("data/sec6_mixture.csv")
 # data_wom <- read.csv("data/data_wom.csv")
 ```
@@ -45,15 +45,16 @@ head(data_bf)
 
 | 変数名   | 内容                                             |
 | -------- | ------------------------------------------------ |
-| age      | 年齢                                             |
-| gender   | 性別（0＝男性，1＝女性）                         |
 | E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
 | N1 ~ N10 | 神経症的傾向（Neuroticism）に関する質問項目      |
 | A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
 | C1 ~ C10 | 勤勉性（Conscientiousness）に関する質問項目      |
 | O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
+| age      | 年齢                                             |
+| gender   | 性別（0＝男性，1＝女性）                         |
+| race     | 人種                                             |
 
-⇒ [質問項目の詳細](1112b.html)
+⇒ [質問項目（50問）と人種の詳細](1112b.html)
 
 
 </br>
@@ -73,7 +74,7 @@ Big Five とは～～～
 set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
 # 因子分析
-fa <- factanal(data_bf[,3:52], factors = 5, scores = "regression")
+fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression", sort = TRUE)
 
 # 因子負荷量
 print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
@@ -92,7 +93,7 @@ print(fa, cutoff = 0.3)
 # クラスター分析（kmens法，クラスター数＝4）
 clstr <- kmeans(fa$scores, centers = 4)
 
-# 各クラスタの因子スコア (Big Five) 平均値
+# 各クラスタの因子スコアの平均値
 print(clstr$centers)
 
 # 各クラスタの人数比
@@ -100,10 +101,9 @@ n <- nrow(data_bf)  # 回答者数
 print(clstr$size/n)
 
 # 各クラスタのプロファイリング（平均年齢，女性比率）
-average_age <- tapply(data_bf$age, clstr$cluster, mean)
-ratio_gender <- tapply(data_bf$gender, clstr$cluster, mean)
-print(average_age)
-print(ratio_gender)
+tapply(data_bf$age, clstr$cluster, mean)
+tapply(data_bf$gender, clstr$cluster, mean)
+prop.table(xtabs(~ clstr$cluster + data_bf$race), 1)
 ```
 
 
@@ -120,14 +120,20 @@ print(clstr$size/n)
 
 平均年齢
 ```{r, echo=FALSE}
-print(average_age)
+average_age <- tapply(data_bf$age, clstr$cluster, mean)
+average_age
 ```
 
 女性比率
 ```{r, echo=FALSE}
-print(ratio_gender)
+ratio_gender <- tapply(data_bf$gender, clstr$cluster, mean)
+ratio_gender
 ```
 
+人種比率
+```{r, echo=FALSE}
+prop.table(xtabs(~ clstr$cluster + data_bf$race), 1)
+```
 
 ### 推定結果（クラスター分析）
 ```{r, echo=FALSE, warning=FALSE}
@@ -283,10 +289,39 @@ summary(refit(best_model))
 | age    | 年齢                                                         |
 | gender | 性別（0＝男性，1＝女性）                                                        |
 | year   | 投資経験年数                                                 |
-| type   | 取引形態（1＝対面，2＝インターネット，3＝ 対面とインターネットの併用            |
+| type   | 取引形態（1＝対面，2＝インターネット，3＝ 対面とインターネットの併用）            |
 
 
 **データ出典** ：照井・佐藤（2013）「現代マーケティング・リサーチ」有斐閣，第7章（課題のため質問番号等を調整）
 
 
 ### 課題
+1. 投資行動に関するアンケートの質問項目 q01～q27 を用いて**因子数を4**とした因子分析を行い各因子を解釈せよ。
+2. 因子分析で得られた因子スコアを用いて**セグメント数を4**とした kmeans 法によるクラスター分析を実行せよ。  
+3. 各セグメントのプロファイリング（平均年齢，性別比率，取引形態の違い）を行い，各セグメントの特徴を理解せよ。  
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+</div></details>
+
+```{r}
+set.seed(1)
+
+# データ seg は "Import Dataset" で読込済みとする
+# 課題1（因子分析）
+fa <- factanal(seg[,1:27], factors = 4, scores = "regression", sort = TRUE)
+print(fa, cutoff = 0.3)
+
+# 課題2（クラスター分析）
+clstr <- kmeans(fa$scores, centers = 4)
+print(clstr$centers)  # 各クラスタの因子スコア平均値
+
+n <- nrow(data_bf)  # 回答者数
+print(clstr$size/n)
+
+# 課題3（プロファイリング）
+tapply(seg$age, clstr$cluster, mean)    # 平均年齢 
+tapply(seg$gender, clstr$cluster, mean) # 女性比率
+prop.table(xtabs(~clstr$cluster+seg$type), 1) # 投資形態比率
+```
