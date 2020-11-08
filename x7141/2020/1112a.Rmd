@@ -48,13 +48,13 @@ head(data_bf)
 | E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
 | N1 ~ N10 | 神経症的傾向（Neuroticism）に関する質問項目      |
 | A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
-| C1 ~ C10 | 勤勉性（Conscientiousness）に関する質問項目      |
+| C1 ~ C10 | 誠実性（Conscientiousness）に関する質問項目      |
 | O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
 | age      | 年齢                                             |
 | gender   | 性別（0＝男性，1＝女性）                         |
 | race     | 人種                                             |
 
-⇒ [質問項目（50問）と人種の詳細](1112b.html)
+⇒ [質問項目（50問）と人種の詳細](1112a_bigfive.html)
 
 
 </br>
