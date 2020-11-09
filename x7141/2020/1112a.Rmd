@@ -25,7 +25,7 @@ library(knitr)
 
 # data
 seg <- read.csv("data/seg.csv")
-data_bf <- read.csv("data/data_bf1.csv")
+data_bf <- read.csv("data/data_bf.csv")
 sec6_mixture <- read.csv("data/sec6_mixture.csv")
 # data_wom <- read.csv("data/data_wom.csv")
 ```
@@ -52,7 +52,7 @@ head(data_bf)
 | O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
 | age      | 年齢                                             |
 | gender   | 性別（0＝男性，1＝女性）                         |
-| race     | 人種                                             |
+| race     | 人種（13種類）                                    |
 
 ⇒ [質問項目（50問）と人種の詳細](1112a_bigfive.html)
 
@@ -151,7 +151,7 @@ prof.df <- data.frame(n = c(clstr$size, n),
                       nr = c(clstr$size/n, 1),
                       age = c(average_age, mean(data_bf$age)),
                       gen = c(ratio_gender, mean(data_bf$gender)))
-rownames(prof.df) <- c(1:4, "all")
+rownames(prof.df) <- c(1:4, "全体")
 prof.df <- prof.df %>% 
   kable(format = "markdown",
         digits = 4,
@@ -176,7 +176,7 @@ head(sec6_mixture)
 | ------- | ---------------------------------- |
 | pid     | 消費者ID                           |
 | A ~ I   | 商品A～Iの購買回数                 |
-| **ALL**     | **全商品の購買回数**                   |
+| **ALL**     | **観測期間における全商品（A～I）の購買回数**                   |
 | **Ap ~ Ip** | **商品A～Iの購買時の平均価格掛率**（Apは利用しない）     |
 | Ae ~ Ie | 商品A～Iの購買時の山積み陳列実施数 |
 | Aa ~ Ia | 商品A～Iの購買時のチラシ掲載日数   |

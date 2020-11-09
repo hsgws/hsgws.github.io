@@ -1,5 +1,5 @@
 ---
-title: "ビッグファイブの質問項目"
+title: ""
 output:
   html_document:
     toc: true
@@ -26,6 +26,9 @@ library(knitr)
 # data
 ```
 
+</br>
+
+- データ出典：[Open psychology data: Raw data from online personality tests](https://openpsychometrics.org/_rawdata/)
 - 質問文（日本語）は [Wikipedia のビッグファイブ（心理学）](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))を参考とした。
 
 ## 外向性（Extraversion）
@@ -101,3 +104,21 @@ library(knitr)
 | O8   | I use difficult words.                          | 私は難しい言葉を使う。                                     |
 | O9   | I spend time reflecting on things.              | 私は物事をじっくり考える。                                 |
 | O10  | I am full of ideas.                             | 私にはたくさんのアイディアがある。                         |
+
+
+## 人種
+| 番号 | 人種                                                     |
+| ---- | -------------------------------------------------------- |
+| 1    | Mixed Race                                               |
+| 2    | Arctic (Siberian, Eskimo)                                |
+| 3    | Caucasian (European)                                     |
+| 4    | Caucasian (Indian)                                       |
+| 5    | Caucasian (Middle East)                                  |
+| 6    | Caucasian (North African, Other)                         |
+| 7    | Indigenous Australian                                    |
+| 8    | Native American                                          |
+| 9    | North East Asian (Mongol, Tibetan, Korean Japanese, etc) |
+| 10   | Pacific (Polynesian, Micronesian, etc)                   |
+| 11   | South East Asian (Chinese, Thai, Malay, Filipino, etc)   |
+| 12   | West African, Bushmen, Ethiopian                         |
+| 13   | Other                                                    |

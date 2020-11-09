@@ -2980,7 +2980,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td>C1 ~ C10</td>
-<td>勤勉性（Conscientiousness）に関する質問項目</td>
+<td>誠実性（Conscientiousness）に関する質問項目</td>
 </tr>
 <tr class="odd">
 <td>O1 ~ O10</td>
@@ -2996,11 +2996,11 @@ div.tocify {
 </tr>
 <tr class="even">
 <td>race</td>
-<td>人種</td>
+<td>人種（13種類）</td>
 </tr>
 </tbody>
 </table>
-<p>⇒ <a href="1112b.html">質問項目（50問）と人種の詳細</a></p>
+<p>⇒ <a href="1112a_bigfive.html">質問項目（50問）と人種の詳細</a></p>
 <p></br></p>
 <div id="補足説明" class="section level4">
 <h4><strong>補足説明</strong></h4>
@@ -3017,7 +3017,7 @@ div.tocify {
 <span id="cb1-4"><a href="#cb1-4"></a>fa &lt;-<span class="st"> </span><span class="kw">factanal</span>(data_bf[,<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>], <span class="dt">factors =</span> <span class="dv">5</span>, <span class="dt">scores =</span> <span class="st">&quot;regression&quot;</span>, <span class="dt">sort =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb1-5"><a href="#cb1-5"></a></span>
 <span id="cb1-6"><a href="#cb1-6"></a><span class="co"># 因子負荷量</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">print</span>(fa, <span class="dt">cutoff =</span> <span class="fl">0.4</span>)  <span class="co"># 絶対値で0.3以上の負荷量のみ表示</span></span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">print</span>(fa, <span class="dt">cutoff =</span> <span class="fl">0.3</span>)  <span class="co"># 絶対値で0.3以上の負荷量のみ表示</span></span></code></pre></div>
 <div id="rコードの出力" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
@@ -3049,7 +3049,7 @@ div.tocify {
 ## N1           0.670                         
 ## N2          -0.494                         
 ## N3           0.597                         
-## N4                                         
+## N4          -0.319                         
 ## N5           0.539                         
 ## N6           0.741                         
 ## N7           0.723                         
@@ -3057,19 +3057,19 @@ div.tocify {
 ## N9           0.708                         
 ## N10          0.611                         
 ## A1                  -0.424                 
-## A2                   0.531                 
+## A2   0.347           0.531                 
 ## A3                  -0.401                 
 ## A4                   0.790                 
 ## A5                  -0.652                 
 ## A6                   0.595                 
-## A7                  -0.613                 
+## A7  -0.318          -0.613                 
 ## A8                   0.577                 
 ## A9                   0.707                 
-## A10                                        
+## A10  0.341           0.383                 
 ## C1                           0.599         
 ## C2                          -0.530         
 ## C3                           0.402         
-## C4                          -0.556         
+## C4           0.360          -0.556         
 ## C5                           0.623         
 ## C6                          -0.586         
 ## C7                           0.534         
@@ -3084,7 +3084,7 @@ div.tocify {
 ## O6                                  -0.506 
 ## O7                                   0.488 
 ## O8                                   0.535 
-## O9                                         
+## O9                                   0.335 
 ## O10                                  0.679 
 ## 
 ##                Factor1 Factor2 Factor3 Factor4 Factor5
@@ -3158,7 +3158,6 @@ div.tocify {
 <table>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="right">外向性</th>
 <th align="right">神経症的傾向</th>
 <th align="right">協調性</th>
@@ -3168,7 +3167,6 @@ div.tocify {
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
 <td align="right">-0.2892</td>
 <td align="right">-0.1447</td>
 <td align="right">-1.4763</td>
@@ -3176,7 +3174,6 @@ div.tocify {
 <td align="right">0.3859</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
 <td align="right">0.0630</td>
 <td align="right">0.8496</td>
 <td align="right">0.3600</td>
@@ -3184,7 +3181,6 @@ div.tocify {
 <td align="right">0.4967</td>
 </tr>
 <tr class="odd">
-<td align="left">3</td>
 <td align="right">0.3469</td>
 <td align="right">-0.8132</td>
 <td align="right">0.4320</td>
@@ -3192,7 +3188,6 @@ div.tocify {
 <td align="right">0.2227</td>
 </tr>
 <tr class="even">
-<td align="left">4</td>
 <td align="right">-0.3210</td>
 <td align="right">0.1492</td>
 <td align="right">0.0187</td>
@@ -3599,7 +3594,7 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td>type</td>
-<td>取引形態（1＝対面，2＝インターネット，3＝ 対面とインターネットの併用</td>
+<td>取引形態（1＝対面，2＝インターネット，3＝ 対面とインターネットの併用）</td>
 </tr>
 </tbody>
 </table>
