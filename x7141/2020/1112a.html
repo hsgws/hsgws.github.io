@@ -2555,78 +2555,6 @@ $(document).ready( function () {
 })
 </script>
 
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-      code.sourceCode > span { display: inline-block; line-height: 1.25; }
-  code.sourceCode > span { color: inherit; text-decoration: inherit; }
-  code.sourceCode > span:empty { height: 1.2em; }
-  .sourceCode { overflow: visible; }
-  code.sourceCode { white-space: pre; position: relative; }
-  div.sourceCode { margin: 1em 0; }
-  pre.sourceCode { margin: 0; }
-  @media screen {
-  div.sourceCode { overflow: auto; }
-  }
-  @media print {
-  code.sourceCode { white-space: pre-wrap; }
-  code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-  }
-  pre.numberSource code
-    { counter-reset: source-line 0; }
-  pre.numberSource code > span
-    { position: relative; left: -4em; counter-increment: source-line; }
-  pre.numberSource code > span > a:first-child::before
-    { content: counter(source-line);
-      position: relative; left: -1em; text-align: right; vertical-align: baseline;
-      border: none; display: inline-block;
-      -webkit-touch-callout: none; -webkit-user-select: none;
-      -khtml-user-select: none; -moz-user-select: none;
-      -ms-user-select: none; user-select: none;
-      padding: 0 4px; width: 4em;
-      color: #aaaaaa;
-    }
-  pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-  div.sourceCode
-    {   }
-  @media screen {
-  code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-  }
-  code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-  code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-  code span.at { color: #7d9029; } /* Attribute */
-  code span.bn { color: #40a070; } /* BaseN */
-  code span.bu { } /* BuiltIn */
-  code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-  code span.ch { color: #4070a0; } /* Char */
-  code span.cn { color: #880000; } /* Constant */
-  code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-  code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-  code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-  code span.dt { color: #902000; } /* DataType */
-  code span.dv { color: #40a070; } /* DecVal */
-  code span.er { color: #ff0000; font-weight: bold; } /* Error */
-  code span.ex { } /* Extension */
-  code span.fl { color: #40a070; } /* Float */
-  code span.fu { color: #06287e; } /* Function */
-  code span.im { } /* Import */
-  code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-  code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-  code span.op { color: #666666; } /* Operator */
-  code span.ot { color: #007020; } /* Other */
-  code span.pp { color: #bc7a00; } /* Preprocessor */
-  code span.sc { color: #4070a0; } /* SpecialChar */
-  code span.ss { color: #bb6688; } /* SpecialString */
-  code span.st { color: #4070a0; } /* String */
-  code span.va { color: #19177c; } /* Variable */
-  code span.vs { color: #4070a0; } /* VerbatimString */
-  code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    </style>
-
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -2750,7 +2678,24 @@ h6 {
 }
 </style>
 
-<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:15pt 0 5pt 0;}</style>
+<style type="text/css">h1{
+font-weight: bold;
+}
+h2{
+margin:40px 0 10pt 0;
+padding-bottom: .25em;
+border-bottom: 1.5px solid #ccc;
+
+}
+h3{
+margin:25pt 0 10pt 0;
+padding:0 .5em;
+border-left: 4px solid #ccc;
+}
+h4{
+margin:15pt 0 5pt 0;
+}
+</style>
 
 
 
@@ -3002,27 +2947,35 @@ div.tocify {
 </table>
 <p>⇒ <a href="1112a_bigfive.html">質問項目（50問）と人種の詳細</a></p>
 <p></br></p>
-<div id="補足説明" class="section level4">
-<h4><strong>補足説明</strong></h4>
-<p>Big Five とは～～～</p>
-<p>以下の分析例では，因子分析を行った後～～～</p>
+<p>Big Five とは心理学分野で開発された個人パーソナリティの分類するための5指標である。 分析例では，以下の手順でクラスター分析を行う。</p>
+<ol style="list-style-type: decimal">
+<li>計50問の質問項目の因子分析を行い，各回答者の5指標の因子スコアを計算する</li>
+<li>Kmeans法で因子スコアのクラスタリングを行い，回答者のセグメント分けを行う</li>
+<li>プロファイリングとして各セグメントの平均年齢，性別比，人種比を求める</li>
+</ol>
 <p>参考 - <a href="https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6)">ビッグファイブ (心理学) - Wikipedia</a></p>
-</div>
 </div>
 <div id="rコード因子分析" class="section level3">
 <h3>Rコード（因子分析）</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="co"># 因子分析</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>fa &lt;-<span class="st"> </span><span class="kw">factanal</span>(data_bf[,<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>], <span class="dt">factors =</span> <span class="dv">5</span>, <span class="dt">scores =</span> <span class="st">&quot;regression&quot;</span>, <span class="dt">sort =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>fa &lt;-<span class="st"> </span><span class="kw">factanal</span>(data_bf[,<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>], <span class="dt">factors =</span> <span class="dv">5</span>, <span class="dt">scores =</span> <span class="st">&quot;regression&quot;</span>)</span>
 <span id="cb1-5"><a href="#cb1-5"></a></span>
 <span id="cb1-6"><a href="#cb1-6"></a><span class="co"># 因子負荷量</span></span>
 <span id="cb1-7"><a href="#cb1-7"></a><span class="kw">print</span>(fa, <span class="dt">cutoff =</span> <span class="fl">0.3</span>)  <span class="co"># 絶対値で0.3以上の負荷量のみ表示</span></span></code></pre></div>
+<p><strong><code>factanal(data, factors, scores)</code></strong>：因子分析の実行</p>
+<ul>
+<li><strong><code>data</code></strong>：分析データの指定 ⇒ <code>data_bf[,1:50]</code> でデータ内の質問項目（1〜50列）のみ指定</li>
+<li><strong><code>factors</code></strong>：因子数</li>
+<li><strong><code>scores</code></strong>：因子スコアの計算方法</li>
+</ul>
+<p><code>factanal</code> の結果の変数（上記コードでは <code>fa</code>）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は <code>factanal</code> のヘルプを参照）。 結果変数からクラスター分析のために因子スコアを取り出したい場合は，<code>fa$socres</code> のように <code>$</code> の後ろに取り出したい変数名を指定すれば良い。</p>
 <div id="rコードの出力" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
 ## Call:
-## factanal(x = data_bf[, 1:50], factors = 5, scores = &quot;regression&quot;,     sort = TRUE)
+## factanal(x = data_bf[, 1:50], factors = 5, scores = &quot;regression&quot;)
 ## 
 ## Uniquenesses:
 ##    E1    E2    E3    E4    E5    E6    E7    E8    E9   E10    N1    N2    N3 
@@ -3103,7 +3056,7 @@ div.tocify {
 <div id="rコードクラスター分析" class="section level3">
 <h3>Rコード（クラスター分析）</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># クラスター分析（kmens法，クラスター数＝4）</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>clstr &lt;-<span class="st"> </span><span class="kw">kmeans</span>(fa<span class="op">$</span>scores, <span class="dt">centers =</span> <span class="dv">4</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>clstr &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="dt">x =</span> fa<span class="op">$</span>scores, <span class="dt">centers =</span> <span class="dv">4</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co"># 各クラスタの因子スコアの平均値</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="kw">print</span>(clstr<span class="op">$</span>centers)</span>
@@ -3116,6 +3069,23 @@ div.tocify {
 <span id="cb3-12"><a href="#cb3-12"></a><span class="kw">tapply</span>(data_bf<span class="op">$</span>age, clstr<span class="op">$</span>cluster, mean)</span>
 <span id="cb3-13"><a href="#cb3-13"></a><span class="kw">tapply</span>(data_bf<span class="op">$</span>gender, clstr<span class="op">$</span>cluster, mean)</span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="kw">prop.table</span>(<span class="kw">xtabs</span>(<span class="op">~</span><span class="st"> </span>clstr<span class="op">$</span>cluster <span class="op">+</span><span class="st"> </span>data_bf<span class="op">$</span>race), <span class="dv">1</span>)</span></code></pre></div>
+<p><strong><code>kmeans(x, centers)</code></strong>：Kmeans法によるクラスター分析</p>
+<ul>
+<li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
+<li><strong><code>centers</code></strong>：：クラスター数</li>
+</ul>
+<p><strong><code>tapply(x, index, fun)</code></strong>：</p>
+<ul>
+<li><strong><code>x</code></strong>：</li>
+<li><strong><code>index</code></strong>：</li>
+<li><strong><code>fun</code></strong>：</li>
+</ul>
+<p><strong><code>xtabs(~ index + x)</code></strong>：クロス集計表の作成</p>
+<ul>
+<li><strong><code>index</code></strong>：</li>
+<li><strong><code>x</code></strong>：</li>
+<li><strong><code>prop.table(xtabs(~ index + x), 1)</code></strong> で各行の比率を計算できる（行方向で合計すると1）</li>
+</ul>
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
 <p>各クラスタの因子スコア (Big Five) 平均値</p>
@@ -3158,6 +3128,7 @@ div.tocify {
 <table>
 <thead>
 <tr class="header">
+<th align="left"></th>
 <th align="right">外向性</th>
 <th align="right">神経症的傾向</th>
 <th align="right">協調性</th>
@@ -3167,6 +3138,7 @@ div.tocify {
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">1</td>
 <td align="right">-0.2892</td>
 <td align="right">-0.1447</td>
 <td align="right">-1.4763</td>
@@ -3174,6 +3146,7 @@ div.tocify {
 <td align="right">0.3859</td>
 </tr>
 <tr class="even">
+<td align="left">2</td>
 <td align="right">0.0630</td>
 <td align="right">0.8496</td>
 <td align="right">0.3600</td>
@@ -3181,6 +3154,7 @@ div.tocify {
 <td align="right">0.4967</td>
 </tr>
 <tr class="odd">
+<td align="left">3</td>
 <td align="right">0.3469</td>
 <td align="right">-0.8132</td>
 <td align="right">0.4320</td>
@@ -3188,6 +3162,7 @@ div.tocify {
 <td align="right">0.2227</td>
 </tr>
 <tr class="even">
+<td align="left">4</td>
 <td align="right">-0.3210</td>
 <td align="right">0.1492</td>
 <td align="right">0.0187</td>
@@ -3236,7 +3211,7 @@ div.tocify {
 <td align="right">0.6778</td>
 </tr>
 <tr class="odd">
-<td align="left">all</td>
+<td align="left">全体</td>
 <td align="right">19202</td>
 <td align="right">1.0000</td>
 <td align="right">26.2450</td>
@@ -3275,7 +3250,7 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td><strong>ALL</strong></td>
-<td><strong>全商品の購買回数</strong></td>
+<td><strong>観測期間における全商品（A～I）の購買回数</strong></td>
 </tr>
 <tr class="even">
 <td><strong>Ap ~ Ip</strong></td>
@@ -3305,6 +3280,12 @@ div.tocify {
 <span id="cb9-2"><a href="#cb9-2"></a><span class="st">                     </span><span class="kw">log</span>(Fp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Gp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Hp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Ip),</span>
 <span id="cb9-3"><a href="#cb9-3"></a>                  <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>, <span class="dt">data =</span> sec6_mixture)</span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="kw">summary</span>(result_glm)</span></code></pre></div>
+<p><strong><code>glm(formula, family, data)</code> ：ポアソン回帰の推定</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定</li>
+<li><strong><code>family</code></strong>：分析モデル（データが従う確率分布）の指定 ⇒ ポアソン回帰の場合は <code>&quot;poisson&quot;</code> を指定</li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
 <div id="rコードの出力-2" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
@@ -3344,7 +3325,7 @@ div.tocify {
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="kw">library</span>(flexmix)</span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="co"># セグメント数1～6の一括実行</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co"># セグメント数1～5の一括実行</span></span>
 <span id="cb11-5"><a href="#cb11-5"></a>result_mixture &lt;-<span class="st"> </span><span class="kw">initFlexmix</span>(ALL <span class="op">~</span><span class="st"> </span><span class="kw">log</span>(Bp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Cp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Dp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Ep) <span class="op">+</span></span>
 <span id="cb11-6"><a href="#cb11-6"></a><span class="st">                                </span><span class="kw">log</span>(Fp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Gp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Hp) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(Ip),</span>
 <span id="cb11-7"><a href="#cb11-7"></a>                              <span class="dt">k =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,</span>
@@ -3362,6 +3343,13 @@ div.tocify {
 <span id="cb11-19"><a href="#cb11-19"></a></span>
 <span id="cb11-20"><a href="#cb11-20"></a><span class="co"># 各セグメントの係数推定値</span></span>
 <span id="cb11-21"><a href="#cb11-21"></a><span class="kw">summary</span>(<span class="kw">refit</span>(best_model))</span></code></pre></div>
+<p><strong><code>initFlexmix(formula, k, model, data)</code> ：ポアソン回帰の推定</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定</li>
+<li><strong><code>k</code></strong>：推定するセグメント数 ⇒ <code>k = 1:5</code> でセグメント数1〜5のモデルを一括で実行可能</li>
+<li><strong><code>model</code></strong>：分析モデルの指定 ⇒ ポアソン回帰の場合は <code>FLXMRglm(family = &quot;poisson&quot;)</code></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
 <div id="rコードの出力-3" class="section level5">
 <h5>Rコードの出力</h5>
 <p>モデル比較</p>
@@ -3619,11 +3607,11 @@ div.tocify {
 <span id="cb15-2"><a href="#cb15-2"></a></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="co"># データ seg は &quot;Import Dataset&quot; で読込済みとする</span></span>
 <span id="cb15-4"><a href="#cb15-4"></a><span class="co"># 課題1（因子分析）</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a>fa &lt;-<span class="st"> </span><span class="kw">factanal</span>(seg[,<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], <span class="dt">factors =</span> <span class="dv">4</span>, <span class="dt">scores =</span> <span class="st">&quot;regression&quot;</span>, <span class="dt">sort =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-5"><a href="#cb15-5"></a>fa &lt;-<span class="st"> </span><span class="kw">factanal</span>(seg[,<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], <span class="dt">factors =</span> <span class="dv">4</span>, <span class="dt">scores =</span> <span class="st">&quot;regression&quot;</span>)</span>
 <span id="cb15-6"><a href="#cb15-6"></a><span class="kw">print</span>(fa, <span class="dt">cutoff =</span> <span class="fl">0.3</span>)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## factanal(x = seg[, 1:27], factors = 4, scores = &quot;regression&quot;,     sort = TRUE)
+## factanal(x = seg[, 1:27], factors = 4, scores = &quot;regression&quot;)
 ## 
 ## Uniquenesses:
 ##   q01   q02   q03   q04   q05   q06   q07   q08   q09   q10   q11   q12   q13 

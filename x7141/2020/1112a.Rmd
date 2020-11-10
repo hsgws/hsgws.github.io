@@ -59,11 +59,12 @@ head(data_bf)
 
 </br>
 
-#### **補足説明**
-Big Five とは～～～
+Big Five とは心理学分野で開発された個人パーソナリティの分類するための5指標である。
+分析例では，以下の手順でクラスター分析を行う。
 
-以下の分析例では，因子分析を行った後～～～
-
+1. 計50問の質問項目の因子分析を行い，各回答者の5指標の因子スコアを計算する
+2. Kmeans法で因子スコアのクラスタリングを行い，回答者のセグメント分けを行う
+3. プロファイリングとして各セグメントの平均年齢，性別比，人種比を求める
 
 参考
 - [ビッグファイブ (心理学) - Wikipedia](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))
@@ -74,11 +75,21 @@ Big Five とは～～～
 set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
 # 因子分析
-fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression", sort = TRUE)
+fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression")
 
 # 因子負荷量
 print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
 ```
+
+**`factanal(data, factors, scores)`**：因子分析の実行
+
+- **`data`**：分析データの指定 ⇒ `data_bf[,1:50]` でデータ内の質問項目（1〜50列）のみ指定
+- **`factors`**：因子数
+- **`scores`**：因子スコアの計算方法
+
+`factanal` の結果の変数（上記コードでは `fa`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`fa$socres` のように `$` の後ろに取り出したい変数名を指定すれば良い。
+
 
 ##### Rコードの出力
 ```{r, echo=FALSE}
@@ -91,7 +102,7 @@ print(fa, cutoff = 0.3)
 ### Rコード（クラスター分析）
 ```{r, results='hide'}
 # クラスター分析（kmens法，クラスター数＝4）
-clstr <- kmeans(fa$scores, centers = 4)
+clstr <- kmeans(x = fa$scores, centers = 4)
 
 # 各クラスタの因子スコアの平均値
 print(clstr$centers)
@@ -105,6 +116,23 @@ tapply(data_bf$age, clstr$cluster, mean)
 tapply(data_bf$gender, clstr$cluster, mean)
 prop.table(xtabs(~ clstr$cluster + data_bf$race), 1)
 ```
+
+**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：：クラスター数
+
+**`tapply(x, index, fun)`**：
+
+- **`x`**：
+- **`index`**：
+- **`fun`**：
+ 
+**`xtabs(~ index + x)`**：クロス集計表の作成
+
+- **`index`**：
+- **`x`**：
+- **`prop.table(xtabs(~ index + x), 1)`** で各行の比率を計算できる（行方向で合計すると1）
 
 
 ##### Rコードの出力
@@ -196,18 +224,25 @@ result_glm <- glm(ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) +
 summary(result_glm)
 ```
 
+**`glm(formula, family, data)` ：ポアソン回帰の推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`family`**：分析モデル（データが従う確率分布）の指定 ⇒ ポアソン回帰の場合は `"poisson"` を指定
+- **`data`**：分析データの指定  
+
+
 ##### Rコードの出力
 ```{r, echo=FALSE, warning=FALSE}
 summary(result_glm)
 ```
 
 
-#### 有限混合ポアソン回帰（潜在クラスモデル）
+#### 潜在クラスモデル（有限混合ポアソン回帰）
 ```{r, results='hide', message=FALSE}
 set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
 library(flexmix)
-# セグメント数1～6の一括実行
+# セグメント数1～5の一括実行
 result_mixture <- initFlexmix(ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) +
                                 log(Fp) + log(Gp) + log(Hp) + log(Ip),
                               k = 1:5,
@@ -226,6 +261,13 @@ summary(best_model)
 # 各セグメントの係数推定値
 summary(refit(best_model))
 ```
+
+**`initFlexmix(formula, k, model, data)` ：ポアソン回帰の推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`k`**：推定するセグメント数 ⇒ `k = 1:5` でセグメント数1〜5のモデルを一括で実行可能
+- **`model`**：分析モデルの指定 ⇒ ポアソン回帰の場合は `FLXMRglm(family = "poisson")`
+- **`data`**：分析データの指定  
 
 
 ##### Rコードの出力
@@ -310,7 +352,7 @@ set.seed(1)
 
 # データ seg は "Import Dataset" で読込済みとする
 # 課題1（因子分析）
-fa <- factanal(seg[,1:27], factors = 4, scores = "regression", sort = TRUE)
+fa <- factanal(seg[,1:27], factors = 4, scores = "regression")
 print(fa, cutoff = 0.3)
 
 # 課題2（クラスター分析）
