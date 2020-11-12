@@ -3155,6 +3155,8 @@ div.tocify {
 <ul>
 <li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
 <li><strong><code>centers</code></strong>：：クラスター数</li>
+<li>各セグメントの代表値（因子スコアの平均値）は <code>$centers</code> で取り出す（上記例では <code>clstr$centers</code>）</li>
+<li>各回答者の所属セグメントは <code>$cluster</code> で取り出す（上記例では <code>clstr$cluster</code>）</li>
 </ul>
 <p><strong><code>tapply(x, index, fun)</code></strong>：グループ毎に関数を適用</p>
 <ul>
