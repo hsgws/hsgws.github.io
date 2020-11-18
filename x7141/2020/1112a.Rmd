@@ -439,7 +439,7 @@ print(clstr$centers)  # 各セグメントの因子スコア平均値
 
 # 課題3（プロファイリング）
 print(clstr$size)	# 人数
-print(clstr$size/nrow(data_bf))			# 人数比
+print(clstr$size/nrow(seg))			# 人数比
 
 tapply(seg$age, clstr$cluster, mean)    # 平均年齢（セグメント別）
 mean(seg$age)   # 平均年齢（全体）
