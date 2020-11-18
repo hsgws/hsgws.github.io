@@ -41,9 +41,9 @@ head(data_csi)
 | CE1 | 入学前に期待していた大学の総合的な品質 |顧客期待（CE）|
 | CE2 | 入学前に期待していた学生生活の充実度   |顧客期待（CE）|
 | CE3 | 入学前に期待していた大学の信頼度       |顧客期待（CE）|
-| PQ1 | 現在感じている大学の総合的な品質       |知覚価値（PQ）|
-| PQ2 | 現在感じている学生生活の充実度         |知覚価値（PQ）|
-| PQ3 | 現在感じている大学の信頼度             |知覚価値（PQ）|
+| PQ1 | 現在感じている大学の総合的な品質       |知覚品質（PQ）|
+| PQ2 | 現在感じている学生生活の充実度         |知覚品質（PQ）|
+| PQ3 | 現在感じている大学の信頼度             |知覚品質（PQ）|
 | CS1 | 大学に対する総合的な満足度             |顧客満足（CS）|
 | CS2 | 入学前の期待と比べた現在の大学の評価   |顧客満足（CS）|
 | CS3 | 他大学と比較したときの評価             |顧客満足（CS）|
@@ -51,7 +51,7 @@ head(data_csi)
 
 **データ出典**：法政大学の学部授業でアンケートを実施（2018年度）
 
-- 顧客期待（CE：Consumer Expectation），知覚価値（PQ：Perceptual Quality），顧客満足（CS：Consumer Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度（1＝低い ～ 7＝高い）でアンケート収集
+- 顧客期待（CE：Consumer Expectation），知覚品質（PQ：Perceptual Quality），顧客満足（CS：Consumer Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度（1＝低い ～ 7＝高い）でアンケート収集
 - 回答者数は41人
 
 
@@ -86,8 +86,19 @@ head(data_csi)
 ### Rコード
 ```{r, results='hide', message=FALSE}
 # データ data_csi は "Import Dataset" で読込済みとする
-# lavaan パッケージの読込み
-library(lavaan)
+
+# 信頼性係数（クロンバックのアルファ）の確認
+library(psych)  # psych パッケージの読込み
+CE_alpha <- alpha(data_csi[,1:3])
+PQ_alpha <- alpha(data_csi[,4:6])
+CS_alpha <- alpha(data_csi[,7:9])
+
+summary(CE_alpha)
+summary(PQ_alpha)
+summary(CS_alpha)
+
+# 共分散構造分析の実行
+library(lavaan) # lavaan パッケージの読込み
 
 # モデル（パス図）定義
 model <- "
@@ -103,11 +114,16 @@ model <- "
 # パラメータ推定
 result <- sem(model, data = data_csi)
 
-# 推定結果の表示
-summary(result, fit.measures = TRUE, standardized = TRUE)
-## fit.measures = TRUE で各種モデル比較指標を表示
-## standardized = TRUE で標準解を表示
+# 推定結果
+summary(result, standardized = TRUE)
+
+# モデル比較指標
+fitMeasures(result)
 ```
+
+**`alpha(data)`：クロンバックアルファの計算**
+- **`model`**：クロンバックアルファを計算したいデータの指定
+
 
 **`sem(model, data)`：共分散構造分析の実行**
 
@@ -134,8 +150,21 @@ summary(result, fit.measures = TRUE, standardized = TRUE)
 
 
 #### Rコードの出力
+##### 信頼性係数（クロンバックのアルファ）
+```{r, echo=FALSE, results='hold'}
+summary(CE_alpha)
+summary(PQ_alpha)
+summary(CS_alpha)
+```
+
+##### 推定結果
 ```{r, echo=FALSE}
-smry <- summary(result, fit.measures = TRUE, standardized = TRUE)
+smry <- summary(result, standardized = TRUE)
+```
+
+##### モデル比較指標
+```{r, echo=FALSE}
+fitMeasures(result)
 ```
 
 
@@ -224,7 +253,9 @@ head(data_wom)
 
 
 ### 課題
-以下のパス図で共分散構造分析を実行し，結果を考察せよ。
+以下のパス図で共分散構造分析を実行し，リアルとインターネットでのオピニオンリーダー度（OPLとeOPL）は，リアルとインターネットでのクチコミ発信（WOMとeWOM）にどのような影響を与えているか考察せよ。
+
+天井・床効果とクロンバックアルファの確認は省略してよい。
 
 
 #### モデル（パス図）
@@ -268,7 +299,10 @@ model <- "
 fit <- sem(model, data = data_wom)
 
 # 推定結果の表示
-summary(fit, fit.measures = TRUE, standardized = TRUE) 
+summary(fit, standardized = TRUE) 
+
+# モデル比較指標
+fitMeasures(fit)
 
 # semPlot パッケージによる作図プログラム
 library(semPlot)
