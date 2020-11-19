@@ -146,6 +146,8 @@ prop.table(table(data_bf$race))  # 人種比率（全体）
 
 - **`x`**：クラスター分析を実行するデータの指定
 - **`centers`**：：クラスター数
+- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `clstr$centers`）
+- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `clstr$cluster`）
 
 **`tapply(x, index, fun)`**：グループ毎に関数を適用
 
@@ -437,7 +439,7 @@ print(clstr$centers)  # 各セグメントの因子スコア平均値
 
 # 課題3（プロファイリング）
 print(clstr$size)	# 人数
-print(clstr$size/nrow(data_bf))			# 人数比
+print(clstr$size/nrow(seg))			# 人数比
 
 tapply(seg$age, clstr$cluster, mean)    # 平均年齢（セグメント別）
 mean(seg$age)   # 平均年齢（全体）

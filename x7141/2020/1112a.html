@@ -3155,6 +3155,8 @@ div.tocify {
 <ul>
 <li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
 <li><strong><code>centers</code></strong>：：クラスター数</li>
+<li>各セグメントの代表値（因子スコアの平均値）は <code>$centers</code> で取り出す（上記例では <code>clstr$centers</code>）</li>
+<li>各回答者の所属セグメントは <code>$cluster</code> で取り出す（上記例では <code>clstr$cluster</code>）</li>
 </ul>
 <p><strong><code>tapply(x, index, fun)</code></strong>：グループ毎に関数を適用</p>
 <ul>
@@ -3827,7 +3829,7 @@ div.tocify {
 <span id="cb16-10"><a href="#cb16-10"></a></span>
 <span id="cb16-11"><a href="#cb16-11"></a><span class="co"># 課題3（プロファイリング）</span></span>
 <span id="cb16-12"><a href="#cb16-12"></a><span class="kw">print</span>(clstr<span class="op">$</span>size)   <span class="co"># 人数</span></span>
-<span id="cb16-13"><a href="#cb16-13"></a><span class="kw">print</span>(clstr<span class="op">$</span>size<span class="op">/</span><span class="kw">nrow</span>(data_bf))         <span class="co"># 人数比</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="kw">print</span>(clstr<span class="op">$</span>size<span class="op">/</span><span class="kw">nrow</span>(seg))         <span class="co"># 人数比</span></span>
 <span id="cb16-14"><a href="#cb16-14"></a></span>
 <span id="cb16-15"><a href="#cb16-15"></a><span class="kw">tapply</span>(seg<span class="op">$</span>age, clstr<span class="op">$</span>cluster, mean)    <span class="co"># 平均年齢（セグメント別）</span></span>
 <span id="cb16-16"><a href="#cb16-16"></a><span class="kw">mean</span>(seg<span class="op">$</span>age)   <span class="co"># 平均年齢（全体）</span></span>
