@@ -1,0 +1,49 @@
+---
+title: "状態空間モデル（12/10）"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+```
+
+## 1. 分析例
+### データ
+
+
+
+### Rコード
+```{r, results='hide', message=FALSE}
+# データ  は "Import Dataset" で読込済みとする
+
+
+```
+
+
+#### Rコードの出力
+
+
+
+### 推定結果
+
+<details><summary>Rコード（クリックで表示）</summary><div>
+</div></details>
