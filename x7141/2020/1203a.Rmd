@@ -24,26 +24,153 @@ library(broom)
 library(knitr)
 
 # data
+load("yxdata.RData")
+sec8_data1 <- read.csv("data/sec8_data1.csv")
+sec8_data2 <- read.csv("data/sec8_data2.csv")
 ```
 
 ## 1. 分析例
 ### データ
 
+**醤油のID付POSデータ**（sec8_data1.csv）
+```{r, echo=FALSE}
+head(sec8_data1)
+```
+
+| 変数名       | 内容                          |
+| ------------ | ----------------------------- |
+| PNL          | 消費者パネルID                |
+| Date         | 購買日                        |
+| Product1 ~ 3 | 購買の有無（1＝購買ブランド） |
+| Choice       | 購買ブランド                  |
+| Price1 ~ 3   | 価格掛率                      |
+| Disp1 ~ 3    | 山積み陳列実施の有無          |
+| Ad1 ~ 3      | チラシ掲載の有無              |
+
+
+**消費者属性データ**（sec8_data2.csv）
+```{r, echo=FALSE}
+head(sec8_data2)
+```
+
+| 変数名 | 内容           |
+| ------ | -------------- |
+| PNL    | 消費者パネルID |
+| age    | 年齢           |
+| family | 家族人数       |
+
+
+
+**データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（8章）
+
+- sec8_data1.csv は1家計（パネル）の複数購買機会でのブランド選択が記録されたID付POSデータ（または消費者パネルデータとも呼ばれる）
+- sec8_data1.csv と sec8_data2.csv の消費者パネルID（PNL）は対応している
+
+
+### モデル
+
 
 
 ### Rコード
-```{r, results='hide', message=FALSE}
-# データ  は "Import Dataset" で読込済みとする
+```{r, results='hide', message=FALSE, fig.keep='none'}
+# データ sec8_data1 と sec8_data2 は "Import Dataset" で読込済みとする
+library(bayesm)
 
+id <- sec8_data2$PNL  # 消費者パネルIDの抽出
+H <- 103  # 消費者パネル数
+J <- 3    # ブランド数
+K <- 3    # マーケティング変数の数 (Prie, Disp Ad)
 
+# 加工済みの yxdata (list 形式の消費者パネル別選択データ) の読み込み
+load("yxdata.RData")
+
+# 属性データの標準化（平均のみ）
+zdata <- scale(sec8_data2[,c("age", "family")], scale = FALSE)
+
+# rhierMnlRwMixture コマンドでの分析のためにデータを list 形式に変換
+dataset <- list(lgtdata = yxdata, Z = zdata, p = J)
+
+## lgtdata : list 形式の消費者行動データ
+## Z : 消費者の属性データ
+## p : ブランド数
+
+# MCMCの設定
+set.seed(1)  # 乱数の初期値
+mcmc <- list(R = 3000) # MCMCのサンプル数
+prior <- list(ncomp = 1)  # 事前分布の設定 ⇒ 初期設定の散漫な事前分布
+
+# MCMCの実行
+out <- rhierMnlRwMixture(Data = dataset, Prior = prior, Mcmc = mcmc)
+
+# パネル毎の係数 beta の推定値プロット
+plot(out$betadraw)
+
+# 係数 Delta の推定値と出力整形
+summary_Delta <- summary(out$Deltadraw, QUANTILES = FALSE)
+Delta_mean <- matrix(summary_Delta[,1], nrow =5, byrow = TRUE)
+Delta_sd <- matrix(summary_Delta[,2], nrow =5, byrow = TRUE)
+
+rownames(Delta_mean) <- c("Brand.1", "Brand.2", "Price", "Disp", "Ad")
+colnames(Delta_mean) <- c("age", "family")
+rownames(Delta_sd) <- c("Brand.1", "Brand.2", "Price", "Disp", "Ad")
+colnames(Delta_sd) <- c("age", "family")
+
+print(Delta_mean)
+print(Delta_sd)
 ```
 
 
-#### Rコードの出力
+<br />
+<details><summary>yxdata（list 形式の消費者パネル別選択データ）の作成プログラム（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# 価格列の対数変換
+sec8_data1[,7:9] <- log(sec8_data1[,7:9])
 
+# 消費者パネルデータ (sec8_data1) を消費者パネル毎の list 形式データに変換
+yxdata <- list()
+for (h in 1:H) {
+  data_h <- subset(sec8_data1, PNL == id[h])
+  ydata_h <- data_h$Choice
+  xdata_h <- createX(p = J, na = K, nd = NULL, Xa = data_h[,7:15], Xd = NULL, base = 3)
+  yxdata[[h]] <- list(id = id[h], y = ydata_h, X = xdata_h)
+}
+```
+</div></details>
+<br />
+
+#### Rコードの出力
+##### パネル毎の係数 $\beta_h$ の推定値プロット
+```{r, echo=FALSE}
+plot(out$betadraw)
+```
+
+##### 係数 $\Delta$ の推定値
+上：Delta_mean（事後平均），下：Delta_sd（事後標準偏差）
+```{r, echo=FALSE}
+print(Delta_mean)
+print(Delta_sd)
+```
 
 
 ### 推定結果
+##### パネル毎の係数 $\beta_h$ の推定値プロット
 
-<details><summary>Rコード（クリックで表示）</summary><div>
-</div></details>
+
+
+##### 係数 $\Delta$ の推定値
+|         | age           | family        |
+| ------- | ------------- | ------------- |
+| Brand.1 | 0.024 \ (0.042) | 0.037 \ (0.045) |
+| Brand.2 | 0.081 \ (0.071) | **0.046** \ (0.024) |
+| Price   | -0.035 \ (0.043) | -0.390 \ (0.271) |
+| Disp    | **-0.525** \ (0.291) | -0.219 \ (0.457) |
+| Ad      | 0.176  \ (0.145) | -0.179 \ (0.262) |
+
+
+- 括弧の付いていない数値は係数の事後平均
+- 括弧内の数値は係数の事後標準偏差
+- 太字は90％有意水準で有意
+
+
+
+
