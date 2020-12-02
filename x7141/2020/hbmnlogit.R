@@ -53,3 +53,11 @@ Delta_mean / Delta_sd
 
 save(yxdata, file = "yxdata.RData")
 
+
+# beta <- out$betadraw
+# apply(out$betadraw, 2, mean)
+# 
+# tapply(out$betadraw, 2, mean)
+# apply(beta, 1, rowMeans)
+
+apply(out$betadraw[,,(0.1*3000):3000], 1, rowMeans)
