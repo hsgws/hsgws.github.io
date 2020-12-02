@@ -8,7 +8,7 @@ n <- length(id)       # 消費者パネル数
 j <- 3    # 商品の個数
 k <- 3    # マーケティング変数の個数 (Price, Disp, Ad)
 
-sec8_data1[,7:9] <- log(sec8_data1[,7:9])
+# sec8_data1[,7:9] <- log(sec8_data1[,7:9])
 yxdata <- list() 
 for (i in 1:n) {
   data_i <- subset(sec8_data1, PNL == id[i])
@@ -44,7 +44,7 @@ colnames(Delta_sd) <- c("age", "family")
 Delta_mean
 Delta_sd
 
-# Delta_mean / Delta_sd
+Delta_mean / Delta_sd
 
 # data_hblogit <- dataset
 # save(data_hblogit, file = "data_hblogit.RData")
