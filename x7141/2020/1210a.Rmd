@@ -24,26 +24,168 @@ library(broom)
 library(knitr)
 
 # data
+data_tea1 <- read.csv("data/data_tea1.csv")
+data_tea2 <- read.csv("data/data_tea2.csv")
+sec8_DLM <- read.csv("data/sec8_DLM.csv")
 ```
 
-## 1. 分析例
+## 1. 分析例①
 ### データ
 
+**オフィス街のコンビニにおける緑茶ペットボトルの日次販売本数データ**
+
+- data_tea1.csv：パラメータ推定用データ（2015/04/01 ~ 2015/06/23，84日間）
+- data_tea2.csv：予測力検証用データ（2015/06/24 ~ 2015/06/30，7日間）
+
+```{r, echo=FALSE}
+head(data_tea1)
+```
+
+| 変数名  | 内容                                        |
+| ------- | ------------------------------------------- |
+| date    | 日付                                        |
+| num     | 販売本数　$(y_t)$                           |
+| day     | 曜日（1＝月曜，2＝火曜，…，7＝日曜）        |
+| holiday | 祝日フラグ（1＝祝日，0＝それ以外）　$(x_t)$ |
+
+**データ出典**：日経NEED POSデータ
 
 
-### Rコード
-```{r, results='hide', message=FALSE}
+### モデル
+
+
+### Rコード（推定）
+```{r, results='hide', message=FALSE, fig.keep='none'}
 # データ  は "Import Dataset" で読込済みとする
+library(KFAS)
 
+# パラメータ推定
+model <- SSModel(num ~ SSMtrend(1, Q = NA) + 
+                   SSMseasonal(7, sea.type = "dummy", Q = NA) +
+                   SSMregression(~ holiday, Q = 0),
+                 H = NA, data = data_tea1)
+fit <- fitSSM(model, inits = rep(0,3))
+out <- KFS(fit$model)
 
+## 推定結果の図示
+plot.df <- cbind(data_tea1$num, out$alphahat[,1:3])
+colnames(plot.df) <- c("sales", "holiday", "trend", "day effect")
+plot(plot.df, main = "Estimaion")
 ```
 
 
 #### Rコードの出力
+##### 推定結果の図示
+```{r, echo=FALSE}
+plot(plot.df, main = "Estimaion")
+```
 
 
 
-### 推定結果
+### Rコード（予測）
+```{r, results='hide', message=FALSE, fig.keep='none'}
+# 1週先予測
+newdata <- SSModel(rep(NA, 7) ~ SSMtrend(1, Q = NA) +
+                     SSMseasonal(7, sea.type = "dummy", Q = NA) +
+                     SSMregression(~ holiday, Q = 0),
+                   H = NA, data = data_tea2)
+newdata$Q <- fit$model$Q
+newdata$H <- fit$model$H
+pred <- predict(fit$model, newdata = newdata, interval = "prediction", level = 0.95)
 
-<details><summary>Rコード（クリックで表示）</summary><div>
-</div></details>
+## 予測値
+pred.df <- cbind(data_tea2$num, pred)
+pred.df
+
+## 予測結果の図示
+plot(pred.df, plot.type = "single",
+     col = c("black","red","red","red"),
+     lty = c("solid","solid","dashed","dashed"),
+     main = "1 week prediction")
+
+## 予測力指標
+library(Metrics)
+MAPE <- mape(data_tea2$num, pred[, "fit"])
+MAE <- mae(data_tea2$num, pred[, "fit"])
+print(MAPE)
+print(MAE)
+```
+
+
+#### Rコードの出力
+##### 予測値
+```{r, echo=FALSE}
+pred.df
+```
+
+- `data_tea2$num`：実績値（実際の販売本数）
+- `pred.fit`：予測値
+- `pred.lwr`：予測値の下側95％点
+- `pred.upr`：予測値の上側95％点  
+<br />
+
+##### 予測結果の図示
+```{r, echo=FALSE}
+plot(pred.df, plot.type = "single",
+     col = c("black","red","red","red"),
+     lty = c("solid","solid","dashed","dashed"),
+     main = "1 week prediction")
+```
+
+##### 予測力指標
+上：MAPE，下：MAE
+```{r, echo=FALSE, results='hold'}
+print(MAPE)
+print(MAE)
+```
+
+
+
+## 2. 分析例②
+### データ
+
+**醤油の日次販売個数データ**（sec8_DLM.csv）
+```{r, echo=FALSE}
+head(sec8_DLM)
+```
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| Date            | 日付（2000/01/02 ~ 2003/09/05，1314日間）                    |
+| LogPI_A         | 商品Aの点数PI（来店客1000人当たり販売点数）の対数値　$(y_t)$ |
+| LogPriceIndex_A | 商品Aの価格掛率の対数値　$(x_{1t})$                          |
+| LogPriceIndex_B | 商品Bの価格掛率の対数値　$(x_{2t})$                          |
+| Display_A       | 商品Aの山積み陳列実施の有無　$(x_{3t})$                      |
+| Display_B       | 商品Bの山積み陳列実施の有無　$(x_{4t})$                      |
+
+**データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（8章）
+
+
+### モデル
+
+
+### Rコード
+```{r, results='hide', message=FALSE, fig.keep='none'}
+# データ  は "Import Dataset" で読込済みとする
+library(KFAS)
+
+# パラメータ推定
+model <- SSModel(LogPI_A ~ SSMtrend(1, Q = NA) +
+                   SSMregression(~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B,
+                                 Q = diag(NA, 4)),
+                 H = NA, data = sec8_DLM)
+fit <- fitSSM(model, inits = rep(0,6))
+out <- KFS(fit$model)
+
+## 推定結果の図示
+plot(out$alphahat)
+```
+
+
+#### Rコードの出力
+##### 推定結果の図示
+```{r, echo=FALSE, results='hold'}
+plot(out$alphahat)
+```
+
+
