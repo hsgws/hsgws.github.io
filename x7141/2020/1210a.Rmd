@@ -51,7 +51,23 @@ head(data_tea1)
 **データ出典**：日経NEED POSデータ
 
 
+```{r, echo=FALSE}
+plot.ts(data_tea1$num, ylab = "num", main = "Time series plot")
+```
+
+
 ### モデル
+
+#### 観測モデル
+$$
+y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2)
+$$
+
+#### システムモデル
+$$
+\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \tau^2_\alpha) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \tau^2_s)
+$$
 
 
 ### Rコード（推定）
@@ -98,10 +114,13 @@ pred.df <- cbind(data_tea2$num, pred)
 pred.df
 
 ## 予測結果の図示
+cols = c("black","red","red","red")
+ltys = c("solid","solid","dashed","dashed")
 plot(pred.df, plot.type = "single",
-     col = c("black","red","red","red"),
-     lty = c("solid","solid","dashed","dashed"),
+     col = cols, lty = ltys,
      main = "1 week prediction")
+legend("bottomleft", legend = c("実績値", "予測値", "95%区間"), 
+       col = cols[1:3], lty = ltys[1:3])
 
 ## 予測力指標
 library(Metrics)
@@ -127,9 +146,10 @@ pred.df
 ##### 予測結果の図示
 ```{r, echo=FALSE}
 plot(pred.df, plot.type = "single",
-     col = c("black","red","red","red"),
-     lty = c("solid","solid","dashed","dashed"),
+     col = cols, lty = ltys,
      main = "1 week prediction")
+legend("bottomleft", legend = c("実績値", "予測値", "95%区間"), 
+       col = cols[1:3], lty = ltys[1:3])
 ```
 
 ##### 予測力指標
@@ -161,8 +181,22 @@ head(sec8_DLM)
 **データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（8章）
 
 
-### モデル
+```{r, echo=FALSE}
+plot.ts(sec8_DLM$LogPI_A, ylab = "LogPI_A", main = "Time series plot")
+```
 
+
+### モデル
+#### 観測モデル
+$$
+y_t = \alpha_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2)
+$$
+
+#### システムモデル
+$$
+\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \tau^2_\alpha) \\
+\beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0, \tau^2_j)
+$$
 
 ### Rコード
 ```{r, results='hide', message=FALSE, fig.keep='none'}
@@ -178,14 +212,16 @@ fit <- fitSSM(model, inits = rep(0,6))
 out <- KFS(fit$model)
 
 ## 推定結果の図示
-plot(out$alphahat)
+plot.df <- cbind(sec8_DLM$LogPI_A, out$alphahat)
+colnames(plot.df) <- c("LogPI_A", "Price_A", "Price_B", "Display_A", "Display_B", "trend")
+plot(plot.df, main = "Estimaion")
 ```
 
 
 #### Rコードの出力
 ##### 推定結果の図示
 ```{r, echo=FALSE, results='hold'}
-plot(out$alphahat)
+plot(plot.df, main = "Estimaion")
 ```
 
 

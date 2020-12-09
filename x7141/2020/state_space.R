@@ -4,6 +4,9 @@ library(KFAS)
 data_tea1 <- read.csv("data/data_tea1.csv")
 data_tea2 <- read.csv("data/data_tea2.csv")
 
+
+# df <- ts(data_tea1$num, start = c(2015,4,1), frequency = 365)
+
 # estimation
 model <- SSModel(num ~ SSMtrend(1, Q = NA) + 
                    SSMseasonal(7, sea.type = "dummy", Q = NA) +
@@ -45,3 +48,11 @@ model <- SSModel(LogPI_A ~ SSMtrend(1, Q = NA) +
                  H = NA, data = sec8_DLM)
 fit <- fitSSM(model, inits = rep(0,6))
 out <- KFS(fit$model)
+
+## 推定結果の図示
+plot.df <- cbind(sec8_DLM$LogPI_A, out$alphahat)
+colnames(plot.df) <- c("LogPI_A", "Price_A", "Price_B", "Display_A", "Display_B", "trend")
+plot(plot.df, nc = 1, main = "Estimaion")
+
+
+summary(lm(LogPI_A ~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, data = sec8_DLM))
