@@ -89,6 +89,27 @@ colnames(plot.df) <- c("sales", "holiday", "trend", "day effect")
 plot(plot.df, main = "Estimaion")
 ```
 
+**`SSModel(formula, H, data)`：モデルの記述・作成**
+
+- **`formula`**：目的変数・説明変数の指定
+	- `SSMtrend(1, Q = NA)`：1次のトレンド項
+	- `SSMseasonal(7, sea.type = "dummy", Q = NA)`：曜日周期項 ⇒ 月次データなら7を12に変更
+	- `SSMregression(~ holiday, Q = 0)`：祝日フラグ
+	- `Q = NA` ならシステムモデルの分散を推定（＝時変の係数），`Q = 0` なら分散を0に固定（＝時間不変の係数）
+- **`H`**：観測モデルの分散
+- **`data`**：観測データの指定
+
+
+**`fitSSM(model, inits)`：パラメータの推定**
+
+- **`model`**：`SSModel` で作成したモデルの指定
+- **`inits`**：推定パラメータの初期値 ⇒ `SSModel` 内の `NA` の数だけ指定（`rep(0,3)` は0を3つ並べる関数）
+
+
+**`KFS(model)`：カルマンフィルタの実行**
+- **`model`**：`fitSSM` で推定したモデルの指定
+
+
 
 #### Rコードの出力
 ##### 推定結果の図示
@@ -100,13 +121,15 @@ plot(plot.df, main = "Estimaion")
 
 ### Rコード（予測）
 ```{r, results='hide', message=FALSE, fig.keep='none'}
-# 1週先予測
+# 予測用データの作成
 newdata <- SSModel(rep(NA, 7) ~ SSMtrend(1, Q = NA) +
                      SSMseasonal(7, sea.type = "dummy", Q = NA) +
                      SSMregression(~ holiday, Q = 0),
                    H = NA, data = data_tea2)
-newdata$Q <- fit$model$Q
-newdata$H <- fit$model$H
+newdata$Q <- fit$model$Q	# fitSSM で推定したシステムモデルの分散の代入
+newdata$H <- fit$model$H	# fitSSM で推定した観測モデルの分散の代入
+
+# 1週先予測の実行
 pred <- predict(fit$model, newdata = newdata, interval = "prediction", level = 0.95)
 
 ## 予測値
@@ -129,6 +152,17 @@ MAE <- mae(data_tea2$num, pred[, "fit"])
 print(MAPE)
 print(MAE)
 ```
+
+
+**`predict(model, newdata, interval, level)`：予測の実行**
+
+- **`model`**：`fitSSM` で推定したモデル
+- **`newdata`**：予測用のデータ
+	- 予測を行う際にも，予測用の説明変数（今回は祝日フラグ）が入った `SSModel` を作成する必要がある
+	- 目的変数（販売本数）は，予測期間分（7日間）の欠損値 `rep(NA, 7)` を指定
+	- 分散パラメータは `fitSSM` で推定したものを代入
+- **`interval`**：予測の場合は `prediction` を指定
+- **`level`**：予測（信頼）区間の指定
 
 
 #### Rコードの出力
@@ -216,6 +250,9 @@ plot.df <- cbind(sec8_DLM$LogPI_A, out$alphahat)
 colnames(plot.df) <- c("LogPI_A", "Price_A", "Price_B", "Display_A", "Display_B", "trend")
 plot(plot.df, main = "Estimaion")
 ```
+
+マーケティング変数の係数を時変にしているので，分析①とな異なり，`SSMregression` で `Q = diag(NA, 4)`  として分散を推定するよう指定していることに注意。
+`diag(NA, 4)` は，対角成分が全て欠損値 `NA` でそれ以外は0の対角行列。
 
 
 #### Rコードの出力
