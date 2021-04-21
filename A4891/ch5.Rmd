@@ -1,0 +1,50 @@
+---
+title: "第5章 市場反応分析 (I)"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ch5_data <- read.table("data/ch5_data.txt", header = T, sep = "\t")
+yogurt <- read.table("data/yogurt.txt", header = T, sep = "\t")
+```
+
+
+## データ
+```{r, echo=FALSE}
+head(ch5_data)
+```
+
+## 3.2 散布図
+```{r}
+plot(x = ch5_data$price, y = ch5_data$sales)
+```
+
+## 3.3 相関係数
+```{r}
+cor.test(x = ch5_data$price, y = ch5_data$sales)
+```
+
+## 4 単回帰モデル
+```{r}
+out1 <- lm(sales ~ price, data = ch5_data)
+summary(out1)
+```
+
+## 5 重回帰モデル
+```{r}
+out2 <- lm(sales ~ price + promotion, data = ch5_data)
+summary(out2)
+```
+
+## 6.3 交差価格弾力性
+```{r}
+out3 <- lm(log(Y1) ~ log(X1) + log(X2), data = yogurt)
+summary(out3)
+```
