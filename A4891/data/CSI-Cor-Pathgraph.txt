@@ -1,0 +1,36 @@
+digraph "result" {
+  rankdir=LR;
+  size="8,8";
+  node [fontname="C:/WINDOWS/Fonts/msgothic.ttc" fontsize=10 shape=box];
+  edge [fontname="Helvetica" fontsize=10];
+  center=1;
+  "ŒÚ‹q–ž‘«" [shape=ellipse]
+  "’mŠo•iŽ¿" [shape=ellipse]
+  "ŒÚ‹qŠú‘Ò" [shape=ellipse]
+  "’mŠo•iŽ¿" -> "y01" [label="1"];
+  "’mŠo•iŽ¿" -> "y02" [label="0.916"];
+  "’mŠo•iŽ¿" -> "y03" [label="0.905"];
+  "’mŠo•iŽ¿" -> "y04" [label="0.646"];
+  "ŒÚ‹qŠú‘Ò" -> "y05" [label="1"];
+  "ŒÚ‹qŠú‘Ò" -> "y06" [label="1.026"];
+  "ŒÚ‹qŠú‘Ò" -> "y07" [label="0.989"];
+  "ŒÚ‹q–ž‘«" -> "y08" [label="1"];
+  "ŒÚ‹q–ž‘«" -> "y09" [label="0.825"];
+  "ŒÚ‹q–ž‘«" -> "y10" [label="0.789"];
+  "y01" -> "y01" [label="0.227" dir=both];
+  "y02" -> "y02" [label="0.145" dir=both];
+  "y03" -> "y03" [label="0.165" dir=both];
+  "y04" -> "y04" [label="0.575" dir=both];
+  "y05" -> "y05" [label="0.719" dir=both];
+  "y06" -> "y06" [label="0.257" dir=both];
+  "y07" -> "y07" [label="0.31" dir=both];
+  "y08" -> "y08" [label="0.224" dir=both];
+  "y09" -> "y09" [label="0.274" dir=both];
+  "y10" -> "y10" [label="0.335" dir=both];
+  "’mŠo•iŽ¿" -> "ŒÚ‹q–ž‘«" [label="0.649"];
+  "ŒÚ‹qŠú‘Ò" -> "ŒÚ‹q–ž‘«" [label="0.284"];
+  "ŒÚ‹qŠú‘Ò" -> "’mŠo•iŽ¿" [label="0.889"];
+  "’mŠo•iŽ¿" -> "’mŠo•iŽ¿" [label="1" dir=both];
+  "ŒÚ‹qŠú‘Ò" -> "ŒÚ‹qŠú‘Ò" [label="1" dir=both];
+  "ŒÚ‹q–ž‘«" -> "ŒÚ‹q–ž‘«" [label="1" dir=both];
+}
