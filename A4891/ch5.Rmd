@@ -17,12 +17,27 @@ yogurt <- read.table("data/yogurt.txt", header = T, sep = "\t")
 
 
 ## データ
+#### sales-price-promo.txt (ch5_data)
 ```{r, echo=FALSE}
 head(ch5_data)
 ```
 
+- データに日本語を含むとエラーが起きる可能性があるので先頭行を英語へ変換した
+- ファイル名にマイナス記号"-"があるとエラーが起きるためファイル名を"ch5_data.txt"に変更した
+
+#### yogurt.txt
+```{r, echo=FALSE}
+head(yogurt)
+```
+
+
 ## 3.2 散布図
-```{r}
+```{r, eval=FALSE}
+plot(x = ch5_data$price, y = ch5_data$sales)
+# x軸とy軸のデータを「"データ名"$"変数名"」で指定
+```
+
+```{r, echo=FALSE}
 plot(x = ch5_data$price, y = ch5_data$sales)
 ```
 
@@ -36,6 +51,18 @@ cor.test(x = ch5_data$price, y = ch5_data$sales)
 out1 <- lm(sales ~ price, data = ch5_data)
 summary(out1)
 ```
+
+## 4.1 信頼係数
+```{r}
+confint(out1, level = 0.95)
+```
+
+## 4.4 売上の予測
+```{r}
+newdata <- data.frame(price = 350)
+predict(out1, newdata)
+```
+注：教科書との数値の差は小数点4桁以上を計算に利用しているかどうか
 
 ## 5 重回帰モデル
 ```{r}
