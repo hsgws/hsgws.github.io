@@ -1,0 +1,121 @@
+---
+title: "第7章 市場セグメンテーション"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+seg <- read.table("data/seg.txt", header = T, sep = ",")
+
+```
+
+
+## データ
+#### seg.txt
+```{r, echo=FALSE}
+head(seg)
+```
+
+## 5.2 因子分析
+```{r}
+# 因子分析
+# seg[,2:28]でデータ内の2~28列目の質問項目（q1~q27）のみ指定
+result <- factanal(seg[,2:28], factors = 4, scores = "regression", rotation = "varimax")
+
+# 分析結果（因子負荷量）の表示
+print(result)
+```
+
+## 5.3 クラスター分析
+```{r, results='hide'}
+# クラスター分析
+clstr <- kmeans(x = result$scores, centers = 4, nstart = 10)
+
+# 各セグメントの因子スコアの平均値（重心）
+clstr$centers
+
+# 各セグメントの所属人数
+print(clstr$size) 
+```
+
+
+**`kmeans(x, centers, nstart)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：クラスター数
+- **`nstart`**：シード初期値 → 指定しないと毎回結果が若干異なる
+- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `clstr$centers`）
+- 各セグメントの所属人数は `$size` で取り出す（上記例では `clstr$size`）
+- プロファイリングで利用する各回答者の所属セグメント番号 `$cluster` で取り出す（上記例では `clstr$cluster`）
+
+
+```{r, echo=FALSE}
+clstr$centers
+print(clstr$size) 
+```
+
+
+## 5.4 セグメントのプロファイリング
+```{r, eval=FALSE}
+# 表7.10 性別比率
+tapply(seg$性別 - 1, clstr$cluster, mean)   # セグメント別比率（女性比率）
+mean(seg$性別 - 1)    # データ全体の比率（女性比率）
+
+# 表7.11 年齢
+tapply(seg$年齢, clstr$cluster, mean)   # セグメント別平均
+mean(seg$年齢)    # データ全体の平均
+
+# 表7.12 投資経験年数
+tapply(seg$投資経験年数, clstr$cluster, mean)   # セグメント別平均
+mean(seg$投資経験年数)    # データ全体の平均
+
+# 表7.13 投資の形態
+prop.table(xtabs(~ clstr$cluster + seg$取引形態), 1)
+```
+
+注：性別データは「女性=2，男性=1」なので，`seg$性別 - 1` で1を引いて「女性=1，男性=0」に変換して平均を取ることで女性比率を計算
+
+**`tapply(x, index, fun)`**：グループ毎に関数を適用
+
+- **`x`**：集計したい変数
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+ 
+**`xtabs(~ index + x)`**：クロス集計表の作成
+
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`x`**：集計したい変数
+- **`prop.table(xtabs(~ index + x), 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+
+```{r, results='hold', echo=FALSE}
+tapply(seg$性別-1, clstr$cluster, mean)   # セグメント別比率（女性比率）
+mean(seg$性別-1)    # データ全体の比率（女性比率）
+```
+
+```{r, results='hold', echo=FALSE}
+tapply(seg$年齢, clstr$cluster, mean)   # セグメント別平均
+mean(seg$年齢)    # データ全体の平均
+```
+
+```{r, results='hold', echo=FALSE}
+tapply(seg$投資経験年数, clstr$cluster, mean)   # セグメント別平均
+mean(seg$投資経験年数)    # データ全体の平均
+```
+
+```{r, results='hold', echo=FALSE}
+prop.table(xtabs(~ clstr$cluster + seg$取引形態), 1)
+```

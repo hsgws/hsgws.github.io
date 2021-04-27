@@ -1,0 +1,126 @@
+---
+title: "第6章 市場の発見と知覚マップ"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+senbei <- read.table("data/senbei.txt", header = T, sep = "\t", row.names = 1)
+
+```
+
+
+## データ
+#### senbei.txt
+```{r, echo=FALSE}
+head(senbei)
+```
+
+- Import Datasetでデータを読み込む際，オプションの "Row names" を "Use first column" に変更する
+
+## 4.1 相関係数行列
+```{r}
+cor(senbei)
+```
+
+## 5 因子分析
+```{r, results='hide'}
+# 因子分析の実行
+result <- factanal(senbei, factors = 2, scores = "regression", rotation = "varimax")
+
+# 分析結果（因子負荷量）の表示
+print(result)
+
+# 分析スコアの表示
+print(result$scores)
+```
+
+**`factanal(data, factors, scores)`**：因子分析の実行
+
+- **`data`**：分析データの指定
+- **`factors`**：因子数の指定
+- **`scores`**：因子スコアの計算方法の指定
+- **`rotation`**：因子の回転の指定
+
+`factanal` の結果の変数（上記コードでは `result`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`result$socres` のように `$` の後ろに取り出したい変数名を指定する。
+
+
+```{r, echo=FALSE}
+print(result)
+print(result$scores)
+```
+
+```{r, eval=FALSE}
+# 知覚マップの作成
+plot(result$scores)
+
+# マップにブランド名を追加（maptoolsパッケージを利用）
+library(maptools)
+pointLabel(result$scores, labels = rownames(result$scores))
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(maptools)
+plot(result$scores)
+pointLabel(result$scores, labels = rownames(result$scores))
+```
+
+## 6.2 共通因子数の設定
+```{r, fig.show='hide', results='hide'}
+# 相関係数の計算
+co <- cor(senbei)
+
+# 相関係数の固有値
+eig <- eigen(co)
+print(eig$values)
+
+# スクリーンプロット（棒グラフ）
+barplot(eig$values)
+```
+
+注：教科書では主成分分析の中で相関係数の固有値を出力しているが，上では `eigen` 関数で直接，相関係数の固有値を計算した 
+
+```{r, fig.show='hold', echo=FALSE}
+print(eig$values)
+barplot(eig$values)
+```
+
+## 7 サブマーケットと市場構造
+```{r, fig.show='hide'}
+# 知覚マップ上での因子スコアの座標間距離の計算
+d <- dist(result$scores)
+
+# 階層的クラスター分析
+clstr <- hclust(d, method = "ward.D")
+
+# デンドログラムの表示
+plot(clstr)
+```
+
+**`dist(x)`**：座標間距離の計算
+
+- **`x`**：座標
+
+**`hclust(d, method)`**：階層的クラスタリング
+
+- **`d`**：`dist(x)`で計算した座標間距離
+- **`method`**：クラスタリングの方法の指定
+
+```{r, echo=FALSE}
+plot(clstr)
+```
