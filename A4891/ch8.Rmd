@@ -7,6 +7,9 @@ output:
     md_extensions: -ascii_identifiers
     df_print: "paged"
     highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
 ---
 
 ```{r setup, include=FALSE}
@@ -19,8 +22,8 @@ library(broom)
 library(knitr)
 
 # data
-conjoint1 <- read.table("data/conjoint11.txt", header = T, sep = "")
-conjoint2 <- read.table("data/conjoint22.txt", header = T, sep = "")
+conjoint1 <- read.table("data/conjoint1.txt", header = T, sep = "")
+conjoint2 <- read.table("data/conjoint2.txt", header = T, sep = "")
 ```
 
 
@@ -41,27 +44,58 @@ result1 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, d
 summary(result1)
 ```
 
+- 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い
+- conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる
+
+
 ## 5.3 集計分析
 ```{r}
 result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
 summary(result2)
 ```
 
-```{r}
-result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
-summary(result2)
-```
 
-
+## （参考）conjoint パッケージによる分析
+### 全組み合わせ
+```{r, warning=FALSE, results='hold'}
 library(conjoint)
-# 属性・水準定義
-attribute <- list(color = c("赤", "シルバー", "黒"),
+
+# 属性・水準の定義
+attribute <- list(色 = c("赤", "シルバー", "黒"),
                   保証期間 = c("1年", "2年"),
                   バッテリ = c("6時間", "4時間", "2時間"))
-experiment <- caFactorialDesign(attribute)
-experiment
-design1 <- caFactorialDesign(experiment, type = "full")
-design1
 
-Conjoint(conjoint11$全体効用, experiment, unlist(attribute), y.type = "score")
-caImportance
+# ラベル名
+label_name <- c("赤", "シルバー", "黒", "1年", "2年", "6時間", "4時間", "2時間")
+
+# コンジョイントカードの作成（全組み合わせ）
+experiment <- expand.grid(attribute)
+full <- caFactorialDesign(experiment, type = "full")
+print(full)
+
+# コンジョイント分析の実行（全組み合わせ）
+Conjoint(conjoint1$全体効用, full, label_name, y.type = "score")
+```
+
+- conjoint パッケージの回帰分析では部分効用（平均偏差形）が直接推定される
+- 基準水準を含む部分効用（平均偏差形）は "Part worths (utilities) of levels (model parameters for whole sample):"
+- 重要度は "Average importance of factors (attributes):"
+
+### 直行表の利用
+```{r, warning=FALSE, results='hold'}
+library(conjoint)
+
+# 属性・水準の定義
+attribute <- list(色 = c("赤", "シルバー", "黒"),
+                  保証期間 = c("1年", "2年"),
+                  バッテリ = c("6時間", "4時間", "2時間"))
+
+# コンジョイントカードの作成（直行表）
+experiment <- expand.grid(attribute)
+orth <- caFactorialDesign(experiment, type = "orthogonal")
+print(orth)
+```
+
+- 教科書の直行表と conjoint パッケージで作成される直行表は若干異なり，教科書データを使った分析ができないため，ここでは直行表の作成方法の紹介までする 
+- 直行表を使った集計分析の方法は conjoint パッケージのヘルプ（Rで `??conjoint` を実行）を参照するか，ネットで検索
+- **教科書の表8.7 ~ 8.10の直行表の一部は間違っているようなので利用しないこと**

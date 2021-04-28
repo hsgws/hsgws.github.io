@@ -7,6 +7,9 @@ output:
     md_extensions: -ascii_identifiers
     df_print: "paged"
     highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
 ---
 
 ```{r setup, include=FALSE}
