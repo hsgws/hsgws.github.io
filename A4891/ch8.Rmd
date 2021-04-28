@@ -1,0 +1,67 @@
+---
+title: "第8章 製品開発"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+conjoint1 <- read.table("data/conjoint11.txt", header = T, sep = "")
+conjoint2 <- read.table("data/conjoint22.txt", header = T, sep = "")
+```
+
+
+## データ
+#### conjoint1.txt
+```{r, echo=FALSE}
+head(conjoint1)
+```
+
+#### conjoint2.txt
+```{r, echo=FALSE}
+head(conjoint2)
+```
+
+## 4.2 個人分析
+```{r}
+result1 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint1)
+summary(result1)
+```
+
+## 5.3 集計分析
+```{r}
+result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
+summary(result2)
+```
+
+```{r}
+result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
+summary(result2)
+```
+
+
+library(conjoint)
+# 属性・水準定義
+attribute <- list(color = c("赤", "シルバー", "黒"),
+                  保証期間 = c("1年", "2年"),
+                  バッテリ = c("6時間", "4時間", "2時間"))
+experiment <- caFactorialDesign(attribute)
+experiment
+design1 <- caFactorialDesign(experiment, type = "full")
+design1
+
+Conjoint(conjoint11$全体効用, experiment, unlist(attribute), y.type = "score")
+caImportance
