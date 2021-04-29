@@ -1,0 +1,53 @@
+---
+title: "第13章 マーケットバスケットとクロスセリング"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+apriori <- read.table("data/apriori.txt", header = T, sep = ",")
+```
+
+
+## データ
+#### apriori.txt
+```{r, echo=FALSE}
+head(apriori)
+```
+
+
+## 3 マーケットバスケット分析
+```{r, message=FALSE}
+library(arules)
+
+# transactions 形式へデータを変換
+y.tran <- as.matrix(apriori, "transactions")
+
+# アソシエーション分析の実行
+rules <- apriori(y.tran, parameter = list(supp = 0.4, conf = 0.5))
+
+# ルール数
+print(rules)
+
+# リフト上位20ルール
+inspect(head(sort(rules, by = "lift"), n = 20))
+```

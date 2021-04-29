@@ -1,0 +1,108 @@
+---
+title: "第14章 定性調査データの分析"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+CSIdata <- read.table("data/CSIdata.txt", header = T, sep = ";")
+```
+
+
+## データ
+#### CSIdata.txt
+```{r, echo=FALSE}
+head(CSIdata)
+```
+
+
+## 5.6 顧客満足度の分析
+```{r, message=FALSE}
+library(lavaan)
+
+# モデル記述
+model <-　
+"
+  # 測定方程式
+    fq =~ y1 + y2 + y3 + y4   # fq:知覚品質
+    fe =~ y5 + y6 + y7        # fe:顧客期待
+    fs =~ y8 + y9 + y10       # fs:顧客満足
+  # 構造方程式
+    fq ~ fe                   # 知覚品質 ← 顧客期待
+    fs ~ fe + fq              # 顧客満足 ← 顧客期待,顧客満足 ← 知覚品質
+"
+
+fit <- sem(model, data = CSIdata)
+summary(fit, fit.measures = TRUE, standardized = TRUE)
+```
+
+
+```{r, message=FALSE}
+library(semPlot)
+semPaths(fit, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE)
+```
+
+
+```{r, message=FALSE}
+# 因子スコアの計算
+score <- predict(fit)
+
+# CSIスコアの計算
+csscore <- (score[,"fs"] - min(score[,"fs"]))/(max(score[,"fs"]) - min(score[,"fs"]))*100
+hist(csscore)
+```
+
+
+## 6.1 SERVQUAL
+```{r, message=FALSE}
+library(sem)
+cor <- readMoments(names = c("y1", "y2", "y3", "y4","y5", "y6","y7", "y8", "y9", "y10"),
+                   text = "
+        1.00
+        0.76 1.00
+        0.39 0.32 1.00
+        0.48 0.39 0.68 1.00
+        0.46 0.28 0.33 0.45 1.00
+        0.40 0.45 0.37 0.40 0.72 1.00
+        0.23 0.37 0.42 0.31 0.37 0.47 1.00
+        0.31 0.39 0.34 0.34 0.42 0.47 0.81 1.00
+        0.48 0.23 0.30 0.31 0.33 0.40 0.44 0.48 1.00
+        0.38 0.23 0.40 0.31 0.33 0.30 0.44 0.48 0.80 1.00")
+
+# モデル記述
+model <-　
+"
+  # 測定方程式
+    reli =~ y1 + y2
+    tagi =~ y3 + y4
+    resp =~ y5 + y6
+    assu =~ y7 + y8
+    empa =~ y9 + y10
+  # 構造方程式
+    serv ~ reli + tagi + resp + assu + empa
+"
+cor[upper.tri(cor)] <- t(cor)[upper.tri(cor)]
+
+
+fit <- lavaan::sem(model, sample.cov = cor, sample.nobs = 100)
+summary(fit)
+```

@@ -1,0 +1,70 @@
+---
+title: "第11章 市場反応分析 (II)"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+binomial.choice <- read.table("data/binomial-choice.txt", header = T, sep = "")
+```
+
+
+## データ
+#### binomial-choice.txt
+```{r, echo=FALSE}
+head(binomial.choice)
+```
+
+## 3.1 ブランド価値を含むモデル
+### ロジット・モデル
+```{r}
+logit <- glm(B1 ~ (P1-P2), data = binomial.choice, family = binomial)
+summary(logit)
+```
+
+### プロビット・モデル
+```{r}
+probit <- glm(B1 ~ (P1-P2), data = binomial.choice, family = binomial(link = "probit"))
+summary(probit)
+```
+
+## 3.2 ブランド価値を含まないモデル
+```{r}
+logit <- glm(B1 ~ (P1-P2) - 1, data = binomial.choice, family = binomial)
+summary(logit)
+```
+
+## 4.1 多項ロジットモデル
+```{r, message=FALSE}
+library(mlogit)
+
+# データの読み込み
+data(Catsup)
+head(Catsup)
+
+# データの加工
+Catdata <- mlogit.data(Catsup, choice = "choice", shape = "wide", varying = c(2:13), sep = ".")
+
+# 分析の実行
+result <- mlogit(choice ~ disp + feat + price, data = Catdata)
+summary(result)
+```

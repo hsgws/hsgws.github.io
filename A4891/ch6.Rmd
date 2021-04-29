@@ -3,7 +3,8 @@ title: "第6章 市場の発見と知覚マップ"
 output:
   html_document: 
     toc: true
-    toc_float: true
+    toc_float:
+      collapsed: false
     md_extensions: -ascii_identifiers
     df_print: "paged"
     highlight: "pygments"

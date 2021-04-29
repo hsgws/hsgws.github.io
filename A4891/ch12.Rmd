@@ -1,0 +1,80 @@
+---
+title: "第12章 ブランドと属性の同時マップ"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
+Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
+```
+
+
+## データ
+#### curry
+```{r}
+# データファイルがないのでR上で作成
+curry <- data.frame(甘口 = c(75, 125), 中辛 = c(80, 90), 辛口 = c(145, 85))
+rownames(curry) <- c("東日本", "西日本")
+head(curry)
+```
+
+#### Cleaner.txt
+```{r, echo=FALSE}
+head(Cleaner)
+```
+
+#### Camera.txt
+```{r, echo=FALSE}
+head(Camera)
+```
+
+
+## 1.2 独立性の検定
+```{r, results='hold'}
+# カイ二乗検定
+test <- chisq.test(curry)
+print(test)
+
+# 期待度数
+test$expected
+```
+
+## 3.1 コレスポンデンス分析（掃除機）
+```{r, results='hold', fig.show='hold'}
+library(FactoMineR)
+
+# コレスポンデンス分析の実行
+ca <- CA(Cleaner)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```
+
+## 3.2 コレスポンデンス分析（デジタルカメラ）
+```{r, results='hold', fig.show='hold'}
+# コレスポンデンス分析の実行
+ca <- CA(Camera)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```

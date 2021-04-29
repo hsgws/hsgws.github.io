@@ -1,0 +1,82 @@
+---
+title: "第9章 新製品の普及"
+output:
+  html_document: 
+    toc: true
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    highlight: "pygments"
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+Bass <- read.table("data/Bass.txt", header = T, sep = ",")
+```
+
+
+## データ
+#### Bass.txt
+```{r, echo=FALSE}
+head(Bass)
+```
+
+
+## 6.1 回帰分析
+```{r}
+result <- lm(購買者数 ~ 一期前累積購買者数 + 一期前累積購買者数の二乗, data = Bass)
+summary(result)
+```
+
+- `4.999e+03`は $4.999 \times 10^3 = 4999$，`9.994e-02`は $9.994 \times 10^{-2} = 0.09994$ を意味する
+
+```{r}
+# m, p, qの計算
+a <- result$coefficients[1]
+b <- result$coefficients[2]
+c <- result$coefficients[3]
+m <- (-b-sqrt(b^2-4*a*c))/(2*c)
+p <- a/m
+q <- p+b
+
+print(c(m, p, q))
+```
+
+
+```{r}
+# 図9.12
+cols <- c("red", "blue")  # 折れ線グラフの色
+ltys <- c(1, 2)    # 折れ線グラフの線の種類
+plot.ts(cbind(Bass$購買者数, result$fitted.values), 
+        plot.type = "single", col = cols, lty = ltys)
+legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
+```
+
+
+- 教科書では図9.12を描くのに予測値を新しい変数として作成してデータセットに追加しているが，`lm` 関数の出力に予測値 `fitted.values` が含まれている
+
+
+## （参考）非線形最小二乗法
+
+式(9.4)の回帰分析（`lm` 関数）を使ったバスモデルの推定はコンピュータの性能が低い時代の方法で，現代ではm，p，qは非線形最小二乗法（`nls` 関数）で式(9.1)から直接推定した方が早い
+
+```{r}
+n <- Bass$購買者数
+Nt <- Bass$一期前累積購買者数
+
+result <- nls(n ~ p*(m - Nt) + q*Nt/m*(m - Nt),  # 式(9.1)
+              start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
+summary(result)
+```
