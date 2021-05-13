@@ -51,6 +51,9 @@ print(result)
 
 # 分析スコアの表示
 print(result$scores)
+
+# （参考）CSVファイルに因子負荷量を保存
+# write.csv(result$loadings, file = "loadings.csv")
 ```
 
 **`factanal(data, factors, scores)`**：因子分析の実行
@@ -62,6 +65,9 @@ print(result$scores)
 
 `factanal` の結果の変数（上記コードでは `result`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
 結果変数からクラスター分析のために因子スコアを取り出したい場合は，`result$socres` のように `$` の後ろに取り出したい変数名を指定する。
+
+
+`write.csv` を実行すると，Windowsの場合はマイドキュメントにCSVファイルが保存される。マイドキュメントにファイルが作成されていない場合は `getwd()` を実行すれば保存場所を確認できる。
 
 
 ```{r, echo=FALSE}
@@ -83,6 +89,7 @@ library(maptools)
 plot(result$scores)
 pointLabel(result$scores, labels = rownames(result$scores))
 ```
+
 
 ## 6.2 共通因子数の設定
 ```{r, fig.show='hide', results='hide'}
