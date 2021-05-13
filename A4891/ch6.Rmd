@@ -52,7 +52,7 @@ print(result)
 # 分析スコアの表示
 print(result$scores)
 
-# （参考）CSVファイルに因子負荷量を保存
+# CSVファイルに因子負荷量を保存（実行する場合は先頭の # を削除）
 # write.csv(result$loadings, file = "loadings.csv")
 ```
 
