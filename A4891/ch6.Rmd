@@ -27,6 +27,9 @@ senbei <- read.table("data/senbei.txt", header = T, sep = "\t", row.names = 1)
 
 ```
 
+<div style="text-align: right;">
+更新日：`r Sys.time()`
+</div>
 
 ## データ
 #### senbei.txt
@@ -47,7 +50,7 @@ cor(senbei)
 result <- factanal(senbei, factors = 2, scores = "regression", rotation = "varimax")
 
 # 分析結果（因子負荷量）の表示
-print(result)
+print(result, sort = TRUE)    # sort = TRUE で負荷量の順番に質問項目を並び替え
 
 # 分析スコアの表示
 print(result$scores)
