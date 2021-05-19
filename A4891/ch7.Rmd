@@ -27,6 +27,9 @@ seg <- read.table("data/seg.txt", header = T, sep = ",")
 
 ```
 
+<div style="text-align: right;">
+更新日：`r Sys.time()`
+</div>
 
 ## データ
 #### seg.txt
@@ -41,7 +44,7 @@ head(seg)
 result <- factanal(seg[,2:28], factors = 4, scores = "regression", rotation = "varimax")
 
 # 分析結果（因子負荷量）の表示
-print(result)
+print(result, sort = TRUE)
 ```
 
 ## 5.3 クラスター分析
