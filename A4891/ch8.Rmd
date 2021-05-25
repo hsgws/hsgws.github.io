@@ -27,6 +27,9 @@ conjoint1 <- read.table("data/conjoint1.txt", header = T, sep = "")
 conjoint2 <- read.table("data/conjoint2.txt", header = T, sep = "")
 ```
 
+<div style="text-align: right;">
+更新日：`r Sys.time()`
+</div>
 
 ## データ
 #### conjoint1.txt
@@ -45,8 +48,8 @@ result1 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, d
 summary(result1)
 ```
 
-- 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い
-- conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる
+- 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い。グラフ化も同様。
+- conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる。
 
 
 ## 5.3 集計分析
@@ -56,7 +59,7 @@ summary(result2)
 ```
 
 
-## （参考）conjoint パッケージによる分析
+## 参考：conjoint パッケージによる分析
 ### 全組み合わせ
 ```{r, warning=FALSE, results='hold'}
 library(conjoint)
@@ -77,6 +80,18 @@ print(full)
 # コンジョイント分析の実行（全組み合わせ）
 Conjoint(conjoint1$全体効用, full, label_name, y.type = "score")
 ```
+
+**重要度**  
+<img src="fig/ca_importance.png" width=60%>
+
+**部分効用・色**  
+<img src="fig/ca_color.png" width=60%>
+
+**部分効用・保証**  
+<img src="fig/ca_warranty.png" width=60%>
+
+**部分効用・バッテリ**  
+<img src="fig/ca_battery.png" width=60%>
 
 - conjoint パッケージの回帰分析では部分効用（平均偏差形）が直接推定される
 - 基準水準を含む部分効用（平均偏差形）は "Part worths (utilities) of levels (model parameters for whole sample):"
