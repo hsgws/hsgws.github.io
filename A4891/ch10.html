@@ -359,7 +359,7 @@ div.tocify {
 
 
 <div style="text-align: right;">
-<p>更新日：2021-06-10 15:15:52</p>
+<p>更新日：2021-06-10 15:51:38</p>
 </div>
 <div id="データ" class="section level2">
 <h2>データ</h2>
@@ -431,8 +431,8 @@ div.tocify {
   </script>
 </div>
 </div>
-<div id="方法2dplyrパッケージの利用" class="section level4">
-<h4>方法2（dplyrパッケージの利用）</h4>
+<div id="方法2dplyrパッケージ" class="section level4">
+<h4>方法2（dplyrパッケージ）</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>RFM <span class="ot">&lt;-</span> RFM <span class="sc">%&gt;%</span> </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">M_Rank =</span> <span class="fu">case_when</span>(M <span class="sc">&lt;</span> <span class="dv">50000</span> <span class="sc">~</span> <span class="st">&quot;M_Rank1&quot;</span>,</span>
@@ -493,6 +493,15 @@ div.tocify {
 ## Residuals   1995 4.929e+13 2.471e+10                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><strong><code>aov(formula, data)</code>：分散分析</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数と説明変数（要因と水準）の指定
+<ul>
+<li>「目的変数 ~ 説明変数」のように，<code>~</code> の左側に目的変数，右側に説明変数を記述する</li>
+<li>教科書の例では，目的変数は累積購買金額（M），説明変数はRのランク（R_Rank）</li>
+</ul></li>
+<li><strong><code>data</code></strong>：データの指定</li>
+</ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 多重比較</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>glht_M <span class="ot">&lt;-</span> <span class="fu">glht</span>(aov_M, <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">R_Rank =</span> <span class="st">&quot;Tukey&quot;</span>))</span>
@@ -509,26 +518,38 @@ div.tocify {
 ##                        Estimate Std. Error t value Pr(&gt;|t|)    
 ## R_Rank2 - R_Rank1 == 0    15128      20996   0.721  0.94711    
 ## R_Rank3 - R_Rank1 == 0    37330      22916   1.629  0.45514    
-## R_Rank4 - R_Rank1 == 0    72034      20149   3.575  0.00286 ** 
+## R_Rank4 - R_Rank1 == 0    72034      20149   3.575  0.00285 ** 
 ## R_Rank5 - R_Rank1 == 0    96634      20024   4.826  &lt; 0.001 ***
-## R_Rank3 - R_Rank2 == 0    22202      15113   1.469  0.55991    
+## R_Rank3 - R_Rank2 == 0    22202      15113   1.469  0.55992    
 ## R_Rank4 - R_Rank2 == 0    56906      10452   5.444  &lt; 0.001 ***
 ## R_Rank5 - R_Rank2 == 0    81506      10208   7.984  &lt; 0.001 ***
-## R_Rank4 - R_Rank3 == 0    34704      13914   2.494  0.08302 .  
+## R_Rank4 - R_Rank3 == 0    34704      13914   2.494  0.08294 .  
 ## R_Rank5 - R_Rank3 == 0    59305      13731   4.319  &lt; 0.001 ***
-## R_Rank5 - R_Rank4 == 0    24601       8330   2.953  0.02331 *  
+## R_Rank5 - R_Rank4 == 0    24601       8330   2.953  0.02329 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
+<p><strong><code>glht(model, linfct)</code>：多重比較</strong></p>
+<ul>
+<li><strong><code>model</code></strong>：分散分析の出力</li>
+<li><strong><code>linfct</code></strong>：仮説の指定
+<ul>
+<li>多重比較の場合は <code>mcp</code></li>
+<li><code>R_Rank = &quot;Tukey&quot;</code> でRランクの全てのペアで比較</li>
+</ul></li>
+</ul>
 </div>
 </div>
 <div id="ロジスティクス回帰" class="section level2">
 <h2>4.2 ロジスティクス回帰</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">as.factor</span>(RFM<span class="sc">$</span>DM) <span class="sc">~</span> <span class="fu">log</span>(M) <span class="sc">+</span> <span class="fu">log</span>(F) <span class="sc">+</span> <span class="fu">log</span>(R), <span class="at">data =</span> RFM, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>RFM<span class="sc">$</span>DM <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(RFM<span class="sc">$</span>DM)   <span class="co"># DMへの反応(yes, no)を factor 型へ変換</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ロジスティクス回帰 (glm) の目的変数は，因子(factor)型または，1 or 0 (yes = 1, no = 0) にする必要がある</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(DM <span class="sc">~</span> <span class="fu">log</span>(M) <span class="sc">+</span> <span class="fu">log</span>(F) <span class="sc">+</span> <span class="fu">log</span>(R), <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> RFM)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## glm(formula = as.factor(RFM$DM) ~ log(M) + log(F) + log(R), family = &quot;binomial&quot;, 
+## glm(formula = DM ~ log(M) + log(F) + log(R), family = &quot;binomial&quot;, 
 ##     data = RFM)
 ## 
 ## Deviance Residuals: 
@@ -551,6 +572,16 @@ div.tocify {
 ## AIC: 1881.8
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
+<p><strong><code>glm(fomula, family, data)</code>：一般化線型モデルの推定</strong></p>
+<ul>
+<li><strong><code>fomula</code></strong>：目的変数と説明変数の指定</li>
+<li><strong><code>family</code></strong>：データが従う確率分布の指定
+<ul>
+<li>ロジスティクス回帰の場合は <code>&quot;binomial&quot;</code> を指定</li>
+<li><code>family</code> を変更すれば，ポアソン回帰などのその他の一般化線型モデルも推定可能</li>
+</ul></li>
+<li><strong><code>data</code></strong>：データの指定</li>
+</ul>
 </div>
 
 

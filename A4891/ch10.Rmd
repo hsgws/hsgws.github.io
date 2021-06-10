@@ -91,7 +91,7 @@ RFM$R_Rank <- as.factor(RFM$R_Rank)
 head(RFM)
 ```
 
-#### 方法2（dplyrパッケージの利用）
+#### 方法2（dplyrパッケージ）
 ```{r, message=FALSE}
 library(dplyr)
 RFM <- RFM %>% 
@@ -146,6 +146,14 @@ aov_M <- aov(M ~ R_Rank, data = RFM)
 summary(aov_M)
 ```
 
+**`aov(formula, data)`：分散分析**
+
+- **`formula`**：目的変数と説明変数（要因と水準）の指定
+  - 「目的変数 ~ 説明変数」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 教科書の例では，目的変数は累積購買金額（M），説明変数はRのランク（R_Rank）
+- **`data`**：データの指定
+
+
 ```{r, message=FALSE}
 # 多重比較
 library(multcomp)
@@ -153,10 +161,28 @@ glht_M <- glht(aov_M, linfct = mcp(R_Rank = "Tukey"))
 summary(glht_M)
 ```
 
+**`glht(model, linfct)`：多重比較**
+
+- **`model`**：分散分析の出力
+- **`linfct`**：仮説の指定
+  - 多重比較の場合は `mcp`
+  - `R_Rank = "Tukey"` でRランクの全てのペアで比較
+
 
 ## 4.2 ロジスティクス回帰
 
 ```{r, message=FALSE}
-result <- glm(as.factor(RFM$DM) ~ log(M) + log(F) + log(R), data = RFM, family = "binomial")
+RFM$DM <- as.factor(RFM$DM)   # DMへの反応(yes, no)を factor 型へ変換
+# ロジスティクス回帰 (glm) の目的変数は，因子(factor)型または，1 or 0 (yes = 1, no = 0) にする必要がある
+
+result <- glm(DM ~ log(M) + log(F) + log(R), family = "binomial", data = RFM)
 summary(result)
 ```
+
+**`glm(fomula, family, data)`：一般化線型モデルの推定**
+
+- **`fomula`**：目的変数と説明変数の指定
+- **`family`**：データが従う確率分布の指定
+  - ロジスティクス回帰の場合は `"binomial"` を指定
+  - `family` を変更すれば，ポアソン回帰などのその他の一般化線型モデルも推定可能
+- **`data`**：データの指定
