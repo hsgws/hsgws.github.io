@@ -27,6 +27,9 @@ library(knitr)
 RFM <- read.table("data/RFM.txt", header = T, sep = ",")
 ```
 
+<div style="text-align: right;">
+更新日：`r Sys.time()`
+</div>
 
 ## データ
 #### RFM.txt
