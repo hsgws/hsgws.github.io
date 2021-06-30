@@ -28,6 +28,9 @@ Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
 Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
 ```
 
+<div style="text-align: right;">
+更新日：`r Sys.time()`
+</div>
 
 ## データ
 #### curry
@@ -59,8 +62,22 @@ print(test)
 test$expected
 ```
 
+
 ## 3.1 コレスポンデンス分析（掃除機）
-```{r, results='hold', fig.show='hold'}
+```{r, eval=FALSE}
+library(FactoMineR)
+
+# コレスポンデンス分析の実行
+ca <- CA(Cleaner)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```
+
+- 教科書のデータはブランド名が番号（1～10）になっているが，具体的なブランド名があるデータではデータ読込の際にブランド名を行名（row name）に指定すれば，マップ上にブランド名も表示される
+
+
+```{r, results='hold', fig.show='hold', echo=FALSE}
 library(FactoMineR)
 
 # コレスポンデンス分析の実行
