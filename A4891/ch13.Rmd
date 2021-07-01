@@ -59,10 +59,10 @@ inspect(head(sort(rules, by = "lift"), n = 20))
 **`apriori(data, parameter)`：アソシエーション分析**
 
 - **`data`**：データの指定
-- **`parameter`**：支持度(`supp`)と信頼度(`conf`)の設定
+- **`parameter`**：支持度(`supp`)と信頼度(`conf`)を list 形式で指定
 
 
-`print(rules)`で抽出ルール数を出力して**「set of 0 rules」**（ルール数がゼロ）と表示される場合は，`apriori` 関数の引数で支持度(`supp`)と信頼度(`conf`) の数値を小さくすればルールが抽出できる。
+`print(rules)` で抽出ルール数を出力して**「set of 0 rules」**（ルール数がゼロ）と表示される場合は，`apriori` 関数の引数で支持度(`supp`)と信頼度(`conf`) の数値を小さくすればルールが抽出できる。
 ただし，小さくした分，分析結果の支持度や信頼度の水準は低くなる。  
 <br />
 
