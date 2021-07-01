@@ -342,7 +342,7 @@ div.tocify {
 
 
 <div style="text-align: right;">
-<p>更新日：2021-06-29 14:49:40</p>
+<p>更新日：2021-07-01 12:27:33</p>
 </div>
 <div id="データ" class="section level2">
 <h2>データ</h2>
@@ -363,7 +363,22 @@ div.tocify {
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y.tran <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(apriori, <span class="st">&quot;transactions&quot;</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># アソシエーション分析の実行</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">apriori</span>(y.tran, <span class="at">parameter =</span> <span class="fu">list</span>(<span class="at">supp =</span> <span class="fl">0.4</span>, <span class="at">conf =</span> <span class="fl">0.5</span>))</span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rules <span class="ot">&lt;-</span> <span class="fu">apriori</span>(y.tran, <span class="at">parameter =</span> <span class="fu">list</span>(<span class="at">supp =</span> <span class="fl">0.4</span>, <span class="at">conf =</span> <span class="fl">0.5</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 抽出ルール数</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rules)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># リフト上位20ルール</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(<span class="fu">head</span>(<span class="fu">sort</span>(rules, <span class="at">by =</span> <span class="st">&quot;lift&quot;</span>), <span class="at">n =</span> <span class="dv">20</span>))</span></code></pre></div>
+<p><strong><code>apriori(data, parameter)</code>：アソシエーション分析</strong></p>
+<ul>
+<li><strong><code>data</code></strong>：データの指定</li>
+<li><strong><code>parameter</code></strong>：支持度(<code>supp</code>)と信頼度(<code>conf</code>)の設定</li>
+</ul>
+<p><code>print(rules)</code>で抽出ルール数を出力して<strong>「set of 0 rules」</strong>（ルール数がゼロ）と表示される場合は，<code>apriori</code> 関数の引数で支持度(<code>supp</code>)と信頼度(<code>conf</code>) の数値を小さくすればルールが抽出できる。 ただし，小さくした分，分析結果の支持度や信頼度の水準は低くなる。<br />
+<br /></p>
+<div id="apriori-関数の出力" class="section level5">
+<h5>apriori 関数の出力</h5>
 <pre><code>## Apriori
 ## 
 ## Parameter specification:
@@ -385,12 +400,13 @@ div.tocify {
 ## checking subsets of size 1 2 3 done [0.00s].
 ## writing ... [118 rule(s)] done [0.00s].
 ## creating S4 object  ... done [0.00s].</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ルール数</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rules)</span></code></pre></div>
+</div>
+<div id="抽出ルール数" class="section level5">
+<h5>抽出ルール数</h5>
 <pre><code>## set of 118 rules</code></pre>
-<p><strong>「set of 0 rules」</strong>（ルール数がゼロ）と出力される場合は，<code>apriori</code> 関数の引数 <code>parameter = list(supp = 0.4, conf = 0.5)</code> の数値を小さくすればルールが抽出できる。ただし，小さくした分，分析結果の支持度や信頼度の水準は低くなる。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># リフト上位20ルール</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(<span class="fu">head</span>(<span class="fu">sort</span>(rules, <span class="at">by =</span> <span class="st">&quot;lift&quot;</span>), <span class="at">n =</span> <span class="dv">20</span>))</span></code></pre></div>
+</div>
+<div id="リフト上位20ルール" class="section level5">
+<h5>リフト上位20ルール</h5>
 <pre><code>##      lhs                    rhs            support confidence coverage lift    
 ## [1]  {炭酸飲料}          =&gt; {スナック菓子} 0.477   0.9855372  0.484    1.539902
 ## [2]  {スナック菓子}      =&gt; {炭酸飲料}     0.477   0.7453125  0.640    1.539902
@@ -433,6 +449,7 @@ div.tocify {
 ## [18] 535  
 ## [19] 426  
 ## [20] 426</code></pre>
+</div>
 </div>
 
 
