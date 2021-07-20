@@ -1,6 +1,8 @@
 library(semPLS)
 
-data("mobi")
+# data("mobi")
+mobi <- data_mobi
+
 model <- "
   image =~ IMAG1 + IMAG2 + IMAG3 + IMAG4 + IMAG5
   expectaion =~ CUEX1 + CUEX2 + CUEX3
