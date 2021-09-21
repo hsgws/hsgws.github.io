@@ -1,0 +1,39 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## 式(2.9)
+$$
+\begin{eqnarray}
+E[s_w^2] &=& \frac{1}{M-N} E\left[ \sum_{j=1}^N \sum_{i=1}^n (y_{ij}-\bar{y}_{.j})^2 \right] \tag{1} \\ 
+&=& \frac{1}{M-N} \sum_{j=1}^N  E\left[\sum_{i=1}^n\left(r_{ij} - \frac{1}{n}\sum_{i-1}^n r_{ij} \right)^2 \right] \tag{2} \\
+&=& \frac{1}{M-N} \sum_{j=1}^N (n-1) \sigma^2 \tag{3} \\
+&=& \frac{N(n-1) \sigma^2}{Nn-N} \\
+&=& \sigma^2
+\end{eqnarray}
+$$
+
+$(1) \to (2)$  
+$$
+\begin{eqnarray}
+y_{ij}-\bar{y}_{.j} &=& (\beta_{ij}+r_{ij})-\frac{1}{n}\sum_{i=1}^n(\beta_{ij}+r_{ij}) \\
+&=& (\beta_{ij}+r_{ij}) - \frac{1}{n} \left(n\beta_{ij}+\sum_{i=1}^nr_{ij} \right) \\
+&=& r_{ij}-\sum_{i=1}^nr_{ij}
+\end{eqnarray}
+$$
+
+$(2) \to (3)$  
+標本分散 $S^2 = \frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2$ の期待値は $E[S^2] = \frac{n-1}{n}\sigma^2$となることから
+$$
+\begin{eqnarray}
+E\left[ \sum_{i=1}^n\left(r_{ij} - \frac{1}{n}\sum_{i-1}^n r_{ij} \right)^2 \right] &=& n E\left[ \frac{1}{n} \sum_{i=1}^n\left(r_{ij} - \frac{1}{n}\sum_{i-1}^n r_{ij} \right)^2 \right] \\
+&=& n\cdot \frac{n-1}{n}\sigma^2 \\
+&=& (n-1)\sigma^2
+\end{eqnarray}
+$$
