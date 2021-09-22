@@ -1,0 +1,129 @@
+---
+title: "ch4"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データの読込み
+```{r, message=FALSE, warning=FALSE}
+data <- read.csv("data2/学校データ.csv")
+head(data)
+```
+
+
+## 4.2 ANOVA
+レベル1：
+$$
+y_{ij}=\beta_{0j} + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+レベル2：
+$$
+\beta_{0j} = \gamma_{00} + u_{0j} \\
+u_{0j} \sim N(0,\tau_{00})
+$$
+
+```{r, message=FALSE, warning=FALSE}
+library(lmerTest)
+anovamodel <- lmer(post1 ~ (1|schoolID), data = data, REML = FALSE)
+summary(anovamodel)
+```
+
+[](
+data.frame(rname = c("$\\gamma_{00}$", "$\\tau_{00}$", "$\\sigma^2$"),
+           est = c(fixef(anovamodel), VarCorr(anovamodel)[["schoolID"]][1],  sigma(anovamodel)^2),
+           sd = c(1, "", "")) %>% 
+  kable(format = "markdown",
+        row.names = FALSE,
+        col.names = c("", "推定値", "標準偏差"),
+        digits = 3)
+)
+
+## 4.3 RANCOVA
+モデル1（全体平均中心化）：
+$$
+y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{..}) r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+モデル1（集団平均中心化）：
+$$
+y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{.j}) r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+モデル2：
+$$
+\beta_{0j} = \gamma_{00} + u_{0j} \\
+u_{0j} \sim N(0,\tau_{00})
+$$
+
+### 全体平均中心化
+```{r, message=FALSE, warning=FALSE}
+rancovamodel_cgm <- lmer(post1 ~ pre1.cgm + (1|schoolID), data = data, REML = FALSE)
+summary(rancovamodel_cgm)
+```
+
+### 集団平均中心化
+```{r, message=FALSE, warning=FALSE}
+rancovamodel_cwc <- lmer(post1 ~ pre1.cwc + (1|schoolID), data = data, REML = FALSE)
+summary(rancovamodel_cwc)
+```
+
+## 4.4 平均に関する回帰モデル
+モデル1：
+$$
+y_{ij}=\beta_{0j} + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+モデル2：
+$$
+\beta_{0j}=\gamma_{00}+\gamma_{01}(\bar{x}_{.j}-\bar{x}_{..})+u_{0j} \\
+u_{0j} \sim N(0, \tau_{00})
+$$
+
+```{r, message=FALSE, warning=FALSE}
+data$pre2.mdev <- data$pre2.m - mean(data$pre2.m) # データに学校平均の偏差を追加
+maomodel <- lmer(post1 ~ pre2.mdev + (1|schoolID), data = data, REML = FALSE)
+summary(maomodel)
+```
+
+## 4.5 集団・個人レベル効果推定モデル
+モデル1：
+$$
+y_{ij}=\beta_{0j} + b_{1}({x}_{ij}-\bar{x}_{.j}) + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+モデル2：
+$$
+\beta_{0j}=\gamma_{00}+\gamma_{01}(\bar{x}_{.j}-\bar{x}_{..})+u_{0j} \\
+u_{0j} \sim N(0, \tau_{00})
+$$
+
+```{r, message=FALSE, warning=FALSE}
+bweffectmodel <- lmer(post1 ~ pre1.cwc + pre2.mdev + (1|schoolID), data = data, REML = FALSE)
+summary(bweffectmodel)
+```
