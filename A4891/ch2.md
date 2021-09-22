@@ -57,7 +57,7 @@ E\left[-2(\beta_{0j}-\gamma_{00})\frac{1}{N}\sum_{j=1}^N(\beta_{0j}-\gamma_{00})
 $$
 
 $$
-E\left[\frac{1}{N^2}\sum_{j=1}^N(\beta_{0j}-\gamma_{00})^2 \right] = \frac{1}{N}\tau_{00}
+E\left[\frac{1}{N^2}\sum_{j=1}^N(\beta_{0j}-\gamma_{00})^2 \right] = \frac{1}{N^2}N\tau_{00} = \frac{1}{N}\tau_{00}
 $$
 
 以上から
@@ -66,5 +66,19 @@ $$
 $$
 $(2)\to(3)$：$E$ 内の第2項
 
-
-
+$E[r_{ij}r_{i'j}]=0 \ (i \neq i')$ より
+$$
+E\left[ \bar{r}_{.j}^2 \right] = E\left[ \frac{1}{n^2} \sum_{i=1}^n r_{ij} \sum_{i=1}^n r_{ij} \right] = \frac{1}{n}\sigma^2
+$$
+$E\left[\bar{r}_{.j} \sum_{j=1}^N \bar{r}_{.j}\right]=E[\bar{r}_{.j}\times(\bar{r}_{.1}+\cdots+\bar{r}_{.j}+\cdots\bar{r}_{.N})]=E[\bar{r}_{.j}^2]$ より
+$$
+E\left[ -\frac{2}{N} \bar{r}_{.j} \sum_{j=1}^N \bar{r}_{.j} \right] =-\frac{2}{Nn}\sigma^2
+$$
+$E\left[\sum_{j=1}^N \bar{r}_{.j} \sum_{j=1}^N \bar{r}_{.j} \right] = E\left[ \sum_{j=1}^N \bar{r}_{.j}^2 \right]$ より
+$$
+E\left[ \frac{1}{N^2} \sum_{j=1}^N \bar{r}_{.j} \sum_{j=1}^N \bar{r}_{.j} \right] = \frac{1}{Nn}\sigma^2
+$$
+以上から，
+$$
+\sum_{j=1}^N\left( \frac{1}{n}\sigma^2 -\frac{2}{Nn}\sigma^2 +\frac{1}{Nn}\sigma^2 \right) = \sum_{j=1}^N\left( \frac{N-1}{Nn}\sigma^2\right) = \frac{N-1}{n}\sigma^2
+$$
