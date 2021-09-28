@@ -1,0 +1,109 @@
+---
+title: "ch5"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データの読込み
+```{r, message=FALSE, warning=FALSE}
+data <- read.csv("data2/学校データ.csv")
+head(data)
+```
+
+
+## 5.2 ランダム切片・傾きモデル
+レベル1：
+$$
+y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+レベル2：
+$$
+\beta_{0j} = \gamma_{00} + u_{0j} \\
+\beta_{1j} = \gamma_{10} + u_{1j} \\
+\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+$$
+
+```{r, message=FALSE, warning=FALSE}
+library(lmerTest)
+rismodel <- lmer(post1 ~ pre1.cwc + (1 + pre1.cwc|schoolID), data = data, REML = FALSE)
+summary(rismodel)
+```
+
+## 5.3 切片・傾きに関する回帰モデル
+### 5.3.1 適用例1
+レベル1：
+$$
+y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+レベル2：
+$$
+\beta_{0j} = \gamma_{00} + \gamma_{01} (\bar{x}_{.j} -\bar{x}_{..}) + u_{0j} \\
+\beta_{1j} = \gamma_{10} + \gamma_{11} (\bar{x}_{.j} -\bar{x}_{..}) + u_{1j} \\
+\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+$$
+
+```{r, message=FALSE, warning=FALSE}
+data$pre2.mdev <- data$pre2.m - mean(data$pre2.m)
+
+crosslevel <- lmer(post1 ~ pre1.cwc + pre2.mdev + pre1.cwc:pre2.mdev + (1 + pre1.cwc|schoolID),
+                   data = data, REML = FALSE)
+summary(crosslevel)
+```
+
+### 5.3.2 適用例2
+レベル1：
+$$
+y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
+r_{ij} \sim N(0,\sigma^2)
+$$
+
+レベル2：
+$$
+\beta_{0j} = \gamma_{00} + \gamma_{01} (\bar{x}_{.j} -\bar{x}_{..}) + \gamma_{02}(z_j-\bar{z}_.) + u_{0j} \\
+\beta_{1j} = \gamma_{10} + \gamma_{11} (\bar{x}_{.j} -\bar{x}_{..}) + \gamma_{12}(z_j-\bar{z}_.) + u_{1j} \\
+\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+$$
+
+```{r, message=FALSE, warning=FALSE}
+data$time2.dev <- data$time2 - mean(data$time2)
+
+crosslevel2 <- lmer(post1 ~ pre1.cwc + pre2.mdev + time2.dev +
+                      pre2.mdev:pre1.cwc + time2.dev:pre1.cwc +
+                      (1 + pre1.cwc|schoolID),
+                    data = data, REML = FALSE)
+summary(crosslevel2)
+```
+
+
+## 5.4 モデル比較
+```{r, message=FALSE, warning=FALSE}
+anovamodel <- lmer(post1 ~ (1|schoolID), data = data, REML = FALSE)
+maomodel <- lmer(post1 ~ pre2.mdev + (1|schoolID), data = data, REML = FALSE)
+bweffectmodel <- lmer(post1 ~ pre1.cwc + pre2.mdev + (1|schoolID), data = data, REML = FALSE)
+
+anova(anovamodel, maomodel, bweffectmodel, rismodel, crosslevel)
+```
