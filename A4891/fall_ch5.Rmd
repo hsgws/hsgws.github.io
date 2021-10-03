@@ -12,6 +12,9 @@ output:
     css: "template/style_ch.css"
     includes:
       in_header: "template/head.html"
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -25,25 +28,28 @@ library(knitr)
 ```
 
 ## データの読込み
+
 ```{r, message=FALSE, warning=FALSE}
 data <- read.csv("data2/学校データ.csv")
 head(data)
 ```
 
-
 ## 5.2 ランダム切片・傾きモデル
-レベル1：
-$$
+
+レベル1： $$
 y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
 r_{ij} \sim N(0,\sigma^2)
 $$
 
-レベル2：
-$$
+レベル2： $$
 \beta_{0j} = \gamma_{00} + u_{0j} \\
 \beta_{1j} = \gamma_{10} + u_{1j} \\
-\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+\left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
+
+結合モデル： $$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{10}x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
+$$ ※ $x_{ij}^{cwc}=x_{ij}-\bar{x}_{.j}$
 
 ```{r, message=FALSE, warning=FALSE}
 library(lmerTest)
@@ -52,58 +58,67 @@ summary(rismodel)
 ```
 
 ## 5.3 切片・傾きに関する回帰モデル
+
 ### 5.3.1 適用例1
-レベル1：
-$$
+
+レベル1： $$
 y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
 r_{ij} \sim N(0,\sigma^2)
 $$
 
-レベル2：
-$$
+レベル2： $$
 \beta_{0j} = \gamma_{00} + \gamma_{01} (\bar{x}_{.j} -\bar{x}_{..}) + u_{0j} \\
 \beta_{1j} = \gamma_{10} + \gamma_{11} (\bar{x}_{.j} -\bar{x}_{..}) + u_{1j} \\
-\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+\left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
+
+結合モデル： $$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01}x_{j}^{mdev} + \gamma_{10}x_{ij}^{cwc} + \gamma_{11}x_{j}^{mdev} x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
+$$ ※ $x_{j}^{mdev}=\bar{x}_{.j}-\bar{x}_{..}$
 
 ```{r, message=FALSE, warning=FALSE}
 data$pre2.mdev <- data$pre2.m - mean(data$pre2.m)
 
-crosslevel <- lmer(post1 ~ pre1.cwc + pre2.mdev + pre1.cwc:pre2.mdev + (1 + pre1.cwc|schoolID),
+crosslevel <- lmer(post1 ~ pre2.mdev + pre1.cwc + pre2.mdev:pre1.cwc + (1 + pre1.cwc|schoolID),
                    data = data, REML = FALSE)
 summary(crosslevel)
 ```
 
 ### 5.3.2 適用例2
-レベル1：
-$$
+
+レベル1： $$
 y_{ij}=\beta_{0j} + \beta_{1j}(x_{ij} -\bar{x}_{.j}) + r_{ij} \\
 r_{ij} \sim N(0,\sigma^2)
 $$
 
-レベル2：
-$$
+レベル2： $$
 \beta_{0j} = \gamma_{00} + \gamma_{01} (\bar{x}_{.j} -\bar{x}_{..}) + \gamma_{02}(z_j-\bar{z}_.) + u_{0j} \\
 \beta_{1j} = \gamma_{10} + \gamma_{11} (\bar{x}_{.j} -\bar{x}_{..}) + \gamma_{12}(z_j-\bar{z}_.) + u_{1j} \\
-\pmatrix{u_{0j} \\ u_{1j}} \sim MVN(0,T)
+\left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
+
+結合モデル： $$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01}x_{j}^{mdev} + \gamma_{02}z_j^{dev} + \gamma_{10}x_{ij}^{cwc} + \gamma_{11}x_{j}^{mdev} x_{ij}^{cwc} +\gamma_{12} z_j^{dev}x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
+$$ $z_j^{dev} = z_j-\bar{z}_.$
 
 ```{r, message=FALSE, warning=FALSE}
 data$time2.dev <- data$time2 - mean(data$time2)
 
-crosslevel2 <- lmer(post1 ~ pre1.cwc + pre2.mdev + time2.dev +
+crosslevel2 <- lmer(post1 ~ pre2.mdev + time2.dev + pre1.cwc +
                       pre2.mdev:pre1.cwc + time2.dev:pre1.cwc +
                       (1 + pre1.cwc|schoolID),
                     data = data, REML = FALSE)
 summary(crosslevel2)
 ```
 
-
 ## 5.4 モデル比較
+
 ```{r, message=FALSE, warning=FALSE}
+# ランダム切片モデル（第4章）
 anovamodel <- lmer(post1 ~ (1|schoolID), data = data, REML = FALSE)
 maomodel <- lmer(post1 ~ pre2.mdev + (1|schoolID), data = data, REML = FALSE)
 bweffectmodel <- lmer(post1 ~ pre1.cwc + pre2.mdev + (1|schoolID), data = data, REML = FALSE)
 
-anova(anovamodel, maomodel, bweffectmodel, rismodel, crosslevel)
+# モデル比較
+anova(anovamodel, maomodel, bweffectmodel, rismodel, crosslevel, crosslevel2)
 ```

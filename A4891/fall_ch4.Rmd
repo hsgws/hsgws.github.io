@@ -44,6 +44,11 @@ $$
 u_{0j} \sim N(0,\tau_{00})
 $$
 
+結合モデル（レベル2をレベル1へ代入したモデル）：
+$$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
+$$
+
 ```{r, message=FALSE, warning=FALSE}
 library(lmerTest)
 anovamodel <- lmer(post1 ~ (1|schoolID), data = data, REML = FALSE)
@@ -61,15 +66,15 @@ data.frame(rname = c("$\\gamma_{00}$", "$\\tau_{00}$", "$\\sigma^2$"),
 )
 
 ## 4.3 RANCOVA
-モデル1（全体平均中心化）：
+モデル1 - 全体平均中心化：
 $$
-y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{..}) r_{ij} \\
+y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{..}) + r_{ij} \\
 r_{ij} \sim N(0,\sigma^2)
 $$
 
-モデル1（集団平均中心化）：
+モデル1 - 集団平均中心化：
 $$
-y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{.j}) r_{ij} \\
+y_{ij}=\beta_{0j} + b_1(x_{ij}-\bar{x}_{.j}) + r_{ij} \\
 r_{ij} \sim N(0,\sigma^2)
 $$
 
@@ -80,12 +85,26 @@ u_{0j} \sim N(0,\tau_{00})
 $$
 
 ### 全体平均中心化
+結合モデル - 全体平均中心化：
+$$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cgm}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
+$$
+※ $x_{ij}^{cgm}=x_{ij}-\bar{x}_{..}$
+
+
 ```{r, message=FALSE, warning=FALSE}
 rancovamodel_cgm <- lmer(post1 ~ pre1.cgm + (1|schoolID), data = data, REML = FALSE)
 summary(rancovamodel_cgm)
 ```
 
 ### 集団平均中心化
+結合モデル - 集団平均中心化：
+$$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
+$$
+※ $x_{ij}^{cwc}=x_{ij}-\bar{x}_{.j}$
+
+
 ```{r, message=FALSE, warning=FALSE}
 rancovamodel_cwc <- lmer(post1 ~ pre1.cwc + (1|schoolID), data = data, REML = FALSE)
 summary(rancovamodel_cwc)
@@ -104,6 +123,12 @@ $$
 u_{0j} \sim N(0, \tau_{00})
 $$
 
+結合モデル：
+$$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01} x_{j}^{mdev}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
+$$
+※ $x_{j}^{mdev}=\bar{x}_{.j}-\bar{x}_{..}$
+
 ```{r, message=FALSE, warning=FALSE}
 data$pre2.mdev <- data$pre2.m - mean(data$pre2.m) # データに学校平均の偏差を追加
 maomodel <- lmer(post1 ~ pre2.mdev + (1|schoolID), data = data, REML = FALSE)
@@ -121,6 +146,11 @@ $$
 $$
 \beta_{0j}=\gamma_{00}+\gamma_{01}(\bar{x}_{.j}-\bar{x}_{..})+u_{0j} \\
 u_{0j} \sim N(0, \tau_{00})
+$$
+
+結合モデル - 集団平均中心化：
+$$
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cwc} + \gamma_{01} x_{j}^{mdev}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
 
 ```{r, message=FALSE, warning=FALSE}
