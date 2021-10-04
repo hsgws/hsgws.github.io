@@ -44,7 +44,7 @@ $$
 u_{0j} \sim N(0,\tau_{00})
 $$
 
-結合モデル（レベル2をレベル1へ代入したモデル）：
+統合モデル（レベル2をレベル1へ代入したモデル）：
 $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
@@ -85,7 +85,7 @@ u_{0j} \sim N(0,\tau_{00})
 $$
 
 ### 全体平均中心化
-結合モデル - 全体平均中心化：
+統合モデル - 全体平均中心化：
 $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cgm}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
@@ -98,7 +98,7 @@ summary(rancovamodel_cgm)
 ```
 
 ### 集団平均中心化
-結合モデル - 集団平均中心化：
+統合モデル - 集団平均中心化：
 $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
@@ -123,7 +123,7 @@ $$
 u_{0j} \sim N(0, \tau_{00})
 $$
 
-結合モデル：
+統合モデル：
 $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01} x_{j}^{mdev}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
@@ -148,12 +148,12 @@ $$
 u_{0j} \sim N(0, \tau_{00})
 $$
 
-結合モデル - 集団平均中心化：
+統合モデル - 集団平均中心化：
 $$
-y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + b_1 x_{ij}^{cwc} + \gamma_{01} x_{j}^{mdev}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
+y_{ij} = \underset{固定効果}{\underline{\gamma_{00}  + \gamma_{01} x_{j}^{mdev} + b_1 x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + r_{ij}}}
 $$
 
 ```{r, message=FALSE, warning=FALSE}
-bweffectmodel <- lmer(post1 ~ pre1.cwc + pre2.mdev + (1|schoolID), data = data, REML = FALSE)
+bweffectmodel <- lmer(post1 ~ pre2.mdev + pre1.cwc + (1|schoolID), data = data, REML = FALSE)
 summary(bweffectmodel)
 ```

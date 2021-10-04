@@ -47,7 +47,7 @@ $$
 \left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
 
-結合モデル： $$
+統合モデル： $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{10}x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
 $$ ※ $x_{ij}^{cwc}=x_{ij}-\bar{x}_{.j}$
 
@@ -72,7 +72,7 @@ $$
 \left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
 
-結合モデル： $$
+統合モデル： $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01}x_{j}^{mdev} + \gamma_{10}x_{ij}^{cwc} + \gamma_{11}x_{j}^{mdev} x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
 $$ ※ $x_{j}^{mdev}=\bar{x}_{.j}-\bar{x}_{..}$
 
@@ -97,7 +97,7 @@ $$
 \left[\matrix{u_{0j} \\ u_{1j}} \right] \sim MVN \left( \left[ \matrix{0 \\ 0} \right], \left[ \matrix{\tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11} } \right] \right)
 $$
 
-結合モデル： $$
+統合モデル： $$
 y_{ij} = \underset{固定効果}{\underline{\gamma_{00} + \gamma_{01}x_{j}^{mdev} + \gamma_{02}z_j^{dev} + \gamma_{10}x_{ij}^{cwc} + \gamma_{11}x_{j}^{mdev} x_{ij}^{cwc} +\gamma_{12} z_j^{dev}x_{ij}^{cwc}}} + \underset{ランダム効果}{\underline{u_{0j} + u_{1j}x_{ij}^{cwc} + r_{ij}}}
 $$ $z_j^{dev} = z_j-\bar{z}_.$
 
