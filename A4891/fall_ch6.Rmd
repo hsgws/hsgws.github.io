@@ -1,0 +1,50 @@
+---
+title: "ch6"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データの読込み
+
+```{r, message=FALSE, warning=FALSE}
+data <- read.csv("data2/職場データ.csv")
+head(data)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+# 6.1.1
+data$work2.m <- ave(data$work1, data$company)
+data$work1.cwc <- data$work1 - data$work2.m
+
+# 6.1.2
+data$work1.cgm <- data$work1 - mean(data$work1)
+
+# 6.2.1
+data$hap2.m <- ave(data$hap1, data$company)
+
+head(data)
+```
