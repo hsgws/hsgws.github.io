@@ -34,7 +34,13 @@ library(plotly)
 
 ![](fig/rstudio/test.png)
 
-### 2.2. データの読み込み
+
+### 2.2. Projectフォルダの作成
+
+
+
+
+### 2.3. データの読み込み
 
 - 右上ペインの ![](fig/rstudio/rstudio_import.png) ボタンから「From Text (base)」または「From Text (readr)」を選択し，読み込むデータを指定
   - 基本的には「From Text (base)」を選択すれば良いが，データ内に日時や文字（都道府県名など）の列があって読み込みに失敗する場合は，「From Text (readr)」を選択して，各列の定義を指定するとうまく読み込める
@@ -61,7 +67,7 @@ data <- read.csv("[データの保存場所]/data.csv")
 
 - `header`: データの1行目に列名が含まれるなら `TRUE`，含まれないなら `FALSE`
 - `sep`: データがカンマで区切られているCSVなら `","`，スペースなら `""`，Tabなら `"\t"`
-- CSVデータは `read.csv` 関数でも読み込み可能
+- CSVデータは `read.csv` 関数でも読み込み可能で，`header` と `sep` の引数を省略できる
 
 
 <!-- ### 2.3. プログラムの実行 -->
