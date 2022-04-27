@@ -1,0 +1,44 @@
+digraph "y.sem" {
+  rankdir=LR;
+  size="8,8";
+  node [fontname="C:/WINDOWS/Fonts/msgothic.ttc" fontsize=10 shape=box];
+  edge [fontname="Helvetica" fontsize=10];
+  center=1;
+  "信頼性" [shape=ellipse]
+  "有形性" [shape=ellipse]
+  "応答性" [shape=ellipse]
+  "保証性" [shape=ellipse]
+  "共感性" [shape=ellipse]
+  "知覚品質" [shape=ellipse]
+  "知覚品質" -> "信頼性" [label="0.641"];
+  "知覚品質" -> "有形性" [label="0.566"];
+  "知覚品質" -> "応答性" [label="0.635"];
+  "知覚品質" -> "保証性" [label="0.602"];
+  "知覚品質" -> "共感性" [label="0.625"];
+  "信頼性" -> "y1" [label="1"];
+  "信頼性" -> "y2" [label="0.856"];
+  "有形性" -> "y3" [label="1"];
+  "有形性" -> "y4" [label="1.072"];
+  "応答性" -> "y5" [label="1"];
+  "応答性" -> "y6" [label="1.051"];
+  "保証性" -> "y7" [label="1"];
+  "保証性" -> "y8" [label="1.074"];
+  "共感性" -> "y9" [label="1"];
+  "共感性" -> "y10" [label="0.935"];
+  "知覚品質" -> "知覚品質" [label="1" dir=both];
+  "信頼性" -> "信頼性" [label="0.478" dir=both];
+  "有形性" -> "有形性" [label="0.314" dir=both];
+  "応答性" -> "応答性" [label="0.282" dir=both];
+  "保証性" -> "保証性" [label="0.392" dir=both];
+  "共感性" -> "共感性" [label="0.465" dir=both];
+  "y1" -> "y1" [label="0.112" dir=both];
+  "y2" -> "y2" [label="0.35" dir=both];
+  "y3" -> "y3" [label="0.366" dir=both];
+  "y4" -> "y4" [label="0.271" dir=both];
+  "y5" -> "y5" [label="0.315" dir=both];
+  "y6" -> "y6" [label="0.243" dir=both];
+  "y7" -> "y7" [label="0.246" dir=both];
+  "y8" -> "y8" [label="0.13" dir=both];
+  "y9" -> "y9" [label="0.144" dir=both];
+  "y10" -> "y10" [label="0.252" dir=both];
+}

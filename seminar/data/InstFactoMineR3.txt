@@ -1,0 +1,31 @@
+##  R ver.3 でのFactoMineRのインストール
+
+##  source("http://sensominer.free.fr/install.r")
+##toto = winDialog("yesno", "Do you want to install Rcmdr?")
+##if (toto=="YES"){
+##  local({r <- getOption("repos"); r["CRAN"] <- "http://cran.r-project.org/"; options(repos=r)})
+##  utils:::install.packages("Rcmdr",dependencies = TRUE)
+##}
+install.packages("Rcmdr",dependencies = TRUE)
+chemin = paste(find.package(package="Rcmdr")[1],"/etc",sep="")
+menu = readLines(con=paste(chemin,"/Rcmdr-menus.txt",sep=""))
+
+##Qfacto = winDialog("yesno", "Do you want to install FactoMineR?")
+##if (Qfacto=="YES"){
+  if (any(i <- grep("Add menu for FactoMineR" ,menu))){
+    lig1 = grep("Add menu for FactoMineR",menu) 
+    lig2 = grep("End add menu for FactoMineR",menu) 
+    if (lig2 == length(menu)) menu = menu[1:(lig1-1)]
+    else menu = menu[c(1:(lig1-1),(lig2+1):length(menu))]
+  }
+##  utils:::install.packages("FactoMineR",dependencies = TRUE)
+install.packages("FactoMineR",dependencies = TRUE)
+  add.menu.facto = readLines("http://factominer.free.fr/add-menu-facto.txt")
+  facto = readLines("http://factominer.free.fr/Rcmdr-facto.r")
+  writeLines(facto,con=paste(chemin,"/Rcmdr-facto.r",sep=""))
+  menu = c(menu,add.menu.facto)
+##}
+
+writeLines(menu,con=paste(chemin,"/Rcmdr-menus.txt",sep=""))
+
+library(Rcmdr)
