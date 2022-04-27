@@ -1,0 +1,129 @@
+---
+title: "第8章 製品開発"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+
+## 個人データ
+#### conjoint1.txt
+```{r}
+conjoint1 <- read.table("data/conjoint1.txt", header = T, sep = "")
+```
+
+```{r, echo=FALSE}
+conjoint1
+```
+
+## 4.2 個人分析
+```{r}
+result1 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint1)
+summary(result1)
+```
+
+- 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い。グラフ化も同様。
+- conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる。
+
+
+## 直交表データ
+#### conjoint2.txt
+```{r}
+conjoint2 <- read.table("data/conjoint2.txt", header = T, sep = "")
+```
+
+```{r, echo=FALSE}
+conjoint2
+```
+
+## 5.3 集計分析
+```{r}
+result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
+summary(result2)
+```
+
+
+## 参考：conjoint パッケージ
+### 個人データ (conjoint1.txt) の分析
+```{r, warning=FALSE, results='hide'}
+library(conjoint)
+
+# 属性・水準の定義
+attribute <- list(color = c("red", "silver", "black"),
+                  warranty = c("1year", "2year"),
+                  battery = c("6hour", "4hour", "2hour"))
+
+# ラベル名
+label_name <- c("red", "silver", "black", "1year", "2year", "6hour", "4hour", "2hour")
+
+# コンジョイントカードの作成（全組み合わせ）
+experiment <- expand.grid(attribute)
+full_profiles <- caFactorialDesign(experiment, type = "full")
+print(full_profiles)
+
+# コンジョイント分析の実行（全組み合わせ）
+Conjoint(conjoint1$全体効用, full_profiles, label_name, y.type = "score")
+```
+
+#### コンジョイントカード
+```{r echo=FALSE}
+print(full_profiles)
+```
+
+#### 分析結果
+```{r echo=FALSE}
+Conjoint(conjoint1$全体効用, full_profiles, label_name, y.type = "score")
+```
+
+- conjoint パッケージの回帰分析では部分効用（平均偏差形）が直接推定される
+- 基準水準を含む部分効用（平均偏差形）は "Part worths (utilities) of levels (model parameters for whole sample):"
+- 重要度は "Average importance of factors (attributes):"
+- 本ページでは省略しているが，部分効用と重要度の図（教科書p.181）も出力される
+
+
+### 直行表の作成
+```{r, warning=FALSE, results='hold'}
+library(conjoint)
+
+# 属性・水準の定義
+attribute <- list(color = c("red", "silver", "black"),
+                  warranty = c("1year", "2year"),
+                  battery = c("6hour", "4hour", "2hour"))
+
+# コンジョイントカードの作成（直行表）
+experiment <- expand.grid(attribute)
+orth <- caFactorialDesign(experiment, type = "orthogonal")
+print(orth)
+```
+
+- 教科書の直行表と conjoint パッケージで作成される直行表は若干異なり，教科書データを使った分析ができないため，ここでは直行表の作成方法の紹介までとする 
+- 直行表を使った集計分析の方法は conjoint パッケージのヘルプ（Rで `??conjoint` を実行）を参照するか，ネットで検索
+- **教科書の表8.7 ~ 8.10の直行表の一部は間違っているようなので利用しないこと**
+
+
+## 参考：選択ベース・コンジョイント
+
+[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) の [選択型コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) が参考になる。
+このサイトではExcelで部分効用の推定を行っているが，R では教科書11章で利用する mlogit パッケージで分析できる。
+

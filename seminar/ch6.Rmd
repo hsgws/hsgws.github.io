@@ -1,0 +1,129 @@
+---
+title: "第6章 市場の発見と知覚マップ"
+date: "更新：`r Sys.time()`"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: "pygments"
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データ
+#### senbei.txt
+```{r}
+senbei <- read.table("data/senbei.txt", header = T, sep = "\t", row.names = 1)
+```
+
+```{r, echo=FALSE}
+head(senbei)
+```
+
+- `row.names = 1` はデータの1列目（ブランド名）を行名に指定する引数
+- Import Datasetではオプションの "Row names" を "Use first column" に変更する
+
+## 4.1 相関係数行列
+```{r}
+cor(senbei)
+```
+
+## 5 因子分析
+```{r, results='hide'}
+# 因子分析の実行
+FactorModel <- factanal(senbei, factors = 2, scores = "regression", rotation = "varimax")
+
+# 分析結果（因子負荷量）の表示
+print(FactorModel, sort = TRUE)    # sort = TRUE で負荷量の順番に質問項目を並び替え
+
+# 分析スコアの表示
+print(FactorModel$scores)
+```
+
+**`factanal(data, factors, scores)`**：因子分析の実行
+
+- **`data`**：分析データの指定
+- **`factors`**：因子数の指定
+- **`scores`**：因子スコアの計算方法の指定
+- **`rotation`**：因子の回転の指定
+
+`factanal` の結果の変数（上記コードでは `FactorModel`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`FactorModel$socres` のように `$` の後ろに取り出したい変数名を指定する。
+
+
+#### 因子負荷量
+```{r, echo=FALSE}
+print(FactorModel, sort = TRUE)
+```
+
+#### 因子スコア
+```{r, echo=FALSE}
+print(FactorModel$scores)
+```
+
+#### 知覚マップ
+```{r, fig.show='hold', message=FALSE}
+# 知覚マップの作成
+plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
+
+# マップにブランド名を追加（maptoolsパッケージを利用）
+library(maptools)
+pointLabel(FactorModel$scores, labels = rownames(FactorModel$scores))
+```
+
+- 出力した図は右下ペインの Plots に表示され，[Export] → [Save as Image] からPCに保存できる。
+
+
+## 6.2 共通因子数の設定
+```{r, fig.show='hold', results='hold'}
+# 主成分分析
+PCA <- princomp(x = senbei, cor = TRUE)
+
+# 固有値
+PCA$sd^2
+
+# スクリーンプロット
+screeplot(PCA)
+```
+
+
+## 7 サブマーケットと市場構造
+```{r, fig.show='hide'}
+# 知覚マップ上での因子スコアの座標間距離の計算
+d <- dist(FactorModel$scores)
+
+# 階層的クラスター分析
+clstr <- hclust(d, method = "ward.D")
+
+# デンドログラムの表示
+plot(clstr)
+```
+
+**`dist(x)`**：座標間距離の計算
+
+- **`x`**：知覚マップ上の各ブランドの座標（＝因子スコア）
+
+**`hclust(d, method)`**：階層的クラスタリング
+
+- **`d`**：`dist(x)`で計算した座標間距離
+- **`method`**：クラスタリングの方法の指定
+
+```{r, echo=FALSE}
+plot(clstr)
+```
