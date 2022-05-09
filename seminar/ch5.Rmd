@@ -27,8 +27,6 @@ library(knitr)
 
 # data
 # ch5_data <- read.table("data/ch5_data.txt", header = T, sep = "\t")
-
-
 ```
 
 ## 売上データ

@@ -36,8 +36,10 @@ senbei <- read.table("data/senbei.txt", header = T, sep = "\t", row.names = 1)
 head(senbei)
 ```
 
-- `row.names = 1` はデータの1列目（ブランド名）を行名に指定する引数
-- Import Datasetではオプションの "Row names" を "Use first column" に変更する
+後の知覚マップ作成時にブランド名をマップ上に載せるため，データの第1列のブランド名を行名として読み込む
+
+- `read.table` 関数：データの1列目（ブランド名）を行名に指定する引数 `row.names = 1` を追加
+- Import Dataset：オプションの "Row names" を "Use first column" に変更
 
 ## 4.1 相関係数行列
 ```{r}
@@ -46,14 +48,15 @@ cor(senbei)
 
 ## 5 因子分析
 ```{r, results='hide'}
-# 因子分析の実行
+# 因子分析の実行（因子数2）
 FactorModel <- factanal(senbei, factors = 2, scores = "regression", rotation = "varimax")
 
 # 分析結果（因子負荷量）の表示
 print(FactorModel, sort = TRUE)    # sort = TRUE で負荷量の順番に質問項目を並び替え
 
-# 分析スコアの表示
+# 因子スコアの表示
 print(FactorModel$scores)
+
 ```
 
 **`factanal(data, factors, scores, rotation)`**：因子分析の実行
@@ -88,6 +91,53 @@ pointLabel(FactorModel$scores, labels = rownames(FactorModel$scores))
 ```
 
 - 出力した図は右下ペインの Plots に表示され，[Export] → [Save as Image] からPCに保存できる。
+
+
+### （参考1）分析結果の保存
+
+論文・レポートで分析結果の表を作成する場合，分析結果をCSVファイルで出力すると作業が楽になる。
+因子負荷量と因子スコアは `write.csv` 関数で出力可能。詳細は `write.csv` 関数のヘルプを参照。
+
+```{r}
+# 因子負荷量
+write.csv(FactorModel$loadings, file = "loadings.csv")
+
+# 因子スコア
+write.csv(FactorModel$scores, file = "scores.csv")
+```
+
+
+### （参考2）因子数が3個以上の場合
+
+- `factanal` の引数 `factors` を変更すると因子数を変更できる（因子数3の場合 `factors = 3`）
+- 因子数を3個以上の知覚マップを作成する場合は，因子数に合わせて2個以上の知覚マップを作成する
+
+
+教科書の senbei データでは因子数3以上で因子分析を実行すると「3 個の因子は 5 個の変数に対しては多すぎます」とエラーが表示されて実行できないため，以下では教科書7章のデータの一部を利用した分析例を紹介する。
+
+#### 分析例
+```{r, results='hold', fig.show='hold'}
+# 教科書7章データの一部を利用
+seg <- read.csv("data/seg.txt")
+seg <- seg[1:50, 2:28]  # 最初の50行 × 設問列（2~28行）
+
+# 因子分析の実行（因子数3）
+FactorModel3 <- factanal(seg, factors = 3, scores = "regression", rotation = "varimax")
+
+# 知覚マップ1（Factor1 × Factor2）
+plot(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor2"],
+     xlab = "Factor1", ylab = "Factor2")
+pointLabel(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor2"],
+           labels = rownames(FactorModel3$scores))
+
+# 知覚マップ2（Factor1 × Factor3）
+plot(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor3"],
+     xlab = "Factor1", ylab = "Factor3")
+pointLabel(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor3"],
+           labels = rownames(FactorModel3$scores))
+```
+
+
 
 
 ## 6.2 共通因子数の設定
