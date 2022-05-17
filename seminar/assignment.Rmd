@@ -1,0 +1,46 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## ch5
+```{r}
+data <- read.csv("data_assignment/gaishoku.csv")
+out <- lm(外食 ~ 世帯人員 + 年間収入, data = data)
+summary(out)
+```
+
+## ch6
+```{r}
+data <- read.csv("data_assignment/smartphone.csv", row.names = 1)
+out <- factanal(data, factors = 2, scores = "regression", rotation = "varimax")
+
+# 因子負荷量
+print(out, sort = TRUE)
+
+# 知覚マップ
+plot(out$scores)
+library(maptools)
+pointLabel(out$scores, labels = rownames(data))
+
+# スクリーンプロット
+pca <- princomp(x = data, cor = TRUE)
+screeplot(pca)
+```
+
+## ch7
+```{r}
+data <- read.csv("data_assignment/data_youji.csv")
+
+# 因子分析
+out <- factanal(data, factors = 4, scores = "regression", rotation = "varimax")
+
+# クラスター分析
+clstr <- kmeans(x = out$scores, centers = 4, nstart = 10)
+
+# 重心 & サイズ
+print(clstr$centers)
+print(clstr$size)
+```
+
+
