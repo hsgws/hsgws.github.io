@@ -46,6 +46,38 @@ summary(result1)
 - 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い。グラフ化も同様。
 - conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる。
 
+### 部分効用
+```{r}
+# 回帰係数の確認・抽出
+coef <- coef(result1)
+print(coef)
+
+# 保証期間
+warranty <- c(coef["X2年"], "1年" = 0)
+warranty <- warranty - mean(warranty)
+print(warranty)
+
+# バッテリ時間
+battery <- c(coef[c("X6時間", "X4時間")], "2時間" = 0)
+battery <- battery - mean(battery) 
+print(battery)
+
+# 色
+color <- c(coef[c("赤", "シルバー")], "黒" = 0)
+color <- color - mean(color)
+print(color)
+```
+
+### 重要度
+```{r}
+importance <- c(warranty = max(warranty) - min(warranty),
+                battery = max(battery) - min(battery),
+                color = max(color) - min(color))
+
+importance <- importance/sum(importance)
+print(importance)
+```
+
 
 ## 直交表データ
 #### conjoint2.txt
@@ -62,6 +94,8 @@ conjoint2
 result2 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint2)
 summary(result2)
 ```
+
+部分効用と重要度の計算は個人分析と同じ方法で計算できるため省略。
 
 
 ## 参考：conjoint パッケージ
