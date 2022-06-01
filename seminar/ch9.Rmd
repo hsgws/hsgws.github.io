@@ -85,7 +85,19 @@ legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
 n <- Bass$購買者数
 Nt <- Bass$一期前累積購買者数
 
+# パラメータ推定
 result <- nls(n ~ p*(m - Nt) + q*Nt/m*(m - Nt),  # 式(9.1)
               start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
 summary(result)
+
+# 購買者数の予測値の計算
+prediction <- predict(result) 
+
+# 予測値プロット
+cols <- c("black", "red")  # 折れ線グラフの色
+ltys <- c(3, 2)    # 折れ線グラフの線のタイプ
+plot(x = Bass$時点, y = Bass$購買者数, type = "b", col = cols[1], lty = ltys[1],
+     xlab = "時点", ylab = "")
+lines(x = Bass$時点, y = prediction, col = cols[2], lty = ltys[2])
+legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
 ```

@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
 output: html_notebook
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## ch5
@@ -41,6 +43,57 @@ clstr <- kmeans(x = out$scores, centers = 4, nstart = 10)
 # 重心 & サイズ
 print(clstr$centers)
 print(clstr$size)
+```
+
+
+## ch8
+```{r}
+data_ice <- read.csv("data_assignment/data_ice.csv", header = TRUE)
+out <- lm(utility ~ chocolate + vanilla + X.1.50 + X.2.00 + cone + yes, data = data_ice)
+summary(out)
+
+coef <- coef(out)
+print(coef)
+
+flavour <- c(coef[c("chocolate", "vanilla")], "strawberry" = 0)
+flavour <- flavour - mean(flavour)
+print(flavour)
+
+price <- c(coef[c("X.1.50", "X.2.00")], "X.2.50" = 0)
+price <- price - mean(price)
+print(price)
+
+package <- c(coef["cone"], "cap" = 0)
+package <- package - mean(package)
+print(package)
+
+topping <- c(coef["yes"], "no" = 0)
+topping <- topping - mean(topping)
+print(topping)
+
+library(conjoint)
+data(ice)
+
+con <- Conjoint(ipref,iprof,ilevn,y.type="rank")
+summary(con)
+```
+
+
+## ch9
+```{r}
+data_ds <- read.csv("data_assignment/data_ds.csv", header = TRUE, encoding = "utf-8")
+
+data_ds <- data_ds[1:9,]
+
+n <- data_ds$販売数量
+Nt <- c(0, data_ds$累計販売数)[1:nrow(data_ds)]
+
+result <- nls(n ~ p*(m - Nt) + q*Nt/m*(m - Nt),  # 式(9.1)
+              start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
+summary(result)
+
+plot(x = data_ds$時点, y = data_ds$販売数量, type = "b")
+lines(x = data_ds$時点, y = predict(result), col = "red")
 ```
 
 
