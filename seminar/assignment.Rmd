@@ -75,13 +75,12 @@ library(conjoint)
 data(ice)
 
 con <- Conjoint(ipref,iprof,ilevn,y.type="rank")
-summary(con)
 ```
 
 
 ## ch9
 ```{r}
-data_ds <- read.csv("data_assignment/data_ds.csv", header = TRUE, encoding = "utf-8")
+data_ds <- read.csv("data_assignment/data_ds.csv", header = TRUE, encoding = "UTF-8")
 
 data_ds <- data_ds[1:9,]
 
