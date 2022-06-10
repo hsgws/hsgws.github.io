@@ -96,3 +96,11 @@ lines(x = data_ds$時点, y = predict(result), col = "red")
 ```
 
 
+## ch10
+```{r}
+data <- read.csv("data_assignment/data_akisu.csv")
+
+out <- glm(thief ~ ., data = data, family = binomial(link = "logit"))
+summary(out)
+```
+

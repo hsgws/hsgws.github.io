@@ -40,7 +40,8 @@ head(RFM)
 
 ## 4.1 RFM 分析
 ### 顧客のランク付け
-```{r}
+#### 方法1（carパッケージ）
+```{r message=FALSE}
 library(car)
 R_Rank <- Recode(RFM$R, 
                  '0:30="R_Rank1"; 
@@ -49,13 +50,7 @@ R_Rank <- Recode(RFM$R,
                   91:180="R_Rank4"; 
                   else="R_Rank5"',
                  as.factor = TRUE)
-M_Rank <- Recode(RFM$M, 
-                 '0:49999="M_Rank1";
-                  50000:99999="M_Rank2";
-                  100000:299999="M_Rank3";
-                  300000:499999="M_Rank4";
-                  else="M_Rank5"',
-                 as.factor = TRUE)
+
 F_Rank <- Recode(RFM$F, 
                  '1="F_Rank1"; 
                   2="F_Rank2"; 
@@ -64,74 +59,30 @@ F_Rank <- Recode(RFM$F,
                   else="F_Rank5"',
                  as.factor = TRUE)
 
+M_Rank <- Recode(RFM$M, 
+                 '0:49999="M_Rank1";
+                  50000:99999="M_Rank2";
+                  100000:299999="M_Rank3";
+                  300000:499999="M_Rank4";
+                  else="M_Rank5"',
+                 as.factor = TRUE)
+
 # データセットへの追加
 RFM <- cbind(RFM, R_Rank, F_Rank, M_Rank)
-```
-
-
-
-
-#### 方法1（for文とif文）
-```{r, message=FALSE}
-for (i in 1:2000) {
-  # M_Rank
-  if (RFM$M[i] < 50000) {
-    RFM$M_Rank[i] <- "M_Rank1"}
-  else if (RFM$M[i] >= 50000 & RFM$M[i] < 100000) {
-    RFM$M_Rank[i] <- "M_Rank2"}
-  else if (RFM$M[i] >= 100000 & RFM$M[i] < 300000) {
-    RFM$M_Rank[i] <- "M_Rank3"}
-  else if (RFM$M[i] >= 300000 & RFM$M[i] < 500000) {
-    RFM$M_Rank[i] <- "M_Rank4"}
-  else {  # M >= 500000
-    RFM$M_Rank[i] <- "M_Rank5"
-  }
-  
-  # R_Rank
-  if (RFM$R[i] > 180) {
-    RFM$F_Rank[i] <- "F_Rank1"}
-  else if (RFM$R[i] > 90 & RFM$R[i] <= 180) {
-    RFM$F_Rank[i] <- "F_Rank2"}
-  else if (RFM$R[i] > 60 & RFM$R[i] <= 90) {
-    RFM$F_Rank[i] <- "F_Rank3"}
-  else if (RFM$R[i] > 30 & RFM$R[i] <= 60) {
-    RFM$F_Rank[i] <- "F_Rank4"}
-  else {  # R <= 30
-    RFM$F_Rank[i] <- "F_Rank5"
-  }
-
-  # F_Rank
-  if (RFM$F[i] == 1) {
-    RFM$R_Rank[i] <- "R_Rank1"}
-  else if (RFM$F[i] == 2) {
-    RFM$R_Rank[i] <- "R_Rank2"}
-  else if (RFM$F[i] >= 3 & RFM$F[i] < 10) {
-    RFM$R_Rank[i] <- "R_Rank3"}
-  else if (RFM$F[i] >= 10 & RFM$F[i] < 30) {
-    RFM$R_Rank[i] <- "R_Rank4"}
-  else {  # F < 30
-    RFM$R_Rank[i] <- "R_Rank5"
-  }
-}
-
-# 分散分析のために顧客ランクのデータ列を因子型に変換
-RFM$M_Rank <- as.factor(RFM$M_Rank)
-RFM$F_Rank <- as.factor(RFM$F_Rank)
-RFM$R_Rank <- as.factor(RFM$R_Rank)
-
 head(RFM)
 ```
+
+`Recode`
+
+- `0:30="R_Rank1"` のように，左辺に数値の範囲，右辺に変換したい文字列を指定
+- `as.factor = TRUE` を追加すると，データの型を factor 型に変更可能
+
 
 #### 方法2（dplyrパッケージ）
 ```{r, message=FALSE}
 library(dplyr)
 RFM <- RFM %>% 
-  mutate(M_Rank = case_when(M < 50000 ~ "M_Rank1",
-                            M >= 50000 & M < 100000 ~ "M_Rank2",
-                            M >= 100000 & M < 300000 ~ "M_Rank3",
-                            M >= 300000 & M < 500000 ~ "M_Rank4",
-                            M >= 500000  ~ "M_Rank5") %>% as.factor(),
-         R_Rank = case_when(R > 180 ~ "R_Rank1",
+  mutate(R_Rank = case_when(R > 180 ~ "R_Rank1",
                             R > 90 & R <= 180 ~ "R_Rank2",
                             R > 60 & R <= 90 ~ "R_Rank3",
                             R > 30 & R <= 60 ~ "R_Rank4",
@@ -140,14 +91,19 @@ RFM <- RFM %>%
                             F == 2 ~ "F_Rank2",
                             F >= 3 & F < 10 ~ "F_Rank3",
                             F >= 10 & F < 30 ~ "F_Rank4",
-                            F >= 30 ~ "F_Rank5") %>% as.factor())
+                            F >= 30 ~ "F_Rank5") %>% as.factor(),
+         M_Rank = case_when(M < 50000 ~ "M_Rank1",
+                            M >= 50000 & M < 100000 ~ "M_Rank2",
+                            M >= 100000 & M < 300000 ~ "M_Rank3",
+                            M >= 300000 & M < 500000 ~ "M_Rank4",
+                            M >= 500000  ~ "M_Rank5") %>% as.factor())
 
 head(RFM)
 ```
 
-- `dplyr` はデータ加工に便利なパッケージ。使い方は以下の参考書を参照，またはネットで使い方を検索。
+- `dplyr` はデータ加工に便利なパッケージ。使い方は以下の参考書を参照，またはネットで検索すると紹介ページが多数見つかる。
   - [前処理大全［データ分析のためのSQL/R/Python実践テクニック］：書籍案内｜技術評論社](https://gihyo.jp/book/2018/978-4-7741-9647-3)
-  - [RユーザのためのRStudio［実践］入門―tidyverseによるモダンな分析フローの世界―：書籍案内｜技術評論社](https://gihyo.jp/book/2018/978-4-7741-9853-8)
+  - [改訂2版 Rユーザのための RStudio［実践］入門 〜tidyverseによるモダンな分析フローの世界：書籍案内｜技術評論社](https://gihyo.jp/book/2021/978-4-297-12170-9)
 
 
 ### 箱ひげ図
