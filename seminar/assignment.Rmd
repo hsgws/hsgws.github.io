@@ -104,3 +104,16 @@ out <- glm(thief ~ ., data = data, family = binomial(link = "logit"))
 summary(out)
 ```
 
+
+## ch11
+
+
+## ch12
+```{r}
+library(FactoMineR)
+data <- read.csv("data_assignment/data_hotel.csv", row.names = 1)
+
+ca <- CA(data)
+hc <- HCPC(ca, nb.clust = 4)
+```
+
