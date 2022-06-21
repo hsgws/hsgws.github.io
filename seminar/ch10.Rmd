@@ -131,6 +131,12 @@ boxplot(F ~ R_Rank, data = RFM)
 # 一元配置分散分析
 aov_M <- aov(M ~ R_Rank, data = RFM)
 summary(aov_M)
+
+RFM %>% 
+  group_by(R_Rank) %>% 
+  summarise(mean = mean(M),
+            sd = sd(M),
+            n = n())
 ```
 
 **`aov(formula, data)`：分散分析**
