@@ -106,6 +106,14 @@ summary(out)
 
 
 ## ch11
+```{r}
+library(mlogit)
+data <- read.table("data_assignment/flabordata.txt", header = TRUE)
+data.mlogit <- mlogit.data(data, choice = "h.choice", shape = "wide")
+
+out <- mlogit(h.choice ~ 0|income + age + edu + n1 + n2 + n3|0, data = data.mlogit)
+summary(out)
+```
 
 
 ## ch12

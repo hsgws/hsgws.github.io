@@ -2792,7 +2792,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">第11章 市場反応分析 (II)</h1>
-<h4 class="date">更新：2022-06-21 17:42:16</h4>
+<h4 class="date">更新：2022-06-21 21:16:23</h4>
 
 </div>
 
@@ -2801,7 +2801,12 @@ div.tocify {
 <h2>データ</h2>
 <div id="binomial-choice.txt" class="section level4">
 <h4>binomial-choice.txt</h4>
-<pre class="r"><code>binomial.choice &lt;- read.table(&quot;data/binomial-choice.txt&quot;, header = T, sep = &quot;&quot;, fileEncoding = &quot;shift-jis&quot;)</code></pre>
+<p>変数名に “-” は使えないので，“.” に変更（binomial-choice →
+binomial.choice)。</p>
+<pre class="r"><code>binomial.choice &lt;- read.table(&quot;data/binomial-choice.txt&quot;, 
+                              header = TRUE, 
+                              sep = &quot;&quot;, 
+                              fileEncoding = &quot;shift-jis&quot;)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["番号"],"name":[1],"type":["int"],"align":["right"]},{"label":["B1"],"name":[2],"type":["int"],"align":["right"]},{"label":["B2"],"name":[3],"type":["int"],"align":["right"]},{"label":["P1"],"name":[4],"type":["int"],"align":["right"]},{"label":["P2"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"1","4":"450","5":"340","_rn_":"1"},{"1":"2","2":"0","3":"1","4":"450","5":"280","_rn_":"2"},{"1":"3","2":"0","3":"1","4":"450","5":"370","_rn_":"3"},{"1":"4","2":"0","3":"1","4":"323","5":"280","_rn_":"4"},{"1":"5","2":"1","3":"0","4":"220","5":"350","_rn_":"5"},{"1":"6","2":"0","3":"1","4":"423","5":"299","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -2840,7 +2845,7 @@ summary(logit)</code></pre>
 <ul>
 <li>ロジット・モデルの推定方法は第10章のロジスティクス回帰と同じ</li>
 <li>説明変数の「ブランドB1とB2の価格差」は <code>fomula</code> に
-<code>P1-P2</code> を指定</li>
+<code>P1 - P2</code> を指定</li>
 <li>次のプロビット・モデルの推定は <code>family</code> を
 <code>family = binomial(link = &quot;probit&quot;)</code> へ変更する</li>
 </ul>
@@ -2877,7 +2882,7 @@ summary(probit)</code></pre>
 <div id="ブランド価値を含まないモデル" class="section level2">
 <h2>3.2 ブランド価値を含まないモデル</h2>
 <pre class="r"><code>logit &lt;- glm(B1 ~ 0 + (P1 - P2), data = binomial.choice, family = binomial)
-# または logit &lt;- glm(B1 ~ (P1-P2) - 1, data = binomial.choice, family = binomial)
+# または logit &lt;- glm(B1 ~ (P1 - P2) - 1, data = binomial.choice, family = binomial)
 summary(logit)</code></pre>
 <pre><code>## 
 ## Call:

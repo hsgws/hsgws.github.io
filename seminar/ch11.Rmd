@@ -29,6 +29,9 @@ library(knitr)
 
 ## データ
 #### binomial-choice.txt
+
+変数名に "-" は使えないので，"." に変更（binomial-choice → binomial.choice)。
+
 ```{r}
 binomial.choice <- read.table("data/binomial-choice.txt", 
                               header = TRUE, 
@@ -48,7 +51,7 @@ summary(logit)
 ```
 
 - ロジット・モデルの推定方法は第10章のロジスティクス回帰と同じ
-- 説明変数の「ブランドB1とB2の価格差」は `fomula` に `P1-P2` を指定 
+- 説明変数の「ブランドB1とB2の価格差」は `fomula` に `P1 - P2` を指定 
 - 次のプロビット・モデルの推定は `family` を `family = binomial(link = "probit")` へ変更する
 
 ### プロビット・モデル
@@ -61,7 +64,7 @@ summary(probit)
 ## 3.2 ブランド価値を含まないモデル
 ```{r}
 logit <- glm(B1 ~ 0 + (P1 - P2), data = binomial.choice, family = binomial)
-# または logit <- glm(B1 ~ (P1-P2) - 1, data = binomial.choice, family = binomial)
+# または logit <- glm(B1 ~ (P1 - P2) - 1, data = binomial.choice, family = binomial)
 summary(logit)
 ```
 
