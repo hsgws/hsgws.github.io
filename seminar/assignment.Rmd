@@ -113,6 +113,13 @@ data.mlogit <- mlogit.data(data, choice = "h.choice", shape = "wide")
 
 out <- mlogit(h.choice ~ 0|income + age + edu + n1 + n2 + n3|0, data = data.mlogit)
 summary(out)
+
+library(AER)
+data("TravelMode")
+
+out <- mlogit(choice ~ wait + travel + vcost, data = TravelMode)
+summary(out)
+
 ```
 
 
