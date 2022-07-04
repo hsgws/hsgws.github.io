@@ -132,3 +132,18 @@ ca <- CA(data)
 hc <- HCPC(ca, nb.clust = 4)
 ```
 
+
+## ch13
+```{r}
+# data <- read.csv("data_assignment/data_commodity.csv", header = TRUE)
+data <- read.csv("data_assignment/data_commodity.csv", header = TRUE, fileEncoding = "shift-jis")
+
+
+library(arules)
+y.tran <- as.matrix(data, "transactions")
+rules <- apriori(y.tran, parameter = list(supp = 0.4, conf = 0.5))
+print(rules)
+
+inspect(head(sort(rules, by = "lift"), n = 20))
+```
+
