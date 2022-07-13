@@ -96,6 +96,9 @@ summary(result, fit.measures = TRUE, standardized = TRUE)
 ```
 <br />
 
+共分散構造分析の分析結果は，一般的には標準化された係数で報告されることが多く，パス図も標準化された係数で作成する。
+lavaan では summary 出力の "Std.all" の数値が標準化された係数となる。
+
 ### パス図作成
 ```{r, message=FALSE, warning=FALSE}
 library(semPlot)
