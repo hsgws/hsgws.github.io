@@ -96,14 +96,17 @@ summary(result, fit.measures = TRUE, standardized = TRUE)
 ```
 <br />
 
-共分散構造分析の分析結果は，一般的には標準化された係数で報告されることが多く，パス図も標準化された係数で作成する。
-lavaan では summary 出力の "Std.all" の数値が標準化された係数となる。
+共分散構造分析の分析結果は，一般的には標準化された係数で報告する。パス図も標準化された係数で作成する。
+lavaan では summary 出力の "Std.all" の列の数値が標準化された係数となる。
 
 ### パス図作成
 ```{r, message=FALSE, warning=FALSE}
 library(semPlot)
 semPaths(result, what = "std", style = "lisrel")
 ```
+
+モデル内で潜在変数名を日本語で定義していた場合，Mac では semPlot で変数名が出力されないことがある。
+その場合は潜在変数名をアルファベットで定義しなおせば，変数名が出力される。
 
 
 ### CSI スコアの計算
