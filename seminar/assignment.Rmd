@@ -156,12 +156,14 @@ data("influencer_data")
 
 model <- 
 "
+  # 観測モデル
   SIC =~ sic_1 + sic_2 + sic_3 + sic_4 + sic_5 + sic_6 + sic_7
   PL =~ pl_1 + pl_2 + pl_3 + pl_4
   PQ =~ pq_1 + pq_2 + pq_3 + pq_4
   PI =~ pi_1 + pi_2 + pi_3 + pi_4 + pi_5
   WTP =~ wtp
 
+  # 構造モデル
   PL ~ SIC
   PQ ~ SIC
   PI ~ SIC + PL + PQ
