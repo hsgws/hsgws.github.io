@@ -1,0 +1,56 @@
+---
+title: "第1回（9/27） データ分析課題"
+output: html_notebook
+---
+
+## データ
+
+- 都道府県別の月次のべ宿泊者数（2011～2020年）
+- データ出典：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html)
+- データファイル：[monthly_hotel_data.csv（Google ドライブ）](https://drive.google.com/file/d/141uZA78GUXZ-j0_v31IX7rjFWGSrTp2q/view?usp=sharing)
+
+
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+tmp <- read.csv("data/monthly_hotel_data.csv", fileEncoding = "Shift-Jis")
+
+tmp %>% 
+  # head() %>% 
+  kable() %>% 
+  kable_styling("striped", full_width = F) %>% 
+  scroll_box(width = "900px", height = "300px")
+```
+
+
+## Rコード
+```{r}
+# パッケージのインストール（初回のみ実行）
+# install.packages(c("xts", "forecast", "urca", "ggplot2", "ggfortify"))
+
+# パッケージの読み込み
+library(xts)
+library(forecast)
+library(urca)
+library(ggplot2)
+library(ggfortify)
+
+# 47都道府県データ読み込み
+all_pref <- read.csv("data/monthly_hotel_data.csv", skip = 1)  # 1行目の都道府県名は除外
+all_pref <- all_pref[, 3:49]  # year，month列（1,2列目）の除外
+
+# ts型への変更
+all_pref <- ts(all_pref, start = c(2011, 1), frequency = 12)  
+
+# 沖縄データの抽出 & 表示
+okinawa <- all_pref[, "y47"]
+okinawa
+
+# 時系列プロット
+autoplot(okinawa/1000,
+         main = "宿泊者数（沖縄・月次）",
+         xlab = "年",
+         ylab = "人数（単位：千人）")
+```
+
+
