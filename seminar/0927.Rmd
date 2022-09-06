@@ -1,6 +1,19 @@
 ---
 title: "第1回（9/27） データ分析課題"
-output: html_notebook
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
 ---
 
 ## データ
@@ -24,7 +37,7 @@ tmp %>%
 
 
 ## Rコード
-```{r}
+```{r message=FALSE}
 # パッケージのインストール（初回のみ実行）
 # install.packages(c("xts", "forecast", "urca", "ggplot2", "ggfortify"))
 

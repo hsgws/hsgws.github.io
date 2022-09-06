@@ -1,0 +1,154 @@
+---
+title: "第3回（10/11） データ分析課題"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+## データ読み込み＆対数変換
+```{r message=FALSE}
+# パッケージの読み込み
+library(forecast)
+library(tseries)
+library(ggplot2)
+library(ggfortify)
+
+# データの読み込み
+## 47都道府県データ読み込み
+all_pref <- read.csv("data/monthly_hotel_data.csv", skip = 1)  # 1行目の都道府県名は除外
+all_pref <- all_pref[, 3:49]  # year，month列（1,2列目）の除外
+
+## ts型への変更
+all_pref <- ts(all_pref, start = c(2011, 1), frequency = 12)  
+
+## 沖縄データの抽出 & 表示
+okinawa <- all_pref[, "y47"]
+
+## 対数変換
+okinawa_log <- log(okinawa)
+```
+
+
+## 時系列プロット
+```{r}
+# 時系列プロットの比較
+## 原系列
+autoplot(okinawa/1000,
+         main = "原系列",
+         xlab = "年",
+         ylab = "人数（単位：千人）")
+
+## 対数変換
+autoplot(okinawa_log,
+         main = "対数変換",
+         xlab = "年",
+         ylab = "人数（対数変換）")
+```
+
+
+## パラメータ推定（教科書7-10）
+
+- 教科書のコード通り `auto.arima` 関数の引数に `parallel = T, num.cores = 4` を追加して，`Error in mclapply...` とエラーが表示される場合は，この2つの引数を削除して実行する。
+- 以下の例では2011年1月～2018年12月（96ヶ月間）をパラメータ推定用の訓練データ期間，2019年1月～2020年12月（24ヶ月間）を予測力検証用のテストデータ期間とした。
+
+```{r}
+# 訓練データとテストデータへの分割
+train <- window(okinawa_log, end = c(2018, 12))
+test <- window(okinawa_log, start = c(2019, 1))
+
+# ARIMAモデルの推定(auto.arima)
+arima_okinawa <- auto.arima(
+  y = train,
+  ic = "aic",
+  max.order = 7,
+  stepwise = F,
+  approximation = F
+  )
+
+# 推計結果
+arima_okinawa
+```
+
+
+## 予測と評価（教科書7-13）
+```{r}
+# 予測
+arima_f <- forecast(
+  arima_okinawa,
+  h = 24,
+  level = c(95, 70)
+  )
+
+# 予測結果
+arima_f
+```
+
+
+### 予測結果の図示
+```{r}
+autoplot(arima_f, predict.colour = 1, main = "ARIMAによる予測")
+```
+
+**（注意）**  
+上記グラフの予測期間（2019年以降）の実線はテストデータ期間の予測値であり，実績値（＝実際に観測された値）ではない。
+以下は，実績値，訓練データ期間の当てはめ値，テストデータ期間の予測値を同じグラフに描くRコード例。
+
+```{r}
+# 実績値・当てはめ値・予測値をまとめたts型データの作成
+plot_df <- cbind(
+  実績値 = okinawa_log,
+  当てはめ値 = arima_okinawa$fitted,
+  予測値 = arima_f$mean
+  )
+
+# 結果の図示
+autoplot(plot_df, main = "ARIMAによる予測")
+```
+
+### 予測精度の評価
+```{r}
+# 推定したARIMAモデルの予測精度
+accuracy(arima_f, x = test)
+
+# ナイーブ予測（過去の平均値）
+naive_f_mean <- meanf(train, h = 24)
+accuracy(naive_f_mean, x = test)
+
+# ナイーブ予測（直近の値）
+naive_f_latest <- rwf(train, h = 24) 
+accuracy(naive_f_latest, x = test)
+```
+
+- 宿泊者数は2020年からの新型コロナウイルス感染拡大によって大きな影響を受けたため，RMSEではARIMAモデルの予測精度がナイーブ予測より悪い結果となった。
+- 以下の通り，予測精度の検証期間を2019年に限定するとARIMAモデルの予測精度はナイーブ予測を上回る。
+
+
+### 予測精度の評価（2019年に限定）
+```{r}
+# 推定モデルの予測精度の評価（2019年に限定）
+arima_f_2019 <- window(arima_f$mean, end = c(2019, 12))
+naive_f_mean_2019 <- window(naive_f_mean$mean, end = c(2019, 12))
+naive_f_latest_2019 <- window(naive_f_latest$mean, end = c(2019, 12))
+
+test_2019 <- window(test, end = c(2019, 12))
+
+# 推定したARIMAモデルの予測精度
+accuracy(arima_f_2019, test_2019)
+
+# ナイーブ予測（過去の平均値）
+accuracy(naive_f_mean_2019, test_2019)
+
+# ナイーブ予測（直近の値）
+accuracy(naive_f_latest_2019, test_2019)
+```
