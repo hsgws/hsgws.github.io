@@ -1,0 +1,215 @@
+---
+title: "第5回（10/25） データ分析課題"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+## 課題①
+### モデル構造
+
+*観測方程式*
+$$
+y_t = \mu_t + \gamma_{1,t} + \beta x_t + v_t, \quad v_t \sim N(0, \sigma_v^2)
+$$
+
+*状態方程式*
+$$
+\begin{cases}
+\mu_t = \mu_{t-1} + w_t, \quad w_t \sim N(0, \sigma_w^2) \\
+\gamma_{1,t} = -\gamma_{1,t-1}-\gamma_{2,t-1}-\cdots-\gamma_{11,t-1} + \eta_t, \quad \eta_t \sim N(0, \sigma_\eta^2) 
+\end{cases}
+$$
+
+- $\mu_t$：トレンド項
+- $\gamma_{1,t}$：12ヶ月の周期的変動
+- $x_t$：月内の祝日数（土日＋祝日）
+
+旅館・ホテルは休日の需要が高いため月内の休日数を外生変数として加える。
+休日数の影響は年による変動が少ないと想定されるため，係数 $\beta$ は時変係数とはしない。
+
+
+### データ読み込み＆対数変換
+```{r message=FALSE}
+# パッケージの読み込み
+library(forecast)
+library(tseries)
+library(ggplot2)
+library(ggfortify)
+
+# 47都道府県データ読み込み
+all_pref <- read.csv("data/monthly_hotel_data.csv", skip = 1)  # 1行目の都道府県名は除外
+all_pref <- all_pref[, 3:49]  # year，month列（1,2列目）の除外
+
+# ts型への変更
+all_pref <- ts(all_pref, start = c(2011, 1), frequency = 12)  
+
+# 沖縄データの抽出 & 表示
+okinawa <- all_pref[, "y47"]
+
+# 対数変換
+okinawa_log <- log(okinawa)
+
+# 訓練データとテストデータへの分割
+train <- window(okinawa_log, end = c(2018, 12))
+test <- window(okinawa_log, start = c(2019, 1))
+
+# 休日数データ読み込み
+xdata <- read.csv("data/monthly_hotel_data_holiday.csv", skip = 1)
+xdata <- ts(xdata$x10, start = c(2011, 1), frequency = 12)
+
+# 1年分のデータ表示
+head(cbind(train, xdata), 12)
+```
+
+
+### パラメータ推定
+
+```{r message=FALSE}
+library(KFAS)
+
+# Step1：モデル構造
+holiday <- window(xdata, end = c(2018, 12))
+
+build_kfas <- SSModel(
+  H = NA,
+  train ~ 
+    SSMtrend(degree = 1, Q = NA) + 
+    SSMseasonal(period = 12, Q = NA, sea.type = "dummy") +
+    holiday
+)
+
+# Step2：推定
+fit_kfas <- fitSSM(build_kfas, inits = c(1, 1, 1))
+
+# Step3：フィルタリング・スムージング
+result_kfas <- KFS(
+  fit_kfas$model,
+  filtering = c("state", "mean"),
+  smoothing = c("state", "mean")
+)
+
+# 外生変数（月内休日数）の係数・推定値
+result_kfas$alphahat[1, "holiday"]
+
+# 外生変数（月内休日数）の係数・標準偏差
+sqrt(result_kfas$V[1, 1, 1])
+```
+⇒ 推定値からは休日が1日増加すると exp(`r round(result_kfas$alphahat[1, "holiday"], 4)`) = `r round(exp(result_kfas$alphahat[1, "holiday"]), 4)` 倍になると解釈できるが，係数は有意ではない。
+
+
+```{r message=FALSE}
+# 観測誤差の分散推定値
+fit_kfas$model$H
+
+# 過程誤差の分散推定値
+fit_kfas$model$Q
+```
+⇒ 対角成分の左上から，ローカルレベルモデル（トレンド）の分散 $\sigma_w^2$，周期的変動の分散 $\sigma_\eta^2$
+
+
+### 推定結果の確認・図示
+
+コード参考：教科書11-5（p.275）
+
+```{r}
+library(gridExtra)
+
+p_data <- autoplot(train, main = "元データ")
+p_trend <- autoplot(result_kfas$alphahat[, "level"], main = "トレンド")
+p_cycle <- autoplot(result_kfas$alphahat[, "sea_dummy1"], main = "周期成分")
+
+grid.arrange(p_data, p_trend, p_cycle)
+```
+
+
+## 課題②
+### 予測
+```{r message=FALSE}
+# テストデータ期間の外生変数
+holiday <- window(xdata, start = c(2019, 1))
+
+test_newdata <- SSModel(
+  H = NA,
+  rep(NA, 24) ~ 
+    SSMtrend(degree = 1, Q = NA) + 
+    SSMseasonal(period = 12, Q = NA, sea.type = "dummy") +
+    holiday
+)
+
+## 推定値の分散を代入（指定）
+test_newdata$H <- fit_kfas$model$H
+test_newdata$Q <- fit_kfas$model$Q
+
+# 予測の実行
+forecast_pred <- predict(
+  fit_kfas$model,
+  newdata = test_newdata,
+  interval = "prediction",
+  level = 0.95,
+  n.ahead = 24
+)
+```
+
+- 外生変数をモデルに含める場合，予測を実行する `predict` 関数の引数`newdata` にテストデータ期間の外生変数の値（本データの場合は2019～2020年の各月の休日数）を `SSModel` で作成して追加する必要がある。その際，観測・過程分散パラメータは推定値を指定する必要もある。
+- 外生変数を含めない場合は教科書8-5，6（p.247～250）を参照。
+
+```{r message=FALSE}
+# 予測値＆95％区間
+forecast_pred
+```
+
+
+### 予測結果の図示
+```{r message=FALSE}
+# 推定期間の当てはめ値＆95％区間
+smooth_pred <- predict(
+  fit_kfas$model,
+  interval = "prediction",
+  level = 0.95
+)
+
+# 図示データの作成
+estimate_all <- rbind(smooth_pred, forecast_pred)
+
+df_forecast <- cbind(
+  data.frame(y = okinawa_log, time = seq(as.Date("2011/01/01"), as.Date("2020/12/01"), "months")),
+  as.data.frame(estimate_all)
+)
+
+# ggplot2による図示
+ggplot(data = df_forecast, aes(x = time, y = y)) +
+  geom_point(alpha = 0.5) +
+  geom_line(aes(y = fit), size = 1.2) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.3)
+```
+
+
+### 予測精度の評価
+```{r}
+accuracy(forecast_pred, x = test)
+```
+
+
+### 予測精度の評価（2019年に限定）
+```{r}
+forecast_pred_2019 <- window(forecast_pred, end = c(2019, 12))
+test_2019 <- window(test, end = c(2019, 12))
+
+accuracy(forecast_pred_2019, test_2019)
+```
+

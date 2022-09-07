@@ -16,7 +16,8 @@ output:
       in_header: "template/head.html"
 ---
 
-## データ読み込み＆対数変換
+## 課題①
+### データ読み込み＆対数変換
 ```{r message=FALSE}
 # パッケージの読み込み
 library(forecast)
@@ -40,16 +41,15 @@ okinawa_log <- log(okinawa)
 ```
 
 
-## 時系列プロット
+### 原系列と対数変換系列のグラフ比較
 ```{r}
-# 時系列プロットの比較
-## 原系列
+# 原系列
 autoplot(okinawa/1000,
          main = "原系列",
          xlab = "年",
          ylab = "人数（単位：千人）")
 
-## 対数変換
+# 対数変換
 autoplot(okinawa_log,
          main = "対数変換",
          xlab = "年",
@@ -57,7 +57,7 @@ autoplot(okinawa_log,
 ```
 
 
-## パラメータ推定（教科書7-10）
+### パラメータ推定（教科書7-10）
 
 - 教科書のコード通り `auto.arima` 関数の引数に `parallel = T, num.cores = 4` を追加して，`Error in mclapply...` とエラーが表示される場合は，この2つの引数を削除して実行する。
 - 以下の例では2011年1月～2018年12月（96ヶ月間）をパラメータ推定用の訓練データ期間，2019年1月～2020年12月（24ヶ月間）を予測力検証用のテストデータ期間とした。
@@ -80,8 +80,8 @@ arima_okinawa <- auto.arima(
 arima_okinawa
 ```
 
-
-## 予測と評価（教科書7-13）
+## 課題②
+### 予測と評価（教科書7-13）
 ```{r}
 # 予測
 arima_f <- forecast(
@@ -102,19 +102,25 @@ autoplot(arima_f, predict.colour = 1, main = "ARIMAによる予測")
 
 **（注意）**  
 上記グラフの予測期間（2019年以降）の実線はテストデータ期間の予測値であり，実績値（＝実際に観測された値）ではない。
-以下は，実績値，訓練データ期間の当てはめ値，テストデータ期間の予測値を同じグラフに描くRコード例。
+以下は，実績値，訓練データ期間の当てはめ値，テストデータ期間の予測値を同じグラフに描くRコード例（参考：教科書p.249）。
 
-```{r}
-# 実績値・当てはめ値・予測値をまとめたts型データの作成
-plot_df <- cbind(
-  実績値 = okinawa_log,
-  当てはめ値 = arima_okinawa$fitted,
-  予測値 = arima_f$mean
-  )
+```{r message=FALSE, warning=FALSE}
+df_forecast <- cbind(
+  y = okinawa_log, 
+  fit = arima_f$mean,
+  lower = arima_f$lower[, "95%"],
+  upper = arima_f$upper[, "95%"]
+)
 
-# 結果の図示
-autoplot(plot_df, main = "ARIMAによる予測")
+ggplot(data = df_forecast, aes(x = seq(as.Date("2011/01/01"), as.Date("2020/12/01"), "months"), y = y)) +
+  geom_point(alpha = 0.5) +
+  geom_line(aes(y = fit), size = 1.2) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) + 
+  xlab(label = "年")
 ```
+
+⇒ 点が実績値，実線が予測値，灰色の区間が95％区間
+
 
 ### 予測精度の評価
 ```{r}
