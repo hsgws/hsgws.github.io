@@ -1,0 +1,33 @@
+---
+title: "Title"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+
+```
+
+## 見出し1
+
+### 見出し2
+
