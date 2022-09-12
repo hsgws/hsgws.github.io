@@ -1,5 +1,5 @@
 ---
-title: "第2回 線形回帰分析"
+title: "線形回帰分析"
 date: "更新：`r Sys.time()`"
 output:
   html_document:
