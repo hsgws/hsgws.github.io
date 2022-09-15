@@ -11,7 +11,7 @@
 
 
 
-<title>線形回帰分析</title>
+<title>ロジットモデル</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -2552,230 +2552,6 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
-<script>$(document).ready(function(){
-    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-    if ($('[data-toggle="popover"]').popover === 'function') {
-        $('[data-toggle="popover"]').popover();
-    }
-});
-</script>
-<style type="text/css">
-.lightable-minimal {
-border-collapse: separate;
-border-spacing: 16px 1px;
-width: 100%;
-margin-bottom: 10px;
-}
-.lightable-minimal td {
-margin-left: 5px;
-margin-right: 5px;
-}
-.lightable-minimal th {
-margin-left: 5px;
-margin-right: 5px;
-}
-.lightable-minimal thead tr:last-child th {
-border-bottom: 2px solid #00000050;
-empty-cells: hide;
-}
-.lightable-minimal tbody tr:first-child td {
-padding-top: 0.5em;
-}
-.lightable-minimal.lightable-hover tbody tr:hover {
-background-color: #f5f5f5;
-}
-.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-classic {
-border-top: 0.16em solid #111111;
-border-bottom: 0.16em solid #111111;
-width: 100%;
-margin-bottom: 10px;
-margin: 10px 5px;
-}
-.lightable-classic tfoot tr td {
-border: 0;
-}
-.lightable-classic tfoot tr:first-child td {
-border-top: 0.14em solid #111111;
-}
-.lightable-classic caption {
-color: #222222;
-}
-.lightable-classic td {
-padding-left: 5px;
-padding-right: 5px;
-color: #222222;
-}
-.lightable-classic th {
-padding-left: 5px;
-padding-right: 5px;
-font-weight: normal;
-color: #222222;
-}
-.lightable-classic thead tr:last-child th {
-border-bottom: 0.10em solid #111111;
-}
-.lightable-classic.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-classic.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-classic-2 {
-border-top: 3px double #111111;
-border-bottom: 3px double #111111;
-width: 100%;
-margin-bottom: 10px;
-}
-.lightable-classic-2 tfoot tr td {
-border: 0;
-}
-.lightable-classic-2 tfoot tr:first-child td {
-border-top: 3px double #111111;
-}
-.lightable-classic-2 caption {
-color: #222222;
-}
-.lightable-classic-2 td {
-padding-left: 5px;
-padding-right: 5px;
-color: #222222;
-}
-.lightable-classic-2 th {
-padding-left: 5px;
-padding-right: 5px;
-font-weight: normal;
-color: #222222;
-}
-.lightable-classic-2 tbody tr:last-child td {
-border-bottom: 3px double #111111;
-}
-.lightable-classic-2 thead tr:last-child th {
-border-bottom: 1px solid #111111;
-}
-.lightable-classic-2.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-material {
-min-width: 100%;
-white-space: nowrap;
-table-layout: fixed;
-font-family: Roboto, sans-serif;
-border: 1px solid #EEE;
-border-collapse: collapse;
-margin-bottom: 10px;
-}
-.lightable-material tfoot tr td {
-border: 0;
-}
-.lightable-material tfoot tr:first-child td {
-border-top: 1px solid #EEE;
-}
-.lightable-material th {
-height: 56px;
-padding-left: 16px;
-padding-right: 16px;
-}
-.lightable-material td {
-height: 52px;
-padding-left: 16px;
-padding-right: 16px;
-border-top: 1px solid #eeeeee;
-}
-.lightable-material.lightable-hover tbody tr:hover {
-background-color: #f5f5f5;
-}
-.lightable-material.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-material.lightable-striped tbody td {
-border: 0;
-}
-.lightable-material.lightable-striped thead tr:last-child th {
-border-bottom: 1px solid #ddd;
-}
-.lightable-material-dark {
-min-width: 100%;
-white-space: nowrap;
-table-layout: fixed;
-font-family: Roboto, sans-serif;
-border: 1px solid #FFFFFF12;
-border-collapse: collapse;
-margin-bottom: 10px;
-background-color: #363640;
-}
-.lightable-material-dark tfoot tr td {
-border: 0;
-}
-.lightable-material-dark tfoot tr:first-child td {
-border-top: 1px solid #FFFFFF12;
-}
-.lightable-material-dark th {
-height: 56px;
-padding-left: 16px;
-padding-right: 16px;
-color: #FFFFFF60;
-}
-.lightable-material-dark td {
-height: 52px;
-padding-left: 16px;
-padding-right: 16px;
-color: #FFFFFF;
-border-top: 1px solid #FFFFFF12;
-}
-.lightable-material-dark.lightable-hover tbody tr:hover {
-background-color: #FFFFFF12;
-}
-.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
-background-color: #FFFFFF12;
-}
-.lightable-material-dark.lightable-striped tbody td {
-border: 0;
-}
-.lightable-material-dark.lightable-striped thead tr:last-child th {
-border-bottom: 1px solid #FFFFFF12;
-}
-.lightable-paper {
-width: 100%;
-margin-bottom: 10px;
-color: #444;
-}
-.lightable-paper tfoot tr td {
-border: 0;
-}
-.lightable-paper tfoot tr:first-child td {
-border-top: 1px solid #00000020;
-}
-.lightable-paper thead tr:last-child th {
-color: #666;
-vertical-align: bottom;
-border-bottom: 1px solid #00000020;
-line-height: 1.15em;
-padding: 10px 5px;
-}
-.lightable-paper td {
-vertical-align: middle;
-border-bottom: 1px solid #00000010;
-line-height: 1.15em;
-padding: 7px 5px;
-}
-.lightable-paper.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-paper.lightable-striped tbody tr:nth-child(even) {
-background-color: #00000008;
-}
-.lightable-paper.lightable-striped tbody td {
-border: 0;
-}
-</style>
 <script language="JavaScript">
 $(document).ready( function () {
    $("a[href^='http']:not([href*='" + location.hostname + "'])").attr('target', '_blank');
@@ -3088,995 +2864,22 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-13 17:49:30</h4>
+<h1 class="title toc-ignore">ロジットモデル</h1>
+<h4 class="date">更新：2022-09-15 20:16:58</h4>
 
 </div>
 
 
-<div id="分析例" class="section level2">
-<h2>1. 分析例</h2>
+<div id="分析例①二項ロジットロジスティック回帰" class="section level2">
+<h2>1. 分析例①：二項ロジット（ロジスティック回帰）</h2>
 <div id="データ" class="section level3">
 <h3>データ</h3>
-<p><strong>醤油の日次販売データ（sec3_reg.csv）</strong></p>
-<ul>
-<li>観測期間：2000/01/02～2003/07/31（1,314日間）</li>
-</ul>
-<div style="border: 1px solid #ddd; padding: 5px; ">
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Date
-</th>
-<th style="text-align:right;">
-PI_A
-</th>
-<th style="text-align:right;">
-PriceIndex_A
-</th>
-<th style="text-align:right;">
-PriceIndex_B
-</th>
-<th style="text-align:right;">
-Display_A
-</th>
-<th style="text-align:right;">
-Display_B
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2000-01-02
-</td>
-<td style="text-align:right;">
-1.022
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-03
-</td>
-<td style="text-align:right;">
-1.199
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-04
-</td>
-<td style="text-align:right;">
-0.261
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-05
-</td>
-<td style="text-align:right;">
-0.618
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-06
-</td>
-<td style="text-align:right;">
-1.225
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-07
-</td>
-<td style="text-align:right;">
-0.987
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><br />
-</p>
-<table>
-<colgroup>
-<col width="29%" />
-<col width="70%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>変数名</th>
-<th>内容</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Date</td>
-<td>日付</td>
-</tr>
-<tr class="even">
-<td>PI_A (<span class="math inline">\(y\)</span>)</td>
-<td>商品Aの点数PI（来店客1000人当たり販売点数）</td>
-</tr>
-<tr class="odd">
-<td>PriceIndex_A (<span class="math inline">\(x_{1}\)</span>)</td>
-<td>商品Aの価格掛率（1なら定価販売，0.8なら2割引）</td>
-</tr>
-<tr class="even">
-<td>PriceIndex_B (<span class="math inline">\(x_{2}\)</span>)</td>
-<td>商品Bの価格掛率</td>
-</tr>
-<tr class="odd">
-<td>Display_A (<span class="math inline">\(x_{3}\)</span>)</td>
-<td>商品Aの山積み陳列実施の有無（1＝実施，0＝非実施）</td>
-</tr>
-<tr class="even">
-<td>Display_B (<span class="math inline">\(x_{4}\)</span>)</td>
-<td>商品Bの山積み陳列実施の有無</td>
-</tr>
-</tbody>
-</table>
-<p><strong>データ出典</strong> ： 佐藤 (2016)
-『マーケティングの統計モデル』朝倉書店（実習用に一部変更）</p>
-</div>
-<div id="モデル" class="section level3">
-<h3>モデル</h3>
-<p><span class="math display">\[
-\log(y) = \beta_0 + \beta_1 \log(x_{1}) + \beta_2 \log(x_{2}) + \beta_3
-x_{3} + \beta_4 x_{4} + \varepsilon
-\]</span></p>
-<p><strong>目的変数</strong>：商品Aの点数PI<br />
-<strong>説明変数</strong>：商品A・Bの価格掛率の対数値
-，商品A・Bの山積み陳列実施の有無</p>
-<div id="回帰係数の解釈" class="section level4">
-<h4>回帰係数の解釈</h4>
-<ul>
-<li><span class="math inline">\(\beta_0\)</span> ：
-ベースとなる点数PI水準（切片）</li>
-<li><span class="math inline">\(\beta_1\)</span> ：
-自己商品（商品A）の価格弾力性</li>
-<li><span class="math inline">\(\beta_2\)</span> ：
-競合商品（商品B）の交差価格弾力性</li>
-<li><span class="math inline">\(\beta_3\)</span> ：
-自己商品（商品A）の山積み陳列の影響</li>
-<li><span class="math inline">\(\beta_4\)</span> ：
-競合商品（商品B）の山積み陳列の影響</li>
-</ul>
-<p>多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「<span class="math inline">\(\log(x_{1})\)</span>
-：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，<strong><span class="math inline">\(\beta_1\)</span>
-の係数はマイナスが期待される</strong>（マイナス×マイナス＝プラスで目的変数
-<span class="math inline">\(y\)</span> に対して販売点数増加の影響）。
-競合商品価格「<span class="math inline">\(\log(x_{2})\)</span>：
-商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，<strong><span class="math inline">\(\beta_2\)</span>
-の係数はプラスが期待される</strong>。</p>
-<p>同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響
-<strong><span class="math inline">\(\beta_3\)</span>
-の係数はプラス</strong>，競合商品Bの山積み陳列の影響 <strong><span class="math inline">\(\beta_4\)</span>
-の係数はマイナスが期待される</strong>。</p>
-<p>目的変数 (<span class="math inline">\(y\)</span>)
-と価格に関わる説明変数 (<span class="math inline">\(x_{1}\)</span>・<span class="math inline">\(x_{2}\)</span>) は対数を取っているため，回帰係数
-<span class="math inline">\(\beta_1\)</span>・<span class="math inline">\(\beta_2\)</span>
-の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが
-<span class="math inline">\(\beta_1\)</span> (<span class="math inline">\(\beta_2\)</span>)
-％変化する」となる。また，山積み陳列実施の回帰係数 <span class="math inline">\(\beta_3\)</span>・<span class="math inline">\(\beta_4\)</span>
-の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが <span class="math inline">\(\beta_3\)</span> (<span class="math inline">\(\beta_4\)</span>) <span class="math inline">\(\times 100\)</span> ％だけ変化する」となる。</p>
-</div>
-</div>
-<div id="rコード" class="section level3">
-<h3>Rコード</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec3_reg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sec3_reg.csv&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B, </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> sec3_reg)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
-<p><strong><code>lm(formula, data)</code>：線形回帰モデルの推定</strong></p>
-<ul>
-<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
-<ul>
-<li>「目的変数 ~ 説明変数1 + 説明変数2 +
-説明変数3」のように，<code>~</code>
-の左側に目的変数，右側に説明変数を記述する</li>
-<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
-</ul></li>
-<li><strong><code>data</code></strong>：分析データの指定</li>
-</ul>
-<p><strong>補足</strong>：Rコードは “(” や “＋”
-，“,”（コンマ）の後で改行が可能</p>
-<div id="rコードの出力" class="section level4">
-<h4>Rコードの出力</h4>
-<pre><code>## 
-## Call:
-## lm(formula = log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + 
-##     Display_A + Display_B, data = sec3_reg)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -2.2839 -0.4723  0.1037  0.5098  1.7999 
-## 
-## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        0.16177    0.03304   4.896  1.1e-06 ***
-## log(PriceIndex_A) -5.02239    0.17461 -28.764  &lt; 2e-16 ***
-## log(PriceIndex_B)  1.92847    0.14223  13.559  &lt; 2e-16 ***
-## Display_A          0.77411    0.07402  10.459  &lt; 2e-16 ***
-## Display_B          0.03669    0.06161   0.596    0.552    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.6876 on 1309 degrees of freedom
-## Multiple R-squared:  0.5833, Adjusted R-squared:  0.582 
-## F-statistic: 458.1 on 4 and 1309 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<div id="推定結果" class="section level3">
-<h3>推定結果</h3>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">回帰係数</th>
-<th align="right">標準誤差</th>
-<th align="right">t 値</th>
-<th align="right">p 値</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">0.162</td>
-<td align="right">0.033</td>
-<td align="right">4.896</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">log(PriceIndex_A)</td>
-<td align="right">-5.022</td>
-<td align="right">0.175</td>
-<td align="right">-28.764</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">log(PriceIndex_B)</td>
-<td align="right">1.928</td>
-<td align="right">0.142</td>
-<td align="right">13.559</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Display_A</td>
-<td align="right">0.774</td>
-<td align="right">0.074</td>
-<td align="right">10.459</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">Display_B</td>
-<td align="right">0.037</td>
-<td align="right">0.062</td>
-<td align="right">0.596</td>
-<td align="right">0.552</td>
-</tr>
-</tbody>
-</table>
-<p>PriceIndex_Aの係数 <span class="math inline">\(\beta_1\)</span>
-の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.040％変化する」と解釈できる。</p>
-<p>PriceIndex_Bの係数 <span class="math inline">\(\beta_2\)</span>
-とDisplay_Aの係数 <span class="math inline">\(\beta_3\)</span>
-も期待通りの符号に推定されており，5％有意水準でも有意である。一方，Display_Bの係数
-<span class="math inline">\(\beta_4\)</span>
-の係数は，5％有意水準で有意と判断されず，目的変数に対して影響していないことが分かる。</p>
-<p>以上のことより，競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。</p>
-</div>
-<div id="目的変数の予測" class="section level3">
-<h3>目的変数の予測</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測する状況の説明変数</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">PriceIndex_A =</span> <span class="fl">0.8</span>,  <span class="co"># ⇒ 商品Aは定価から2割引</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">PriceIndex_B =</span> <span class="dv">1</span>,    <span class="co"># ⇒ 商品Bの定価販売</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Display_A =</span> <span class="dv">1</span>,       <span class="co"># ⇒ 商品Aの山積み陳列あり</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Display_B =</span> <span class="dv">0</span>        <span class="co"># ⇒ 商品Bの山積み陳列なし</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測の実行</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(result, <span class="at">newdata =</span> prediction_data, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測値：商品Aの点数PIの対数値</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>prediction</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測値：商品Aの点数PI（指数をとって点数PIへ変換）</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(prediction)</span></code></pre></div>
-<p><strong><code>predict(object, newdata, interval)</code>：線形回帰モデルによる予測</strong></p>
-<ul>
-<li>引数
-<ul>
-<li><strong><code>object</code></strong>：回帰分析の結果オブジェクト（<code>lm</code>関数の出力）</li>
-<li><strong><code>newdata</code></strong>：予測用の説明変数データ</li>
-<li><strong><code>interval</code></strong>：予測値の95%区間の指定</li>
-</ul></li>
-<li>出力
-<ul>
-<li><strong><code>fit</code></strong>：予測値</li>
-<li><strong><code>lwr</code></strong>：95%区間の下側</li>
-<li><strong><code>upr</code></strong>：95%区間の上側</li>
-</ul></li>
-</ul>
-<p>⇒ 詳細は <code>help(predict.lm)</code>
-を実行して，関数のヘルプを参照。</p>
-<div id="rコードの出力-1" class="section level4">
-<h4>Rコードの出力</h4>
-<pre><code>## # 予測値：商品Aの点数PIの対数値
-##        fit       lwr      upr
-## 1 2.056593 0.7011222 3.412064
-## 
-## # 予測値：商品Aの点数PI（指数をとって点数PIへ変換）
-##        fit      lwr      upr
-## 1 7.819287 2.016014 30.32779</code></pre>
-<p>推定モデルの目的変数は点数PIの対数としているので，予測値も対数値で出力される。
-点数PIに戻したい場合は <code>exp</code> をとる。
-ただし，指数の性質上，指数変換後は95％区間が非常に広くなるので，予測値のみを参考とする。
-点数PIの予測95%区間を求めたい場合は，対数変換しない元の値を目的変数とした回帰分析と予測を行う方がよい。</p>
-</div>
-</div>
-<div id="曜日ダミーの追加" class="section level3">
-<h3>曜日ダミーの追加</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データに曜日列を追加</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(sec3_reg<span class="sc">$</span>Date)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sec3_reg<span class="sc">$</span>days)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">relevel</span>(sec3_reg<span class="sc">$</span>days, <span class="at">ref =</span> <span class="st">&quot;日曜日&quot;</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec3_reg</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
-<p>ダミー変数は {0,1}
-でダミー変数列を作成する以外にも，文字でダミー変数列を作成することもできる。
-上の例では <code>weekdays</code> 関数で日付から曜日列<code>days</code>
-をデータに追加して，回帰分析の説明変数とした。</p>
-<br />
-
-<div style="border: 1px solid #ddd; padding: 5px; ">
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<caption>
-曜日を追加したデータ
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-Date
-</th>
-<th style="text-align:right;">
-PI_A
-</th>
-<th style="text-align:right;">
-PriceIndex_A
-</th>
-<th style="text-align:right;">
-PriceIndex_B
-</th>
-<th style="text-align:right;">
-Display_A
-</th>
-<th style="text-align:right;">
-Display_B
-</th>
-<th style="text-align:left;">
-days
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2000-01-02
-</td>
-<td style="text-align:right;">
-1.022
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-日曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-03
-</td>
-<td style="text-align:right;">
-1.199
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-月曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-04
-</td>
-<td style="text-align:right;">
-0.261
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-火曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-05
-</td>
-<td style="text-align:right;">
-0.618
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-水曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-06
-</td>
-<td style="text-align:right;">
-1.225
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-木曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-07
-</td>
-<td style="text-align:right;">
-0.987
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-金曜日
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="rコードの出力-2" class="section level4">
-<h4>Rコードの出力</h4>
-<pre><code>## # 推定結果の表示
-## 
-## Call:
-## lm(formula = log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + 
-##     Display_A + Display_B + days, data = sec3_reg)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.26223 -0.45340  0.09891  0.51211  1.81676 
-## 
-## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        0.30727    0.05823   5.277 1.54e-07 ***
-## log(PriceIndex_A) -5.00489    0.17419 -28.732  &lt; 2e-16 ***
-## log(PriceIndex_B)  1.97376    0.14239  13.862  &lt; 2e-16 ***
-## Display_A          0.77944    0.07377  10.565  &lt; 2e-16 ***
-## Display_B          0.04487    0.06144   0.730 0.465295    
-## days火曜日        -0.16402    0.07033  -2.332 0.019847 *  
-## days金曜日        -0.13480    0.07012  -1.922 0.054785 .  
-## days月曜日        -0.17124    0.07023  -2.438 0.014899 *  
-## days水曜日        -0.25079    0.07289  -3.440 0.000599 ***
-## days土曜日        -0.07254    0.07009  -1.035 0.300905    
-## days木曜日        -0.18930    0.07006  -2.702 0.006983 ** 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.685 on 1303 degrees of freedom
-## Multiple R-squared:  0.5883, Adjusted R-squared:  0.5851 
-## F-statistic: 186.2 on 10 and 1303 DF,  p-value: &lt; 2.2e-16
-## 
-## 
-## # 曜日なしモデルとのAICの比較
-## [1] 2751.558
-## [1] 2747.821</code></pre>
-</div>
-</div>
-</div>
-<div id="データ分析実習" class="section level2">
-<h2>2. データ分析実習</h2>
-<div id="データ-1" class="section level3">
-<h3>データ</h3>
-<p><strong>ツナ缶の週次販売データ</strong>（data_tuna.csv）</p>
-<ul>
-<li>観測期間：338週</li>
-</ul>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
-<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-LMOVE1
-</th>
-<th style="text-align:right;">
-NSALE1
-</th>
-<th style="text-align:right;">
-NSALE2
-</th>
-<th style="text-align:right;">
-NSALE3
-</th>
-<th style="text-align:right;">
-NSALE4
-</th>
-<th style="text-align:right;">
-NSALE5
-</th>
-<th style="text-align:right;">
-NSALE6
-</th>
-<th style="text-align:right;">
-NSALE7
-</th>
-<th style="text-align:right;">
-LPRICE1
-</th>
-<th style="text-align:right;">
-LPRICE2
-</th>
-<th style="text-align:right;">
-LPRICE3
-</th>
-<th style="text-align:right;">
-LPRICE4
-</th>
-<th style="text-align:right;">
-LPRICE5
-</th>
-<th style="text-align:right;">
-LPRICE6
-</th>
-<th style="text-align:right;">
-LPRICE7
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-9.920689
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.0901386
-</td>
-<td style="text-align:right;">
--0.1226736
-</td>
-<td style="text-align:right;">
-0.5755585
-</td>
-<td style="text-align:right;">
--0.1150392
-</td>
-<td style="text-align:right;">
-0.4568243
-</td>
-<td style="text-align:right;">
-1.224297
-</td>
-<td style="text-align:right;">
--0.2066103
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10.699891
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.2833146
-</td>
-<td style="text-align:right;">
--0.2876821
-</td>
-<td style="text-align:right;">
-0.5737717
-</td>
-<td style="text-align:right;">
--0.1177313
-</td>
-<td style="text-align:right;">
-0.4544687
-</td>
-<td style="text-align:right;">
-1.223764
-</td>
-<td style="text-align:right;">
--0.2089505
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10.133686
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.2834817
-</td>
-<td style="text-align:right;">
--0.1244131
-</td>
-<td style="text-align:right;">
-0.5724700
-</td>
-<td style="text-align:right;">
--0.2512933
-</td>
-<td style="text-align:right;">
-0.4536205
-</td>
-<td style="text-align:right;">
-1.223094
-</td>
-<td style="text-align:right;">
--0.2102677
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9.308555
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.2298545
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
--0.0845452
-</td>
-<td style="text-align:right;">
--0.2876821
-</td>
-<td style="text-align:right;">
-0.5737891
-</td>
-<td style="text-align:right;">
--0.2515269
-</td>
-<td style="text-align:right;">
-0.3629118
-</td>
-<td style="text-align:right;">
-1.222976
-</td>
-<td style="text-align:right;">
--0.3761963
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-11.255048
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.3710637
-</td>
-<td style="text-align:right;">
--0.1244210
-</td>
-<td style="text-align:right;">
-0.5692096
-</td>
-<td style="text-align:right;">
--0.1184715
-</td>
-<td style="text-align:right;">
-0.3606223
-</td>
-<td style="text-align:right;">
-1.220656
-</td>
-<td style="text-align:right;">
--0.2092430
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9.158521
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.0829185
-</td>
-<td style="text-align:right;">
--0.1172091
-</td>
-<td style="text-align:right;">
-0.5721063
-</td>
-<td style="text-align:right;">
--0.2779904
-</td>
-<td style="text-align:right;">
-0.3630181
-</td>
-<td style="text-align:right;">
-1.223151
-</td>
-<td style="text-align:right;">
--0.2030403
-</td>
-</tr>
-</tbody>
-</table>
+<p><strong>プロモーションメールの配信データ
+(data_email.csv)</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["recency"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["history_segment"],"name":[2],"type":["chr"],"align":["left"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["womens"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["zip_code"],"name":[6],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[8],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[9],"type":["chr"],"align":["left"]},{"label":["visit"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["conversion"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["spend"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"2) $100 - $200","3":"142.44","4":"1","5":"0","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"0","11":"0","12":"0"},{"1":"7","2":"2) $100 - $200","3":"180.65","4":"0","5":"1","6":"Surburban","7":"1","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0"},{"1":"9","2":"5) $500 - $750","3":"675.83","4":"1","5":"0","6":"Rural","7":"1","8":"Web","9":"Mens E-Mail","10":"0","11":"0","12":"0"},{"1":"2","2":"1) $0 - $100","3":"45.34","4":"1","5":"0","6":"Urban","7":"0","8":"Web","9":"Womens E-Mail","10":"0","11":"0","12":"0"},{"1":"6","2":"2) $100 - $200","3":"134.83","4":"0","5":"1","6":"Surburban","7":"0","8":"Phone","9":"Womens E-Mail","10":"1","11":"0","12":"0"},{"1":"9","2":"3) $200 - $350","3":"280.20","4":"1","5":"0","6":"Surburban","7":"1","8":"Phone","9":"Womens E-Mail","10":"0","11":"0","12":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 <p><br />
 </p>
@@ -4087,62 +2890,530 @@ LPRICE7
 </colgroup>
 <thead>
 <tr class="header">
-<th>変数</th>
+<th>変数名</th>
 <th>内容</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>LMOVE1</td>
-<td>ブランド1の週間販売数量の対数値</td>
+<td><strong>recency</strong> (<span class="math inline">\(x_1\)</span>)</td>
+<td>最終購買からの経過月数</td>
 </tr>
 <tr class="even">
-<td>NSALE1 ~ NSALE7</td>
-<td>ブランド1～7の週間特別陳列実施率（1週間の内で毎日実施していれば1）</td>
+<td>history_segment</td>
+<td>昨年の購買金額の階級</td>
 </tr>
 <tr class="odd">
-<td>LPRICE1 ~ LPRICE7</td>
-<td>ブランド1～7の週間平均価格の対数値</td>
+<td><strong>history</strong> (<span class="math inline">\(x_2\)</span>)</td>
+<td>昨年の購入金額</td>
+</tr>
+<tr class="even">
+<td>mens</td>
+<td>昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）</td>
+</tr>
+<tr class="odd">
+<td>womens</td>
+<td>昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）</td>
+</tr>
+<tr class="even">
+<td>zip_code</td>
+<td>居住地区の分類（Rural，Surburban，Urban）</td>
+</tr>
+<tr class="odd">
+<td><strong>newbie</strong> (<span class="math inline">\(x_3\)</span>)</td>
+<td>過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）</td>
+</tr>
+<tr class="even">
+<td>channel</td>
+<td>昨年の購買チャネル（Multichannel，Phone，Web）</td>
+</tr>
+<tr class="odd">
+<td><strong>segment</strong> (<span class="math inline">\(x_4\)</span>,
+<span class="math inline">\(x_5\)</span>)</td>
+<td>配信したプロモーションメールの種類（No Email，Womens Email，Mens
+Email） <br>⇒ <span class="math inline">\(x_4\)</span> = “No Email”,
+<span class="math inline">\(x_5\)</span> = “Womens Email”
+のダミー変数</td>
+</tr>
+<tr class="even">
+<td><strong>visit</strong> (<span class="math inline">\(y\)</span>)</td>
+<td>メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし）</td>
+</tr>
+<tr class="odd">
+<td>conversion</td>
+<td>メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし）</td>
+</tr>
+<tr class="even">
+<td>spend</td>
+<td>購入金額</td>
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong> ： bayesm パッケージの tuna
-データ（実習用に一部変更）</p>
+<p>（太字は以下の分析例で使用する変数）</p>
+<p><strong>データ出典</strong> ： <a href="https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html">MineThatData
+E-Mail Analytics And Data Mining Challenge dataset</a></p>
 </div>
-<div id="課題" class="section level3">
-<h3>課題</h3>
-<p>以下のモデルで，回帰係数 (<span class="math inline">\(\alpha_0,
-\beta_1, \dots, \beta_7, \gamma_1, \dots, \gamma_7\)</span>)
-を推定し，各説明変数の目的変数への影響を考察せよ。</p>
-<div id="モデル-1" class="section level4">
-<h4>モデル</h4>
+<div id="モデル" class="section level3">
+<h3>モデル</h3>
+<div id="効用関数" class="section level4">
+<h4>効用関数</h4>
+<!-- $$ -->
+<!-- \begin{align} -->
+<!-- U & = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \beta_5 x_{5} + \varepsilon \\ -->
+<!-- & = V + \varepsilon -->
+<!-- \end{align} -->
+<!-- $$ -->
 <p><span class="math display">\[
-LMOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7
-\gamma_i LPRICE_i + \varepsilon
+U = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
+\beta_4 x_{4} + \beta_5 x_{5} + \varepsilon
 \]</span></p>
-<p><strong>目的変数</strong>：ブランド1の販売数量の対数値 (LMOVE1)<br />
-<strong>説明変数</strong>：ブランド1～7の週間特別陳列実施率 (NSALE1 ~
-NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)</p>
-<p>（注）データファイル内のブランド1の週間販売数量（LMOVE1）とブランド1～7の週間平均価格（LPRICE1
-~ LPRICE7）は対数変換済み。</p>
-</br>
-<details>
-<summary>
-Rコード（クリックで表示）
-</summary>
-<div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(LMOVE1 <span class="sc">~</span> NSALE1 <span class="sc">+</span> NSALE2 <span class="sc">+</span> NSALE3 <span class="sc">+</span> NSALE4 <span class="sc">+</span> NSALE5 <span class="sc">+</span> NSALE6 <span class="sc">+</span> NSALE7 <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>               LPRICE1 <span class="sc">+</span> LPRICE2 <span class="sc">+</span> LPRICE3 <span class="sc">+</span> LPRICE4 <span class="sc">+</span> LPRICE5 <span class="sc">+</span> LPRICE6 <span class="sc">+</span> LPRICE7, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data_tuna)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># または以下でも実行可能（&quot;LMOVE1 ~ .&quot; でLMOVE1以外の変数を全て説明変数として指定）</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># result &lt;- lm(LMOVE1 ~ ., data = data_tuna)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 </div>
-</details>
+<div id="サイト訪問確率" class="section level4">
+<h4>サイト訪問確率</h4>
+<p><span class="math display">\[
+Pr(y=1) = \frac{\exp(V)}{1+\exp(V)}
+\]</span> <span class="math display">\[
+V = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
+\beta_4 x_{4} + \beta_5 x_{5}
+\]</span></p>
+<p><strong>目的変数</strong>：メール配信後2週間以内のサイト訪問の有無（<span class="math inline">\(y=1\)</span>なら訪問あり，<span class="math inline">\(y=0\)</span>なら訪問なし）<br />
+<strong>説明変数</strong>：最終購買からの経過月数，昨年の購入金額，過去12ヶ月以内の新規顧客，配信したプロモーションメールの種類</p>
+<ul>
+<li>history (<span class="math inline">\(x_2\)</span>)
+は，消費者によって金額が大きく異なるため対数値を説明変数とする。</li>
+<li>segment (<span class="math inline">\(x_4\)</span>, <span class="math inline">\(x_5\)</span>) の係数 <span class="math inline">\(\beta_4, \beta_5\)</span>
+はダミー変数の定義により，Mens Email
+を基準とした相対的な効果を意味する。つまり，<span class="math inline">\(\beta_4\)</span> は「Mens Email と比較したときの
+No Email の効果」，<span class="math inline">\(\beta_5\)</span> は「Mens
+Email と比較したときの Womens Email の効果」と解釈される。</li>
+</ul>
 </div>
+</div>
+<div id="rコード" class="section level3">
+<h3>Rコード</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data_email <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_email.csv&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ロジットモデルの実行</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(visit <span class="sc">~</span> recency <span class="sc">+</span> <span class="fu">log</span>(history) <span class="sc">+</span> newbie <span class="sc">+</span> segment,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> data_email)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<p><strong><code>glm(formula, family, data)</code>
+：二項ロジットモデルの推定</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>「目的変数 ~ 説明変数1 + 説明変数2 +
+説明変数3」のように，<code>~</code>
+の左側に目的変数，右側に説明変数を記述する</li>
+<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+</ul></li>
+<li><strong><code>family</code></strong>：分析モデル（データが従う確率分布）の指定
+<ul>
+<li>二項ロジットの場合はデータが二項分布に従うので
+<code>&quot;binomial&quot;</code> を指定</li>
+<li><code>family</code>
+を変更すれば，ポアソン回帰などのその他の一般化線型モデルも実行可能</li>
+</ul></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
+<div id="rコードの出力" class="section level5">
+<h5>Rコードの出力</h5>
+<pre><code>## 
+## Call:
+## glm(formula = visit ~ recency + log(history) + newbie + segment, 
+##     family = &quot;binomial&quot;, data = data_email)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.8377  -0.6467  -0.5665  -0.4676   2.2964  
+## 
+## Coefficients:
+##                       Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)          -1.912076   0.077503 -24.671   &lt;2e-16 ***
+## recency              -0.048299   0.003886 -12.427   &lt;2e-16 ***
+## log(history)          0.175966   0.013435  13.097   &lt;2e-16 ***
+## newbie               -0.439415   0.026728 -16.440   &lt;2e-16 ***
+## segmentWomens E-Mail -0.229896   0.026233  -8.764   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 38525  on 42693  degrees of freedom
+## Residual deviance: 37825  on 42689  degrees of freedom
+## AIC: 37835
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<div id="推定結果" class="section level3">
+<h3>推定結果</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">回帰係数</th>
+<th align="right">標準誤差</th>
+<th align="right">z 値</th>
+<th align="right">p 値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-1.912</td>
+<td align="right">0.078</td>
+<td align="right">-24.671</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">recency</td>
+<td align="right">-0.048</td>
+<td align="right">0.004</td>
+<td align="right">-12.427</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">log(history)</td>
+<td align="right">0.176</td>
+<td align="right">0.013</td>
+<td align="right">13.097</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">newbie</td>
+<td align="right">-0.439</td>
+<td align="right">0.027</td>
+<td align="right">-16.440</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">segmentWomens E-Mail</td>
+<td align="right">-0.230</td>
+<td align="right">0.026</td>
+<td align="right">-8.764</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>p値より全ての説明変数が有意と判断され，サイト訪問確率へ影響があることが分かる。</p>
+<p>recency（最終購買からの経過月数）の係数は符号がマイナスに推定されており，最終購買からの経過月数が長いとすでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。</p>
+<p>newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。</p>
+<p>segment（配信したプロモーションメールの種類）に関する係数は，前述の通り，Mens
+Email を基準とした相対的な効果を意味する。よって，Mens Email (= 0)
+が最も効果が高く，Womens E-Mail (= -0.231)，No E-Mail (= -0.643)
+と続く。</p>
+<p>なお，ダミー変数については，変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は
+<span class="math inline">\(\exp(\beta)\)</span>
+で計算することができ，newbie の場合，<span class="math inline">\(\exp(\beta_3) = \exp(-0.503) = 0.605\)</span>
+となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が
+0.605 倍となる。</p>
+</div>
+</div>
+<div id="分析例②多項ロジット" class="section level2">
+<h2>2. 分析例②：多項ロジット</h2>
+<div id="データ-1" class="section level3">
+<h3>データ</h3>
+<p><strong>醤油3製品の選択データ (sec4_choice2.csv)</strong></p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Date"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Choice"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Price.A"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Price.B"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Price.C"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Display.A"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Display.B"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["Display.C"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Ad.A"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Ad.B"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Ad.C"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"100021","2":"20000224","3":"C","4":"0.8028169","5":"0.8464164","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0"},{"1":"100021","2":"20000312","3":"C","4":"1.0000000","5":"0.8464164","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0"},{"1":"100021","2":"20000401","3":"C","4":"0.9084507","5":"0.8996587","6":"1","7":"0","8":"1","9":"1","10":"0","11":"0","12":"0"},{"1":"100021","2":"20000406","3":"C","4":"0.9084507","5":"0.8464164","6":"1","7":"0","8":"1","9":"1","10":"0","11":"0","12":"0"},{"1":"100021","2":"20000427","3":"C","4":"1.0000000","5":"0.9488055","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0"},{"1":"100021","2":"20000518","3":"C","4":"0.9084507","5":"1.0000000","6":"1","7":"0","8":"0","9":"1","10":"0","11":"0","12":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><br />
+</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="84%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>変数名</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>消費者ID</td>
+</tr>
+<tr class="even">
+<td>Date</td>
+<td>購買日</td>
+</tr>
+<tr class="odd">
+<td>Choice</td>
+<td>購買ブランド（A，B，C）</td>
+</tr>
+<tr class="even">
+<td>Price.A ~ Price.C</td>
+<td>ブランドA ~ Cの価格掛率（定価＝1）</td>
+</tr>
+<tr class="odd">
+<td>Display.A ~ Display.C</td>
+<td>ブランドA ~ Cの山積み陳列の有無（1＝実施，0＝非実施）</td>
+</tr>
+<tr class="even">
+<td>Ad.A ~ Ad.C</td>
+<td>ブランドA ~ Cのチラシ掲載の有無（1＝実施，0＝非実施）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>データ出典</strong> ： 佐藤 (2016)
+『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）</p>
+</div>
+<div id="モデル-1" class="section level3">
+<h3>モデル</h3>
+<div id="効用関数-1" class="section level4">
+<h4>効用関数</h4>
+<p><span class="math display">\[
+\begin{align}
+U_A &amp;= \beta_A + \beta_1 \log(Price_A) + \beta_2 Display_A + \beta_3
+Ad_A + \varepsilon_A \\
+U_B &amp;= \beta_B + \beta_1 \log(Price_B) + \beta_2 Display_B + \beta_3
+Ad_B + \varepsilon_B \\
+U_C &amp;= 0 + \beta_1 \log(Price_C) + \beta_2 Display_C + \beta_3 Ad_C
++ \varepsilon_C
+\end{align}
+\]</span></p>
+</div>
+<div id="ブランド選択確率" class="section level4">
+<h4>ブランド選択確率</h4>
+<p><span class="math display">\[
+Pr(Choice=A) = \frac{\exp(V_A)}{\exp(V_A)+\exp(V_B)+\exp(V_C)}
+\]</span> <span class="math display">\[
+V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
+\quad (j = A, B, C)
+\]</span></p>
+<p><strong>目的変数</strong>：購買ブランド（A，B，C）<br />
+<strong>説明変数</strong>：価格掛率の対数値，山積み陳列，チラシ掲載</p>
+<ul>
+<li>各ブランドのブランド切片 (<span class="math inline">\(\beta_A,
+\beta_B, \beta_C\)</span>)
+は，マーケティング変数に依らないブランドの魅力度を表し，ブランドロイヤリティとも呼ばれる。</li>
+<li>多項ロジットモデルではモデルの識別性のため，ブランド切片のどれかひとつをゼロに基準化する必要がある。ここではブランドCの切片を
+<span class="math inline">\(\beta_C = 0\)</span> とした。</li>
+</ul>
+</div>
+</div>
+<div id="rコード-1" class="section level3">
+<h3>Rコード</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mlogit パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;mlogit&quot;)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># mlogit パッケージの読込み</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>sec4_choice2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec4_choice2.csv&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>soydata <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  sec4_choice2,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">choice =</span> <span class="st">&quot;Choice&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">12</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  Choice <span class="sc">~</span> <span class="fu">log</span>(Price) <span class="sc">+</span> Display <span class="sc">+</span> Ad,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> soydata, </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<p><strong><code>mlogit.data(data, choice, shape, varying, sep)</code>：mlogit
+パッケージ用にデータを変換</strong></p>
+<ul>
+<li><strong><code>data</code></strong>：データの指定</li>
+<li><strong><code>choice</code></strong>：データ内の選択結果を示す変数名</li>
+<li><strong><code>shape</code></strong>：データ形式の指定（<code>long</code>
+または <code>wide</code>） ⇒ 分析例の醤油データは1行が1購買機会を表す
+<code>wide</code> 形式</li>
+<li><strong><code>varying</code></strong>：説明変数の列番号（<code>4:12</code>
+は4～12列を表す）</li>
+<li><strong><code>seq</code></strong>：説明変数と選択肢を区切る文字の指定（Price.A，Price.B，Price.C
+の “.”）</li>
+</ul>
+<p><strong><code>mlogit(formula, data, reflevel)</code>：多項ロジットモデルの推定</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
+<ul>
+<li>「目的変数 ~ 説明変数1 + 説明変数2 +
+説明変数3」のように，<code>~</code>
+の左側に目的変数，右側に説明変数を記述する</li>
+<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+</ul></li>
+<li><strong><code>data</code></strong>：<code>mlogit.data</code>
+コマンドで変換したデータの指定<br />
+</li>
+<li><strong><code>reflevel</code></strong>：切片を0に基準化する選択肢の指定</li>
+</ul>
+<div id="rコードの出力-1" class="section level5">
+<h5>Rコードの出力</h5>
+<pre><code>## 
+## Call:
+## mlogit(formula = Choice ~ log(Price) + Display + Ad, data = soydata, 
+##     reflevel = &quot;C&quot;, method = &quot;nr&quot;)
+## 
+## Frequencies of alternatives:choice
+##       C       A       B 
+## 0.43140 0.16395 0.40465 
+## 
+## nr method
+## 6 iterations, 0h:0m:0s 
+## g&#39;(-H)^-1g = 1.27E-05 
+## successive function values within tolerance limits 
+## 
+## Coefficients :
+##                Estimate Std. Error  z-value  Pr(&gt;|z|)    
+## (Intercept):A -2.157295   0.074801 -28.8406 &lt; 2.2e-16 ***
+## (Intercept):B -2.318315   0.085059 -27.2555 &lt; 2.2e-16 ***
+## log(Price)    -7.482272   0.286802 -26.0886 &lt; 2.2e-16 ***
+## Display        0.307216   0.075770   4.0546 5.023e-05 ***
+## Ad             0.819872   0.160994   5.0926 3.533e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Log-Likelihood: -2357.8
+## McFadden R^2:  0.38494 
+## Likelihood ratio test : chisq = 2951.2 (p.value = &lt; 2.22e-16)</code></pre>
+</div>
+</div>
+<div id="推定結果-1" class="section level3">
+<h3>推定結果</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">回帰係数</th>
+<th align="right">標準誤差</th>
+<th align="right">z 値</th>
+<th align="right">p 値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept):A</td>
+<td align="right">-2.157</td>
+<td align="right">0.075</td>
+<td align="right">-28.841</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):B</td>
+<td align="right">-2.318</td>
+<td align="right">0.085</td>
+<td align="right">-27.256</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">log(Price)</td>
+<td align="right">-7.482</td>
+<td align="right">0.287</td>
+<td align="right">-26.089</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Display</td>
+<td align="right">0.307</td>
+<td align="right">0.076</td>
+<td align="right">4.055</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Ad</td>
+<td align="right">0.820</td>
+<td align="right">0.161</td>
+<td align="right">5.093</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>ブランド切片は，ブランドAが <span class="math inline">\(\beta_A =
+-2.157\)</span>，ブランドBが <span class="math inline">\(\beta_B =
+-2.318\)</span> となり，ブランドCが基準 (<span class="math inline">\(\beta_C = 0\)</span>)
+となるため，ブランドCのブランドロイヤリティが最も高く推定されている。</p>
+<p>マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は
+<span class="math inline">\(\exp(0.307) = 1.360\)</span>，チラシ掲載は
+<span class="math inline">\(\exp(0.820) = 2.271\)</span>
+となり，チラシ掲載の方がプロモーション効果が高いと分かる。</p>
+<!-- ## 3. データ分析実習 -->
+<!-- ### データ -->
+<!-- **牛乳に関する選択ベース・コンジョイントのアンケートデータ (data_milk.csv)** -->
+<!-- ```{r, echo=FALSE} -->
+<!-- data_milk <- read_csv("data/data_milk.csv") -->
+<!-- head(data_milk) %>%  -->
+<!--   kbl() %>%  -->
+<!--   kable_styling("striped") %>%  -->
+<!--   scroll_box(width = "100%") -->
+<!-- ``` -->
+<!-- \ -->
+<!-- | 変数              | 内容                                      | -->
+<!-- | ----------------- | ----------------------------------------- | -->
+<!-- | id                | 回答者ID                                  | -->
+<!-- | experiment        | 質問番号（1～8）                          | -->
+<!-- | choice            | 選択結果                                    | -->
+<!-- | int.A ~ int.C     | 切片（int.A = 0，int.B = 0，int.C = 1） ⇒ 本課題では利用しない  | -->
+<!-- | haccp.A ~ haccp.C | HACCPラベル（厳格な衛生管理の証明）の有無 | -->
+<!-- | eco.A ~ eco.C     | エコラベルの有無                          | -->
+<!-- | bb.A ~ bb.C       | 賞味期限（0＝6日間，1＝7日間）            | -->
+<!-- | price.A ~ price.C | 1リットルあたり価格（145円，150円，155円，160円）        | -->
+<!-- **データ出典** ：[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html)  内の [選択型コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf)   -->
+<!-- </br> -->
+<!-- #### 補足説明 -->
+<!-- コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では，以下の属性と水準を考える。 -->
+<!-- | 属性              | 水準                                      | -->
+<!-- | ----------- | ---------------------------| -->
+<!-- | HACCPラベル | あり，なし （2水準）   | -->
+<!-- | エコラベル    | あり，なし （2水準）           | -->
+<!-- | 賞味期限     | 6日間，7日間 （2水準）     | -->
+<!-- | 1リットルあたり価格   | 145円，150円，155円，160円 （4水準） | -->
+<!-- コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。 -->
+<!-- 牛乳データでは，4属性とそれぞれの水準数を単純に掛け合わせると，2×2×2×4＝32通りの製品案が作成される。 -->
+<!-- しかし，直行表を使うことによって，製品案を32通りから8通りまで減らすことができる。 -->
+<!-- 消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。 -->
+<!-- しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。 -->
+<!-- 回答負荷を減らす方法として，選択型コンジョイント（または選択ベース・コンジョイント）と呼ばれる手法があり，1人の消費者に対して以下の手順で製品案に対する選好を調査する。 -->
+<!-- 1. 全ての製品案から2つの製品案をランダムに選ぶ -->
+<!-- 2. 2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう -->
+<!-- 3. 同じ消費者に1と2を何回か繰り返す -->
+<!-- 牛乳データの場合は，回答者10人に対して，1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。 -->
+<!-- このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。 -->
+<!-- コンジョイント分析に関しては，以下の参考文献または，データ出典に挙げたリンクを参照されたい。 -->
+<!-- **参考文献**：[照井・佐藤（2013）『現代マーケティング・リサーチ』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641164161)，第8章 -->
+<!-- ### 課題 -->
+<!-- 以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。 -->
+<!-- **目的変数**：選択結果 (choice)   -->
+<!-- **説明変数**：HACCPラベル (haccp)，エコラベルの有無 (eco)，賞味期限 (bb)，1リットルあたり価格 (price) -->
+<!-- #### 効用関数 -->
+<!-- $$ -->
+<!-- \begin{align}  -->
+<!-- U_j &= \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} + \beta_{3}x_{bb.j} + \beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\ -->
+<!-- U_C &= 0 + \varepsilon_C -->
+<!-- \end{align} -->
+<!-- $$ -->
+<!-- - 選択肢 A・B は直交表から作成された製品案，選択肢 C は「どちらも買わない」を表す -->
+<!-- -  -->
+<!-- </br> -->
+<!-- <details><summary>Rコード（クリックで表示）</summary><div> -->
+<!-- ```{r, eval=FALSE} -->
+<!-- library(mlogit) -->
+<!-- # mlogit 関数用にデータを加工 -->
+<!-- milkdata <- mlogit.data(data_milk, choice = "choice", shape = "wide", varying = 4:18, sep = ".") -->
+<!-- # 多項ロジットモデルの推定 -->
+<!-- result <- mlogit(choice ~ 0 + haccp + eco + bb + price, data = milkdata) -->
+<!-- # 推定結果の表示 -->
+<!-- summary(result) -->
+<!-- ``` -->
+<!-- </div></details> -->
 </div>
 </div>
 

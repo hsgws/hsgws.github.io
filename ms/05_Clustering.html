@@ -11,7 +11,7 @@
 
 
 
-<title>線形回帰分析</title>
+<title>クラスタリング</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -2552,230 +2552,6 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
-<script>$(document).ready(function(){
-    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-    if ($('[data-toggle="popover"]').popover === 'function') {
-        $('[data-toggle="popover"]').popover();
-    }
-});
-</script>
-<style type="text/css">
-.lightable-minimal {
-border-collapse: separate;
-border-spacing: 16px 1px;
-width: 100%;
-margin-bottom: 10px;
-}
-.lightable-minimal td {
-margin-left: 5px;
-margin-right: 5px;
-}
-.lightable-minimal th {
-margin-left: 5px;
-margin-right: 5px;
-}
-.lightable-minimal thead tr:last-child th {
-border-bottom: 2px solid #00000050;
-empty-cells: hide;
-}
-.lightable-minimal tbody tr:first-child td {
-padding-top: 0.5em;
-}
-.lightable-minimal.lightable-hover tbody tr:hover {
-background-color: #f5f5f5;
-}
-.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-classic {
-border-top: 0.16em solid #111111;
-border-bottom: 0.16em solid #111111;
-width: 100%;
-margin-bottom: 10px;
-margin: 10px 5px;
-}
-.lightable-classic tfoot tr td {
-border: 0;
-}
-.lightable-classic tfoot tr:first-child td {
-border-top: 0.14em solid #111111;
-}
-.lightable-classic caption {
-color: #222222;
-}
-.lightable-classic td {
-padding-left: 5px;
-padding-right: 5px;
-color: #222222;
-}
-.lightable-classic th {
-padding-left: 5px;
-padding-right: 5px;
-font-weight: normal;
-color: #222222;
-}
-.lightable-classic thead tr:last-child th {
-border-bottom: 0.10em solid #111111;
-}
-.lightable-classic.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-classic.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-classic-2 {
-border-top: 3px double #111111;
-border-bottom: 3px double #111111;
-width: 100%;
-margin-bottom: 10px;
-}
-.lightable-classic-2 tfoot tr td {
-border: 0;
-}
-.lightable-classic-2 tfoot tr:first-child td {
-border-top: 3px double #111111;
-}
-.lightable-classic-2 caption {
-color: #222222;
-}
-.lightable-classic-2 td {
-padding-left: 5px;
-padding-right: 5px;
-color: #222222;
-}
-.lightable-classic-2 th {
-padding-left: 5px;
-padding-right: 5px;
-font-weight: normal;
-color: #222222;
-}
-.lightable-classic-2 tbody tr:last-child td {
-border-bottom: 3px double #111111;
-}
-.lightable-classic-2 thead tr:last-child th {
-border-bottom: 1px solid #111111;
-}
-.lightable-classic-2.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-material {
-min-width: 100%;
-white-space: nowrap;
-table-layout: fixed;
-font-family: Roboto, sans-serif;
-border: 1px solid #EEE;
-border-collapse: collapse;
-margin-bottom: 10px;
-}
-.lightable-material tfoot tr td {
-border: 0;
-}
-.lightable-material tfoot tr:first-child td {
-border-top: 1px solid #EEE;
-}
-.lightable-material th {
-height: 56px;
-padding-left: 16px;
-padding-right: 16px;
-}
-.lightable-material td {
-height: 52px;
-padding-left: 16px;
-padding-right: 16px;
-border-top: 1px solid #eeeeee;
-}
-.lightable-material.lightable-hover tbody tr:hover {
-background-color: #f5f5f5;
-}
-.lightable-material.lightable-striped tbody tr:nth-child(even) {
-background-color: #f5f5f5;
-}
-.lightable-material.lightable-striped tbody td {
-border: 0;
-}
-.lightable-material.lightable-striped thead tr:last-child th {
-border-bottom: 1px solid #ddd;
-}
-.lightable-material-dark {
-min-width: 100%;
-white-space: nowrap;
-table-layout: fixed;
-font-family: Roboto, sans-serif;
-border: 1px solid #FFFFFF12;
-border-collapse: collapse;
-margin-bottom: 10px;
-background-color: #363640;
-}
-.lightable-material-dark tfoot tr td {
-border: 0;
-}
-.lightable-material-dark tfoot tr:first-child td {
-border-top: 1px solid #FFFFFF12;
-}
-.lightable-material-dark th {
-height: 56px;
-padding-left: 16px;
-padding-right: 16px;
-color: #FFFFFF60;
-}
-.lightable-material-dark td {
-height: 52px;
-padding-left: 16px;
-padding-right: 16px;
-color: #FFFFFF;
-border-top: 1px solid #FFFFFF12;
-}
-.lightable-material-dark.lightable-hover tbody tr:hover {
-background-color: #FFFFFF12;
-}
-.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
-background-color: #FFFFFF12;
-}
-.lightable-material-dark.lightable-striped tbody td {
-border: 0;
-}
-.lightable-material-dark.lightable-striped thead tr:last-child th {
-border-bottom: 1px solid #FFFFFF12;
-}
-.lightable-paper {
-width: 100%;
-margin-bottom: 10px;
-color: #444;
-}
-.lightable-paper tfoot tr td {
-border: 0;
-}
-.lightable-paper tfoot tr:first-child td {
-border-top: 1px solid #00000020;
-}
-.lightable-paper thead tr:last-child th {
-color: #666;
-vertical-align: bottom;
-border-bottom: 1px solid #00000020;
-line-height: 1.15em;
-padding: 10px 5px;
-}
-.lightable-paper td {
-vertical-align: middle;
-border-bottom: 1px solid #00000010;
-line-height: 1.15em;
-padding: 7px 5px;
-}
-.lightable-paper.lightable-hover tbody tr:hover {
-background-color: #F9EEC1;
-}
-.lightable-paper.lightable-striped tbody tr:nth-child(even) {
-background-color: #00000008;
-}
-.lightable-paper.lightable-striped tbody td {
-border: 0;
-}
-</style>
 <script language="JavaScript">
 $(document).ready( function () {
    $("a[href^='http']:not([href*='" + location.hostname + "'])").attr('target', '_blank');
@@ -3088,174 +2864,459 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-13 17:49:30</h4>
+<h1 class="title toc-ignore">クラスタリング</h1>
+<h4 class="date">更新：2022-09-15 21:01:31</h4>
 
 </div>
 
 
-<div id="分析例" class="section level2">
-<h2>1. 分析例</h2>
+<div id="分析例①クラスター分析" class="section level2">
+<h2>1. 分析例①：クラスター分析</h2>
 <div id="データ" class="section level3">
 <h3>データ</h3>
-<p><strong>醤油の日次販売データ（sec3_reg.csv）</strong></p>
+<p><strong>Big
+Five（個人のパーソナリティ）に関するアンケートデータ</strong>
+(data_bf.csv)</p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["E1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["E2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["E3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["E4"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["E5"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["E6"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["E7"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["E8"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["E9"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["E10"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["N1"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["N2"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["N3"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["N4"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["N5"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["N6"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["N7"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["N8"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["N9"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["N10"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["A1"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["A2"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["A3"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["A4"],"name":[24],"type":["dbl"],"align":["right"]},{"label":["A5"],"name":[25],"type":["dbl"],"align":["right"]},{"label":["A6"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["A7"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["A8"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["A9"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["A10"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["C1"],"name":[31],"type":["dbl"],"align":["right"]},{"label":["C2"],"name":[32],"type":["dbl"],"align":["right"]},{"label":["C3"],"name":[33],"type":["dbl"],"align":["right"]},{"label":["C4"],"name":[34],"type":["dbl"],"align":["right"]},{"label":["C5"],"name":[35],"type":["dbl"],"align":["right"]},{"label":["C6"],"name":[36],"type":["dbl"],"align":["right"]},{"label":["C7"],"name":[37],"type":["dbl"],"align":["right"]},{"label":["C8"],"name":[38],"type":["dbl"],"align":["right"]},{"label":["C9"],"name":[39],"type":["dbl"],"align":["right"]},{"label":["C10"],"name":[40],"type":["dbl"],"align":["right"]},{"label":["O1"],"name":[41],"type":["dbl"],"align":["right"]},{"label":["O2"],"name":[42],"type":["dbl"],"align":["right"]},{"label":["O3"],"name":[43],"type":["dbl"],"align":["right"]},{"label":["O4"],"name":[44],"type":["dbl"],"align":["right"]},{"label":["O5"],"name":[45],"type":["dbl"],"align":["right"]},{"label":["O6"],"name":[46],"type":["dbl"],"align":["right"]},{"label":["O7"],"name":[47],"type":["dbl"],"align":["right"]},{"label":["O8"],"name":[48],"type":["dbl"],"align":["right"]},{"label":["O9"],"name":[49],"type":["dbl"],"align":["right"]},{"label":["O10"],"name":[50],"type":["dbl"],"align":["right"]},{"label":["age"],"name":[51],"type":["dbl"],"align":["right"]},{"label":["gender"],"name":[52],"type":["dbl"],"align":["right"]},{"label":["race"],"name":[53],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"2","3":"5","4":"2","5":"5","6":"1","7":"4","8":"3","9":"5","10":"1","11":"1","12":"5","13":"2","14":"5","15":"1","16":"1","17":"1","18":"1","19":"1","20":"1","21":"1","22":"5","23":"1","24":"5","25":"2","26":"3","27":"1","28":"5","29":"4","30":"5","31":"4","32":"1","33":"5","34":"1","35":"5","36":"1","37":"4","38":"1","39":"4","40":"5","41":"4","42":"1","43":"3","44":"1","45":"5","46":"1","47":"4","48":"2","49":"5","50":"5","51":"53","52":"0","53":"3"},{"1":"2","2":"2","3":"3","4":"3","5":"3","6":"3","7":"1","8":"5","9":"1","10":"5","11":"2","12":"3","13":"4","14":"2","15":"3","16":"4","17":"3","18":"2","19":"2","20":"4","21":"1","22":"3","23":"3","24":"4","25":"4","26":"4","27":"2","28":"3","29":"4","30":"3","31":"4","32":"1","33":"3","34":"2","35":"3","36":"1","37":"5","38":"1","39":"4","40":"4","41":"3","42":"3","43":"3","44":"3","45":"2","46":"3","47":"3","48":"1","49":"3","50":"2","51":"46","52":"1","53":"13"},{"1":"5","2":"1","3":"1","4":"4","5":"5","6":"1","7":"1","8":"5","9":"5","10":"1","11":"5","12":"1","13":"5","14":"5","15":"5","16":"5","17":"5","18":"5","19":"5","20":"5","21":"5","22":"1","23":"5","24":"5","25":"1","26":"5","27":"1","28":"5","29":"5","30":"5","31":"4","32":"1","33":"5","34":"1","35":"5","36":"1","37":"5","38":"1","39":"5","40":"5","41":"4","42":"5","43":"5","44":"1","45":"5","46":"1","47":"5","48":"5","49":"5","50":"5","51":"14","52":"1","53":"1"},{"1":"2","2":"5","3":"2","4":"4","5":"3","6":"4","7":"3","8":"4","9":"4","10":"5","11":"5","12":"4","13":"4","14":"2","15":"4","16":"5","17":"5","18":"5","19":"4","20":"5","21":"2","22":"5","23":"4","24":"4","25":"3","26":"5","27":"3","28":"4","29":"4","30":"3","31":"3","32":"3","33":"4","34":"5","35":"1","36":"4","37":"5","38":"4","39":"2","40":"3","41":"4","42":"3","43":"5","44":"2","45":"4","46":"2","47":"5","48":"2","49":"5","50":"5","51":"19","52":"1","53":"3"},{"1":"3","2":"1","3":"3","4":"3","5":"3","6":"1","7":"3","8":"1","9":"3","10":"5","11":"3","12":"3","13":"3","14":"4","15":"3","16":"3","17":"3","18":"3","19":"3","20":"4","21":"5","22":"5","23":"3","24":"5","25":"1","26":"5","27":"1","28":"5","29":"5","30":"5","31":"3","32":"1","33":"5","34":"3","35":"3","36":"1","37":"1","38":"3","39":"3","40":"3","41":"3","42":"1","43":"1","44":"1","45":"3","46":"1","47":"3","48":"1","49":"5","50":"3","51":"25","52":"1","53":"11"},{"1":"1","2":"5","3":"2","4":"4","5":"1","6":"3","7":"2","8":"4","9":"1","10":"5","11":"1","12":"5","13":"4","14":"5","15":"1","16":"4","17":"4","18":"1","19":"5","20":"2","21":"2","22":"2","23":"3","24":"4","25":"3","26":"4","27":"3","28":"5","29":"5","30":"3","31":"2","32":"5","33":"4","34":"3","35":"3","36":"4","37":"5","38":"3","39":"5","40":"3","41":"4","42":"2","43":"1","44":"3","45":"3","46":"5","47":"5","48":"4","49":"5","50":"3","51":"31","52":"1","53":"13"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><strong>データ出典</strong> ：<a href="https://openpsychometrics.org/_rawdata/">Open psychology data: Raw
+data from online personality tests</a></p>
 <ul>
-<li>観測期間：2000/01/02～2003/07/31（1,314日間）</li>
+<li>上記サイトの “Answers to the Big Five Personality Test, constructed
+with items from the International Personality Item Pool.” を利用</li>
+<li>本分析例のため元データの一部を修正・削除した</li>
 </ul>
-<div style="border: 1px solid #ddd; padding: 5px; ">
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Date
-</th>
-<th style="text-align:right;">
-PI_A
-</th>
-<th style="text-align:right;">
-PriceIndex_A
-</th>
-<th style="text-align:right;">
-PriceIndex_B
-</th>
-<th style="text-align:right;">
-Display_A
-</th>
-<th style="text-align:right;">
-Display_B
-</th>
+<tr class="header">
+<th>変数名</th>
+<th>内容</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-2000-01-02
-</td>
-<td style="text-align:right;">
-1.022
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="odd">
+<td>E1 ~ E10</td>
+<td>外向性（Extraversion）に関する質問項目</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-2000-01-03
-</td>
-<td style="text-align:right;">
-1.199
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="even">
+<td>N1 ~ N10</td>
+<td>神経症的傾向（Neuroticism）に関する質問項目</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-2000-01-04
-</td>
-<td style="text-align:right;">
-0.261
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="odd">
+<td>A1 ~ A10</td>
+<td>協調性（Agreeableness）に関する質問項目</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-2000-01-05
-</td>
-<td style="text-align:right;">
-0.618
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="even">
+<td>C1 ~ C10</td>
+<td>誠実性（Conscientiousness）に関する質問項目</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-2000-01-06
-</td>
-<td style="text-align:right;">
-1.225
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="odd">
+<td>O1 ~ O10</td>
+<td>開放性（Openness to experience）に関する質問項目</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-2000-01-07
-</td>
-<td style="text-align:right;">
-0.987
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tr class="even">
+<td>age</td>
+<td>年齢</td>
+</tr>
+<tr class="odd">
+<td>gender</td>
+<td>性別（0＝男性，1＝女性）</td>
+</tr>
+<tr class="even">
+<td>race</td>
+<td>人種（13種類）</td>
 </tr>
 </tbody>
 </table>
+<p>⇒ <a href="05_Clustering_bigfive.html">質問項目（50問）と人種の詳細</a></p>
+<p><br /> <strong>Big
+Five</strong>：心理学分野で開発された個人パーソナリティの分類するための5指標</p>
+<ul>
+<li>外向性：自己主張や社交性の高さ</li>
+<li>神経症的傾向：心理的ストレスを受けやすさ</li>
+<li>協調性：思いやりや調和性の高さ</li>
+<li>誠実性：自己コントロール能力や計画性の高さ</li>
+<li>開放性：好奇心や想像力の高さ</li>
+</ul>
+<p>参考 <a href="https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6)">ビッグファイブ
+(心理学) - Wikipedia</a></p>
 </div>
-<p><br />
-</p>
+<div id="分析目的" class="section level3">
+<h3>分析目的</h3>
+<ol style="list-style-type: decimal">
+<li>計50問の設問を因子分析にかけてパーソナリティ因子を抽出</li>
+<li>パーソナリティ因子によって回答者を Kmeans
+法でクラスタリング（グループ化）</li>
+<li>各グループのプロファイリング（平均年齢や性別比を計算）</li>
+</ol>
+</div>
+<div id="rコード因子分析" class="section level3">
+<h3>Rコード（因子分析）</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 因子分析</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fa <span class="ot">&lt;-</span> <span class="fu">factanal</span>(data_bf[,<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], <span class="at">factors =</span> <span class="dv">5</span>, <span class="at">scores =</span> <span class="st">&quot;regression&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 因子負荷量</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa, <span class="at">cutoff =</span> <span class="fl">0.3</span>)  <span class="co"># 絶対値で0.3以上の負荷量のみ表示</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 因子スコア（最初の6人分のみ表示）</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fa<span class="sc">$</span>scores)</span></code></pre></div>
+<p><strong><code>factanal(data, factors, scores)</code></strong>：因子分析の実行</p>
+<ul>
+<li><strong><code>data</code></strong>：分析データの指定 ⇒
+<code>data_bf[,1:50]</code> でデータ内の質問項目（1〜50列）のみ指定</li>
+<li><strong><code>factors</code></strong>：因子数の指定 ⇒ Big
+Five尺度の通り5を指定</li>
+<li><strong><code>scores</code></strong>：因子スコアの計算方法</li>
+</ul>
+<p><code>factanal</code> の結果の変数（上記コードでは
+<code>fa</code>）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は
+<code>?factanal</code> を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，<code>fa$socres</code>
+のように <code>$</code> の後ろに取り出したい変数名を指定する。<br />
+<br /></p>
+<div id="rコードの出力" class="section level5">
+<h5>Rコードの出力</h5>
+<p>因子負荷量</p>
+<pre><code>## 
+## Call:
+## factanal(x = data_bf[, 1:50], factors = 5, scores = &quot;regression&quot;)
+## 
+## Uniquenesses:
+##    E1    E2    E3    E4    E5    E6    E7    E8    E9   E10    N1    N2    N3 
+## 0.542 0.524 0.424 0.486 0.397 0.598 0.416 0.688 0.616 0.537 0.530 0.736 0.596 
+##    N4    N5    N6    N7    N8    N9   N10    A1    A2    A3    A4    A5    A6 
+## 0.867 0.680 0.430 0.448 0.402 0.462 0.536 0.807 0.586 0.726 0.368 0.554 0.617 
+##    A7    A8    A9   A10    C1    C2    C3    C4    C5    C6    C7    C8    C9 
+## 0.511 0.640 0.464 0.690 0.615 0.689 0.764 0.555 0.588 0.625 0.707 0.696 0.595 
+##   C10    O1    O2    O3    O4    O5    O6    O7    O8    O9   O10 
+## 0.724 0.665 0.665 0.693 0.754 0.559 0.725 0.700 0.694 0.810 0.500 
+## 
+## Loadings:
+##     Factor1 Factor2 Factor3 Factor4 Factor5
+## E1   0.670                                 
+## E2  -0.678                                 
+## E3   0.655                                 
+## E4  -0.698                                 
+## E5   0.733                                 
+## E6  -0.568                                 
+## E7   0.738                                 
+## E8  -0.552                                 
+## E9   0.606                                 
+## E10 -0.651                                 
+## N1           0.670                         
+## N2          -0.494                         
+## N3           0.597                         
+## N4          -0.319                         
+## N5           0.539                         
+## N6           0.741                         
+## N7           0.723                         
+## N8           0.752                         
+## N9           0.708                         
+## N10          0.611                         
+## A1                  -0.424                 
+## A2   0.347           0.531                 
+## A3                  -0.401                 
+## A4                   0.790                 
+## A5                  -0.652                 
+## A6                   0.595                 
+## A7  -0.318          -0.613                 
+## A8                   0.577                 
+## A9                   0.707                 
+## A10  0.341           0.383                 
+## C1                           0.599         
+## C2                          -0.530         
+## C3                           0.402         
+## C4           0.360          -0.556         
+## C5                           0.623         
+## C6                          -0.586         
+## C7                           0.534         
+## C8                          -0.477         
+## C9                           0.625         
+## C10                          0.467         
+## O1                                   0.573 
+## O2                                  -0.539 
+## O3                                   0.533 
+## O4                                  -0.466 
+## O5                                   0.607 
+## O6                                  -0.506 
+## O7                                   0.488 
+## O8                                   0.535 
+## O9                                   0.335 
+## O10                                  0.679 
+## 
+##                Factor1 Factor2 Factor3 Factor4 Factor5
+## SS loadings      4.995   4.606   3.761   3.275   3.162
+## Proportion Var   0.100   0.092   0.075   0.066   0.063
+## Cumulative Var   0.100   0.192   0.267   0.333   0.396
+## 
+## Test of the hypothesis that 5 factors are sufficient.
+## The chi square statistic is 57376.74 on 985 degrees of freedom.
+## The p-value is 0</code></pre>
+<p>因子スコア（最初の6人分のみ表示）</p>
+<pre><code>##         Factor1     Factor2     Factor3      Factor4    Factor5
+## [1,]  1.0634496 -1.85974354  0.56123253  1.318260800  0.4174127
+## [2,] -0.7819427 -0.18998088 -0.19116641  0.951789002 -1.9228742
+## [3,]  0.6049793  2.37241881  0.11497870  2.112999961  0.8416754
+## [4,] -0.5876145  1.50800553 -0.02408379 -0.803975604  0.6020167
+## [5,]  0.2312989 -0.04627606  1.00409523 -0.231164260 -0.9254773
+## [6,] -1.4935329 -0.39798760 -0.04720913 -0.005043807 -0.7854546</code></pre>
+</div>
+</div>
+<div id="推定結果因子分析" class="section level3">
+<h3>推定結果（因子分析）</h3>
+<p>因子負荷量では，各列で<strong>数値の絶対値</strong>が大きいものを1つの因子としてまとめることが出来る。
+プラスで大きければ，その因子に対して正の影響，マイナスで大きければ負の影響を意味する。
+Big Five データでは，E・N・A・C・O
+の5指標の質問項目できれいにまとまっていることが確認でき，各因子は以下のように解釈できる。</p>
+<ul>
+<li>Factor 1：外向性（Extraversion）</li>
+<li>Factor 2：神経症的傾向（Neuroticism）</li>
+<li>Factor 3：協調性（Agreeableness）</li>
+<li>Factor 4：誠実性（Conscientiousness）</li>
+<li>Factor 5：開放性（Openness to experience）</li>
+</ul>
+<p>因子スコアからは各回答者（全19,202人）の5指標の強さが分かる。
+1番の回答者は，Factor 1・4 が大きく，Factor 2
+が小さいので，「外向性と協調性が高く，神経症的傾向にない人物」と判断できる。
+次のクラスター分析では，全19,202人分の因子スコアを Kmeans
+法でセグメント分けを行う。</p>
+</div>
+<div id="rコードクラスター分析" class="section level3">
+<h3>Rコード（クラスター分析）</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># クラスター分析（kmens法，クラスター数＝4）</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>clstr <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(<span class="at">x =</span> fa<span class="sc">$</span>scores, <span class="at">centers =</span> <span class="dv">4</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 各セグメントの因子スコアの平均値</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>centers)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 各セグメントのプロファイリング</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>size)   <span class="co"># 所属人数</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>size<span class="sc">/</span><span class="fu">nrow</span>(data_bf)) <span class="co"># 人数比 （nrow はデータの行数を得る関数）</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(data_bf<span class="sc">$</span>age, clstr<span class="sc">$</span>cluster, mean)    <span class="co"># 平均年齢（セグメント別）</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(data_bf<span class="sc">$</span>age) <span class="co"># 平均年齢（全体）</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(data_bf<span class="sc">$</span>gender, clstr<span class="sc">$</span>cluster, mean) <span class="co"># 女性比率（セグメント別）</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(data_bf<span class="sc">$</span>gender)  <span class="co"># 平均年齢（全体）</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">xtabs</span>(<span class="sc">~</span> clstr<span class="sc">$</span>cluster <span class="sc">+</span> data_bf<span class="sc">$</span>race), <span class="dv">1</span>)    <span class="co"># 人種比率（セグメント別）</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(data_bf<span class="sc">$</span>race))  <span class="co"># 人種比率（全体）</span></span></code></pre></div>
+<p><strong><code>kmeans(x, centers)</code></strong>：Kmeans法によるクラスター分析</p>
+<ul>
+<li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
+<li><strong><code>centers</code></strong>：：クラスター数</li>
+<li>各セグメントの代表値（因子スコアの平均値）は <code>$centers</code>
+で取り出す（上記例では <code>clstr$centers</code>）</li>
+<li>各回答者の所属セグメントは <code>$cluster</code>
+で取り出す（上記例では <code>clstr$cluster</code>）</li>
+</ul>
+<p><strong><code>tapply(x, index, fun)</code></strong>：グループ毎に関数を適用</p>
+<ul>
+<li><strong><code>x</code></strong>：集計したい変数</li>
+<li><strong><code>index</code></strong>：グループ番号 ⇒
+セグメント番号</li>
+<li><strong><code>fun</code></strong>：適用したい関数 ⇒ 平均なら
+<code>mean</code>，標準偏差なら <code>sd</code> など</li>
+</ul>
+<p><strong><code>xtabs(~ index + x)</code></strong>：クロス集計表の作成</p>
+<ul>
+<li><strong><code>index</code></strong>：グループ番号 ⇒
+セグメント番号</li>
+<li><strong><code>x</code></strong>：集計したい変数</li>
+<li><strong><code>prop.table(xtabs(~ index + x), 1)</code></strong>
+で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）<br />
+</li>
+<li>全体の人種比率の計算は <strong><code>table</code></strong>
+関数を用いる<br />
+<br /></li>
+</ul>
+<div id="rコードの出力-1" class="section level5">
+<h5>Rコードの出力</h5>
+<p>各クラスタの因子スコア (Big Five) 平均値</p>
+<pre><code>##       Factor1    Factor2     Factor3     Factor4    Factor5
+## 1 -0.28921394 -0.1446854 -1.47633217  0.02169578  0.3858572
+## 2  0.06300022  0.8495706  0.35995830 -0.20542827  0.4967120
+## 3  0.34691975 -0.8132199  0.43204872  0.28729457  0.2227323
+## 4 -0.32103744  0.1491945  0.01866389 -0.14245104 -1.1135676</code></pre>
+<p>所属人数・人数比</p>
+<pre><code>## [1] 3126 5418 5965 4693
+## [1] 0.1627955 0.2821581 0.3106447 0.2444016</code></pre>
+<p>平均年齢</p>
+<pre><code>##        1        2        3        4 
+## 24.47729 24.97785 29.64627 24.56233 
+## [1] 26.24503</code></pre>
+<p>女性比率</p>
+<pre><code>##         1         2         3         4 
+## 0.4360205 0.6773717 0.5896060 0.6778180 
+## [1] 0.6109259</code></pre>
+<p>人種比率</p>
+<pre><code>##              data_bf$race
+## clstr$cluster            1            2            3            4            5
+##             1 0.0841330774 0.0003198976 0.6142034549 0.0486244402 0.0236724248
+##             2 0.0727205611 0.0005537099 0.5669988926 0.0819490587 0.0273163529
+##             3 0.0732606873 0.0010058676 0.5790444258 0.0608549874 0.0244761106
+##             4 0.0662689111 0.0006392499 0.4093330492 0.1142126571 0.0283400810
+##              data_bf$race
+## clstr$cluster            6            7            8            9           10
+##             1 0.0204734485 0.0009596929 0.0102367242 0.0092770313 0.0022392834
+##             2 0.0206718346 0.0005537099 0.0059062385 0.0094130676 0.0023994094
+##             3 0.0197820620 0.0010058676 0.0112321878 0.0070410729 0.0033528919
+##             4 0.0213083316 0.0019177498 0.0136373322 0.0134242489 0.0051139996
+##              data_bf$race
+## clstr$cluster           11           12           13
+##             1 0.0796545106 0.0105566219 0.0956493922
+##             2 0.0895164267 0.0119970469 0.1100036914
+##             3 0.0724224644 0.0169321039 0.1295892707
+##             4 0.1385041551 0.0119326657 0.1753675687
+## 
+##            1            2            3            4            5            6 
+## 0.0731694615 0.0006770128 0.5398916780 0.0778564733 0.0260910322 0.0205186960 
+##            7            8            9           10           11           12 
+## 0.0010936361 0.0101551922 0.0096344131 0.0033329861 0.0945734819 0.0132798667 
+##           13 
+## 0.1297260702</code></pre>
+</div>
+</div>
+<div id="推定結果クラスター分析" class="section level3">
+<h3>推定結果（クラスター分析）</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="right">セグメント</th>
+<th align="right">外向性</th>
+<th align="right">神経症的傾向</th>
+<th align="right">協調性</th>
+<th align="right">勤勉性</th>
+<th align="right">開放性</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">-0.2892</td>
+<td align="right">-0.1447</td>
+<td align="right">-1.4763</td>
+<td align="right">0.0217</td>
+<td align="right">0.3859</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.0630</td>
+<td align="right">0.8496</td>
+<td align="right">0.3600</td>
+<td align="right">-0.2054</td>
+<td align="right">0.4967</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">0.3469</td>
+<td align="right">-0.8132</td>
+<td align="right">0.4320</td>
+<td align="right">0.2873</td>
+<td align="right">0.2227</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">-0.3210</td>
+<td align="right">0.1492</td>
+<td align="right">0.0187</td>
+<td align="right">-0.1425</td>
+<td align="right">-1.1136</td>
+</tr>
+</tbody>
+</table>
+<p><strong>各セグメントの解釈</strong></p>
+<ul>
+<li>セグメント1：協調性が最も低く，開放性が高い</li>
+<li>セグメント2：神経症的傾向が最も高く，協調性と開放性も高い</li>
+<li>セグメント3：神経症的傾向が最も低く，外向性と協調性が高い</li>
+<li>セグメント4：開放性が最も低く，外向性も低い</li>
+</ul>
+<p>⇒
+各セグメントを表す名前を付けることも多い（例：セグメント4は「静かな無関心層」など）<br />
+<br /></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">人数</th>
+<th align="right">人数比</th>
+<th align="right">平均年齢</th>
+<th align="right">女性比率</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">3126</td>
+<td align="right">0.1628</td>
+<td align="right">24.4773</td>
+<td align="right">0.4360</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">5418</td>
+<td align="right">0.2822</td>
+<td align="right">24.9779</td>
+<td align="right">0.6774</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">5965</td>
+<td align="right">0.3106</td>
+<td align="right">29.6463</td>
+<td align="right">0.5896</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right">4693</td>
+<td align="right">0.2444</td>
+<td align="right">24.5623</td>
+<td align="right">0.6778</td>
+</tr>
+<tr class="odd">
+<td align="left">全体</td>
+<td align="right">19202</td>
+<td align="right">1.0000</td>
+<td align="right">26.2450</td>
+<td align="right">0.6109</td>
+</tr>
+</tbody>
+</table>
+<p><strong>プロファイリング</strong>（人種の解釈は省略）</p>
+<ul>
+<li>セグメント1は人数比が最も小さく，全体平均に比べてセグメント構成員の女性比率が低い</li>
+<li>セグメント3は人数比が最も大きく，全体平均に比べてセグメント構成員の平均年齢が高い</li>
+<li>セグメント2・4は全体平均に比べてセグメント構成員の女性比率が高い<br />
+<br /></li>
+</ul>
+<p><strong>補足</strong></p>
+<p>分析例では事前にセグメント数を4として Kmeans 法を実行したが，Kmeans
+法では最適なセグメント数を明確に決める方法がない。
+セグメント数を変えてクラスター分析を行い，結果が最も解釈がしやすい数を選ぶのがよい。</p>
+</div>
+</div>
+<div id="分析例②潜在クラスモデル" class="section level2">
+<h2>2. 分析例②：潜在クラスモデル*</h2>
+<p>潜在クラスモデル（有限混合モデル）は授業のレベルを超えるため，分析方法の紹介のみにとどめる。
+以下は，ポアソン回帰の潜在クラスモデルの分析例である。</p>
+<div id="データ-1" class="section level3">
+<h3>データ</h3>
+<strong>醤油カテゴリのID付POSデータ</strong>（sec6_mixture.csv）
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["pid"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["A"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["B"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["C"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["D"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["E"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["F"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["G"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["H"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["I"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ALL"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Ap"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Bp"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["Cp"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["Dp"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["Ep"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["Fp"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["Gp"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["Hp"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["Ip"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["Ae"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["Be"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["Ce"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["De"],"name":[24],"type":["dbl"],"align":["right"]},{"label":["Ee"],"name":[25],"type":["dbl"],"align":["right"]},{"label":["Fe"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["Ge"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["He"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["Ie"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["Aa"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["Ba"],"name":[31],"type":["dbl"],"align":["right"]},{"label":["Ca"],"name":[32],"type":["dbl"],"align":["right"]},{"label":["Da"],"name":[33],"type":["dbl"],"align":["right"]},{"label":["Ea"],"name":[34],"type":["dbl"],"align":["right"]},{"label":["Fa"],"name":[35],"type":["dbl"],"align":["right"]},{"label":["Ga"],"name":[36],"type":["dbl"],"align":["right"]},{"label":["Ha"],"name":[37],"type":["dbl"],"align":["right"]},{"label":["Ia"],"name":[38],"type":["dbl"],"align":["right"]}],"data":[{"1":"100011","2":"0","3":"0","4":"2","5":"0","6":"0","7":"0","8":"0","9":"0","10":"0","11":"2","12":"0.9979730","13":"0.7780374","14":"0.7309168","15":"0.8776869","16":"0.8360656","17":"0.5986348","18":"1.0000000","19":"0.8198440","20":"0.8481308","21":"0","22":"1","23":"1","24":"1","25":"0","26":"2","27":"0","28":"1","29":"1","30":"0","31":"0","32":"1","33":"0","34":"0","35":"1","36":"0","37":"0","38":"0"},{"1":"100075","2":"0","3":"0","4":"2","5":"0","6":"0","7":"0","8":"0","9":"0","10":"0","11":"2","12":"1.0000000","13":"1.0000000","14":"0.5739437","15":"0.9415888","16":"0.9487705","17":"0.7269625","18":"0.9401914","19":"0.9402730","20":"0.9415888","21":"1","22":"0","23":"2","24":"0","25":"0","26":"1","27":"0","28":"0","29":"0","30":"0","31":"0","32":"2","33":"0","34":"0","35":"1","36":"0","37":"0","38":"0"},{"1":"100149","2":"0","3":"0","4":"3","5":"0","6":"0","7":"0","8":"0","9":"0","10":"0","11":"3","12":"1.0000000","13":"0.8948598","14":"0.4987095","15":"0.9579439","16":"1.0000000","17":"0.8350398","18":"0.9202552","19":"0.9374289","20":"0.9610592","21":"1","22":"1","23":"2","24":"0","25":"0","26":"1","27":"0","28":"1","29":"0","30":"0","31":"0","32":"2","33":"0","34":"0","35":"0","36":"0","37":"0","38":"0"},{"1":"100301","2":"0","3":"1","4":"2","5":"0","6":"0","7":"0","8":"0","9":"0","10":"0","11":"3","12":"0.9997820","13":"0.8598131","14":"0.7158431","15":"0.8598131","16":"0.9658470","17":"0.8152121","18":"0.9601276","19":"0.9203640","20":"0.8598131","21":"0","22":"1","23":"1","24":"1","25":"0","26":"0","27":"0","28":"0","29":"0","30":"0","31":"0","32":"1","33":"0","34":"0","35":"0","36":"0","37":"0","38":"0"},{"1":"100303","2":"0","3":"0","4":"1","5":"0","6":"0","7":"0","8":"0","9":"1","10":"0","11":"2","12":"0.9876422","13":"0.8769470","14":"0.6846635","15":"0.9778037","16":"1.0000000","17":"0.8583618","18":"0.8122010","19":"0.7568773","20":"0.9304907","21":"1","22":"0","23":"1","24":"0","25":"0","26":"1","27":"0","28":"1","29":"0","30":"0","31":"0","32":"1","33":"0","34":"0","35":"0","36":"0","37":"1","38":"0"},{"1":"100406","2":"0","3":"0","4":"0","5":"0","6":"0","7":"2","8":"0","9":"0","10":"0","11":"2","12":"1.0000000","13":"0.6962617","14":"0.7500000","15":"0.7897196","16":"0.9165691","17":"0.6416382","18":"1.0000000","19":"0.9402730","20":"1.0000000","21":"1","22":"1","23":"0","24":"1","25":"0","26":"1","27":"0","28":"0","29":"0","30":"0","31":"1","32":"0","33":"1","34":"0","35":"1","36":"0","37":"0","38":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <table>
 <colgroup>
-<col width="29%" />
-<col width="70%" />
+<col width="17%" />
+<col width="82%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -3265,884 +3326,525 @@ Display_B
 </thead>
 <tbody>
 <tr class="odd">
-<td>Date</td>
-<td>日付</td>
+<td>pid</td>
+<td>消費者ID</td>
 </tr>
 <tr class="even">
-<td>PI_A (<span class="math inline">\(y\)</span>)</td>
-<td>商品Aの点数PI（来店客1000人当たり販売点数）</td>
+<td>A ~ I</td>
+<td>商品A～Iの購買回数</td>
 </tr>
 <tr class="odd">
-<td>PriceIndex_A (<span class="math inline">\(x_{1}\)</span>)</td>
-<td>商品Aの価格掛率（1なら定価販売，0.8なら2割引）</td>
+<td><strong>ALL</strong></td>
+<td><strong>観測期間における全商品（A～I）の購買回数</strong></td>
 </tr>
 <tr class="even">
-<td>PriceIndex_B (<span class="math inline">\(x_{2}\)</span>)</td>
-<td>商品Bの価格掛率</td>
+<td><strong>Ap ~ Ip</strong></td>
+<td><strong>商品A～Iの購買時の平均価格掛率</strong>（Apは利用しない）</td>
 </tr>
 <tr class="odd">
-<td>Display_A (<span class="math inline">\(x_{3}\)</span>)</td>
-<td>商品Aの山積み陳列実施の有無（1＝実施，0＝非実施）</td>
+<td>Ae ~ Ie</td>
+<td>商品A～Iの購買時の山積み陳列実施数</td>
 </tr>
 <tr class="even">
-<td>Display_B (<span class="math inline">\(x_{4}\)</span>)</td>
-<td>商品Bの山積み陳列実施の有無</td>
+<td>Aa ~ Ia</td>
+<td>商品A～Iの購買時のチラシ掲載日数</td>
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong> ： 佐藤 (2016)
-『マーケティングの統計モデル』朝倉書店（実習用に一部変更）</p>
-</div>
-<div id="モデル" class="section level3">
-<h3>モデル</h3>
-<p><span class="math display">\[
-\log(y) = \beta_0 + \beta_1 \log(x_{1}) + \beta_2 \log(x_{2}) + \beta_3
-x_{3} + \beta_4 x_{4} + \varepsilon
-\]</span></p>
-<p><strong>目的変数</strong>：商品Aの点数PI<br />
-<strong>説明変数</strong>：商品A・Bの価格掛率の対数値
-，商品A・Bの山積み陳列実施の有無</p>
-<div id="回帰係数の解釈" class="section level4">
-<h4>回帰係数の解釈</h4>
-<ul>
-<li><span class="math inline">\(\beta_0\)</span> ：
-ベースとなる点数PI水準（切片）</li>
-<li><span class="math inline">\(\beta_1\)</span> ：
-自己商品（商品A）の価格弾力性</li>
-<li><span class="math inline">\(\beta_2\)</span> ：
-競合商品（商品B）の交差価格弾力性</li>
-<li><span class="math inline">\(\beta_3\)</span> ：
-自己商品（商品A）の山積み陳列の影響</li>
-<li><span class="math inline">\(\beta_4\)</span> ：
-競合商品（商品B）の山積み陳列の影響</li>
-</ul>
-<p>多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「<span class="math inline">\(\log(x_{1})\)</span>
-：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，<strong><span class="math inline">\(\beta_1\)</span>
-の係数はマイナスが期待される</strong>（マイナス×マイナス＝プラスで目的変数
-<span class="math inline">\(y\)</span> に対して販売点数増加の影響）。
-競合商品価格「<span class="math inline">\(\log(x_{2})\)</span>：
-商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，<strong><span class="math inline">\(\beta_2\)</span>
-の係数はプラスが期待される</strong>。</p>
-<p>同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響
-<strong><span class="math inline">\(\beta_3\)</span>
-の係数はプラス</strong>，競合商品Bの山積み陳列の影響 <strong><span class="math inline">\(\beta_4\)</span>
-の係数はマイナスが期待される</strong>。</p>
-<p>目的変数 (<span class="math inline">\(y\)</span>)
-と価格に関わる説明変数 (<span class="math inline">\(x_{1}\)</span>・<span class="math inline">\(x_{2}\)</span>) は対数を取っているため，回帰係数
-<span class="math inline">\(\beta_1\)</span>・<span class="math inline">\(\beta_2\)</span>
-の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが
-<span class="math inline">\(\beta_1\)</span> (<span class="math inline">\(\beta_2\)</span>)
-％変化する」となる。また，山積み陳列実施の回帰係数 <span class="math inline">\(\beta_3\)</span>・<span class="math inline">\(\beta_4\)</span>
-の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが <span class="math inline">\(\beta_3\)</span> (<span class="math inline">\(\beta_4\)</span>) <span class="math inline">\(\times 100\)</span> ％だけ変化する」となる。</p>
-</div>
+<p>（太字は以下の分析例で使用する変数）</p>
+<p><strong>データ出典</strong>
+：佐藤（2015）「マーケティングの統計モデル」朝倉書店，第6章</p>
 </div>
 <div id="rコード" class="section level3">
 <h3>Rコード</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec3_reg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sec3_reg.csv&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B, </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> sec3_reg)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
-<p><strong><code>lm(formula, data)</code>：線形回帰モデルの推定</strong></p>
+<div id="通常のポアソン回帰" class="section level4">
+<h4>通常のポアソン回帰</h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>result_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_glm)</span></code></pre></div>
+<p><strong><code>glm(formula, family, data)</code>
+：ポアソン回帰の推定</strong></p>
 <ul>
-<li><strong><code>formula</code></strong>：目的変数・説明変数の指定
-<ul>
-<li>「目的変数 ~ 説明変数1 + 説明変数2 +
-説明変数3」のように，<code>~</code>
-の左側に目的変数，右側に説明変数を記述する</li>
-<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
-</ul></li>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定</li>
+<li><strong><code>family</code></strong>：分析モデル（データが従う確率分布）の指定
+⇒ ポアソン回帰の場合は <code>&quot;poisson&quot;</code> を指定</li>
 <li><strong><code>data</code></strong>：分析データの指定</li>
 </ul>
-<p><strong>補足</strong>：Rコードは “(” や “＋”
-，“,”（コンマ）の後で改行が可能</p>
-<div id="rコードの出力" class="section level4">
-<h4>Rコードの出力</h4>
+<div id="rコードの出力-2" class="section level5">
+<h5>Rコードの出力</h5>
 <pre><code>## 
 ## Call:
-## lm(formula = log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + 
-##     Display_A + Display_B, data = sec3_reg)
+## glm(formula = ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + 
+##     log(Gp) + log(Hp) + log(Ip), family = &quot;poisson&quot;, data = sec6_mixture)
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -2.2839 -0.4723  0.1037  0.5098  1.7999 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -7.037  -2.586  -1.238   1.081  11.827  
 ## 
 ## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        0.16177    0.03304   4.896  1.1e-06 ***
-## log(PriceIndex_A) -5.02239    0.17461 -28.764  &lt; 2e-16 ***
-## log(PriceIndex_B)  1.92847    0.14223  13.559  &lt; 2e-16 ***
-## Display_A          0.77411    0.07402  10.459  &lt; 2e-16 ***
-## Display_B          0.03669    0.06161   0.596    0.552    
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  2.635905   0.061802  42.651  &lt; 2e-16 ***
+## log(Bp)      1.463823   0.281309   5.204 1.95e-07 ***
+## log(Cp)      1.832826   0.153734  11.922  &lt; 2e-16 ***
+## log(Dp)     -0.650710   0.300137  -2.168   0.0302 *  
+## log(Ep)     -2.050010   0.408935  -5.013 5.36e-07 ***
+## log(Fp)      0.006202   0.223738   0.028   0.9779    
+## log(Gp)      0.295960   0.426631   0.694   0.4879    
+## log(Hp)     -0.726229   0.120598  -6.022 1.72e-09 ***
+## log(Ip)      1.346584   0.339694   3.964 7.37e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6876 on 1309 degrees of freedom
-## Multiple R-squared:  0.5833, Adjusted R-squared:  0.582 
-## F-statistic: 458.1 on 4 and 1309 DF,  p-value: &lt; 2.2e-16</code></pre>
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 3534.7  on 309  degrees of freedom
+## Residual deviance: 3001.0  on 301  degrees of freedom
+## AIC: 4137.2
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<div id="潜在クラスモデル有限混合ポアソン回帰" class="section level4">
+<h4>潜在クラスモデル（有限混合ポアソン回帰）</h4>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(flexmix)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># セグメント数1～5の一括実行</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>result_mixture <span class="ot">&lt;-</span> <span class="fu">initFlexmix</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">FLXMRglm</span>(<span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># モデル比較（最適セグメント数の決定）</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result_mixture)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 最良モデルの選択（BIC基準）</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">getModel</span>(result_mixture, <span class="at">which =</span> <span class="st">&quot;BIC&quot;</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 最良モデルのセグメント構成比</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 各セグメントの係数推定値</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">refit</span>(best_model))</span></code></pre></div>
+<p><strong><code>initFlexmix(formula, k, model, data)</code>
+：ポアソン回帰の推定</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数・説明変数の指定</li>
+<li><strong><code>k</code></strong>：推定するセグメント数 ⇒
+<code>k = 1:5</code> でセグメント数1〜5のモデルを一括で実行可能</li>
+<li><strong><code>model</code></strong>：分析モデルの指定 ⇒
+ポアソン回帰の場合は <code>FLXMRglm(family = &quot;poisson&quot;)</code></li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
+<div id="rコードの出力-3" class="section level5">
+<h5>Rコードの出力</h5>
+<p>モデル比較</p>
+<pre><code>## 
+## Call:
+## initFlexmix(ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + 
+##     log(Gp) + log(Hp) + log(Ip), model = FLXMRglm(family = &quot;poisson&quot;), 
+##     data = sec6_mixture, k = 1:5)
+## 
+##   iter converged k k0     logLik      AIC      BIC      ICL
+## 1    2      TRUE 1  1 -2059.6215 4137.243 4170.872 4170.872
+## 2   10      TRUE 2  2 -1087.1315 2212.263 2283.258 2327.518
+## 3   48      TRUE 3  3 -1012.9326 2083.865 2192.226 2311.004
+## 4   92      TRUE 4  4  -964.0726 2006.145 2151.871 2410.577
+## 5   64      TRUE 5  5  -947.9512 1993.902 2176.995 2513.820</code></pre>
+<p>最良モデル (k=4) のセグメント構成比</p>
+<pre><code>## 
+## Call:
+## initFlexmix(ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + 
+##     log(Gp) + log(Hp) + log(Ip), model = FLXMRglm(family = &quot;poisson&quot;), 
+##     data = sec6_mixture, k = 4)
+## 
+##        prior size post&gt;0 ratio
+## Comp.1 0.283  102    207 0.493
+## Comp.2 0.262   81    235 0.345
+## Comp.3 0.275   82    236 0.347
+## Comp.4 0.180   45    171 0.263
+## 
+## &#39;log Lik.&#39; -964.0726 (df=39)
+## AIC: 2006.145   BIC: 2151.871</code></pre>
+<p>各セグメントの係数推定値</p>
+<pre><code>## $Comp.1
+##               Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  1.0525304  0.2373745  4.4341 9.248e-06 ***
+## log(Bp)      0.6872932  0.9201333  0.7469    0.4551    
+## log(Cp)     -0.0163635  0.4868642 -0.0336    0.9732    
+## log(Dp)      0.0776816  1.0969446  0.0708    0.9435    
+## log(Ep)     -0.3740525  1.4737193 -0.2538    0.7996    
+## log(Fp)      0.1876122  0.7589703  0.2472    0.8048    
+## log(Gp)      0.1539687  1.4752182  0.1044    0.9169    
+## log(Hp)      0.0014165  0.4800496  0.0030    0.9976    
+## log(Ip)      0.5249260  1.0256108  0.5118    0.6088    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## $Comp.2
+##              Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)   2.28267    0.35597  6.4126 1.431e-10 ***
+## log(Bp)       4.12479    1.32441  3.1144 0.0018430 ** 
+## log(Cp)       0.33644    0.52869  0.6364 0.5245412    
+## log(Dp)       0.16015    1.37682  0.1163 0.9074022    
+## log(Ep)     -10.09257    2.02229 -4.9907 6.017e-07 ***
+## log(Fp)       0.83517    1.20726  0.6918 0.4890693    
+## log(Gp)       5.68026    2.17518  2.6114 0.0090174 ** 
+## log(Hp)       0.34703    0.49723  0.6979 0.4852216    
+## log(Ip)      -6.03184    1.77126 -3.4054 0.0006607 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## $Comp.3
+##             Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  0.94903    0.39688  2.3912 0.0167937 *  
+## log(Bp)     -1.27373    1.39459 -0.9133 0.3610667    
+## log(Cp)      1.66738    0.61296  2.7202 0.0065246 ** 
+## log(Dp)     -3.14500    1.31079 -2.3993 0.0164257 *  
+## log(Ep)     -8.80006    2.20874 -3.9842 6.771e-05 ***
+## log(Fp)      2.82726    1.19640  2.3631 0.0181209 *  
+## log(Gp)     -6.86588    2.08446 -3.2939 0.0009883 ***
+## log(Hp)     -4.36897    0.48548 -8.9992 &lt; 2.2e-16 ***
+## log(Ip)      5.59482    1.91465  2.9221 0.0034768 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## $Comp.4
+##             Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  4.17800    0.28499 14.6601 &lt; 2.2e-16 ***
+## log(Bp)      3.64307    1.50516  2.4204 0.0155038 *  
+## log(Cp)      6.97370    0.76265  9.1441 &lt; 2.2e-16 ***
+## log(Dp)     -1.38228    1.35658 -1.0189 0.3082319    
+## log(Ep)      2.33638    2.00605  1.1647 0.2441539    
+## log(Fp)     -3.33686    1.48825 -2.2421 0.0249527 *  
+## log(Gp)      3.17050    2.93194  1.0814 0.2795346    
+## log(Hp)     -1.42323    0.41581 -3.4228 0.0006199 ***
+## log(Ip)     -0.28842    2.46528 -0.1170 0.9068662    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
 </div>
 </div>
 <div id="推定結果" class="section level3">
 <h3>推定結果</h3>
 <table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">回帰係数</th>
-<th align="right">標準誤差</th>
-<th align="right">t 値</th>
-<th align="right">p 値</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">0.162</td>
-<td align="right">0.033</td>
-<td align="right">4.896</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">log(PriceIndex_A)</td>
-<td align="right">-5.022</td>
-<td align="right">0.175</td>
-<td align="right">-28.764</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">log(PriceIndex_B)</td>
-<td align="right">1.928</td>
-<td align="right">0.142</td>
-<td align="right">13.559</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">Display_A</td>
-<td align="right">0.774</td>
-<td align="right">0.074</td>
-<td align="right">10.459</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">Display_B</td>
-<td align="right">0.037</td>
-<td align="right">0.062</td>
-<td align="right">0.596</td>
-<td align="right">0.552</td>
-</tr>
-</tbody>
-</table>
-<p>PriceIndex_Aの係数 <span class="math inline">\(\beta_1\)</span>
-の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.040％変化する」と解釈できる。</p>
-<p>PriceIndex_Bの係数 <span class="math inline">\(\beta_2\)</span>
-とDisplay_Aの係数 <span class="math inline">\(\beta_3\)</span>
-も期待通りの符号に推定されており，5％有意水準でも有意である。一方，Display_Bの係数
-<span class="math inline">\(\beta_4\)</span>
-の係数は，5％有意水準で有意と判断されず，目的変数に対して影響していないことが分かる。</p>
-<p>以上のことより，競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。</p>
-</div>
-<div id="目的変数の予測" class="section level3">
-<h3>目的変数の予測</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測する状況の説明変数</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">PriceIndex_A =</span> <span class="fl">0.8</span>,  <span class="co"># ⇒ 商品Aは定価から2割引</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">PriceIndex_B =</span> <span class="dv">1</span>,    <span class="co"># ⇒ 商品Bの定価販売</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Display_A =</span> <span class="dv">1</span>,       <span class="co"># ⇒ 商品Aの山積み陳列あり</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Display_B =</span> <span class="dv">0</span>        <span class="co"># ⇒ 商品Bの山積み陳列なし</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測の実行</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(result, <span class="at">newdata =</span> prediction_data, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測値：商品Aの点数PIの対数値</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>prediction</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測値：商品Aの点数PI（指数をとって点数PIへ変換）</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(prediction)</span></code></pre></div>
-<p><strong><code>predict(object, newdata, interval)</code>：線形回帰モデルによる予測</strong></p>
-<ul>
-<li>引数
-<ul>
-<li><strong><code>object</code></strong>：回帰分析の結果オブジェクト（<code>lm</code>関数の出力）</li>
-<li><strong><code>newdata</code></strong>：予測用の説明変数データ</li>
-<li><strong><code>interval</code></strong>：予測値の95%区間の指定</li>
-</ul></li>
-<li>出力
-<ul>
-<li><strong><code>fit</code></strong>：予測値</li>
-<li><strong><code>lwr</code></strong>：95%区間の下側</li>
-<li><strong><code>upr</code></strong>：95%区間の上側</li>
-</ul></li>
-</ul>
-<p>⇒ 詳細は <code>help(predict.lm)</code>
-を実行して，関数のヘルプを参照。</p>
-<div id="rコードの出力-1" class="section level4">
-<h4>Rコードの出力</h4>
-<pre><code>## # 予測値：商品Aの点数PIの対数値
-##        fit       lwr      upr
-## 1 2.056593 0.7011222 3.412064
-## 
-## # 予測値：商品Aの点数PI（指数をとって点数PIへ変換）
-##        fit      lwr      upr
-## 1 7.819287 2.016014 30.32779</code></pre>
-<p>推定モデルの目的変数は点数PIの対数としているので，予測値も対数値で出力される。
-点数PIに戻したい場合は <code>exp</code> をとる。
-ただし，指数の性質上，指数変換後は95％区間が非常に広くなるので，予測値のみを参考とする。
-点数PIの予測95%区間を求めたい場合は，対数変換しない元の値を目的変数とした回帰分析と予測を行う方がよい。</p>
-</div>
-</div>
-<div id="曜日ダミーの追加" class="section level3">
-<h3>曜日ダミーの追加</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データに曜日列を追加</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(sec3_reg<span class="sc">$</span>Date)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sec3_reg<span class="sc">$</span>days)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">relevel</span>(sec3_reg<span class="sc">$</span>days, <span class="at">ref =</span> <span class="st">&quot;日曜日&quot;</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec3_reg</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
-<p>ダミー変数は {0,1}
-でダミー変数列を作成する以外にも，文字でダミー変数列を作成することもできる。
-上の例では <code>weekdays</code> 関数で日付から曜日列<code>days</code>
-をデータに追加して，回帰分析の説明変数とした。</p>
-<br />
-
-<div style="border: 1px solid #ddd; padding: 5px; ">
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<caption>
-曜日を追加したデータ
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-Date
-</th>
-<th style="text-align:right;">
-PI_A
-</th>
-<th style="text-align:right;">
-PriceIndex_A
-</th>
-<th style="text-align:right;">
-PriceIndex_B
-</th>
-<th style="text-align:right;">
-Display_A
-</th>
-<th style="text-align:right;">
-Display_B
-</th>
-<th style="text-align:left;">
-days
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2000-01-02
-</td>
-<td style="text-align:right;">
-1.022
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-日曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-03
-</td>
-<td style="text-align:right;">
-1.199
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-月曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-04
-</td>
-<td style="text-align:right;">
-0.261
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-火曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-05
-</td>
-<td style="text-align:right;">
-0.618
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-水曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-06
-</td>
-<td style="text-align:right;">
-1.225
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-木曜日
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2000-01-07
-</td>
-<td style="text-align:right;">
-0.987
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.881
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-金曜日
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="rコードの出力-2" class="section level4">
-<h4>Rコードの出力</h4>
-<pre><code>## # 推定結果の表示
-## 
-## Call:
-## lm(formula = log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + 
-##     Display_A + Display_B + days, data = sec3_reg)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.26223 -0.45340  0.09891  0.51211  1.81676 
-## 
-## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        0.30727    0.05823   5.277 1.54e-07 ***
-## log(PriceIndex_A) -5.00489    0.17419 -28.732  &lt; 2e-16 ***
-## log(PriceIndex_B)  1.97376    0.14239  13.862  &lt; 2e-16 ***
-## Display_A          0.77944    0.07377  10.565  &lt; 2e-16 ***
-## Display_B          0.04487    0.06144   0.730 0.465295    
-## days火曜日        -0.16402    0.07033  -2.332 0.019847 *  
-## days金曜日        -0.13480    0.07012  -1.922 0.054785 .  
-## days月曜日        -0.17124    0.07023  -2.438 0.014899 *  
-## days水曜日        -0.25079    0.07289  -3.440 0.000599 ***
-## days土曜日        -0.07254    0.07009  -1.035 0.300905    
-## days木曜日        -0.18930    0.07006  -2.702 0.006983 ** 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.685 on 1303 degrees of freedom
-## Multiple R-squared:  0.5883, Adjusted R-squared:  0.5851 
-## F-statistic: 186.2 on 10 and 1303 DF,  p-value: &lt; 2.2e-16
-## 
-## 
-## # 曜日なしモデルとのAICの比較
-## [1] 2751.558
-## [1] 2747.821</code></pre>
-</div>
-</div>
-</div>
-<div id="データ分析実習" class="section level2">
-<h2>2. データ分析実習</h2>
-<div id="データ-1" class="section level3">
-<h3>データ</h3>
-<p><strong>ツナ缶の週次販売データ</strong>（data_tuna.csv）</p>
-<ul>
-<li>観測期間：338週</li>
-</ul>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
-<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-LMOVE1
-</th>
-<th style="text-align:right;">
-NSALE1
-</th>
-<th style="text-align:right;">
-NSALE2
-</th>
-<th style="text-align:right;">
-NSALE3
-</th>
-<th style="text-align:right;">
-NSALE4
-</th>
-<th style="text-align:right;">
-NSALE5
-</th>
-<th style="text-align:right;">
-NSALE6
-</th>
-<th style="text-align:right;">
-NSALE7
-</th>
-<th style="text-align:right;">
-LPRICE1
-</th>
-<th style="text-align:right;">
-LPRICE2
-</th>
-<th style="text-align:right;">
-LPRICE3
-</th>
-<th style="text-align:right;">
-LPRICE4
-</th>
-<th style="text-align:right;">
-LPRICE5
-</th>
-<th style="text-align:right;">
-LPRICE6
-</th>
-<th style="text-align:right;">
-LPRICE7
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-9.920689
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.0901386
-</td>
-<td style="text-align:right;">
--0.1226736
-</td>
-<td style="text-align:right;">
-0.5755585
-</td>
-<td style="text-align:right;">
--0.1150392
-</td>
-<td style="text-align:right;">
-0.4568243
-</td>
-<td style="text-align:right;">
-1.224297
-</td>
-<td style="text-align:right;">
--0.2066103
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10.699891
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.2833146
-</td>
-<td style="text-align:right;">
--0.2876821
-</td>
-<td style="text-align:right;">
-0.5737717
-</td>
-<td style="text-align:right;">
--0.1177313
-</td>
-<td style="text-align:right;">
-0.4544687
-</td>
-<td style="text-align:right;">
-1.223764
-</td>
-<td style="text-align:right;">
--0.2089505
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10.133686
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.2834817
-</td>
-<td style="text-align:right;">
--0.1244131
-</td>
-<td style="text-align:right;">
-0.5724700
-</td>
-<td style="text-align:right;">
--0.2512933
-</td>
-<td style="text-align:right;">
-0.4536205
-</td>
-<td style="text-align:right;">
-1.223094
-</td>
-<td style="text-align:right;">
--0.2102677
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9.308555
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.2298545
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
--0.0845452
-</td>
-<td style="text-align:right;">
--0.2876821
-</td>
-<td style="text-align:right;">
-0.5737891
-</td>
-<td style="text-align:right;">
--0.2515269
-</td>
-<td style="text-align:right;">
-0.3629118
-</td>
-<td style="text-align:right;">
-1.222976
-</td>
-<td style="text-align:right;">
--0.3761963
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-11.255048
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.3710637
-</td>
-<td style="text-align:right;">
--0.1244210
-</td>
-<td style="text-align:right;">
-0.5692096
-</td>
-<td style="text-align:right;">
--0.1184715
-</td>
-<td style="text-align:right;">
-0.3606223
-</td>
-<td style="text-align:right;">
-1.220656
-</td>
-<td style="text-align:right;">
--0.2092430
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-9.158521
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1.0000000
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
--0.0829185
-</td>
-<td style="text-align:right;">
--0.1172091
-</td>
-<td style="text-align:right;">
-0.5721063
-</td>
-<td style="text-align:right;">
--0.2779904
-</td>
-<td style="text-align:right;">
-0.3630181
-</td>
-<td style="text-align:right;">
-1.223151
-</td>
-<td style="text-align:right;">
--0.2030403
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><br />
-</p>
-<table>
 <colgroup>
+<col width="6%" />
+<col width="21%" />
 <col width="20%" />
-<col width="80%" />
+<col width="20%" />
+<col width="20%" />
+<col width="9%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>変数</th>
-<th>内容</th>
+<th></th>
+<th>セグメント1<br />（49％）</th>
+<th>セグメント2<br />（35％）</th>
+<th>セグメント3<br />（35％）</th>
+<th>セグメント4<br />（26％）</th>
+<th>通常の<br />ポアソン回帰</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>LMOVE1</td>
-<td>ブランド1の週間販売数量の対数値</td>
+<td>Intercept</td>
+<td><strong>1.053</strong></td>
+<td><strong>2.283</strong></td>
+<td><strong>0.949</strong></td>
+<td><strong>4.178</strong></td>
+<td><strong>2.636</strong></td>
 </tr>
 <tr class="even">
-<td>NSALE1 ~ NSALE7</td>
-<td>ブランド1～7の週間特別陳列実施率（1週間の内で毎日実施していれば1）</td>
+<td>log(Bp)</td>
+<td>0.687</td>
+<td><strong>4.125</strong></td>
+<td>-1.274</td>
+<td><strong>3.643</strong></td>
+<td><strong>1.464</strong></td>
 </tr>
 <tr class="odd">
-<td>LPRICE1 ~ LPRICE7</td>
-<td>ブランド1～7の週間平均価格の対数値</td>
+<td>log(Cp)</td>
+<td>-0.016</td>
+<td>0.336</td>
+<td><strong>1.667</strong></td>
+<td><strong>6.974</strong></td>
+<td><strong>1.833</strong></td>
+</tr>
+<tr class="even">
+<td>log(Dp)</td>
+<td>0.078</td>
+<td>0.160</td>
+<td><strong>-3.145</strong></td>
+<td>-1.382</td>
+<td><strong>-0.651</strong></td>
+</tr>
+<tr class="odd">
+<td>log(Ep)</td>
+<td>-0.374</td>
+<td><strong>-10.093</strong></td>
+<td><strong>-8.800</strong></td>
+<td>2.336</td>
+<td><strong>-2.050</strong></td>
+</tr>
+<tr class="even">
+<td>log(Fp)</td>
+<td>0.188</td>
+<td>0.835</td>
+<td><strong>2.827</strong></td>
+<td><strong>-3.337</strong></td>
+<td>0.006</td>
+</tr>
+<tr class="odd">
+<td>log(Gp)</td>
+<td>0.154</td>
+<td><strong>5.680</strong></td>
+<td><strong>-6.866</strong></td>
+<td>3.171</td>
+<td>0.296</td>
+</tr>
+<tr class="even">
+<td>log(Hp)</td>
+<td>0.001</td>
+<td>0.347</td>
+<td><strong>-4.369</strong></td>
+<td><strong>-1.423</strong></td>
+<td><strong>-0.726</strong></td>
+</tr>
+<tr class="odd">
+<td>log(Ip)</td>
+<td>0.525</td>
+<td>-<strong>6.032</strong></td>
+<td><strong>5.595</strong></td>
+<td>-0.288</td>
+<td><strong>1.347</strong></td>
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong> ： bayesm パッケージの tuna
-データ（実習用に一部変更）</p>
+<p>括弧内は人数比，太字は5％有意水準で有意に推定された係数。<br />
+<br /></p>
+<ul>
+<li>消費者の49％を占めるセグメント1は全ての製品の価格が非有意 ⇒
+家庭内在庫がなくなれば購入する消費者？</li>
+<li>セグメント2は商品E・Iが値引きされていると購買しやすい</li>
+<li>セグメント3は商品D・E・G・Hが値引きされていると購買しやすい</li>
+</ul>
+</div>
+</div>
+<div id="データ分析実習" class="section level2">
+<h2>3. データ分析実習</h2>
+<div id="データ-2" class="section level3">
+<h3>データ</h3>
+<p><strong>個人投資行動に関するアンケートデータ</strong> (seg.csv)</p>
+<ul>
+<li>質問文は「あなたは以下のような状況の際にどの程度投資したいと考えますか」</li>
+<li>q01～q27の質問項目は5段階尺度による回答（1＝全く当てはまらない，…，5＝とてもあてはまる）</li>
+</ul>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["q01"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["q02"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["q03"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["q04"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["q05"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["q06"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["q07"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["q08"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["q09"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["q10"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["q11"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["q12"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["q13"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["q14"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["q15"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["q16"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["q17"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["q18"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["q19"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["q20"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["q21"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["q22"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["q23"],"name":[23],"type":["dbl"],"align":["right"]},{"label":["q24"],"name":[24],"type":["dbl"],"align":["right"]},{"label":["q25"],"name":[25],"type":["dbl"],"align":["right"]},{"label":["q26"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["q27"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["age"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["gender"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["year"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["type"],"name":[31],"type":["dbl"],"align":["right"]}],"data":[{"1":"2","2":"2","3":"4","4":"2","5":"3","6":"5","7":"5","8":"4","9":"4","10":"4","11":"5","12":"4","13":"4","14":"5","15":"1","16":"1","17":"2","18":"2","19":"1","20":"5","21":"3","22":"1","23":"1","24":"4","25":"2","26":"4","27":"4","28":"45","29":"0","30":"5","31":"2"},{"1":"3","2":"3","3":"3","4":"3","5":"3","6":"3","7":"3","8":"3","9":"3","10":"3","11":"3","12":"3","13":"3","14":"3","15":"3","16":"1","17":"3","18":"3","19":"3","20":"2","21":"3","22":"3","23":"3","24":"3","25":"3","26":"3","27":"3","28":"33","29":"0","30":"5","31":"2"},{"1":"1","2":"1","3":"1","4":"1","5":"1","6":"1","7":"1","8":"4","9":"1","10":"1","11":"5","12":"4","13":"3","14":"1","15":"1","16":"1","17":"1","18":"1","19":"3","20":"5","21":"1","22":"5","23":"1","24":"1","25":"1","26":"1","27":"1","28":"45","29":"0","30":"5","31":"2"},{"1":"4","2":"4","3":"3","4":"4","5":"2","6":"2","7":"4","8":"1","9":"1","10":"1","11":"4","12":"1","13":"1","14":"2","15":"2","16":"2","17":"1","18":"1","19":"2","20":"4","21":"3","22":"3","23":"1","24":"2","25":"2","26":"3","27":"1","28":"46","29":"0","30":"3","31":"2"},{"1":"3","2":"3","3":"3","4":"3","5":"3","6":"4","7":"4","8":"3","9":"3","10":"3","11":"4","12":"3","13":"4","14":"3","15":"3","16":"3","17":"3","18":"3","19":"3","20":"3","21":"3","22":"3","23":"3","24":"3","25":"3","26":"3","27":"3","28":"43","29":"0","30":"4","31":"2"},{"1":"3","2":"3","3":"3","4":"3","5":"3","6":"3","7":"3","8":"3","9":"3","10":"3","11":"3","12":"3","13":"3","14":"3","15":"3","16":"3","17":"3","18":"3","19":"3","20":"3","21":"3","22":"3","23":"3","24":"3","25":"3","26":"3","27":"2","28":"37","29":"1","30":"9","31":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>変数名</th>
+<th>内容・質問項目</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>q01</td>
+<td>インターネットの掲示板から得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q02</td>
+<td>インターネットのブログで得た情報が良好であった場合</td>
+</tr>
+<tr class="odd">
+<td>q03</td>
+<td>インターネットのパブリックサイトで得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q04</td>
+<td>インターネットのSNS等で得た情報が良好であった場合</td>
+</tr>
+<tr class="odd">
+<td>q05</td>
+<td>インターネットのコミュニティで得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q06</td>
+<td>市場心理が良好だと感じられたとき</td>
+</tr>
+<tr class="odd">
+<td>q07</td>
+<td>為替動向が良好だと感じられたとき</td>
+</tr>
+<tr class="even">
+<td>q08</td>
+<td>証券市場が安定的だと感じられたとき</td>
+</tr>
+<tr class="odd">
+<td>q09</td>
+<td>国内の政治状況が安定的だと感じられたとき</td>
+</tr>
+<tr class="even">
+<td>q10</td>
+<td>国外の政治状況が安定的だと感じられたとき</td>
+</tr>
+<tr class="odd">
+<td>q11</td>
+<td>将来的に高い利益成長がありそうだと考えられるとき</td>
+</tr>
+<tr class="even">
+<td>q12</td>
+<td>高い配当が期待できそうな企業だと考えられたとき</td>
+</tr>
+<tr class="odd">
+<td>q13</td>
+<td>投資先企業の業務内容に期待が持てた場合</td>
+</tr>
+<tr class="even">
+<td>q14</td>
+<td>国内景気が上向きだと感じられたとき</td>
+</tr>
+<tr class="odd">
+<td>q15</td>
+<td>金融機関担当者から得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q16</td>
+<td>金融機関担当者から銘柄の推奨があった場合</td>
+</tr>
+<tr class="odd">
+<td>q17</td>
+<td>友人・知人から得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q18</td>
+<td>友人・知人から銘柄の推奨があった場合</td>
+</tr>
+<tr class="odd">
+<td>q19</td>
+<td>株価が安定的に推移しているとき</td>
+</tr>
+<tr class="even">
+<td>q20</td>
+<td>株価が大きく変動しているとき</td>
+</tr>
+<tr class="odd">
+<td>q21</td>
+<td>現在，項履歴の状況にあると判断できるとき</td>
+</tr>
+<tr class="even">
+<td>q22</td>
+<td>株主優待の中身に興味を持った場合</td>
+</tr>
+<tr class="odd">
+<td>q23</td>
+<td>投資先企業が社会貢献をしていると考えられた場合</td>
+</tr>
+<tr class="even">
+<td>q24</td>
+<td>新聞で得た情報が良好であった場合</td>
+</tr>
+<tr class="odd">
+<td>q25</td>
+<td>雑誌から得た情報が良好であった場合</td>
+</tr>
+<tr class="even">
+<td>q26</td>
+<td>先立つ投資で利益を得た場合</td>
+</tr>
+<tr class="odd">
+<td>q27</td>
+<td>まとまったお金が必要となりそうなとき</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>年齢</td>
+</tr>
+<tr class="odd">
+<td>gender</td>
+<td>性別（0＝男性，1＝女性）</td>
+</tr>
+<tr class="even">
+<td>year</td>
+<td>投資経験年数</td>
+</tr>
+<tr class="odd">
+<td>type</td>
+<td>取引形態（1＝対面，2＝インターネット，3＝
+対面とインターネットの併用）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>データ出典</strong>
+：照井・佐藤（2013）「現代マーケティング・リサーチ」有斐閣，第7章（課題のため質問番号等を調整）</p>
 </div>
 <div id="課題" class="section level3">
 <h3>課題</h3>
-<p>以下のモデルで，回帰係数 (<span class="math inline">\(\alpha_0,
-\beta_1, \dots, \beta_7, \gamma_1, \dots, \gamma_7\)</span>)
-を推定し，各説明変数の目的変数への影響を考察せよ。</p>
-<div id="モデル-1" class="section level4">
-<h4>モデル</h4>
-<p><span class="math display">\[
-LMOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7
-\gamma_i LPRICE_i + \varepsilon
-\]</span></p>
-<p><strong>目的変数</strong>：ブランド1の販売数量の対数値 (LMOVE1)<br />
-<strong>説明変数</strong>：ブランド1～7の週間特別陳列実施率 (NSALE1 ~
-NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)</p>
-<p>（注）データファイル内のブランド1の週間販売数量（LMOVE1）とブランド1～7の週間平均価格（LPRICE1
-~ LPRICE7）は対数変換済み。</p>
-</br>
+<ol style="list-style-type: decimal">
+<li>投資行動に関するアンケートの質問項目 q01～q27
+を用いて<strong>因子数を4</strong>とした因子分析を行い各因子を解釈せよ。</li>
+<li>因子分析で得られた因子スコアを用いて<strong>セグメント数を4</strong>とした
+kmeans 法によるクラスター分析を実行せよ。<br />
+</li>
+<li>各セグメントのプロファイリング（平均年齢，性別比率，平均投資経験年数，取引形態の違い）を行い，各セグメントの特徴を明らかにせよ。<br />
+<br /></li>
+</ol>
+<p><strong>補足説明</strong></p>
+<ul>
+<li>因子負荷量から因子を解釈する際に，どの因子にも属さない質問項目があってもよい。なお，今回のデータは質問番号順に4因子となるように加工してあり，質問項目の中には因子の解釈時に利用しないものもある。</li>
+<li>Rでの因子分析の出力結果の因子負荷量部分をコピーして，エクセルで「貼り付け」→「テキストファイルウィザードを使用」→「スペースによって右または左に～」を選択して貼り付けすれば表形式で保存できる。提出レポートに因子負荷量の数値の載せる際，エクセルを経由してコピペすると数値を打ち込む手間を省ける。</li>
+<li>Rの因子負荷量の空白セル（絶対値が低いため表示されないセル）はレポートでも空白でよい。</li>
+</ul>
+<br />
 <details>
 <summary>
 Rコード（クリックで表示）
 </summary>
 <div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(LMOVE1 <span class="sc">~</span> NSALE1 <span class="sc">+</span> NSALE2 <span class="sc">+</span> NSALE3 <span class="sc">+</span> NSALE4 <span class="sc">+</span> NSALE5 <span class="sc">+</span> NSALE6 <span class="sc">+</span> NSALE7 <span class="sc">+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>               LPRICE1 <span class="sc">+</span> LPRICE2 <span class="sc">+</span> LPRICE3 <span class="sc">+</span> LPRICE4 <span class="sc">+</span> LPRICE5 <span class="sc">+</span> LPRICE6 <span class="sc">+</span> LPRICE7, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data_tuna)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># または以下でも実行可能（&quot;LMOVE1 ~ .&quot; でLMOVE1以外の変数を全て説明変数として指定）</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># result &lt;- lm(LMOVE1 ~ ., data = data_tuna)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データ seg は &quot;Import Dataset&quot; で読込済みとする</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 課題1（因子分析）</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>fa <span class="ot">&lt;-</span> <span class="fu">factanal</span>(seg[,<span class="dv">1</span><span class="sc">:</span><span class="dv">27</span>], <span class="at">factors =</span> <span class="dv">4</span>, <span class="at">scores =</span> <span class="st">&quot;regression&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa, <span class="at">cutoff =</span> <span class="fl">0.3</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 課題2（クラスター分析）</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>clstr <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(fa<span class="sc">$</span>scores, <span class="at">centers =</span> <span class="dv">4</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>centers)  <span class="co"># 各セグメントの因子スコア平均値</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 課題3（プロファイリング）</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>size)   <span class="co"># 人数</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clstr<span class="sc">$</span>size<span class="sc">/</span><span class="fu">nrow</span>(seg))         <span class="co"># 人数比</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(seg<span class="sc">$</span>age, clstr<span class="sc">$</span>cluster, mean)    <span class="co"># 平均年齢（セグメント別）</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(seg<span class="sc">$</span>age)   <span class="co"># 平均年齢（全体）</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(seg<span class="sc">$</span>gender, clstr<span class="sc">$</span>cluster, mean) <span class="co"># 女性比率（セグメント別）</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(seg<span class="sc">$</span>gender)  <span class="co"># 女性比率（全体）</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(seg<span class="sc">$</span>year, clstr<span class="sc">$</span>cluster, mean)   <span class="co"># 平均投資経験年数（セグメント別）</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(seg<span class="sc">$</span>year)  <span class="co"># 平均投資経験年数（全体）</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">xtabs</span>(<span class="sc">~</span>clstr<span class="sc">$</span>cluster<span class="sc">+</span>seg<span class="sc">$</span>type), <span class="dv">1</span>) <span class="co"># 投資形態比率（セグメント別）</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(seg<span class="sc">$</span>type))  <span class="co"># 平均投資経験年数（全体）</span></span></code></pre></div>
 </div>
 </details>
-</div>
 </div>
 </div>
 
