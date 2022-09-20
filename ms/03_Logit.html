@@ -2552,6 +2552,230 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 <script language="JavaScript">
 $(document).ready( function () {
    $("a[href^='http']:not([href*='" + location.hostname + "'])").attr('target', '_blank');
@@ -2675,7 +2899,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:15pt 0 5pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:5pt 0 5pt 0;}p{line-height: 1.7;}</style>
+<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:20pt 0 10pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:10pt 0 5pt 0;}p{line-height: 1.7;}body{font-size: 15px;}</style>
 
 
 
@@ -2865,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2022-09-15 20:16:58</h4>
+<h4 class="date">更新：2022-09-20 21:05:42</h4>
 
 </div>
 
@@ -2928,12 +3152,8 @@ div.tocify {
 <td>昨年の購買チャネル（Multichannel，Phone，Web）</td>
 </tr>
 <tr class="odd">
-<td><strong>segment</strong> (<span class="math inline">\(x_4\)</span>,
-<span class="math inline">\(x_5\)</span>)</td>
-<td>配信したプロモーションメールの種類（No Email，Womens Email，Mens
-Email） <br>⇒ <span class="math inline">\(x_4\)</span> = “No Email”,
-<span class="math inline">\(x_5\)</span> = “Womens Email”
-のダミー変数</td>
+<td><strong>segment</strong> (<span class="math inline">\(x_4\)</span>)</td>
+<td>配信したプロモーションメールの種類（Womens Email，Mens Email）</td>
 </tr>
 <tr class="even">
 <td><strong>visit</strong> (<span class="math inline">\(y\)</span>)</td>
@@ -2957,35 +3177,27 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 <h3>モデル</h3>
 <div id="効用関数" class="section level4">
 <h4>効用関数</h4>
-<!-- $$ -->
-<!-- \begin{align} -->
-<!-- U & = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \beta_5 x_{5} + \varepsilon \\ -->
-<!-- & = V + \varepsilon -->
-<!-- \end{align} -->
-<!-- $$ -->
 <p><span class="math display">\[
-U = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
-\beta_4 x_{4} + \beta_5 x_{5} + \varepsilon
+\begin{align}
+U &amp; = V + \varepsilon \\
+&amp; = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
+\beta_4 x_{4} + \varepsilon
+\end{align}
 \]</span></p>
 </div>
 <div id="サイト訪問確率" class="section level4">
 <h4>サイト訪問確率</h4>
 <p><span class="math display">\[
 Pr(y=1) = \frac{\exp(V)}{1+\exp(V)}
-\]</span> <span class="math display">\[
-V = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
-\beta_4 x_{4} + \beta_5 x_{5}
 \]</span></p>
 <p><strong>目的変数</strong>：メール配信後2週間以内のサイト訪問の有無（<span class="math inline">\(y=1\)</span>なら訪問あり，<span class="math inline">\(y=0\)</span>なら訪問なし）<br />
 <strong>説明変数</strong>：最終購買からの経過月数，昨年の購入金額，過去12ヶ月以内の新規顧客，配信したプロモーションメールの種類</p>
 <ul>
 <li>history (<span class="math inline">\(x_2\)</span>)
-は，消費者によって金額が大きく異なるため対数値を説明変数とする。</li>
-<li>segment (<span class="math inline">\(x_4\)</span>, <span class="math inline">\(x_5\)</span>) の係数 <span class="math inline">\(\beta_4, \beta_5\)</span>
-はダミー変数の定義により，Mens Email
-を基準とした相対的な効果を意味する。つまり，<span class="math inline">\(\beta_4\)</span> は「Mens Email と比較したときの
-No Email の効果」，<span class="math inline">\(\beta_5\)</span> は「Mens
-Email と比較したときの Womens Email の効果」と解釈される。</li>
+は，消費者によって金額が大きく異なるため対数値を説明変数とする</li>
+<li>segment (<span class="math inline">\(x_4\)</span>) の係数 <span class="math inline">\(\beta_4\)</span> はダミー変数の定義により，Mens
+Email と Womens Email
+のどちらかが基準とする相対的な効果を意味する（基準は分析出力から判断）</li>
 </ul>
 </div>
 </div>
@@ -2996,10 +3208,11 @@ Email と比較したときの Womens Email の効果」と解釈される。</l
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ロジットモデルの実行</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(visit <span class="sc">~</span> recency <span class="sc">+</span> <span class="fu">log</span>(history) <span class="sc">+</span> newbie <span class="sc">+</span> segment,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, <span class="at">data =</span> data_email)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data_email)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <p><strong><code>glm(formula, family, data)</code>
 ：二項ロジットモデルの推定</strong></p>
 <ul>
@@ -3007,8 +3220,8 @@ Email と比較したときの Womens Email の効果」と解釈される。</l
 <ul>
 <li>「目的変数 ~ 説明変数1 + 説明変数2 +
 説明変数3」のように，<code>~</code>
-の左側に目的変数，右側に説明変数を記述する</li>
-<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+の左側に目的変数，右側に説明変数を記述</li>
+<li>説明変数が2個以上ある場合は，<code>+</code> で追加</li>
 </ul></li>
 <li><strong><code>family</code></strong>：分析モデル（データが従う確率分布）の指定
 <ul>
@@ -3099,18 +3312,20 @@ Email と比較したときの Womens Email の効果」と解釈される。</l
 </tr>
 </tbody>
 </table>
-<p>p値より全ての説明変数が有意と判断され，サイト訪問確率へ影響があることが分かる。</p>
-<p>recency（最終購買からの経過月数）の係数は符号がマイナスに推定されており，最終購買からの経過月数が長いとすでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。</p>
-<p>newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。</p>
-<p>segment（配信したプロモーションメールの種類）に関する係数は，前述の通り，Mens
-Email を基準とした相対的な効果を意味する。よって，Mens Email (= 0)
-が最も効果が高く，Womens E-Mail (= -0.231)，No E-Mail (= -0.643)
-と続く。</p>
-<p>なお，ダミー変数については，変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は
+<ul>
+<li><p>p値より全ての説明変数が有意と判断され，サイト訪問確率へ影響があることが分かる。</p></li>
+<li><p>recency（最終購買からの経過月数）の係数は符号がマイナスに推定されており，最終購買からの経過月数が長いとすでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。</p></li>
+<li><p>history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。</p></li>
+<li><p>newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。</p></li>
+<li><p>segment（配信したプロモーションメールの種類）に関する係数は，Mens
+Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens
+E-Mail (= -0.230) よりサイト訪問への影響が高い。</p></li>
+<li><p>ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は
 <span class="math inline">\(\exp(\beta)\)</span>
-で計算することができ，newbie の場合，<span class="math inline">\(\exp(\beta_3) = \exp(-0.503) = 0.605\)</span>
+で計算することができ，newbie の場合，<span class="math inline">\(\exp(\beta_3) = \exp(-0.439) = 0.645\)</span>
 となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が
-0.605 倍となる。</p>
+0.645 倍となる。</p></li>
+</ul>
 </div>
 </div>
 <div id="分析例②多項ロジット" class="section level2">
@@ -3127,8 +3342,8 @@ Email を基準とした相対的な効果を意味する。よって，Mens Ema
 </p>
 <table>
 <colgroup>
-<col width="15%" />
-<col width="84%" />
+<col width="26%" />
+<col width="73%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -3248,7 +3463,7 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 <ul>
 <li>「目的変数 ~ 説明変数1 + 説明変数2 +
 説明変数3」のように，<code>~</code>
-の左側に目的変数，右側に説明変数を記述する</li>
+の左側に目的変数，右側に説明変数を記述</li>
 <li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
 </ul></li>
 <li><strong><code>data</code></strong>：<code>mlogit.data</code>
@@ -3337,48 +3552,452 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 </tr>
 </tbody>
 </table>
-<p>ブランド切片は，ブランドAが <span class="math inline">\(\beta_A =
+<ul>
+<li><p>ブランド切片は，ブランドAが <span class="math inline">\(\beta_A =
 -2.157\)</span>，ブランドBが <span class="math inline">\(\beta_B =
 -2.318\)</span> となり，ブランドCが基準 (<span class="math inline">\(\beta_C = 0\)</span>)
-となるため，ブランドCのブランドロイヤリティが最も高く推定されている。</p>
-<p>マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は
+となるため，ブランドCのブランドロイヤリティが最も高く推定されている。</p></li>
+<li><p>マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。</p></li>
+<li><p>ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は
 <span class="math inline">\(\exp(0.307) = 1.360\)</span>，チラシ掲載は
 <span class="math inline">\(\exp(0.820) = 2.271\)</span>
-となり，チラシ掲載の方がプロモーション効果が高いと分かる。</p>
-<!-- ## 3. データ分析実習 -->
-<!-- ### データ -->
-<!-- **牛乳に関する選択ベース・コンジョイントのアンケートデータ (data_milk.csv)** -->
-<!-- ```{r, echo=FALSE} -->
-<!-- data_milk <- read_csv("data/data_milk.csv") -->
-<!-- head(data_milk) %>%  -->
-<!--   kbl() %>%  -->
-<!--   kable_styling("striped") %>%  -->
-<!--   scroll_box(width = "100%") -->
-<!-- ``` -->
-<!-- \ -->
-<!-- | 変数              | 内容                                      | -->
-<!-- | ----------------- | ----------------------------------------- | -->
-<!-- | id                | 回答者ID                                  | -->
-<!-- | experiment        | 質問番号（1～8）                          | -->
-<!-- | choice            | 選択結果                                    | -->
-<!-- | int.A ~ int.C     | 切片（int.A = 0，int.B = 0，int.C = 1） ⇒ 本課題では利用しない  | -->
-<!-- | haccp.A ~ haccp.C | HACCPラベル（厳格な衛生管理の証明）の有無 | -->
-<!-- | eco.A ~ eco.C     | エコラベルの有無                          | -->
-<!-- | bb.A ~ bb.C       | 賞味期限（0＝6日間，1＝7日間）            | -->
-<!-- | price.A ~ price.C | 1リットルあたり価格（145円，150円，155円，160円）        | -->
-<!-- **データ出典** ：[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html)  内の [選択型コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf)   -->
-<!-- </br> -->
-<!-- #### 補足説明 -->
-<!-- コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では，以下の属性と水準を考える。 -->
-<!-- | 属性              | 水準                                      | -->
-<!-- | ----------- | ---------------------------| -->
-<!-- | HACCPラベル | あり，なし （2水準）   | -->
-<!-- | エコラベル    | あり，なし （2水準）           | -->
-<!-- | 賞味期限     | 6日間，7日間 （2水準）     | -->
-<!-- | 1リットルあたり価格   | 145円，150円，155円，160円 （4水準） | -->
-<!-- コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。 -->
-<!-- 牛乳データでは，4属性とそれぞれの水準数を単純に掛け合わせると，2×2×2×4＝32通りの製品案が作成される。 -->
-<!-- しかし，直行表を使うことによって，製品案を32通りから8通りまで減らすことができる。 -->
+となり，チラシ掲載の方がプロモーション効果が高いと分かる。</p></li>
+</ul>
+</div>
+</div>
+<div id="データ分析実習" class="section level2">
+<h2>3. データ分析実習</h2>
+<div id="データ-2" class="section level3">
+<h3>データ</h3>
+<strong>牛乳に関する選択ベース・コンジョイント分析データ
+(data_milk.csv)</strong>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:right;">
+experiment
+</th>
+<th style="text-align:left;">
+choice
+</th>
+<th style="text-align:right;">
+int.A
+</th>
+<th style="text-align:right;">
+haccp.A
+</th>
+<th style="text-align:right;">
+eco.A
+</th>
+<th style="text-align:right;">
+price.A
+</th>
+<th style="text-align:right;">
+int.B
+</th>
+<th style="text-align:right;">
+haccp.B
+</th>
+<th style="text-align:right;">
+eco.B
+</th>
+<th style="text-align:right;">
+price.B
+</th>
+<th style="text-align:right;">
+int.C
+</th>
+<th style="text-align:right;">
+haccp.C
+</th>
+<th style="text-align:right;">
+eco.C
+</th>
+<th style="text-align:right;">
+price.C
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+155
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+155
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+155
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+</p>
+<table>
+<colgroup>
+<col width="29%" />
+<col width="70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>変数</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>回答者ID（1～10）</td>
+</tr>
+<tr class="even">
+<td>experiment</td>
+<td>質問番号（1～8）</td>
+</tr>
+<tr class="odd">
+<td>choice</td>
+<td>選択結果</td>
+</tr>
+<tr class="even">
+<td>int.A ~ int.C</td>
+<td>切片（int.A = 1，int.B = 1，int.C = 0）</td>
+</tr>
+<tr class="odd">
+<td>haccp.A ~ haccp.C</td>
+<td>HACCPラベル（厳格な衛生管理の証明）の有無</td>
+</tr>
+<tr class="even">
+<td>eco.A ~ eco.C</td>
+<td>エコラベルの有無</td>
+</tr>
+<tr class="odd">
+<td>price.A ~ price.C</td>
+<td>1リットルあたり価格（145円，150円，155円，160円）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>データ出典</strong> ：<a href="https://doi.org/10.3173/air.17.86">Aizaki, Hideo and Kazushi
+Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A
+Brief Introduction,” Agricultural Information Research, 17 (2),
+86–94.</a></p>
+</div>
+<div id="補足説明" class="section level3">
+<h3>補足説明</h3>
+<p>コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。</p>
+<table>
+<thead>
+<tr class="header">
+<th>属性</th>
+<th>水準</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HACCPラベル</td>
+<td>あり，なし （2水準）</td>
+</tr>
+<tr class="even">
+<td>エコラベル</td>
+<td>あり，なし （2水準）</td>
+</tr>
+<tr class="odd">
+<td>1リットルあたり価格</td>
+<td>145円，150円，155円，160円 （4水準）</td>
+</tr>
+</tbody>
+</table>
+<p>コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。
+牛乳データでは，3属性とそれぞれの水準数を単純に掛け合わせると，2×2×4＝16通りの製品案が作成されるが，直行表を使うことによって比較する製品案を8通りまで減らすことができる。</p>
+<p>選択型コンジョイント（または選択ベース・コンジョイント）では1人の消費者に対して以下の手順で製品案に対する選好を調査する。</p>
+<ol style="list-style-type: decimal">
+<li>全ての製品案から2つの製品案をランダムに選ぶ</li>
+<li>2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう</li>
+<li>同じ消費者に1と2を何回か繰り返す</li>
+</ol>
+<p>本実習のデータの場合は，回答者10人に対して1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。
+このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。</p>
+<p>コンジョイント分析に関しては，以下の参考文献・リンクを参照されたい。</p>
+<ul>
+<li><a href="http://www.yuhikaku.co.jp/books/detail/9784641164161">照井・佐藤（2013）『現代マーケティング・リサーチ』有斐閣</a>，第8章</li>
+<li><a href="https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html">続・農産物マーケティング活動の手引き
+- 宮城県公式ウェブサイト</a> 内の <a href="https://www.pref.miyagi.jp/documents/20321/617762.pdf">選択型コンジョイント分析</a></li>
+</ul>
 <!-- 消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。 -->
 <!-- しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。 -->
 <!-- 回答負荷を減らす方法として，選択型コンジョイント（または選択ベース・コンジョイント）と呼ばれる手法があり，1人の消費者に対して以下の手順で製品案に対する選好を調査する。 -->
@@ -3389,31 +4008,67 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 <!-- このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。 -->
 <!-- コンジョイント分析に関しては，以下の参考文献または，データ出典に挙げたリンクを参照されたい。 -->
 <!-- **参考文献**：[照井・佐藤（2013）『現代マーケティング・リサーチ』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641164161)，第8章 -->
-<!-- ### 課題 -->
-<!-- 以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。 -->
-<!-- **目的変数**：選択結果 (choice)   -->
-<!-- **説明変数**：HACCPラベル (haccp)，エコラベルの有無 (eco)，賞味期限 (bb)，1リットルあたり価格 (price) -->
-<!-- #### 効用関数 -->
-<!-- $$ -->
-<!-- \begin{align}  -->
-<!-- U_j &= \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} + \beta_{3}x_{bb.j} + \beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\ -->
-<!-- U_C &= 0 + \varepsilon_C -->
-<!-- \end{align} -->
-<!-- $$ -->
-<!-- - 選択肢 A・B は直交表から作成された製品案，選択肢 C は「どちらも買わない」を表す -->
-<!-- -  -->
-<!-- </br> -->
-<!-- <details><summary>Rコード（クリックで表示）</summary><div> -->
-<!-- ```{r, eval=FALSE} -->
-<!-- library(mlogit) -->
-<!-- # mlogit 関数用にデータを加工 -->
-<!-- milkdata <- mlogit.data(data_milk, choice = "choice", shape = "wide", varying = 4:18, sep = ".") -->
-<!-- # 多項ロジットモデルの推定 -->
-<!-- result <- mlogit(choice ~ 0 + haccp + eco + bb + price, data = milkdata) -->
-<!-- # 推定結果の表示 -->
-<!-- summary(result) -->
-<!-- ``` -->
-<!-- </div></details> -->
+</div>
+<div id="課題" class="section level3">
+<h3>課題</h3>
+<p>以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。</p>
+<p><strong>目的変数</strong>：選択結果 (choice)<br />
+<strong>説明変数</strong>：HACCPラベル (haccp)，エコラベルの有無
+(eco)，1リットルあたり価格 (price)</p>
+<div id="効用関数-2" class="section level4">
+<h4>効用関数</h4>
+<p><span class="math display">\[
+\begin{align}
+U_j &amp;= \beta_0 + \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} +
+\beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\
+U_C &amp;= 0 + \varepsilon_C
+\end{align}
+\]</span></p>
+<ul>
+<li>選択肢 A・B は直交表から作成された製品案，選択肢 C
+は「どちらも買わない」を表す</li>
+<li>価格はダミー変数化せずにそのままの数値を説明変数として利用する</li>
+<li>選択肢 A・B は共通の切片 <span class="math inline">\(\beta_0\)</span>（＝「どちらも買わない」に対する牛乳の選好のベースライン）を持つ
+<ul>
+<li>データ内に “int” として共通の切片が含まれるため，<code>mlogit</code>
+関数のモデル定義式（<code>formula</code>）で自動で追加される切片を除く必要がある<br />
+⇒
+<code>formula</code>：<code>choice ~ 0 + int + haccp + eco + price</code>
+（<code>0 +</code> で切片を削除）</li>
+</ul></li>
+</ul>
+</br>
+<details>
+<summary>
+Rコード（クリックで表示）
+</summary>
+<div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>data_milk <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_milk.csv&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data_milk_mlogit <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  data_milk, </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">choice =</span> <span class="st">&quot;choice&quot;</span>, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>, </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">15</span>, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  choice <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> int <span class="sc">+</span> haccp <span class="sc">+</span> eco <span class="sc">+</span> price,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_milk_mlogit,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+</div>
+</details>
+</div>
 </div>
 </div>
 
