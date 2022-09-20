@@ -2899,7 +2899,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:15pt 0 5pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:5pt 0 5pt 0;}p{line-height: 1.7;}</style>
+<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:20pt 0 10pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:5pt 0 5pt 0;}p{line-height: 1.7;}body{font-size: 15px;}</style>
 
 
 
@@ -3089,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-13 17:49:30</h4>
+<h4 class="date">更新：2022-09-20 16:34:09</h4>
 
 </div>
 
@@ -3302,38 +3302,53 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <p><strong>目的変数</strong>：商品Aの点数PI<br />
 <strong>説明変数</strong>：商品A・Bの価格掛率の対数値
 ，商品A・Bの山積み陳列実施の有無</p>
-<div id="回帰係数の解釈" class="section level4">
-<h4>回帰係数の解釈</h4>
-<ul>
-<li><span class="math inline">\(\beta_0\)</span> ：
-ベースとなる点数PI水準（切片）</li>
-<li><span class="math inline">\(\beta_1\)</span> ：
-自己商品（商品A）の価格弾力性</li>
-<li><span class="math inline">\(\beta_2\)</span> ：
-競合商品（商品B）の交差価格弾力性</li>
-<li><span class="math inline">\(\beta_3\)</span> ：
-自己商品（商品A）の山積み陳列の影響</li>
-<li><span class="math inline">\(\beta_4\)</span> ：
-競合商品（商品B）の山積み陳列の影響</li>
-</ul>
-<p>多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「<span class="math inline">\(\log(x_{1})\)</span>
-：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，<strong><span class="math inline">\(\beta_1\)</span>
-の係数はマイナスが期待される</strong>（マイナス×マイナス＝プラスで目的変数
-<span class="math inline">\(y\)</span> に対して販売点数増加の影響）。
-競合商品価格「<span class="math inline">\(\log(x_{2})\)</span>：
-商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，<strong><span class="math inline">\(\beta_2\)</span>
-の係数はプラスが期待される</strong>。</p>
-<p>同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響
-<strong><span class="math inline">\(\beta_3\)</span>
-の係数はプラス</strong>，競合商品Bの山積み陳列の影響 <strong><span class="math inline">\(\beta_4\)</span>
-の係数はマイナスが期待される</strong>。</p>
-<p>目的変数 (<span class="math inline">\(y\)</span>)
-と価格に関わる説明変数 (<span class="math inline">\(x_{1}\)</span>・<span class="math inline">\(x_{2}\)</span>) は対数を取っているため，回帰係数
-<span class="math inline">\(\beta_1\)</span>・<span class="math inline">\(\beta_2\)</span>
-の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが
-<span class="math inline">\(\beta_1\)</span> (<span class="math inline">\(\beta_2\)</span>)
-％変化する」となる。また，山積み陳列実施の回帰係数 <span class="math inline">\(\beta_3\)</span>・<span class="math inline">\(\beta_4\)</span>
-の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが <span class="math inline">\(\beta_3\)</span> (<span class="math inline">\(\beta_4\)</span>) <span class="math inline">\(\times 100\)</span> ％だけ変化する」となる。</p>
+<div id="回帰係数の意味と期待される符号" class="section level4">
+<h4>回帰係数の意味と期待される符号</h4>
+<table>
+<thead>
+<tr class="header">
+<th>係数</th>
+<th>意味</th>
+<th>期待される符号</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\beta_0\)</span></td>
+<td>ベースとなる点数PI水準（切片）</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta_1\)</span></td>
+<td>自己商品（商品A）の価格弾力性</td>
+<td>マイナス</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\beta_2\)</span></td>
+<td>競合商品（商品B）の交差価格弾力性</td>
+<td>プラス</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\beta_3\)</span></td>
+<td>自己商品（商品A）の山積み陳列の影響</td>
+<td>プラス</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\beta_4\)</span></td>
+<td>競合商品（商品B）の山積み陳列の影響</td>
+<td>マイナス</td>
+</tr>
+</tbody>
+</table>
+<!-- - $\beta_0$ ： ベースとなる点数PI水準（切片） -->
+<!-- - $\beta_1$ ： 自己商品（商品A）の価格弾力性 -->
+<!-- - $\beta_2$ ： 競合商品（商品B）の交差価格弾力性 -->
+<!-- - $\beta_3$ ： 自己商品（商品A）の山積み陳列の影響 -->
+<!-- - $\beta_4$ ： 競合商品（商品B）の山積み陳列の影響 -->
+<!-- 多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「$\log(x_{1})$ ：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，**$\beta_1$ の係数はマイナスが期待される**（マイナス×マイナス＝プラスで目的変数 $y$ に対して販売点数増加の影響）。 -->
+<!-- 競合商品価格「$\log(x_{2})$： 商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，**$\beta_2$ の係数はプラスが期待される**。 -->
+<!-- 同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響 **$\beta_3$ の係数はプラス**，競合商品Bの山積み陳列の影響 **$\beta_4$ の係数はマイナスが期待される**。 -->
+<!-- 目的変数 ($y$) と価格に関わる説明変数 ($x_{1}$・$x_{2}$) は対数を取っているため，回帰係数 $\beta_1$・$\beta_2$ の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが $\beta_1$  ($\beta_2$) ％変化する」となる。また，山積み陳列実施の回帰係数 $\beta_3$・$\beta_4$ の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが $\beta_3$  ($\beta_4$) $\times 100$ ％だけ変化する」となる。 -->
 </div>
 </div>
 <div id="rコード" class="section level3">
@@ -3353,8 +3368,8 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <ul>
 <li>「目的変数 ~ 説明変数1 + 説明変数2 +
 説明変数3」のように，<code>~</code>
-の左側に目的変数，右側に説明変数を記述する</li>
-<li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
+の左側に目的変数，右側に説明変数を記述</li>
+<li>説明変数が2個以上ある場合は <code>+</code> で追加</li>
 </ul></li>
 <li><strong><code>data</code></strong>：分析データの指定</li>
 </ul>
@@ -3436,14 +3451,20 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 </tr>
 </tbody>
 </table>
-<p>PriceIndex_Aの係数 <span class="math inline">\(\beta_1\)</span>
-の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.040％変化する」と解釈できる。</p>
-<p>PriceIndex_Bの係数 <span class="math inline">\(\beta_2\)</span>
+<ul>
+<li>PriceIndex_Aの係数 <span class="math inline">\(\beta_1\)</span>
+の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。
+<ul>
+<li>目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.040％変化する」と解釈できる。</li>
+</ul></li>
+<li>PriceIndex_Bの係数 <span class="math inline">\(\beta_2\)</span>
 とDisplay_Aの係数 <span class="math inline">\(\beta_3\)</span>
-も期待通りの符号に推定されており，5％有意水準でも有意である。一方，Display_Bの係数
+も期待通りの符号で5％有意水準で有意に推定されている一方で，Display_Bの係数
 <span class="math inline">\(\beta_4\)</span>
-の係数は，5％有意水準で有意と判断されず，目的変数に対して影響していないことが分かる。</p>
-<p>以上のことより，競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。</p>
+の係数は5％有意水準で有意と判断されず，目的変数に対して影響していない。</li>
+</ul>
+<p>⇒
+競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。</p>
 </div>
 <div id="目的変数の予測" class="section level3">
 <h3>目的変数の予測</h3>
@@ -3516,9 +3537,9 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result)</span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
-<p>ダミー変数は {0,1}
-でダミー変数列を作成する以外にも，文字でダミー変数列を作成することもできる。
-上の例では <code>weekdays</code> 関数で日付から曜日列<code>days</code>
+<p>ダミー変数は 0 or 1
+でダミー変数列を作成する以外にも文字でダミー変数列を作成することもできる。
+上の例では <code>weekdays</code> 関数で日付から曜日列 <code>days</code>
 をデータに追加して，回帰分析の説明変数とした。</p>
 <br />
 
