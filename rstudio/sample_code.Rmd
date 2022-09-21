@@ -3,6 +3,8 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+データの散布図と回帰分析
+
 ```{r}
 # データの読み込み
 sample_data <- read.csv("data/sample_data.csv")
@@ -15,4 +17,3 @@ plot(x = sample_data$price, y = sample_data$sales)
 result <- lm(sales ~ price + promotion, data = sample_data)
 summary(result)
 ```
-
