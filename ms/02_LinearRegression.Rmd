@@ -68,7 +68,7 @@ $$
 | 係数      | 意味                                | 期待される符号 |
 | --------- | ----------------------------------- | -------------- |
 | $\beta_0$ | ベースとなる点数PI水準（切片）      | -              |
-| $\beta_1$ | 自己商品（商品A）の価格弾力性       | マイナス       |
+| $\beta_1$ | 自己商品（商品A）の自己価格弾力性       | マイナス       |
 | $\beta_2$ | 競合商品（商品B）の交差価格弾力性   | プラス         |
 | $\beta_3$ | 自己商品（商品A）の山積み陳列の影響 | プラス         |
 | $\beta_4$ | 競合商品（商品B）の山積み陳列の影響 | マイナス       |
@@ -92,8 +92,7 @@ $$
 sec3_reg <- read_csv("data/sec3_reg.csv")
 
 # 回帰分析の実行
-result <- lm(log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B, 
-             data = sec3_reg)
+result <- lm(log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B, data = sec3_reg)
 
 # 推定結果の表示
 summary(result)
@@ -134,7 +133,7 @@ result %>%
 ⇒ 競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。
 
 
-### 目的変数の予測
+### 目的変数の予測*
 ```{r, results='hide'}
 # 予測する状況の説明変数
 prediction_data <- data.frame(
@@ -183,14 +182,14 @@ exp(prediction)
 点数PIの予測95%区間を求めたい場合は，対数変換しない元の値を目的変数とした回帰分析と予測を行う方がよい。
 
 
-### 曜日ダミーの追加
+### 曜日ダミーの追加*
 ```{r, results='hide'}
 # データに曜日列を追加
 sec3_reg$days <- weekdays(sec3_reg$Date)
 
-# ダミー変数の基準を日曜日に設定
-sec3_reg$days <- as.factor(sec3_reg$days)
-sec3_reg$days <- relevel(sec3_reg$days, ref = "日曜日")
+# ダミー変数の基準を日曜日に設定したい場合は以下の2行を実行
+# sec3_reg$days <- as.factor(sec3_reg$days)
+# sec3_reg$days <- relevel(sec3_reg$days, ref = "日曜日")
 
 # 回帰分析の実行
 result_days <- lm(

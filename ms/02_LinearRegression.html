@@ -2899,7 +2899,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:20pt 0 10pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:5pt 0 5pt 0;}p{line-height: 1.7;}body{font-size: 15px;}</style>
+<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:20pt 0 10pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:10pt 0 5pt 0;}p{line-height: 1.7;}body{font-size: 15px;}</style>
 
 
 
@@ -3089,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-20 16:34:09</h4>
+<h4 class="date">更新：2022-09-27 13:56:33</h4>
 
 </div>
 
@@ -3320,7 +3320,7 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 </tr>
 <tr class="even">
 <td><span class="math inline">\(\beta_1\)</span></td>
-<td>自己商品（商品A）の価格弾力性</td>
+<td>自己商品（商品A）の自己価格弾力性</td>
 <td>マイナス</td>
 </tr>
 <tr class="odd">
@@ -3357,11 +3357,10 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec3_reg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sec3_reg.csv&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B, </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> sec3_reg)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B, <span class="at">data =</span> sec3_reg)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <p><strong><code>lm(formula, data)</code>：線形回帰モデルの推定</strong></p>
 <ul>
 <li><strong><code>formula</code></strong>：目的変数・説明変数の指定
@@ -3467,7 +3466,7 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。</p>
 </div>
 <div id="目的変数の予測" class="section level3">
-<h3>目的変数の予測</h3>
+<h3>目的変数の予測*</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測する状況の説明変数</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>prediction_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">PriceIndex_A =</span> <span class="fl">0.8</span>,  <span class="co"># ⇒ 商品Aは定価から2割引</span></span>
@@ -3517,13 +3516,13 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 </div>
 </div>
 <div id="曜日ダミーの追加" class="section level3">
-<h3>曜日ダミーの追加</h3>
+<h3>曜日ダミーの追加*</h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データに曜日列を追加</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(sec3_reg<span class="sc">$</span>Date)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sec3_reg<span class="sc">$</span>days)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">relevel</span>(sec3_reg<span class="sc">$</span>days, <span class="at">ref =</span> <span class="st">&quot;日曜日&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定したい場合は以下の2行を実行</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- as.factor(sec3_reg$days)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- relevel(sec3_reg$days, ref = &quot;日曜日&quot;)</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
@@ -3728,18 +3727,18 @@ days
 ## -2.26223 -0.45340  0.09891  0.51211  1.81676 
 ## 
 ## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        0.30727    0.05823   5.277 1.54e-07 ***
-## log(PriceIndex_A) -5.00489    0.17419 -28.732  &lt; 2e-16 ***
-## log(PriceIndex_B)  1.97376    0.14239  13.862  &lt; 2e-16 ***
-## Display_A          0.77944    0.07377  10.565  &lt; 2e-16 ***
-## Display_B          0.04487    0.06144   0.730 0.465295    
-## days火曜日        -0.16402    0.07033  -2.332 0.019847 *  
-## days金曜日        -0.13480    0.07012  -1.922 0.054785 .  
-## days月曜日        -0.17124    0.07023  -2.438 0.014899 *  
-## days水曜日        -0.25079    0.07289  -3.440 0.000599 ***
-## days土曜日        -0.07254    0.07009  -1.035 0.300905    
-## days木曜日        -0.18930    0.07006  -2.702 0.006983 ** 
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        0.143253   0.056092   2.554   0.0108 *  
+## log(PriceIndex_A) -5.004889   0.174194 -28.732   &lt;2e-16 ***
+## log(PriceIndex_B)  1.973762   0.142387  13.862   &lt;2e-16 ***
+## Display_A          0.779443   0.073774  10.565   &lt;2e-16 ***
+## Display_B          0.044874   0.061440   0.730   0.4653    
+## days金曜日         0.029220   0.070105   0.417   0.6769    
+## days月曜日        -0.007219   0.070127  -0.103   0.9180    
+## days水曜日        -0.086767   0.072915  -1.190   0.2343    
+## days土曜日         0.091481   0.070240   1.302   0.1930    
+## days日曜日         0.164018   0.070331   2.332   0.0198 *  
+## days木曜日        -0.025282   0.070119  -0.361   0.7185    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
