@@ -27,6 +27,9 @@ library(kableExtra)
 ```
 
 
+目次に * が付いている箇所は授業では時間があれば紹介する。
+
+
 ## 1. 分析例
 ### データ
 **醤油の日次販売データ（sec3_reg.csv）**
@@ -134,7 +137,15 @@ result %>%
 
 
 ### 目的変数の予測*
+目的変数を対数変換したモデルで予測を行うと，予測結果も対数変換された値で出力され，95％区間の解釈が難しくなるため，以降では対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
+
 ```{r, results='hide'}
+# 原数値モデルの推定
+result_raw <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B, data = sec3_reg)
+
+# 推定結果の表示
+summary(result_raw)
+
 # 予測する状況の説明変数
 prediction_data <- data.frame(
   PriceIndex_A = 0.8,  # ⇒ 商品Aは定価から2割引
@@ -144,13 +155,10 @@ prediction_data <- data.frame(
 )
 
 # 予測の実行
-prediction <- predict(result, newdata = prediction_data, interval = "prediction")
+prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
 
-# 予測値：商品Aの点数PIの対数値
+# 予測値：商品Aの点数PI
 prediction
-
-# 予測値：商品Aの点数PI（指数をとって点数PIへ変換）
-exp(prediction)
 ```
 
 **`predict(object, newdata, interval)`：線形回帰モデルによる予測**
@@ -169,20 +177,39 @@ exp(prediction)
 
 #### Rコードの出力
 ```{r echo=FALSE, results='hold'}
-cat("# 予測値：商品Aの点数PIの対数値\n")
-prediction
+cat("# 推定結果の表示\n")
+summary(result_raw)
 
-cat("\n# 予測値：商品Aの点数PI（指数をとって点数PIへ変換）\n")
-exp(prediction)
+cat("# 予測値：商品Aの点数PI\n")
+prediction
 ```
 
-推定モデルの目的変数は点数PIの対数としているので，予測値も対数値で出力される。
-点数PIに戻したい場合は `exp` をとる。
-ただし，指数の性質上，指数変換後は95％区間が非常に広くなるので，予測値のみを参考とする。
-点数PIの予測95%区間を求めたい場合は，対数変換しない元の値を目的変数とした回帰分析と予測を行う方がよい。
+複数の説明変数の状況で予測を行いたい場合は，以下のようなCSVファイルを作成して，`predict` 関数の引数 `newdata` に指定すれば，一括で予測結果を計算できる。以下の予測状況は商品Aの価格掛率を0.7～1.0まで0.1刻みとした状況。
+
+
+```{r, echo=FALSE}
+prediction_data <- data.frame(
+  PriceIndex_A = c(0.7, 0.8, 0.9, 1), 
+  PriceIndex_B = c(1, 1, 1, 1), 
+  Display_A = c(1, 1, 1, 1),
+  Display_B = c(0, 0, 0, 0)
+)
+
+prediction_data
+```
+
+```{r}
+# 予測の実行
+prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
+
+# 予測値：商品Aの点数PI
+prediction
+```
 
 
 ### 曜日ダミーの追加*
+以降も対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
+
 ```{r, results='hide'}
 # データに曜日列を追加
 sec3_reg$days <- weekdays(sec3_reg$Date)
@@ -193,7 +220,7 @@ sec3_reg$days <- weekdays(sec3_reg$Date)
 
 # 回帰分析の実行
 result_days <- lm(
-  log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B + days,
+  PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days,
   data = sec3_reg
 )
 
@@ -201,7 +228,7 @@ result_days <- lm(
 summary(result_days)
 
 # 曜日なしモデルとのAICの比較
-AIC(result)
+AIC(result_raw)
 AIC(result_days)
 ```
 
@@ -225,7 +252,7 @@ result_days %>%
   print()
 
 cat("\n# 曜日なしモデルとのAICの比較\n")
-AIC(result)
+AIC(result_raw)
 AIC(result_days)
 ```
 
