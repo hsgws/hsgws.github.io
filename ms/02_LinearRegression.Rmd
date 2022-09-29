@@ -222,10 +222,8 @@ sec3_reg$days <- weekdays(sec3_reg$Date)
 # sec3_reg$days <- relevel(sec3_reg$days, ref = "日曜日")
 
 # 回帰分析の実行
-result_days <- lm(
-  PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days,
-  data = sec3_reg
-)
+result_days <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days,
+                  data = sec3_reg)
 
 # 推定結果の表示
 summary(result_days)

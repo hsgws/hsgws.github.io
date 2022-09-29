@@ -3089,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-29 23:00:56</h4>
+<h4 class="date">更新：2022-09-29 23:04:41</h4>
 
 </div>
 
@@ -3568,17 +3568,15 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- relevel(sec3_reg$days, ref = &quot;日曜日&quot;)</span></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  PI_A <span class="sc">~</span> PriceIndex_A <span class="sc">+</span> PriceIndex_B <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec3_reg</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_raw)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(PI_A <span class="sc">~</span> PriceIndex_A <span class="sc">+</span> PriceIndex_B <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> sec3_reg)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_raw)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
 <p>ダミー変数は 0 or 1
 でダミー変数列を作成する以外にも文字でダミー変数列を作成することもできる。
 上の例では <code>weekdays</code> 関数で日付から曜日列 <code>days</code>
