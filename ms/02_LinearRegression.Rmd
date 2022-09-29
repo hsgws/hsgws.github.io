@@ -307,6 +307,9 @@ $$
 </br>
 <details><summary>Rコード（クリックで表示）</summary><div>
 ```{r, eval=FALSE}
+# データの読み込み
+data_tuna <- read.csv("data/data_tuna.csv")
+
 # 回帰分析の実行
 result <- lm(LMOVE1 ~ NSALE1 + NSALE2 + NSALE3 + NSALE4 + NSALE5 + NSALE6 + NSALE7 +
                LPRICE1 + LPRICE2 + LPRICE3 + LPRICE4 + LPRICE5 + LPRICE6 + LPRICE7, 
