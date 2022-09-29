@@ -3089,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">線形回帰分析</h1>
-<h4 class="date">更新：2022-09-27 21:45:14</h4>
+<h4 class="date">更新：2022-09-29 22:50:38</h4>
 
 </div>
 
@@ -3130,7 +3130,7 @@ Display_B
 <tbody>
 <tr>
 <td style="text-align:left;">
-2000-01-02
+2000/01/02
 </td>
 <td style="text-align:right;">
 1.022
@@ -3150,7 +3150,7 @@ Display_B
 </tr>
 <tr>
 <td style="text-align:left;">
-2000-01-03
+2000/01/03
 </td>
 <td style="text-align:right;">
 1.199
@@ -3170,7 +3170,7 @@ Display_B
 </tr>
 <tr>
 <td style="text-align:left;">
-2000-01-04
+2000/01/04
 </td>
 <td style="text-align:right;">
 0.261
@@ -3190,7 +3190,7 @@ Display_B
 </tr>
 <tr>
 <td style="text-align:left;">
-2000-01-05
+2000/01/05
 </td>
 <td style="text-align:right;">
 0.618
@@ -3210,7 +3210,7 @@ Display_B
 </tr>
 <tr>
 <td style="text-align:left;">
-2000-01-06
+2000/01/06
 </td>
 <td style="text-align:right;">
 1.225
@@ -3230,7 +3230,7 @@ Display_B
 </tr>
 <tr>
 <td style="text-align:left;">
-2000-01-07
+2000/01/07
 </td>
 <td style="text-align:right;">
 0.987
@@ -3355,7 +3355,7 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <div id="rコード" class="section level3">
 <h3>Rコード</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec3_reg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/sec3_reg.csv&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec3_reg <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec3_reg.csv&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(PI_A) <span class="sc">~</span> <span class="fu">log</span>(PriceIndex_A) <span class="sc">+</span> <span class="fu">log</span>(PriceIndex_B) <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B, <span class="at">data =</span> sec3_reg)</span>
@@ -3557,29 +3557,39 @@ x_{3} + \beta_4 x_{4} + \varepsilon
 <div id="曜日ダミーの追加" class="section level3">
 <h3>曜日ダミーの追加*</h3>
 <p>以降も対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データに曜日列を追加</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(sec3_reg<span class="sc">$</span>Date)</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データ内のDate列を日付型に変換</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(sec3_reg<span class="sc">$</span>Date)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定したい場合は以下の2行を実行</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- as.factor(sec3_reg$days)</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- relevel(sec3_reg$days, ref = &quot;日曜日&quot;)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  PI_A <span class="sc">~</span> PriceIndex_A <span class="sc">+</span> PriceIndex_B <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec3_reg</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># データに曜日列を追加</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sec3_reg<span class="sc">$</span>days <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(sec3_reg<span class="sc">$</span>Date)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ダミー変数の基準を日曜日に設定したい場合は以下の2行を実行</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- as.factor(sec3_reg$days)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sec3_reg$days &lt;- relevel(sec3_reg$days, ref = &quot;日曜日&quot;)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 回帰分析の実行</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>result_days <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  PI_A <span class="sc">~</span> PriceIndex_A <span class="sc">+</span> PriceIndex_B <span class="sc">+</span> Display_A <span class="sc">+</span> Display_B <span class="sc">+</span> days,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec3_reg</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_raw)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_days)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 曜日なしモデルとのAICの比較</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_raw)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(result_days)</span></code></pre></div>
 <p>ダミー変数は 0 or 1
 でダミー変数列を作成する以外にも文字でダミー変数列を作成することもできる。
 上の例では <code>weekdays</code> 関数で日付から曜日列 <code>days</code>
-をデータに追加して，回帰分析の説明変数とした。</p>
+をデータに追加して，回帰分析の説明変数とした。<br />
+なお，<code>weekdays</code> 関数の引数は日付型（クラス
+“Date”）である必要がある。 <code>read.csv</code>関数ではデータファイルの
+Date 列は文字列型で読み込まれているため，上記コードでは
+<code>weekdays</code> 関数の前に <code>as.Date</code> 関数でデータ内の
+Date 列を日付型に変換した。</p>
+<p>参考：<a href="http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8">日付、時間関数Tips大全
+- RjpWiki</a></p>
 <br />
 
 <div style="border: 1px solid #ddd; padding: 5px; ">

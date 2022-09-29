@@ -37,7 +37,7 @@ library(kableExtra)
 - 観測期間：2000/01/02～2003/07/31（1,314日間）
 
 ```{r, echo=FALSE}
-sec3_reg <- read_csv("data/sec3_reg.csv")
+sec3_reg <- read.csv("data/sec3_reg.csv")
 head(sec3_reg) %>% 
   kbl() %>% 
   kable_styling("striped") %>% 
@@ -92,7 +92,7 @@ $$
 ### Rコード
 ```{r, results='hide'}
 # データの読み込み
-sec3_reg <- read_csv("data/sec3_reg.csv")
+sec3_reg <- read.csv("data/sec3_reg.csv")
 
 # 回帰分析の実行
 result <- lm(log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B, data = sec3_reg)
@@ -211,6 +211,9 @@ prediction
 以降も対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
 
 ```{r, results='hide'}
+# データ内のDate列を日付型に変換
+sec3_reg$Date <- as.Date(sec3_reg$Date)
+
 # データに曜日列を追加
 sec3_reg$days <- weekdays(sec3_reg$Date)
 
@@ -233,7 +236,12 @@ AIC(result_days)
 ```
 
 ダミー変数は 0 or 1 でダミー変数列を作成する以外にも文字でダミー変数列を作成することもできる。
-上の例では `weekdays` 関数で日付から曜日列 `days` をデータに追加して，回帰分析の説明変数とした。
+上の例では `weekdays` 関数で日付から曜日列 `days` をデータに追加して，回帰分析の説明変数とした。  
+なお，`weekdays` 関数の引数は日付型（クラス "Date"）である必要がある。
+`read.csv`関数ではデータファイルの Date 列は文字列型で読み込まれているため，上記コードでは `weekdays` 関数の前に `as.Date` 関数でデータ内の Date 列を日付型に変換した。  
+
+参考：[日付、時間関数Tips大全 - RjpWiki](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8)
+
 
 \
 ```{r, echo=FALSE, results='hold'}
@@ -265,7 +273,7 @@ AIC(result_days)
 - 観測期間：338週
 
 ```{r, echo=FALSE}
-data_tuna <- read_csv("data/data_tuna.csv")
+data_tuna <- read.csv("data/data_tuna.csv")
 head(data_tuna) %>% 
   kbl() %>% 
   kable_styling("striped", full_width = F) %>% 
