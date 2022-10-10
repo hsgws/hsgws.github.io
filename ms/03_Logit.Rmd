@@ -84,7 +84,7 @@ data_email <- read.csv("data/data_email.csv")
 
 # ロジットモデルの実行
 result <- glm(visit ~ recency + log(history) + newbie + segment,
-              family = "binomial", 
+              family = binomial, 
               data = data_email)
 
 # 推定結果の表示
@@ -98,7 +98,7 @@ summary(result)
   - 説明変数が2個以上ある場合は，`+` で追加
   
 - **`family`**：分析モデル（データが従う確率分布）の指定
-  - 二項ロジットの場合はデータが二項分布に従うので `"binomial"` を指定
+  - 二項ロジットの場合はデータが二項分布に従うので `binomial` を指定
   - `family` を変更すれば，ポアソン回帰などのその他の一般化線型モデルも実行可能
 
 - **`data`**：分析データの指定  
