@@ -2865,7 +2865,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">生存時間解析（イベント・ヒストリー分析）</h1>
-<h4 class="date">更新：2022-10-17 15:45:04</h4>
+<h4 class="date">更新：2022-10-19 16:50:45</h4>
 
 </div>
 
@@ -3139,8 +3139,8 @@ exp(回帰係数)
 <p>発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。</p>
 </div>
 </div>
-<div id="生存確率の計算" class="section level3">
-<h3>生存確率の計算*</h3>
+<div id="生存率の計算" class="section level3">
+<h3>生存率の計算*</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 生存確率を計算する製品の属性</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_ex =</span> <span class="dv">1</span>,</span>
@@ -3376,8 +3376,8 @@ model)
 プラスなら生存時間が長くなることを，マイナスなら生存時間が短くなることを意味する。</p>
 </div>
 </div>
-<div id="生存確率の計算-1" class="section level3">
-<h3>生存確率の計算</h3>
+<div id="生存率の計算-1" class="section level3">
+<h3>生存率の計算</h3>
 <p>最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523}
 の3商品の生存確率の計算と比較を行う。3商品のデータと生存確率の計算コードは以下の通りである。</p>
 <div data-pagedtable="false">
@@ -3385,7 +3385,7 @@ model)
 {"columns":[{"label":["pro_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["time"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["status"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0.51","8":"18","9":"0","10":"8.136825","11":"288","12":"0.49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"1.00","8":"0","9":"0","10":"0.086600","11":"288","12":"0.00"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"1.00","8":"28","9":"0","10":"0.027425","11":"288","12":"0.00"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>row <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">49</span>, <span class="dv">593</span>, <span class="dv">15751</span>)  <span class="co"># 商品の行番号</span></span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>row <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">49</span>, <span class="dv">593</span>, <span class="dv">15751</span>)  <span class="co"># sec5_survivalにおける商品ID＝{52, 686, 20523}の行番号</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pct <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">99</span><span class="sc">/</span><span class="dv">100</span>           <span class="co"># 百分位数 (0.01 ~ 0.99)</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 生存確率の計算（詳細は predict.survreg のヘルプを参照）</span></span>
