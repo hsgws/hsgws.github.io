@@ -2865,7 +2865,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">生存時間解析（イベント・ヒストリー分析）</h1>
-<h4 class="date">更新：2022-10-19 16:50:45</h4>
+<h4 class="date">更新：2022-10-24 18:48:50</h4>
 
 </div>
 
@@ -2957,18 +2957,20 @@ sum_flier, ave_PI, max_price, ave_disc</p>
 </div>
 <div id="rコード" class="section level3">
 <h3>Rコード</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データ sec5_survival は &quot;Import Dataset&quot; で読込済みとする</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># survival パッケージの読込み</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(time, status) <span class="sc">~</span> line_ex <span class="sc">+</span> multi_br <span class="sc">+</span> br_ex <span class="sc">+</span> sum_disp <span class="sc">+</span> sum_flier <span class="sc">+</span> ave_PI <span class="sc">+</span> max_price <span class="sc">+</span> ave_disc,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec5_survival</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読込</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sec5_survival <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec5_survival.csv&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># survival パッケージの読込み</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(time, status) <span class="sc">~</span> line_ex <span class="sc">+</span> multi_br <span class="sc">+</span> br_ex <span class="sc">+</span> sum_disp <span class="sc">+</span> sum_flier <span class="sc">+</span> ave_PI <span class="sc">+</span> max_price <span class="sc">+</span> ave_disc,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sec5_survival</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <p><strong><code>coxph(fourmula, data)</code>：Cox比例ハザードモデルの推定</strong></p>
 <ul>
 <li><strong><code>fourmula</code></strong>：目的変数・説明変数の指定
@@ -3382,7 +3384,7 @@ model)
 の3商品の生存確率の計算と比較を行う。3商品のデータと生存確率の計算コードは以下の通りである。</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["pro_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["time"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["status"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0.51","8":"18","9":"0","10":"8.136825","11":"288","12":"0.49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"1.00","8":"0","9":"0","10":"0.086600","11":"288","12":"0.00"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"1.00","8":"28","9":"0","10":"0.027425","11":"288","12":"0.00"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["pro_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["time"],"name":[2],"type":["int"],"align":["right"]},{"label":["status"],"name":[3],"type":["int"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["int"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["int"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["int"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["int"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["int"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0.51","8":"18","9":"0","10":"8.136825","11":"288","12":"0.49","_rn_":"49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"1.00","8":"0","9":"0","10":"0.086600","11":"288","12":"0.00","_rn_":"593"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"1.00","8":"28","9":"0","10":"0.027425","11":"288","12":"0.00","_rn_":"15751"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>row <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">49</span>, <span class="dv">593</span>, <span class="dv">15751</span>)  <span class="co"># sec5_survivalにおける商品ID＝{52, 686, 20523}の行番号</span></span>
@@ -3549,16 +3551,18 @@ MonthlyCharges</p>
 Rコード（クリックで表示）
 </summary>
 <div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データ data_churn は読込済みとする</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># survival パッケージの読込み</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tenure, Churn) <span class="sc">~</span> gender <span class="sc">+</span> SeniorCitizen <span class="sc">+</span> Partner <span class="sc">+</span> Dependents <span class="sc">+</span> MonthlyCharges,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> data_churn)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読込</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data_churn <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_churn.csv&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># survival パッケージの読込み</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cox比例ハザードモデルの推定</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tenure, Churn) <span class="sc">~</span> gender <span class="sc">+</span> SeniorCitizen <span class="sc">+</span> Partner <span class="sc">+</span> Dependents <span class="sc">+</span> MonthlyCharges,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> data_churn)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 </div>
 </details>
 </div>
