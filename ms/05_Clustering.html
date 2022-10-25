@@ -2792,7 +2792,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2022-10-24 22:46:54</h4>
+<h4 class="date">更新：2022-10-25 23:23:02</h4>
 
 </div>
 
@@ -3291,12 +3291,17 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別</code>
 <h3>Rコード</h3>
 <div id="通常のポアソン回帰" class="section level4">
 <h4>通常のポアソン回帰</h4>
-<pre class="r"><code>result_glm &lt;- glm(
+<pre class="r"><code># データの読み込み
+sec6_mixture &lt;- read.csv(&quot;data/sec6_mixture.csv&quot;)
+
+# ポアソン回帰の実行
+result_glm &lt;- glm(
   ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
   family = &quot;poisson&quot;, 
   data = sec6_mixture
 )
 
+# 結果の表示
 summary(result_glm)</code></pre>
 <p><strong><code>glm(formula, family, data)</code>
 ：ポアソン回帰の推定</strong></p>
@@ -3345,7 +3350,8 @@ summary(result_glm)</code></pre>
 <pre class="r"><code>set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
 library(flexmix)
-# セグメント数1～5の一括実行
+
+# セグメント数1～5の潜在クラスポアソン回帰の一括実行
 result_mixture &lt;- initFlexmix(
   ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
   k = 1:5,

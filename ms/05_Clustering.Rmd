@@ -284,12 +284,17 @@ head(sec6_mixture)
 ### Rコード
 #### 通常のポアソン回帰
 ```{r, results='hide'}
+# データの読み込み
+sec6_mixture <- read.csv("data/sec6_mixture.csv")
+
+# ポアソン回帰の実行
 result_glm <- glm(
   ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
   family = "poisson", 
   data = sec6_mixture
 )
 
+# 結果の表示
 summary(result_glm)
 ```
 
@@ -311,7 +316,8 @@ summary(result_glm)
 set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
 library(flexmix)
-# セグメント数1～5の一括実行
+
+# セグメント数1～5の潜在クラスポアソン回帰の一括実行
 result_mixture <- initFlexmix(
   ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
   k = 1:5,
