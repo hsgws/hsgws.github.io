@@ -2571,6 +2571,230 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 <script language="JavaScript">
 $(document).ready( function () {
    $("a[href^='http']:not([href*='" + location.hostname + "'])").attr('target', '_blank');
@@ -2649,8 +2873,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -2658,16 +2882,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -2792,7 +3009,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2022-10-25 23:23:02</h4>
+<h4 class="date">更新：2022-10-26 14:46:31</h4>
 
 </div>
 
@@ -3116,49 +3333,109 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別</code>
 </div>
 <div id="推定結果クラスター分析" class="section level3">
 <h3>推定結果（クラスター分析）</h3>
-<table>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="right">セグメント</th>
-<th align="right">外向性</th>
-<th align="right">神経症的傾向</th>
-<th align="right">協調性</th>
-<th align="right">勤勉性</th>
-<th align="right">開放性</th>
+<tr>
+<th style="text-align:right;">
+セグメント
+</th>
+<th style="text-align:right;">
+外向性
+</th>
+<th style="text-align:right;">
+神経症的傾向
+</th>
+<th style="text-align:right;">
+協調性
+</th>
+<th style="text-align:right;">
+勤勉性
+</th>
+<th style="text-align:right;">
+開放性
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="right">-0.2892</td>
-<td align="right">-0.1447</td>
-<td align="right">-1.4763</td>
-<td align="right">0.0217</td>
-<td align="right">0.3859</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.289
+</td>
+<td style="text-align:right;">
+-0.145
+</td>
+<td style="text-align:right;">
+-1.476
+</td>
+<td style="text-align:right;">
+0.022
+</td>
+<td style="text-align:right;">
+0.386
+</td>
 </tr>
-<tr class="even">
-<td align="right">2</td>
-<td align="right">0.0630</td>
-<td align="right">0.8496</td>
-<td align="right">0.3600</td>
-<td align="right">-0.2054</td>
-<td align="right">0.4967</td>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.063
+</td>
+<td style="text-align:right;">
+0.850
+</td>
+<td style="text-align:right;">
+0.360
+</td>
+<td style="text-align:right;">
+-0.205
+</td>
+<td style="text-align:right;">
+0.497
+</td>
 </tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="right">0.3469</td>
-<td align="right">-0.8132</td>
-<td align="right">0.4320</td>
-<td align="right">0.2873</td>
-<td align="right">0.2227</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.347
+</td>
+<td style="text-align:right;">
+-0.813
+</td>
+<td style="text-align:right;">
+0.432
+</td>
+<td style="text-align:right;">
+0.287
+</td>
+<td style="text-align:right;">
+0.223
+</td>
 </tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="right">-0.3210</td>
-<td align="right">0.1492</td>
-<td align="right">0.0187</td>
-<td align="right">-0.1425</td>
-<td align="right">-1.1136</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+-0.321
+</td>
+<td style="text-align:right;">
+0.149
+</td>
+<td style="text-align:right;">
+0.019
+</td>
+<td style="text-align:right;">
+-0.142
+</td>
+<td style="text-align:right;">
+-1.114
+</td>
 </tr>
 </tbody>
 </table>
@@ -3172,51 +3449,110 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別</code>
 <p>⇒
 各セグメントを表す名前を付けることも多い（例：セグメント4は「静かな無関心層」など）<br />
 <br /></p>
-<table>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">人数</th>
-<th align="right">人数比</th>
-<th align="right">平均年齢</th>
-<th align="right">女性比率</th>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+人数
+</th>
+<th style="text-align:right;">
+人数比
+</th>
+<th style="text-align:right;">
+平均年齢
+</th>
+<th style="text-align:right;">
+女性比率
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">1</td>
-<td align="right">3126</td>
-<td align="right">0.1628</td>
-<td align="right">24.4773</td>
-<td align="right">0.4360</td>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+3126
+</td>
+<td style="text-align:right;">
+0.163
+</td>
+<td style="text-align:right;">
+24.5
+</td>
+<td style="text-align:right;">
+0.436
+</td>
 </tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="right">5418</td>
-<td align="right">0.2822</td>
-<td align="right">24.9779</td>
-<td align="right">0.6774</td>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+5418
+</td>
+<td style="text-align:right;">
+0.282
+</td>
+<td style="text-align:right;">
+25.0
+</td>
+<td style="text-align:right;">
+0.677
+</td>
 </tr>
-<tr class="odd">
-<td align="left">3</td>
-<td align="right">5965</td>
-<td align="right">0.3106</td>
-<td align="right">29.6463</td>
-<td align="right">0.5896</td>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+5965
+</td>
+<td style="text-align:right;">
+0.311
+</td>
+<td style="text-align:right;">
+29.6
+</td>
+<td style="text-align:right;">
+0.590
+</td>
 </tr>
-<tr class="even">
-<td align="left">4</td>
-<td align="right">4693</td>
-<td align="right">0.2444</td>
-<td align="right">24.5623</td>
-<td align="right">0.6778</td>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+4693
+</td>
+<td style="text-align:right;">
+0.244
+</td>
+<td style="text-align:right;">
+24.6
+</td>
+<td style="text-align:right;">
+0.678
+</td>
 </tr>
-<tr class="odd">
-<td align="left">全体</td>
-<td align="right">19202</td>
-<td align="right">1.0000</td>
-<td align="right">26.2450</td>
-<td align="right">0.6109</td>
+<tr>
+<td style="text-align:left;">
+全体
+</td>
+<td style="text-align:right;">
+19202
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+<td style="text-align:right;">
+26.2
+</td>
+<td style="text-align:right;">
+0.611
+</td>
 </tr>
 </tbody>
 </table>
@@ -3395,7 +3731,7 @@ summary(refit(best_model))</code></pre>
 ## 3   48      TRUE 3  3 -1012.9326 2083.865 2192.226 2311.004
 ## 4   92      TRUE 4  4  -964.0726 2006.145 2151.871 2410.577
 ## 5   64      TRUE 5  5  -947.9512 1993.902 2176.995 2513.820</code></pre>
-<p>最良モデル (k=4) のセグメント構成比</p>
+<p>最良モデル (k=4) のセグメント構成比（pior列）</p>
 <pre><code>## 
 ## Call:
 ## initFlexmix(ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + 
@@ -3471,104 +3807,405 @@ summary(refit(best_model))</code></pre>
 </div>
 <div id="推定結果" class="section level3">
 <h3>推定結果</h3>
-<table>
-<colgroup>
-<col width="6%" />
-<col width="21%" />
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="9%" />
-</colgroup>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th></th>
-<th>セグメント1<br />（49％）</th>
-<th>セグメント2<br />（35％）</th>
-<th>セグメント3<br />（35％）</th>
-<th>セグメント4<br />（26％）</th>
-<th>通常の<br />ポアソン回帰</th>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+セグメント1 (28%)
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+セグメント2 (26%)
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+セグメント3 (27%)
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+セグメント4 (18%)
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+ポアソン回帰
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+推定値
+</th>
+<th style="text-align:right;">
+p値
+</th>
+<th style="text-align:right;">
+推定値
+</th>
+<th style="text-align:right;">
+p値
+</th>
+<th style="text-align:right;">
+推定値
+</th>
+<th style="text-align:right;">
+p値
+</th>
+<th style="text-align:right;">
+推定値
+</th>
+<th style="text-align:right;">
+p値
+</th>
+<th style="text-align:right;">
+推定値
+</th>
+<th style="text-align:right;">
+p値
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>Intercept</td>
-<td><strong>1.053</strong></td>
-<td><strong>2.283</strong></td>
-<td><strong>0.949</strong></td>
-<td><strong>4.178</strong></td>
-<td><strong>2.636</strong></td>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+1.053
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+2.283
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.949
+</td>
+<td style="text-align:right;">
+0.017
+</td>
+<td style="text-align:right;">
+4.178
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+2.636
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
-<tr class="even">
-<td>log(Bp)</td>
-<td>0.687</td>
-<td><strong>4.125</strong></td>
-<td>-1.274</td>
-<td><strong>3.643</strong></td>
-<td><strong>1.464</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Bp)
+</td>
+<td style="text-align:right;">
+0.687
+</td>
+<td style="text-align:right;">
+0.455
+</td>
+<td style="text-align:right;">
+4.125
+</td>
+<td style="text-align:right;">
+0.002
+</td>
+<td style="text-align:right;">
+-1.274
+</td>
+<td style="text-align:right;">
+0.361
+</td>
+<td style="text-align:right;">
+3.643
+</td>
+<td style="text-align:right;">
+0.016
+</td>
+<td style="text-align:right;">
+1.464
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
-<tr class="odd">
-<td>log(Cp)</td>
-<td>-0.016</td>
-<td>0.336</td>
-<td><strong>1.667</strong></td>
-<td><strong>6.974</strong></td>
-<td><strong>1.833</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Cp)
+</td>
+<td style="text-align:right;">
+-0.016
+</td>
+<td style="text-align:right;">
+0.973
+</td>
+<td style="text-align:right;">
+0.336
+</td>
+<td style="text-align:right;">
+0.525
+</td>
+<td style="text-align:right;">
+1.667
+</td>
+<td style="text-align:right;">
+0.007
+</td>
+<td style="text-align:right;">
+6.974
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.833
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
-<tr class="even">
-<td>log(Dp)</td>
-<td>0.078</td>
-<td>0.160</td>
-<td><strong>-3.145</strong></td>
-<td>-1.382</td>
-<td><strong>-0.651</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Dp)
+</td>
+<td style="text-align:right;">
+0.078
+</td>
+<td style="text-align:right;">
+0.944
+</td>
+<td style="text-align:right;">
+0.160
+</td>
+<td style="text-align:right;">
+0.907
+</td>
+<td style="text-align:right;">
+-3.145
+</td>
+<td style="text-align:right;">
+0.016
+</td>
+<td style="text-align:right;">
+-1.382
+</td>
+<td style="text-align:right;">
+0.308
+</td>
+<td style="text-align:right;">
+-0.651
+</td>
+<td style="text-align:right;">
+0.030
+</td>
 </tr>
-<tr class="odd">
-<td>log(Ep)</td>
-<td>-0.374</td>
-<td><strong>-10.093</strong></td>
-<td><strong>-8.800</strong></td>
-<td>2.336</td>
-<td><strong>-2.050</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Ep)
+</td>
+<td style="text-align:right;">
+-0.374
+</td>
+<td style="text-align:right;">
+0.800
+</td>
+<td style="text-align:right;">
+-10.093
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-8.800
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+2.336
+</td>
+<td style="text-align:right;">
+0.244
+</td>
+<td style="text-align:right;">
+-2.050
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
-<tr class="even">
-<td>log(Fp)</td>
-<td>0.188</td>
-<td>0.835</td>
-<td><strong>2.827</strong></td>
-<td><strong>-3.337</strong></td>
-<td>0.006</td>
+<tr>
+<td style="text-align:left;">
+log(Fp)
+</td>
+<td style="text-align:right;">
+0.188
+</td>
+<td style="text-align:right;">
+0.805
+</td>
+<td style="text-align:right;">
+0.835
+</td>
+<td style="text-align:right;">
+0.489
+</td>
+<td style="text-align:right;">
+2.827
+</td>
+<td style="text-align:right;">
+0.018
+</td>
+<td style="text-align:right;">
+-3.337
+</td>
+<td style="text-align:right;">
+0.025
+</td>
+<td style="text-align:right;">
+0.006
+</td>
+<td style="text-align:right;">
+0.978
+</td>
 </tr>
-<tr class="odd">
-<td>log(Gp)</td>
-<td>0.154</td>
-<td><strong>5.680</strong></td>
-<td><strong>-6.866</strong></td>
-<td>3.171</td>
-<td>0.296</td>
+<tr>
+<td style="text-align:left;">
+log(Gp)
+</td>
+<td style="text-align:right;">
+0.154
+</td>
+<td style="text-align:right;">
+0.917
+</td>
+<td style="text-align:right;">
+5.680
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+<td style="text-align:right;">
+-6.866
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+3.171
+</td>
+<td style="text-align:right;">
+0.280
+</td>
+<td style="text-align:right;">
+0.296
+</td>
+<td style="text-align:right;">
+0.488
+</td>
 </tr>
-<tr class="even">
-<td>log(Hp)</td>
-<td>0.001</td>
-<td>0.347</td>
-<td><strong>-4.369</strong></td>
-<td><strong>-1.423</strong></td>
-<td><strong>-0.726</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Hp)
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+0.998
+</td>
+<td style="text-align:right;">
+0.347
+</td>
+<td style="text-align:right;">
+0.485
+</td>
+<td style="text-align:right;">
+-4.369
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-1.423
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+-0.726
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
-<tr class="odd">
-<td>log(Ip)</td>
-<td>0.525</td>
-<td>-<strong>6.032</strong></td>
-<td><strong>5.595</strong></td>
-<td>-0.288</td>
-<td><strong>1.347</strong></td>
+<tr>
+<td style="text-align:left;">
+log(Ip)
+</td>
+<td style="text-align:right;">
+0.525
+</td>
+<td style="text-align:right;">
+0.609
+</td>
+<td style="text-align:right;">
+-6.032
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+5.595
+</td>
+<td style="text-align:right;">
+0.003
+</td>
+<td style="text-align:right;">
+-0.288
+</td>
+<td style="text-align:right;">
+0.907
+</td>
+<td style="text-align:right;">
+1.347
+</td>
+<td style="text-align:right;">
+0.000
+</td>
 </tr>
 </tbody>
 </table>
-<p>括弧内は人数比，太字は5％有意水準で有意に推定された係数。<br />
-<br /></p>
+<!-- |           | セグメント1<br />（49％） | セグメント2<br />（35％） | セグメント3<br />（35％） | セグメント4<br />（26％） | 通常の<br />ポアソン回帰 | -->
+<!-- | --------- | ---------------------------- | --------------------------- | --------------------------- | --------------------------- | ------------ | -->
+<!-- | Intercept | **1.053**                    | **2.283**                   | **0.949**                   | **4.178**                   | **2.636**    | -->
+<!-- | log(Bp)   | 0.687                        | **4.125**                   | -1.274                      | **3.643**                   | **1.464**    | -->
+<!-- | log(Cp)   | -0.016                       | 0.336                       | **1.667**                   | **6.974**                   | **1.833**    | -->
+<!-- | log(Dp)   | 0.078                        | 0.160                       | **-3.145**                  | -1.382                      | **-0.651**   | -->
+<!-- | log(Ep)   | -0.374                       | **-10.093**                 | **-8.800**                  | 2.336                       | **-2.050**   | -->
+<!-- | log(Fp)   | 0.188                        | 0.835                       | **2.827**                   | **-3.337**                  | 0.006        | -->
+<!-- | log(Gp)   | 0.154                        | **5.680**                   | **-6.866**                  | 3.171                       | 0.296        | -->
+<!-- | log(Hp)   | 0.001                        | 0.347                       | **-4.369**                  | **-1.423**                  | **-0.726**   | -->
+<!-- | log(Ip)   | 0.525                        | -**6.032**                  | **5.595**                   | -0.288                      | **1.347**    | -->
+<!-- 括弧内は人数比，太字は5％有意水準で有意に推定された係数。   -->
+<!-- <br /> -->
 <ul>
-<li>消費者の49％を占めるセグメント1は全ての製品の価格が非有意 ⇒
+<li>消費者の28％を占めるセグメント1は全ての製品の価格が非有意 ⇒
 家庭内在庫がなくなれば購入する消費者？</li>
 <li>セグメント2は商品E・Iが値引きされていると購買しやすい</li>
 <li>セグメント3は商品D・E・G・Hが値引きされていると購買しやすい</li>
