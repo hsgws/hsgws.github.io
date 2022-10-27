@@ -2873,8 +2873,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -2882,9 +2882,16 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -3009,7 +3016,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2022-10-26 14:46:31</h4>
+<h4 class="date">更新：2022-10-27 22:51:47</h4>
 
 </div>
 
@@ -3106,7 +3113,7 @@ data_bf &lt;- read.csv(&quot;data/data_bf.csv&quot;)
 fa &lt;- factanal(data_bf[,1:50], factors = 5, scores = &quot;regression&quot;)
 
 # 因子負荷量
-print(fa, cutoff = 0.3, sort = TRUE)  # 絶対値で0.3以上の負荷量のみ表示
+print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
 
 # 因子スコア（最初の6人分のみ表示）
 head(fa$scores)</code></pre>
@@ -3117,6 +3124,11 @@ head(fa$scores)</code></pre>
 <li><strong><code>factors</code></strong>：因子数の指定 ⇒ Big
 Five尺度の通り5を指定</li>
 <li><strong><code>scores</code></strong>：因子スコアの計算方法</li>
+<li>デフォルトではバリマックス回転で推定される
+<ul>
+<li>回転を変更したい場合は <code>rotation</code> の引数を追加（詳細は
+<code>factanal</code> のヘルプを参照）</li>
+</ul></li>
 </ul>
 <p><code>factanal</code> の結果の変数（上記コードでは
 <code>fa</code>）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は
@@ -3227,7 +3239,7 @@ Big Five データでは，E・N・A・C・O
 </ul>
 <p>因子スコアからは各回答者（全19,202人）の5指標の強さが分かる。
 1番の回答者は，Factor 1・4 が大きく，Factor 2
-が小さいので，「外向性と協調性が高く，神経症的傾向にない人物」と判断できる。
+が小さいので，「外向性と誠実性が高く，神経症的傾向にない人物」と判断できる。
 次のクラスター分析では，全19,202人分の因子スコアを Kmeans
 法でセグメント分けを行う。</p>
 </div>
@@ -3241,7 +3253,10 @@ result &lt;- kmeans(x = fa$scores, centers = 4)
 # 各セグメントの因子スコアの平均値（代表値）
 print(result$centers)
 
-# 各セグメントの所属人数
+# 各回答者の所属セグメント番号
+print(result$cluster)
+
+# 各セグメントの所属人数・比率
 print(result$size)
 print(result$size/nrow(data_bf))    # 人数比（nrow はデータの行数を取得する関数）
 
@@ -3286,13 +3301,15 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別</code>
 </ul>
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
-<p>各クラスタの因子スコア (Big Five) 平均値</p>
+<p>各セグメントの因子スコアの平均値（代表値）</p>
 <pre><code>##       Factor1    Factor2     Factor3     Factor4    Factor5
 ## 1 -0.28921394 -0.1446854 -1.47633217  0.02169578  0.3858572
 ## 2  0.06300022  0.8495706  0.35995830 -0.20542827  0.4967120
 ## 3  0.34691975 -0.8132199  0.43204872  0.28729457  0.2227323
 ## 4 -0.32103744  0.1491945  0.01866389 -0.14245104 -1.1135676</code></pre>
-<p>所属人数・人数比</p>
+<p>各回答者の所属セグメント番号（最初の20人分のみ表示）</p>
+<pre><code>##  [1] 3 4 2 2 4 4 3 3 2 1 2 1 3 1 3 1 1 4 1 1</code></pre>
+<p>各セグメントの所属人数・比率</p>
 <pre><code>## [1] 3126 5418 5965 4693
 ## [1] 0.1627955 0.2821581 0.3106447 0.2444016</code></pre>
 <p>平均年齢</p>
@@ -4394,7 +4411,7 @@ seg &lt;- read.csv(&quot;data/seg.csv&quot;)
 
 # 課題1（因子分析）
 fa &lt;- factanal(seg[, 1:27], factors = 4, scores = &quot;regression&quot;)
-print(fa, cutoff = 0.3, sort = TRUE)
+print(fa, cutoff = 0.3)
 
 # 課題2（クラスター分析）
 set.seed(1)
