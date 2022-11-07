@@ -24,3 +24,40 @@ library(broom)
 library(knitr)
 library(tidyverse)
 ```
+
+
+```{r echo=FALSE, eval=FALSE}
+data <- read.csv("data/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv")
+
+# RCT data
+data_rct <- data %>% 
+  filter(segment != "Womens E-Mail") %>% 
+  mutate(treatment = if_else(segment == "Mens E-Mail", 1, 0)) %>% 
+  mutate(id = 1:nrow(.), .before = recency)
+
+# write.csv(data_rct, file = "data/data_rct.csv", row.names = FALSE)
+
+data_rct %>% 
+  group_by(treatment) %>% 
+  summarise(coversion_rate = mean(conversion),
+            spend_mean = mean(spend),
+            count = n())
+
+# Biased data
+set.seed(1)
+data_bias <- data_rct %>% 
+  mutate(obs_rate_c = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 0.5, 1),
+         obs_rate_t = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 1, 0.5),
+         random_number = runif(n = nrow(data_rct))) %>%
+  filter((treatment == 0 & random_number < obs_rate_c ) | (treatment == 1 & random_number < obs_rate_t)) %>% 
+  select(id:treatment)
+
+# write.csv(data_bias, file = "data/data_bias.csv", row.names = FALSE)
+
+data_bias %>% 
+  group_by(treatment) %>% 
+  summarise(coversion_rate = mean(conversion),
+            spend_mean = mean(spend),
+            count = n())
+```
+
