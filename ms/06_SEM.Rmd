@@ -95,7 +95,7 @@ library(psych)
 data_csi <- read.csv("data/data_csi.csv")
 
 # 信頼性係数（クロンバックのアルファ）の確認
-CE_alpha <- alpha(data_csi[, 1:3])
+CE_alpha <- alpha(data_csi[, 1:3]) # データの1~3列目のCEの質問を指定（以下同様）
 PQ_alpha <- alpha(data_csi[, 4:6])
 CS_alpha <- alpha(data_csi[, 7:9])
 
@@ -125,7 +125,8 @@ fitMeasures(result, fit.measures = c("chisq", "df", "pvalue", "cfi", "gfi", "rms
 ```
 
 **`alpha(data)`：クロンバックアルファの計算**
-- **`model`**：クロンバックアルファを計算したいデータの指定
+
+- **`data`**：クロンバックアルファを計算したいデータの指定
 
 
 **`sem(model, data)`：共分散構造分析の実行**

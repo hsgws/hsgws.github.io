@@ -2865,7 +2865,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">共分散構造分析（構造方程式モデリング）</h1>
-<h4 class="date">更新：2022-11-06 13:03:45</h4>
+<h4 class="date">更新：2022-11-08 19:22:26</h4>
 
 </div>
 
@@ -2984,7 +2984,7 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>data_csi <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_csi.csv&quot;</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 信頼性係数（クロンバックのアルファ）の確認</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>CE_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_csi[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>CE_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_csi[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) <span class="co"># データの1~3列目のCEの質問を指定（以下同様）</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>PQ_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_csi[, <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>])</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>CS_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_csi[, <span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>])</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
@@ -3011,9 +3011,10 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># モデル比較指標</span></span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">fitMeasures</span>(result, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">&quot;chisq&quot;</span>, <span class="st">&quot;df&quot;</span>, <span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;cfi&quot;</span>, <span class="st">&quot;gfi&quot;</span>, <span class="st">&quot;rmsea&quot;</span>))</span></code></pre></div>
-<p><strong><code>alpha(data)</code>：クロンバックアルファの計算</strong>
--
-<strong><code>model</code></strong>：クロンバックアルファを計算したいデータの指定</p>
+<p><strong><code>alpha(data)</code>：クロンバックアルファの計算</strong></p>
+<ul>
+<li><strong><code>data</code></strong>：クロンバックアルファを計算したいデータの指定</li>
+</ul>
 <p><strong><code>sem(model, data)</code>：共分散構造分析の実行</strong></p>
 <ul>
 <li><strong><code>model</code></strong>：モデル（パス図）定義
