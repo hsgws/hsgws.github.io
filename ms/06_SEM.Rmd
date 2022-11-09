@@ -251,7 +251,7 @@ head(data_wom)
 **データ出典**：里村（2014）および濱岡・里村（2009）を元に作成したシミュレーションデータ
 
 - それぞれの質問項目は7点尺度（1＝全く当てはまらない ～ 7＝非常に当てはまる）の回答
-- 質問項目 x1～x12 の数値は，里村（2014）に記載された相関係数行列より復元したシミュレーションデータだが，本データによる分析結果は実際の調査データを用いた分析結果とほぼ等しい  
+- 質問項目 x1～x12 の数値は，里村（2014）に記載された相関係数行列より復元したシミュレーションデータで実際のアンケート回答結果とは異なる
 <br />
 
 **参考文献**  
@@ -262,13 +262,12 @@ head(data_wom)
 ### 課題
 以下のパス図で共分散構造分析を実行し，リアルとインターネットでのオピニオンリーダー度（OPLとeOPL）は，リアルとインターネットでのクチコミ発信（WOMとeWOM）にどのような影響を与えているか考察せよ。
 
-- 天井・床効果とクロンバックアルファの確認は省略してよい
-- OPLとeOPLの相関関係はモデル定義に `OPL ~~ eOPL` を追加することで推定できる
+- 天井・床効果とクロンバックアルファの確認は省略してよい。
 
 
 #### モデル（パス図）
 <div style="text-align: center;">
-<img src="fig/wom.png" width="60%">
+<img src="fig/wom2.png" width="60%">
 </div>
 
 <!-- #### 数式表記 -->
@@ -302,15 +301,13 @@ model <- "
     WOM ~ OPL + eOPL
     eWOM ~ OPL + eOPL
     CLM ~ OPL + eOPL + WOM + eWOM
-  # 潜在変数間の相関
-    OPL ~~ eOPL
 "
 
 # パラメータ推定
-fit <- sem(model, data = data_wom)
+result <- sem(model, data = data_wom)
 
 # 推定結果の表示
-summary(fit, standardized = TRUE) 
+summary(result, standardized = TRUE) 
 
 # モデル比較指標
 fitMeasures(result, fit.measures = c("chisq", "df", "pvalue", "cfi", "gfi", "rmsea"))
@@ -322,3 +319,5 @@ semPaths(fit, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = 
          latents = c("OPL","eOPL","WOM","CLM","eWOM"))
 ```
 </div></details>
+
+
