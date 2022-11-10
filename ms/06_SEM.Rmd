@@ -314,7 +314,7 @@ fitMeasures(result, fit.measures = c("chisq", "df", "pvalue", "cfi", "gfi", "rms
 
 # semPlot パッケージによる作図プログラム
 library(semPlot)
-semPaths(fit, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE,
+semPaths(result, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE,
          manifests = c("x1","x2","x3","x4","x5","x6","x7","x8","x11","x12","x9","x10"),
          latents = c("OPL","eOPL","WOM","CLM","eWOM"))
 ```
