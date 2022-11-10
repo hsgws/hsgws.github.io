@@ -1,0 +1,140 @@
+---
+title: "傾向スコア分析"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+
+```{r}
+data_rct <- read.csv("data/data_rct.csv")
+data_bias <- read.csv("data/data_bias.csv")
+
+
+data_rct %>% 
+  group_by(segment) %>% 
+  summarise(recency_mean = mean(recency),
+            history_mean = mean(history))
+
+data_bias %>% 
+  group_by(segment) %>% 
+  summarise(recency_mean = mean(recency),
+            history_mean = mean(history))
+
+# ATE
+lm(spend ~ treatment, data = data_rct) %>% 
+  summary()
+
+lm(spend ~ treatment, data = data_bias) %>% 
+  summary()
+
+# maching
+library(MatchIt)
+match <- matchit(
+  treatment ~ recency + history + channel,
+  data = data_bias,
+  method = "nearest",
+  replace = TRUE,
+  # estimand = "ATT"
+)
+
+summary(match)
+plot(match, type = "density")
+
+matched_data <- match.data(match)
+matched_pair <- get_matches(match)
+
+# matched_data %>% 
+#   lm(spend ~ treatment, data = ., weights = weights) %>% 
+#   summary()
+
+# ATT
+matched_data %>% 
+  lm(spend ~ treatment + recency + history + channel, data = ., weights = weights) %>% 
+  summary()
+
+library(lmtest)
+library(sandwich)
+
+
+result <- lm(spend ~ treatment + recency + history + channel, 
+             data = matched_data, weights = weights)
+coeftest(result, vcov. = vcovCL, cluster = ~ weights)
+
+
+# ATE
+library(WeightIt)
+weighting <- weightit(
+  treatment ~ recency + history + channel,
+  data = data_bias,
+  method = "ps",
+  estimand = "ATE"
+)
+
+
+lm(spend ~ treatment, data = data_bias, weights = weighting$weights) %>% 
+  summary()
+
+# ATT
+## get_matches 
+# get_matches(match, distance = "prop.score") %>% 
+#   lm(spend ~ treatment, data = .) %>% 
+#   summary()
+# 
+# get_matches(match) %>% 
+#   lm(spend ~ treatment, data = .) %>% 
+#   summary()
+
+# ## match.data
+# match.data(match) %>% 
+#   lm(spend ~ treatment, data = ., weights = weights) %>% 
+#   summary()
+# 
+# match.data(match, distance = "prop.score") %>% 
+#   lm(spend ~ treatment, data = ., weights = weights) %>% 
+#   summary()
+# 
+# match
+# summary(match)
+# 
+# matched_data2 <- match.data(match)
+# matched_data <- get_matches(match, distance = "prop.score")
+# 
+# 
+# result <- lm(spend ~ treatment, data = matched_data, weights = weights)
+# summary(result)
+# 
+# 
+# tmp <- matched %>% 
+#   select(subclass, spend)
+# 
+# tmp <- data.frame(matched %>% filter(treatment == 1) %>% select(subclass, spend),
+#                   matched %>% filter(treatment == 0) %>% select(spend))
+# 
+# tmp <- tmp %>% 
+#   mutate(dif = spend - spend.1)
+# mean(tmp$dif)
+# 
+# lm(spend ~ treatment, data = matched) %>% summary()
+```
+
