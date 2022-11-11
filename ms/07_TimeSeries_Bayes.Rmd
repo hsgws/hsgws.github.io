@@ -63,13 +63,13 @@ data_tea %>%
 ### モデル
 #### 観測モデル
 $$
-y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, H)
+y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
 $$
 
 #### システムモデル
 $$
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, Q_1) \\
-s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, Q_2)
+\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \sigma^2_s)
 $$
 
 - $y_t$：販売本数
@@ -91,7 +91,7 @@ library(ggfortify)
 
 # データの読み込み
 data_tea <- read.csv("data/data_tea.csv")
-data_tea$date <- as.Date(data_tea$date)   # 
+data_tea$date <- as.Date(data_tea$date)   # date列を日付型へ変換
 
 # 訓練データと予測データへのデータ分割
 train_data <- data_tea[1:84,] # 訓練データ（2015/04/01 ~ 2015/06/23，84日間）
@@ -197,6 +197,7 @@ mape(test_data$num, pred[, "fit"])
 rmse(test_data$num, pred[, "fit"])
 
 # （参考）予測結果の図示
+library(ggplot2)
 test_data <- cbind(test_data, pred)
 ggplot(test_data, mapping = aes(y = num, x = date)) +
   geom_line() +
@@ -292,7 +293,7 @@ $$
 #### システムモデル
 $$
 \alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
-\beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0, \sigma^2_j)
+\beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0, \sigma^2_{\beta_j})
 $$
 
 ### Rコード

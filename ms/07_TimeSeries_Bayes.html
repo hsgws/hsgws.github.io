@@ -2946,8 +2946,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -2955,9 +2955,16 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -3082,7 +3089,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">時系列分析 &amp; 階層ベイズ</h1>
-<h4 class="date">更新：2022-11-07 18:15:27</h4>
+<h4 class="date">更新：2022-11-11 20:27:28</h4>
 
 </div>
 
@@ -3098,7 +3105,7 @@ div.tocify {
 </ul>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["date"],"name":[1],"type":["chr"],"align":["left"]},{"label":["num"],"name":[2],"type":["int"],"align":["right"]},{"label":["holiday"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"2015-04-01","2":"229","3":"0","_rn_":"1"},{"1":"2015-04-02","2":"249","3":"0","_rn_":"2"},{"1":"2015-04-03","2":"267","3":"0","_rn_":"3"},{"1":"2015-04-04","2":"109","3":"0","_rn_":"4"},{"1":"2015-04-05-","2":"79","3":"0","_rn_":"5"},{"1":"2015-04-06-","2":"263","3":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["date"],"name":[1],"type":["chr"],"align":["left"]},{"label":["num"],"name":[2],"type":["int"],"align":["right"]},{"label":["holiday"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"2015-04-01","2":"229","3":"0","_rn_":"1"},{"1":"2015-04-02","2":"249","3":"0","_rn_":"2"},{"1":"2015-04-03","2":"267","3":"0","_rn_":"3"},{"1":"2015-04-04","2":"109","3":"0","_rn_":"4"},{"1":"2015-04-05","2":"79","3":"0","_rn_":"5"},{"1":"2015-04-06","2":"263","3":"0","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <table>
@@ -3136,14 +3143,15 @@ div.tocify {
 <h4>観測モデル</h4>
 <p><span class="math display">\[
 y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t
-\sim N(0, H)
+\sim N(0, \sigma^2_y)
 \]</span></p>
 </div>
 <div id="システムモデル" class="section level4">
 <h4>システムモデル</h4>
 <p><span class="math display">\[
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, Q_1) \\
-s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, Q_2)
+\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
+\sigma^2_s)
 \]</span></p>
 <ul>
 <li><span class="math inline">\(y_t\)</span>：販売本数</li>
@@ -3166,7 +3174,7 @@ s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, Q_2)
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>data_tea <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_tea.csv&quot;</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data_tea<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(data_tea<span class="sc">$</span>date)   <span class="co"># </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data_tea<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(data_tea<span class="sc">$</span>date)   <span class="co"># date列を日付型へ変換</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データと予測データへのデータ分割</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> data_tea[<span class="dv">1</span><span class="sc">:</span><span class="dv">84</span>,] <span class="co"># 訓練データ（2015/04/01 ~ 2015/06/23，84日間）</span></span>
@@ -3300,13 +3308,14 @@ s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, Q_2)
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse</span>(test_data<span class="sc">$</span>num, pred[, <span class="st">&quot;fit&quot;</span>])</span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）予測結果の図示</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(test_data, pred)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(test_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> num, <span class="at">x =</span> date)) <span class="sc">+</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> lwr), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upr), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">&quot;%m-%d&quot;</span>, <span class="at">date_breaks =</span> <span class="st">&quot;1 days&quot;</span>)</span></code></pre></div>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(test_data, pred)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(test_data, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> num, <span class="at">x =</span> date)) <span class="sc">+</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fit), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> lwr), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> upr), <span class="at">colour =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dotted&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">&quot;%m-%d&quot;</span>, <span class="at">date_breaks =</span> <span class="st">&quot;1 days&quot;</span>)</span></code></pre></div>
 <p><strong><code>predict(model, n.ahead, newdata, interval, level)</code>：予測の実行</strong></p>
 <ul>
 <li><strong><code>model</code></strong>：<code>fitSSM</code>
@@ -3436,7 +3445,7 @@ y_t = \alpha_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t;
 <p><span class="math display">\[
 \alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
 \beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0,
-\sigma^2_j)
+\sigma^2_{\beta_j})
 \]</span></p>
 </div>
 </div>
