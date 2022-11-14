@@ -87,7 +87,6 @@ $$
 
 # パッケージの読込み
 library(KFAS)
-library(ggfortify)
 
 # データの読み込み
 data_tea <- read.csv("data/data_tea.csv")
@@ -115,10 +114,11 @@ result <- KFS(fit$model)
 fit$model$H   # 観測モデルの誤差項の分散
 fit$model$Q   # システムモデルの誤差項の分散
 
-# 当てはめ値と平滑化された状態
-data.frame(result$muhat, result$alphahat)
+# 平滑化状態の推定値
+result$alphahat
 
 # 平滑化状態の図示
+library(ggfortify)
 autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
 ```
 
@@ -139,11 +139,13 @@ autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
 
 - **`model`**：`SSModel` で作成したモデルの指定
 - **`inits`**：推定パラメータの初期値 ⇒ `SSModel` 内の `NA` の数だけ指定（`rep(0,3)` は0を3つ並べる関数）
+- `fitSSM` 関数の出力のうちパラメータ推定値は `model`（上記例では `fit$model`）に保存されている。
 
 
 **`KFS(model)`：状態のフィルタリング＆平滑化（カルマンフィルタ）**
 
 - **`model`**：`fitSSM` で推定したモデルの指定
+- `KFS` 関数の出力のうち平滑化状態の推定値は `alphahat`（上記例では `result$alphahat`）に保存されている。その他の出力は `KFS` のヘルプの `Value` を参照。
 
 
 #### Rコードの出力
@@ -156,9 +158,9 @@ fit$model$Q   # システムモデルの誤差項の分散
 システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $\alpha_t$ の分散 $Q_1$，曜日周期成分 $s_t$ の分散 $Q_2$
 
 
-##### 平滑化状態（最初の10日分のみ表示）
+##### 平滑化状態の推定値（最初の10日分のみ表示）
 ```{r echo=FALSE}
-data.frame(result$muhat, result$alphahat) %>% as.matrix() %>% head(10)
+result$alphahat %>% head(10)
 ```
 
 - result.muhat：観測期間の売上予測値（当てはめ値） ⇒ level + sea_dummy1 + holiday * x
@@ -202,6 +204,7 @@ mape(test_data$num, pred[, "fit"])
 rmse(test_data$num, pred[, "fit"])
 
 # （参考）予測結果の図示
+# install.packages("ggplot2") # 図示用のパッケージ, 初回のみ実行
 library(ggplot2)
 test_data <- cbind(test_data, pred)
 ggplot(test_data, mapping = aes(y = num, x = date)) +
@@ -256,6 +259,82 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
   geom_line(aes(y = upr), colour = "red", linetype = "dotted") +
   scale_x_date(date_labels = "%m-%d", date_breaks = "1 days")
 ```
+
+
+### 説明変数を含まないモデル*
+#### 観測モデル
+$$
+y_t = \alpha_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+$$
+
+#### システムモデル
+$$
+\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \sigma^2_s)
+$$
+
+#### Rコード
+##### 推定
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
+# 分析モデルの定義
+model_noholiday <- SSModel(
+  num ~ SSMtrend(1, Q = NA) + SSMseasonal(7, sea.type = "dummy", Q = NA),
+  H = NA,
+  data = train_data
+)
+
+# パラメータ推定
+fit_noholiday <- fitSSM(model_noholiday, inits = rep(0, 3))
+
+# 状態のフィルタリング＆平滑化
+result_noholiday <- KFS(fit_noholiday$model)
+
+# パラメータ推定値
+fit_noholiday$model$H   # 観測モデルの誤差項の分散
+fit_noholiday$model$Q   # システムモデルの誤差項の分散
+
+# 平滑化状態の推定値
+result_noholiday$alphahat
+
+# 平滑化状態の図示
+autoplot(result_noholiday$alphahat[, c("level", "sea_dummy1")])
+```
+
+##### 予測
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
+# 予測の実行
+# 説明変数を含まないモデルは予測用データの作成は不要
+pred_noholiday <- predict(fit_noholiday$model, n.ahead = 14, interval = "prediction", level = 0.95)
+
+# 予測結果
+pred_noholiday
+
+# 予測結果の評価
+mape(test_data$num, pred_noholiday[, "fit"])
+rmse(test_data$num, pred_noholiday[, "fit"])
+```
+
+#### Rコードの出力
+##### パラメータ推定値
+```{r echo=FALSE}
+fit_noholiday$model$H   # 観測モデルの誤差項の分散
+fit_noholiday$model$Q   # システムモデルの誤差項の分散
+```
+
+##### 予測結果
+```{r echo=FALSE}
+pred_noholiday
+```
+
+##### 予測結果の評価
+```{r echo=FALSE}
+mape(test_data$num, pred_noholiday[, "fit"])
+rmse(test_data$num, pred_noholiday[, "fit"])
+```
+
+- 説明変数（祝日ダミー）の有無で予測力を比較すると，MAPEでは 0.102（あり）vs. 0.094（なし），RMSEでは  23.7（あり）vs. 24.5（なし）と，2つの指標で評価が分かれる
+  - RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は RMSE が良いモデルを採択した方がよい
+- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％区間は「説明変数あり」モデルの方が狭くなる ⇒ 両モデルの予測結果の出力を比較せよ
 
 
 ## 2.分析例②：時変回帰係数*
@@ -645,10 +724,14 @@ rmse(test_data$num, pred2[, "fit"])
 mape(test_data$num, pred1[, "fit"])
 mape(test_data$num, pred2[, "fit"])
 
-# （参考）予測期間の実績値と予測値の図示
-test_data <- cbind(test_data, model1_pred)
+# 平滑化状態の図示（モデル1）
+library(ggfortify)
+autoplot(result1$alphahat[, c("leap" ,"level", "sea_dummy1")])
 
-library(lubridate)
+# （参考）予測期間の実績値と予測値の図示（モデル1）
+test_data <- cbind(test_data, pred1)
+
+library(lubridate)  # 要 lubridate パッケージのインストール
 test_data$date <- ym(test_data$date) # date列（「年-月」表記）をDate形式へ変更
 
 ggplot(test_data, mapping = aes(y = num, x = date)) +
