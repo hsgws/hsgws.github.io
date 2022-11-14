@@ -3082,7 +3082,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">時系列分析 &amp; 階層ベイズ</h1>
-<h4 class="date">更新：2022-11-14 15:50:49</h4>
+<h4 class="date">更新：2022-11-14 23:34:12</h4>
 
 </div>
 
@@ -3135,21 +3135,21 @@ div.tocify {
 <div id="観測モデル" class="section level4">
 <h4>観測モデル</h4>
 <p><span class="math display">\[
-y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t
-\sim N(0, \sigma^2_y)
+y_t = a_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim
+N(0, \sigma^2_y)
 \]</span></p>
 </div>
 <div id="システムモデル" class="section level4">
 <h4>システムモデル</h4>
 <p><span class="math display">\[
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
 \sigma^2_s)
 \]</span></p>
 <ul>
 <li><span class="math inline">\(y_t\)</span>：販売本数</li>
 <li><span class="math inline">\(x_t\)</span>：祝日ダミー</li>
-<li><span class="math inline">\(\alpha_t\)</span>：トレンド成分</li>
+<li><span class="math inline">\(a_t\)</span>：トレンド成分</li>
 <li><span class="math inline">\(s_t\)</span>：曜日周期成分</li>
 <li><span class="math inline">\(\beta\)</span>：祝日効果</li>
 </ul>
@@ -3248,7 +3248,7 @@ s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
 ##         [,1]       [,2]
 ## [1,] 10.3744 0.00000000
 ## [2,]  0.0000 0.01599262</code></pre>
-<p>システムモデルの誤差項の分散は対角成分の左上からトレンド成分 <span class="math inline">\(\alpha_t\)</span> の分散 <span class="math inline">\(Q_1\)</span>，曜日周期成分 <span class="math inline">\(s_t\)</span> の分散 <span class="math inline">\(Q_2\)</span></p>
+<p>システムモデルの誤差項の分散は対角成分の左上からトレンド成分 <span class="math inline">\(a_t\)</span> の分散 <span class="math inline">\(Q_1\)</span>，曜日周期成分 <span class="math inline">\(s_t\)</span> の分散 <span class="math inline">\(Q_2\)</span></p>
 </div>
 <div id="平滑化状態の推定値最初の10日分のみ表示" class="section level5">
 <h5>平滑化状態の推定値（最初の10日分のみ表示）</h5>
@@ -3400,14 +3400,14 @@ sea_dummy1 + holiday * x</li>
 <div id="観測モデル-1" class="section level4">
 <h4>観測モデル</h4>
 <p><span class="math display">\[
-y_t = \alpha_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0,
+y_t = a_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0,
 \sigma^2_y)
 \]</span></p>
 </div>
 <div id="システムモデル-1" class="section level4">
 <h4>システムモデル</h4>
 <p><span class="math display">\[
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
 \sigma^2_s)
 \]</span></p>
@@ -3565,14 +3565,14 @@ RMSE が良いモデルを採択した方がよい</li>
 <div id="観測モデル-2" class="section level4">
 <h4>観測モデル</h4>
 <p><span class="math display">\[
-y_t = \alpha_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t;
+y_t = a_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t;
 \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
 \]</span></p>
 </div>
 <div id="システムモデル-2" class="section level4">
 <h4>システムモデル</h4>
 <p><span class="math display">\[
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 \beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0,
 \sigma^2_{\beta_j})
 \]</span></p>
@@ -4174,6 +4174,18 @@ Rコード（クリックで表示）
 <span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">&quot;%Y-%m&quot;</span>, <span class="at">date_breaks =</span> <span class="st">&quot;2 months&quot;</span>)</span></code></pre></div>
 </div>
 </details>
+<!-- ```{r} -->
+<!-- df <- hokkaido -->
+<!-- df$num[85:120] <- NA -->
+<!-- library(lubridate) -->
+<!-- df %>%  -->
+<!--   mutate(date = ym(date)) %>%  -->
+<!--   ggplot(mapping = aes(x = date, y = num)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+<!-- ``` -->
 </div>
 </div>
 </div>

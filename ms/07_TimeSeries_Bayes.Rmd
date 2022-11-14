@@ -63,18 +63,18 @@ data_tea %>%
 ### モデル
 #### 観測モデル
 $$
-y_t = \alpha_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+y_t = a_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
 $$
 
 #### システムモデル
 $$
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \sigma^2_s)
 $$
 
 - $y_t$：販売本数
 - $x_t$：祝日ダミー
-- $\alpha_t$：トレンド成分
+- $a_t$：トレンド成分
 - $s_t$：曜日周期成分
 - $\beta$：祝日効果
 
@@ -155,7 +155,7 @@ fit$model$H   # 観測モデルの誤差項の分散
 fit$model$Q   # システムモデルの誤差項の分散
 ```
 
-システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $\alpha_t$ の分散 $Q_1$，曜日周期成分 $s_t$ の分散 $Q_2$
+システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $a_t$ の分散 $Q_1$，曜日周期成分 $s_t$ の分散 $Q_2$
 
 
 ##### 平滑化状態の推定値（最初の10日分のみ表示）
@@ -264,12 +264,12 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
 ### 説明変数を含まないモデル*
 #### 観測モデル
 $$
-y_t = \alpha_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+y_t = a_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
 $$
 
 #### システムモデル
 $$
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \sigma^2_s)
 $$
 
@@ -371,12 +371,12 @@ sec8_DLM %>%
 ### モデル
 #### 観測モデル
 $$
-y_t = \alpha_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+y_t = a_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
 $$
 
 #### システムモデル
 $$
-\alpha_t = \alpha_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_\alpha) \\
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
 \beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0, \sigma^2_{\beta_j})
 $$
 
@@ -742,3 +742,19 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
   scale_x_date(date_labels = "%Y-%m", date_breaks = "2 months")
 ```
 </div></details>
+
+
+<!-- ```{r} -->
+<!-- df <- hokkaido -->
+<!-- df$num[85:120] <- NA -->
+
+<!-- library(lubridate) -->
+<!-- df %>%  -->
+<!--   mutate(date = ym(date)) %>%  -->
+<!--   ggplot(mapping = aes(x = date, y = num)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+<!-- ``` -->
+
