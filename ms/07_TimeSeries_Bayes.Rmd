@@ -749,12 +749,43 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
 <!-- df$num[85:120] <- NA -->
 
 <!-- library(lubridate) -->
-<!-- df %>%  -->
-<!--   mutate(date = ym(date)) %>%  -->
+<!-- df %>% -->
+<!--   mutate(date = ym(date)) %>% -->
 <!--   ggplot(mapping = aes(x = date, y = num)) + -->
 <!--   geom_line() + -->
 <!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
 <!--   labs(title = "北海道の月次宿泊者数データ") + -->
 <!--   ylab(label = "宿泊者数（単位：千人）") -->
+
+
+<!-- df <- df %>%  -->
+<!--   filter(!is.na(num)) %>%  -->
+<!--   mutate(num_dif = c(NA, diff(num))) %>%  -->
+<!--   mutate(num_dif2 = c(rep(NA, 12), diff(num_dif, lag = 12))) -->
+
+<!-- df %>% -->
+<!--   mutate(date = ym(date)) %>% -->
+<!--   ggplot(mapping = aes(x = date, y = num)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+
+<!-- df %>% -->
+<!--   mutate(date = ym(date)) %>% -->
+<!--   ggplot(mapping = aes(x = date, y = num_dif)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+
+<!-- df %>% -->
+<!--   mutate(date = ym(date)) %>% -->
+<!--   ggplot(mapping = aes(x = date, y = num_dif2)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+
 <!-- ``` -->
 
