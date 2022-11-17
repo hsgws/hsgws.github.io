@@ -64,7 +64,13 @@ data_bias %>%
 
 
 ```{r}
+data_rct <- read.csv("data/data_rct.csv")
+
+# lm(spend ~ treatment, data = data_rct) %>% summary()
+# lm(spend ~ treatment, data = data_bias) %>% summary()
+
 lm(spend ~ treatment, data = data_rct) %>% summary()
-lm(spend ~ treatment, data = data_bias) %>% summary()
+aov(spend ~ treatment, data = data_rct) %>% summary()
+t.test(data_rct$spend[data_rct$treatment == 1], data_rct$spend[data_rct$treatment == 0])
 ```
 
