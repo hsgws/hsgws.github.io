@@ -27,7 +27,7 @@ library(kableExtra)
 ```
 
 
-## 1.分析例①：状態空間モデル
+## 1.分析例①：売上予測
 ### データ
 **緑茶ペットボトルの日次販売本数データ（data_tea.csv）**
 
@@ -83,15 +83,12 @@ $$
 ```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
 # パッケージのインストール（初回のみ実行）
 # install.packages("KFAS")  # 状態空間モデルのパッケージ
-# install.packages("ggfortify") # 結果図示用のパッケージ
 
 # パッケージの読込み
 library(KFAS)
 
 # データの読み込み
 data_tea <- read.csv("data/data_tea.csv")
-data_tea$date <- as.Date(data_tea$date)   # date列を日付型へ変換
-data_tea$day <- weekdays(data_tea$date)   # 曜日列の追加（パラメータ推定には不要）
 
 # 訓練データと予測データへのデータ分割
 train_data <- data_tea[1:77,] # 訓練データ（2015/04/01 ~ 2015/06/16，77日間）
@@ -104,20 +101,21 @@ model <- SSModel(
   data = train_data
 )
 
-# パラメータ推定
+# 分散パラメータの推定
 fit <- fitSSM(model, inits = rep(0, 3))
 
-# 状態のフィルタリング＆平滑化
-result <- KFS(fit$model)
-
-# パラメータ推定値
+# 分散パラメータの推定値
 fit$model$H   # 観測モデルの誤差項の分散
 fit$model$Q   # システムモデルの誤差項の分散
 
-# 平滑化状態の推定値
+# 状態の推定（カルマンフィルタ，平滑化）
+result <- KFS(fit$model)
+
+# 状態の推定値
 result$alphahat
 
-# 平滑化状態の図示
+# （参考）状態の推定値の図示
+# install.packages("ggfortify") # 結果図示用のパッケージ，初回のみ実行
 library(ggfortify)
 autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
 ```
@@ -158,7 +156,7 @@ fit$model$Q   # システムモデルの誤差項の分散
 システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $a_t$ の分散 $Q_1$，曜日周期成分 $s_t$ の分散 $Q_2$
 
 
-##### 平滑化状態の推定値（最初の10日分のみ表示）
+##### 状態の推定値（最初の10日分のみ表示）
 ```{r echo=FALSE}
 result$alphahat %>% head(10)
 ```
@@ -170,7 +168,7 @@ result$alphahat %>% head(10)
 - sea_dummy2 ~ 6：1～5日前までの曜日周期成分の推定値
 
 
-##### 平滑化状態の図示
+##### （参考）状態の推定値の図示
 ```{r echo=FALSE}
 autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
 ```
@@ -207,6 +205,8 @@ rmse(test_data$num, pred[, "fit"])
 # install.packages("ggplot2") # 図示用のパッケージ, 初回のみ実行
 library(ggplot2)
 test_data <- cbind(test_data, pred)
+test_data$date <- as.Date(test_data$date)
+
 ggplot(test_data, mapping = aes(y = num, x = date)) +
   geom_line() +
   geom_line(aes(y = fit), colour = "red") +
@@ -397,20 +397,20 @@ model <- SSModel(
   data = sec8_DLM
 )
 
-# パラメータ推定
+# 分散パラメータの推定
 fit <- fitSSM(model, inits = rep(0,6))
 
-# 状態のフィルタリング＆平滑化
-result <- KFS(fit$model)
-
-# パラメータ推定値
+# 分散パラメータの推定値
 fit$model$H   # 観測モデルの誤差項の分散
 fit$model$Q   # システムモデルの誤差項の分散
 
-# 平滑化状態
+# 状態（時変係数）の推定（カルマンフィルタ，平滑化）
+result <- KFS(fit$model)
+
+# 状態の推定値
 result$alphahat
 
-# 平滑化状態（時変係数＆トレンド）の図示
+# 状態の推定値の図示
 autoplot(result$alphahat)
 ```
 
@@ -429,12 +429,12 @@ fit$model$H   # 観測モデルの誤差項の分散
 fit$model$Q   # システムモデルの誤差項の分散
 ```
 
-##### 平滑化状態（最初の10日分のみ表示）
+##### 状態の推定値
 ```{r echo=FALSE}
 head(result$alphahat, 10)
 ```
 
-##### 平滑化状態（時変係数＆トレンド）の図示
+##### 状態の推定値の図示
 ```{r echo=FALSE}
 autoplot(result$alphahat)
 ```
