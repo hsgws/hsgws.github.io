@@ -2839,7 +2839,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">因果推論</h1>
-<h4 class="date">更新：2022-11-22 01:47:54</h4>
+<h4 class="date">更新：2022-11-22 03:27:25</h4>
 
 </div>
 
@@ -3053,17 +3053,17 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 <h3>仮説</h3>
 <div id="帰無仮説-1" class="section level5">
 <h5>帰無仮説</h5>
-<p><span class="math display">\[\mu_{womens} = \mu_{mens} =
-\mu_{no}\]</span></p>
+<p><span class="math display">\[\mu_{W} = \mu_{M} =
+\mu_{No}\]</span></p>
 </div>
 <div id="対立仮説-1" class="section level5">
 <h5>対立仮説</h5>
-<p><span class="math display">\[\mu_{womens} \neq \mu_{mens} \neq
-\mu_{no}\]</span></p>
+<p><span class="math display">\[\mu_{W} \neq \mu_{M} \neq
+\mu_{No}\]</span></p>
 <ul>
-<li><span class="math inline">\(\mu_{womens}\)</span>：女性向けプロモーションメール配信グループの平均購入金額</li>
-<li><span class="math inline">\(\mu_{mens}\)</span>：男性向けプロモーションメール配信グループの平均購入金額</li>
-<li><span class="math inline">\(\mu_{no}\)</span>：プロモーションメール未配信グループの平均購入金額</li>
+<li><span class="math inline">\(\mu_{W}\)</span>：女性向けプロモーションメール配信グループの平均購入金額</li>
+<li><span class="math inline">\(\mu_{M}\)</span>：男性向けプロモーションメール配信グループの平均購入金額</li>
+<li><span class="math inline">\(\mu_{Naaao}\)</span>：プロモーションメール未配信グループの平均購入金額</li>
 </ul>
 </div>
 </div>
@@ -3082,6 +3082,26 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>result_mult <span class="ot">&lt;-</span> <span class="fu">glht</span>(result_aov, <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">segment =</span> <span class="st">&quot;Tukey&quot;</span>))</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_mult)</span></code></pre></div>
+<p><strong><code>aov(formula, data)</code>：分散分析</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：目的変数と説明変数（グループ分けの基準）の指定
+<ul>
+<li>「目的変数 ~ 説明変数」のように，<code>~</code>
+の左側に目的変数，右側に説明変数を記述する</li>
+<li>説明変数は factor 形式で指定する必要がある</li>
+</ul></li>
+<li><strong><code>data</code></strong>：データの指定</li>
+</ul>
+<p><strong><code>glht(model, linfct)</code>：多重比較</strong></p>
+<ul>
+<li><strong><code>model</code></strong>：分散分析の出力</li>
+<li><strong><code>linfct</code></strong>：仮説の指定
+<ul>
+<li>多重比較の場合は <code>mcp</code></li>
+<li><code>segment = &quot;Tukey&quot;</code>
+でテューキー法によりメール3種の購入金額平均を一対比較</li>
+</ul></li>
+</ul>
 <div id="rコード出力-2" class="section level5">
 <h5>Rコード出力</h5>
 </div>
@@ -3106,8 +3126,8 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 ## Linear Hypotheses:
 ##                                  Estimate Std. Error t value Pr(&gt;|t|)    
 ## No E-Mail - Mens E-Mail == 0      -0.7698     0.1457  -5.285  &lt; 1e-04 ***
-## Womens E-Mail - Mens E-Mail == 0  -0.3454     0.1455  -2.374  0.04636 *  
-## Womens E-Mail - No E-Mail == 0     0.4244     0.1455   2.917  0.00987 ** 
+## Womens E-Mail - Mens E-Mail == 0  -0.3454     0.1455  -2.374  0.04630 *  
+## Womens E-Mail - No E-Mail == 0     0.4244     0.1455   2.917  0.00982 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
@@ -3204,16 +3224,16 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 </div>
 <div id="課題" class="section level3">
 <h3>課題</h3>
-<p>「<span class="math inline">\(\mu_{mens}\)</span>：男性向けプロモーションメール配信グループの平均購入金額」と「<span class="math inline">\(\mu_{no}\)</span>：プロモーションメール未配信グループの平均購入金額」は異なるか？<br />
+<p>「<span class="math inline">\(\mu_M\)</span>：男性向けプロモーションメール配信グループの平均購入金額」と「<span class="math inline">\(\mu_{No}\)</span>：プロモーションメール未配信グループの平均購入金額」は異なるか？<br />
 以下の仮説を t
-検定で検定して，プロモーションメールに効果があったか検証せよ。</p>
+検定で検定して，プロモーションメールの効果を検証せよ。</p>
 <div id="帰無仮説-2" class="section level5">
 <h5>帰無仮説</h5>
-<p><span class="math display">\[\mu_{mens} = \mu_{no}\]</span></p>
+<p><span class="math display">\[\mu_{M} = \mu_{No}\]</span></p>
 </div>
 <div id="対立仮説-2" class="section level5">
 <h5>対立仮説</h5>
-<p><span class="math display">\[\mu_{mens} \neq \mu_{no}\]</span></p>
+<p><span class="math display">\[\mu_{M} \neq \mu_{No}\]</span></p>
 </div>
 <div id="注意点" class="section level5">
 <h5>注意点</h5>
@@ -3237,12 +3257,16 @@ Rコード（クリックで表示）
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>mens <span class="ot">&lt;-</span> <span class="fu">subset</span>(data_pm, segment <span class="sc">==</span> <span class="st">&quot;Mens E-Mail&quot;</span>)</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>no <span class="ot">&lt;-</span> <span class="fu">subset</span>(data_pm, segment <span class="sc">==</span> <span class="st">&quot;No E-Mail&quot;</span>)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># t検定</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(mens<span class="sc">$</span>spend, no<span class="sc">$</span>spend)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># または以下</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># data_pm &lt;- subset(data_pm, segment == &quot;Mens E-Mail&quot; | segment == &quot;No E-Mail&quot;) # &quot;|&quot; は「or」を表す</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># t.test(spend ~ segment, data = data_pm)</span></span></code></pre></div>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 基礎集計</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mens<span class="sc">$</span>spend)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(no<span class="sc">$</span>spend)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># t検定</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(mens<span class="sc">$</span>spend, no<span class="sc">$</span>spend)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># または以下</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># data_pm &lt;- subset(data_pm, segment == &quot;Mens E-Mail&quot; | segment == &quot;No E-Mail&quot;) # &quot;|&quot; は「or」を表す</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># t.test(spend ~ segment, data = data_pm)</span></span></code></pre></div>
 </div>
 </details>
 </div>
