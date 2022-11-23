@@ -51,6 +51,14 @@ ggplot(nframe, aes(x=x,y=y)) +
   guides(y = "none")
 
 
+ggplot(nframe, aes(x=x,y=y)) + 
+  geom_area(data = subset(nframe, nframe$x < 0), aes(x = x, y = y), fill="gray") +
+  geom_line() +
+  theme_classic() +
+  ylab("") + xlab("") + 
+  guides(y = "none")
+
+
 
 p <- ggplot(data=data.frame(X=c(-4,4)), aes(x=X))
 p <- p + stat_function(fun=dt, args=list(df = 3), color = "blue", linewidth = .8)
