@@ -2839,7 +2839,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">因果推論</h1>
-<h4 class="date">更新：2022-11-22 03:27:25</h4>
+<h4 class="date">更新：2022-11-24 01:05:42</h4>
 
 </div>
 
@@ -2944,7 +2944,10 @@ Page B）の行のみ抽出。 Page A の行はデータ内の Page 列が “Pa
 の左側に目的変数（差を検定したい値），右側にグループ分けの基準</li>
 <li><strong><code>data</code></strong>：観測データの指定</li>
 </ul>
-<p><code>t.test</code> はデフォルトでは両側検定（対立仮説 <span class="math inline">\(x \neq y\)</span>）を実行。片側検定（対立仮説
+<p><code>t.test</code>
+はデフォルトでは，比較する2つの集団で分散が異なる可能性を想定したWelchのt検定で両側検定（対立仮説
+<span class="math inline">\(x \neq
+y\)</span>）の検定結果が出力される。2つの集団で分散が等しいと想定される場合のt検定や片側検定（対立仮説
 <span class="math inline">\(x &gt; y\)</span> または <span class="math inline">\(x &lt; y\)</span>）の実行方法は
 <code>t.test</code> のヘルプを参照。</p>
 <div id="rコード出力-1" class="section level5">
@@ -3126,8 +3129,8 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 ## Linear Hypotheses:
 ##                                  Estimate Std. Error t value Pr(&gt;|t|)    
 ## No E-Mail - Mens E-Mail == 0      -0.7698     0.1457  -5.285  &lt; 1e-04 ***
-## Womens E-Mail - Mens E-Mail == 0  -0.3454     0.1455  -2.374  0.04630 *  
-## Womens E-Mail - No E-Mail == 0     0.4244     0.1455   2.917  0.00982 ** 
+## Womens E-Mail - Mens E-Mail == 0  -0.3454     0.1455  -2.374  0.04639 *  
+## Womens E-Mail - No E-Mail == 0     0.4244     0.1455   2.917  0.00992 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
