@@ -51,7 +51,7 @@ lm(spend ~ treatment, data = data_bias) %>%
 # maching
 library(MatchIt)
 match <- matchit(
-  treatment ~ recency + history + channel,
+  treatment ~ recency + history + channel, # formula:傾向スコア推定モデル
   data = data_bias,
   method = "nearest",
   replace = TRUE,
