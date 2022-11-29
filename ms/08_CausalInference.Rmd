@@ -26,53 +26,6 @@ library(tidyverse)
 ```
 
 
-```{r eval=FALSE, include=FALSE}
-# バイアスデータの作成（効果検証入門）
-data <- read.csv("data/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv")
-
-# RCT data
-data_rct <- data %>% 
-  filter(segment != "Womens E-Mail") %>% 
-  mutate(treatment = if_else(segment == "Mens E-Mail", 1, 0)) %>% 
-  mutate(cust_id = 1:nrow(.), .before = recency)
-
-# write.csv(data_rct, file = "data/data_rct.csv", row.names = FALSE)
-
-data_rct %>% 
-  group_by(treatment) %>% 
-  summarise(coversion_rate = mean(conversion),
-            spend_mean = mean(spend),
-            count = n())
-
-# Biased data
-set.seed(1)
-data_bias <- data_rct %>% 
-  mutate(obs_rate_c = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 0.5, 1),
-         obs_rate_t = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 1, 0.5),
-         random_number = runif(n = nrow(data_rct))) %>%
-  filter((treatment == 0 & random_number < obs_rate_c ) | (treatment == 1 & random_number < obs_rate_t)) %>% 
-  select(cust_id:treatment)
-
-# write.csv(data_bias, file = "data/data_bias.csv", row.names = FALSE)
-
-data_bias %>% 
-  group_by(treatment) %>% 
-  summarise(coversion_rate = mean(conversion),
-            spend_mean = mean(spend),
-            count = n())
-
-# analysis
-data_rct <- read.csv("data/data_rct.csv")
-
-# lm(spend ~ treatment, data = data_rct) %>% summary()
-# lm(spend ~ treatment, data = data_bias) %>% summary()
-
-lm(spend ~ treatment, data = data_rct) %>% summary()
-aov(spend ~ treatment, data = data_rct) %>% summary()
-t.test(data_rct$spend[data_rct$treatment == 1], data_rct$spend[data_rct$treatment == 0])
-```
-
-
 ## 1.分析例①：t 検定
 ### データ
 **ウェブページのA/Bテストデータ（web_page_data.csv）**
