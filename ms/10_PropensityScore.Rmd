@@ -37,11 +37,15 @@ data_rct <- data %>%
   mutate(treatment = if_else(segment == "Mens E-Mail", 1, 0), .after = segment) %>% 
   mutate(cust_id = 1:nrow(.), .before = recency)
 
+# 不要列の削除
+data_rct <- data_rct %>% 
+  select(cust_id, recency, history, channel, segment, treatment, spend)
+
 write.csv(data_rct, file = "data/data_rct.csv", row.names = FALSE)
 
 data_rct %>% 
   group_by(treatment) %>% 
-  summarise(coversion_rate = mean(conversion),
+  summarise(#coversion_rate = mean(conversion),
             spend_mean = mean(spend),
             count = n())
 
@@ -54,11 +58,15 @@ data_bias <- data_rct %>%
   filter((treatment == 0 & random_number < obs_rate_c ) | (treatment == 1 & random_number < obs_rate_t)) %>% 
   select(cust_id:spend)
 
+# 不要列の削除
+data_bias <- data_bias %>% 
+  select(cust_id, recency, history, channel, segment, treatment, spend)
+
 write.csv(data_bias, file = "data/data_bias.csv", row.names = FALSE)
 
 data_bias %>% 
   group_by(treatment) %>% 
-  summarise(coversion_rate = mean(conversion),
+  summarise(# coversion_rate = mean(conversion),
             spend_mean = mean(spend),
             count = n())
 
@@ -87,23 +95,20 @@ head(data_rct)
 
 | 変数名          | 内容                                                         |
 | --------------- | ------------------------------------------------------------ |
-| **recency** ($x_1$)        | 最終購買からの経過月数                                       |
-| history_segment            | 昨年の購買金額の階級                                         |
-| **history** ($x_2$)       | 昨年の購入金額                                               |
-| mens            | 昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）     |
-| womens          | 昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）     |
-| zip_code        | 居住地区の分類（Rural，Surburban，Urban）                    |
-| newbie         | 過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）         |
-| **channel** ($x_3$)                   | 昨年の購買チャネル（Multichannel，Phone，Web）               |
-| segment        | 配信したプロモーションメールの種類（Mens E-Mail, No E-Mail）|
-| **treatment** ($z$)           | **Mens E-Mail が配信されていれば1となるダミー変数 ⇒ 介入**     |
-| visit           | メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし） |
-| conversion      | メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし） |
-| **spend** ($y$)           | 購入金額                                                     |
-（太字は以下の分析例で使用する変数）
+| cust_id         | 顧客ID                                                       |
+| recency ($x_1$) | 最終購買からの経過月数                                       |
+| history ($x_2$) | 昨年の購入金額                                               |
+| channel ($x_3$) | 昨年の購買チャネル（Multichannel，Phone，Web）               |
+| segment         | 配信したプロモーションメールの種類（Mens E-Mail, No E-Mail）|
+| treatment ($z$) | **Mens E-Mail が配信されていれば1となるダミー変数 ⇒ 介入**     |
+| spend ($y$)     | 購入金額                                                     |
 
+- プロモーションメールを配信するかどうかはランダムに決められた，RCTによる実験データ
+- 元データではプロモーションメールは3種類（Womens E-Mail，Mens E-Mail，No E-Mail）あるが，演習のため元データから Mens E-Mail と No E-Mail の行のみ抽出してデータファイルを作成
+- Mens E-Mail（介入群）と No E-Mail（対照群）の比較により， プロモーションメールの効果測定を行う
 
-- 介入
+**データ出典** ： [MineThatData E-Mail Analytics And Data Mining Challenge dataset](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
+
 
 ### モデル
 $$y = \alpha + \beta z + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_3 + \varepsilon$$
@@ -145,6 +150,53 @@ data_bias <- read_csv("data/data_bias.csv")
 head(data_bias)
 ```
 
+\
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| cust_id         | 顧客ID                                                       |
+| recency ($x_1$) | 最終購買からの経過月数                                       |
+| history ($x_2$) | 昨年の購入金額                                               |
+| channel ($x_3$) | 昨年の購買チャネル（Multichannel，Phone，Web）               |
+| segment         | 配信したプロモーションメールの種類（Mens E-Mail, No E-Mail）|
+| treatment ($z$) | **Mens E-Mail が配信されていれば1となるダミー変数 ⇒ 介入**     |
+| spend ($y$)     | 購入金額                                                     |
+
+
+- 分析例①のRCTデータから「優良顧客にプロモーションメールを多く配信した（＝セレクションバイアスがある）状況」を人工的に作り出したシミュレーションデータ 
+- 優良顧客の条件
+  - 昨年の購入金額が300より大きい（history > 300）
+  - 最終購買からの経過月数が6より小さい（recency < 6）
+  - 昨年の購買チャネルで複数チャネルを利用（channel == "Multichannel"）
+
+
+**データ出典** ： [安井（2020）『効果検証入門』技術評論社](https://gihyo.jp/book/2020/978-4-297-11117-5)
+
+<br />
+<details><summary>バイアスデータの作成Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+# バイアスデータの作成
+library(tidyverse) # 要パッケージインストール
+set.seed(1)
+data_bias <- data_rct %>%
+  mutate(obs_rate_c = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 0.5, 1), # 対照群
+         obs_rate_t = ifelse((history > 300) | (recency < 6) | (channel == "Multichannel"), 1, 0.5), # 介入群
+         random_number = runif(n = nrow(data_rct))) %>%
+  filter((treatment == 0 & random_number < obs_rate_c ) | (treatment == 1 & random_number < obs_rate_t)) %>%
+  select(cust_id:spend)
+
+# 介入群・対照群の共変量の比較
+data_bias %>% 
+  group_by(segment) %>% 
+  summarise(mean_history = mean(history),
+            mean_recency = mean(recency),
+            ratio_web = mean(channel == "Web"),
+            ratio_phone = mean(channel == "Phone"),
+            ratio_multi =  mean(channel == "Multichannel"))
+
+```
+</div></details>
+
 
 ### Rコード
 #### 傾向スコアの推定とマッチング
@@ -157,6 +209,8 @@ library(MatchIt)
 
 # データの読み込み
 data_bias <- read.csv("data/data_bias.csv")
+data_bias$channel <- factor(data_bias$channel)  
+# matchitは文字列（character型）を扱う際にエラーが出るためchannel列をfactor型に変換
 
 # 傾向スコアの推定
 match <- matchit(
@@ -177,11 +231,12 @@ matched_pair <- get_matches(match)
 matched_pair
 ```
 
-**`matchit(formula, data, replace)`：傾向スコアの計算**
+**`matchit(formula, data, replace)`：傾向スコアの推定**
 
-- **`formula`**：介入変数（目的変数）と共変量（説明変数）の指定
+- **`formula`**：傾向スコア計算のための介入変数（目的変数）と共変量（説明変数）の指定
 - **`data`**：分析データの指定  
 - **`replace`**：マッチング対象の復元抽出の有無 ⇒ `TRUE` で復元抽出，`FALSE` で非復元抽出
+- `summary` でマッチング後の介入群と対照群の共変量のバランスを確認できる
 
 <br />
 **`match.data(object)`：マッチング・データの作成**
@@ -223,12 +278,13 @@ summary(match)
 
 - "Summary of Balance for All Data" がマッチング前の介入群（Treated）と対照群（Control）の共変量の比較， "Summary of Balance for Matched Data" がマッチング後の共変量の比較
 - 「最終購買からの経過月数（recency）」に注目すると，マッチング前は介入群に比べて対照群の経過月数が1.6ヶ月長いが，マッチング後はその差が0.1ヶ月に減少している  
+<br />
 
 #####  マッチングデータの作成（最初の6人分）
 ```{r echo=FALSE}
 head(matched_data)
 ```
-
+<br />
 
 ##### マッチングペアの確認（最初の3ペア6人分）
 ```{r echo=FALSE}
@@ -237,8 +293,8 @@ head(matched_pair)
 
 - subclass が同じ番号のペアがマッチングされたペア
 - treatment を確認するとペアのどちらかが1（介入あり），どちらかが0（介入なし）となっている
-- distance が傾向スコアの値で，マッチングされたペアはほぼ同じ値となっている
-
+- distance が傾向スコアの値で，マッチングされたペアはほぼ同じ値となっている  
+<br />
 
 ##### 結果の出力
 ```{r echo=FALSE}
@@ -246,18 +302,18 @@ summary(result)
 ```
 
 - ATTは $\beta = 1.018$ で有意に推定されており，「プロモーションメールを配信した顧客（介入群）におけるプロモーションメールの効果は1.018ドル」と判断できる
-  - 仮に介入群にプロモーションメールを配信しなければ，介入群の購入金額は平均的には1.018ドル低い
+  - 介入群はプロモーションメールが配信されたことで購入金額が平均的には1.018ドル増えた
 - ATTとATEは異なることに注意
   - ATTは「介入を受けたサンプルにおける介入効果」，ATEは「サンプル全体における介入効果」
-  - 分析データは優良顧客にプロモーションメールを多く配信しており，介入群の方がプロモーション効果が高いことが想定される（ATT > ATE）
-  
+  - 分析データは優良顧客にプロモーションメールを多く配信しており，優良顧客の多い介入群の方がプロモーション効果が高いことが想定される（ATT > ATE）  
+<br />
 
 ##### （参考）頑健な標準偏差の計算
 ```{r echo=FALSE}
 coeftest(result, vcov. = vcovCL, cluster = ~ weights)
 ```
 
-- 元データからマッチングしたデータのみ抜き出して分析していることにより，回帰係数の標準偏差が大きく推定される傾向（＝p値が大きくなる）があり，`coeftest` 関数でそれを補正した標準偏差を計算できる
+- 元データからマッチングしたデータのみ抜き出して分析していることにより，回帰係数の標準偏差が大きく推定される性質（＝p値が大きくなる）があり，`coeftest` 関数でそれを補正した標準偏差を計算できる
 - 補正しない結果と比較すると，p値が小さくなっていることが分かる
 
 
@@ -272,10 +328,8 @@ library(WeightIt)
 
 # ウエイトの計算
 weighting <- weightit(
-  treatment ~ recency + history + channel,
-  data = data_bias,
-  method = "ps",
-  estimand = "ATE"
+  treatment ~ recency + history + channel, # formula:傾向スコア推定モデル
+  data = data_bias
 )
 
 # ATEの推定
@@ -303,12 +357,17 @@ summary(result_bias2)
 ```
 
 
+**`weightit(formula, data)`：IPW推定のウエイト計算**
+
+- **`formula`**：傾向スコア計算のための介入変数（目的変数）と共変量（説明変数）の指定
+- **`data`**：分析データの指定  
+
+
 #### Rコード出力
 ##### 結果の出力
 ```{r echo=FALSE}
 summary(result)
 ```
-
 
 ##### （参考）頑健な標準偏差の計算
 ```{r echo=FALSE}
@@ -323,6 +382,7 @@ coeftest(result, vcov. = vcovCL, cluster = weighting$weights)
 summary(result_bias1)
 ```
 
+
 ##### （参考）バイアスと共変量を無視して推定したATE
 ```{r echo=FALSE}
 summary(result_bias2)
@@ -333,20 +393,60 @@ summary(result_bias2)
   - バイアスを無視：0.847
   - バイアスと共変量を無視：0.979
   - 真のATE（RCTデータ）：0.768
-- その理由は「バイアスを無視」モデルではバイアスを発生させた原因の共変量を説明変数として利用した回帰分析を実施しているから
-- 現実のデータ観測ではバイアス発生の全ての原因を特定することは困難であり，また介入効果推定のために必要な共変量が観測されているかは判断できないないが，そのような場合でも傾向スコア分析およびIPW推定量は望ましい性質がある（詳細は以下の参考文献の10～12章を参照）
+- その理由は「バイアスを無視」モデルではバイアスを発生させた原因の共変量を説明変数として利用した回帰分析を実施しているためである
+- 現実のデータ観測ではバイアス発生の全ての原因を特定することは困難であり，また介入効果推定のために必要な共変量が観測されているかは判断できないないが，そのような場合でも傾向スコア分析およびIPW推定量は介入効果を推定する上で望ましい性質がある（詳細は以下の参考文献の10～12章を参照）
 
 [高橋（2022）『統計的因果推論の理論と実装（Wonderful Rシリーズ）』共立出版](https://www.kyoritsu-pub.co.jp/book/b10011781.html)
 
 
 ## 4. データ分析実習
 
+### 課題
+分析例②のデータからATC（介入を受けなかったサンプルにおける介入効果），つまり「プロモーションメールを配信しなかった顧客にもしプロモーションメールを配信していれば得られた購入金額の増加分」を推定せよ。  
+傾向スコア分析でATCを推定する場合は，以下のように `matchit` 関数の引数に `estimand = "ATC"` を追加すれば，その他はATT推定と同じ手順でATCを推定できる。
+
+
+```{r eval=FALSE}
+match <- matchit(
+  treatment ~ recency + history + channel, # formula:傾向スコア推定モデル
+  data = data_bias,
+  replace = TRUE,
+  estimand = "ATC"
+)
+```
+
 
 <br />
 <details><summary>Rコード（クリックで表示）</summary><div>
-```{r}
-# ATTの推定
-result <- lm(visit ~ treatment + recency + history + channel,
+```{r eval=FALSE, results='hide'}
+# パッケージの読込み
+library(MatchIt)
+
+# データの読み込み
+data_bias <- read.csv("data/data_bias.csv")
+data_bias$channel <- factor(data_bias$channel)  
+# matchitは文字列（character型）を扱う際にエラーが出るため共変量のchannelをfactor型に変換
+
+match <- matchit(
+  treatment ~ recency + history + channel, # formula:傾向スコア推定モデル
+  data = data_bias,
+  replace = TRUE,
+  estimand = "ATC"
+)
+
+# 共変量のバランスの確認
+summary(match)
+
+# マッチングデータの作成
+matched_data <- match.data(match)
+matched_data
+
+# マッチングペアの確認（省略化）
+matched_pair <- get_matches(match)
+matched_pair
+
+# ATCの推定
+result <- lm(spend ~ treatment + recency + history + channel, 
              data = matched_data,
              weights = weights)
 

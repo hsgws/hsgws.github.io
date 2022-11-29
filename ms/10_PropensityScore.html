@@ -2839,7 +2839,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">傾向スコア分析</h1>
-<h4 class="date">更新：2022-11-29 23:31:01</h4>
+<h4 class="date">更新：2022-11-30 03:28:21</h4>
 
 </div>
 
@@ -2851,7 +2851,7 @@ font-size: 0.95em;
 <p><strong>RCTが実施されたプロモーションメールの配信データ（data_rct.csv）</strong></p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cust_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["recency"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["history_segment"],"name":[3],"type":["chr"],"align":["left"]},{"label":["history"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["womens"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["zip_code"],"name":[7],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[9],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[10],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["visit"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["conversion"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["spend"],"name":[14],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"3) $200 - $350","4":"329.08","5":"1","6":"1","7":"Rural","8":"1","9":"Web","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0"},{"1":"2","2":"9","3":"5) $500 - $750","4":"675.83","5":"1","6":"0","7":"Rural","8":"1","9":"Web","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0"},{"1":"3","2":"9","3":"5) $500 - $750","4":"675.07","5":"1","6":"1","7":"Rural","8":"1","9":"Phone","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0"},{"1":"4","2":"2","3":"2) $100 - $200","4":"101.64","5":"0","6":"1","7":"Urban","8":"0","9":"Web","10":"Mens E-Mail","11":"1","12":"1","13":"0","14":"0"},{"1":"5","2":"4","3":"3) $200 - $350","4":"241.42","5":"0","6":"1","7":"Rural","8":"1","9":"Multichannel","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0"},{"1":"6","2":"3","3":"1) $0 - $100","4":"58.13","5":"1","6":"0","7":"Urban","8":"1","9":"Web","10":"No E-Mail","11":"0","12":"1","13":"0","14":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["cust_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["recency"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[4],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[5],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["spend"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"329.08","4":"Web","5":"No E-Mail","6":"0","7":"0"},{"1":"2","2":"9","3":"675.83","4":"Web","5":"Mens E-Mail","6":"1","7":"0"},{"1":"3","2":"9","3":"675.07","4":"Phone","5":"Mens E-Mail","6":"1","7":"0"},{"1":"4","2":"2","3":"101.64","4":"Web","5":"Mens E-Mail","6":"1","7":"0"},{"1":"5","2":"4","3":"241.42","4":"Multichannel","5":"No E-Mail","6":"0","7":"0"},{"1":"6","2":"3","3":"58.13","4":"Web","5":"No E-Mail","6":"0","7":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p><br />
@@ -2869,35 +2869,19 @@ font-size: 0.95em;
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>recency</strong> (<span class="math inline">\(x_1\)</span>)</td>
-<td>最終購買からの経過月数</td>
+<td>cust_id</td>
+<td>顧客ID</td>
 </tr>
 <tr class="even">
-<td>history_segment</td>
-<td>昨年の購買金額の階級</td>
+<td>recency (<span class="math inline">\(x_1\)</span>)</td>
+<td>最終購買からの経過月数</td>
 </tr>
 <tr class="odd">
-<td><strong>history</strong> (<span class="math inline">\(x_2\)</span>)</td>
+<td>history (<span class="math inline">\(x_2\)</span>)</td>
 <td>昨年の購入金額</td>
 </tr>
 <tr class="even">
-<td>mens</td>
-<td>昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）</td>
-</tr>
-<tr class="odd">
-<td>womens</td>
-<td>昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）</td>
-</tr>
-<tr class="even">
-<td>zip_code</td>
-<td>居住地区の分類（Rural，Surburban，Urban）</td>
-</tr>
-<tr class="odd">
-<td>newbie</td>
-<td>過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）</td>
-</tr>
-<tr class="even">
-<td><strong>channel</strong> (<span class="math inline">\(x_3\)</span>)</td>
+<td>channel (<span class="math inline">\(x_3\)</span>)</td>
 <td>昨年の購買チャネル（Multichannel，Phone，Web）</td>
 </tr>
 <tr class="odd">
@@ -2905,28 +2889,26 @@ font-size: 0.95em;
 <td>配信したプロモーションメールの種類（Mens E-Mail, No E-Mail）</td>
 </tr>
 <tr class="even">
-<td><strong>treatment</strong> (<span class="math inline">\(z\)</span>)</td>
+<td>treatment (<span class="math inline">\(z\)</span>)</td>
 <td><strong>Mens E-Mail が配信されていれば1となるダミー変数 ⇒
 介入</strong></td>
 </tr>
 <tr class="odd">
-<td>visit</td>
-<td>メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし）</td>
-</tr>
-<tr class="even">
-<td>conversion</td>
-<td>メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし）</td>
-</tr>
-<tr class="odd">
-<td><strong>spend</strong> (<span class="math inline">\(y\)</span>)</td>
+<td>spend (<span class="math inline">\(y\)</span>)</td>
 <td>購入金額</td>
 </tr>
 </tbody>
 </table>
-<p>（太字は以下の分析例で使用する変数）</p>
 <ul>
-<li>介入</li>
+<li>プロモーションメールを配信するかどうかはランダムに決められた，RCTによる実験データ</li>
+<li>元データではプロモーションメールは3種類（Womens E-Mail，Mens
+E-Mail，No E-Mail）あるが，演習のため元データから Mens E-Mail と No
+E-Mail の行のみ抽出してデータファイルを作成</li>
+<li>Mens E-Mail（介入群）と No E-Mail（対照群）の比較により，
+プロモーションメールの効果測定を行う</li>
 </ul>
+<p><strong>データ出典</strong> ： <a href="https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html">MineThatData
+E-Mail Analytics And Data Mining Challenge dataset</a></p>
 </div>
 <div id="モデル" class="section level3">
 <h3>モデル</h3>
@@ -2991,47 +2973,133 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 <p><strong>人工的にバイアスを発生させたプロモーションメールの配信データ（data_bias.csv）</strong></p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cust_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["recency"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["history_segment"],"name":[3],"type":["chr"],"align":["left"]},{"label":["history"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["womens"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["zip_code"],"name":[7],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[9],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[10],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["visit"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["conversion"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["spend"],"name":[14],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"3) $200 - $350","4":"329.08","5":"1","6":"1","7":"Rural","8":"1","9":"Web","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0"},{"1":"2","2":"9","3":"5) $500 - $750","4":"675.83","5":"1","6":"0","7":"Rural","8":"1","9":"Web","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0"},{"1":"3","2":"9","3":"5) $500 - $750","4":"675.07","5":"1","6":"1","7":"Rural","8":"1","9":"Phone","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0"},{"1":"4","2":"2","3":"2) $100 - $200","4":"101.64","5":"0","6":"1","7":"Urban","8":"0","9":"Web","10":"Mens E-Mail","11":"1","12":"1","13":"0","14":"0"},{"1":"5","2":"4","3":"3) $200 - $350","4":"241.42","5":"0","6":"1","7":"Rural","8":"1","9":"Multichannel","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0"},{"1":"7","2":"5","3":"1) $0 - $100","4":"29.99","5":"1","6":"0","7":"Surburban","8":"0","9":"Phone","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["cust_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["recency"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[4],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[5],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["spend"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"329.08","4":"Web","5":"No E-Mail","6":"0","7":"0"},{"1":"2","2":"9","3":"675.83","4":"Web","5":"Mens E-Mail","6":"1","7":"0"},{"1":"3","2":"9","3":"675.07","4":"Phone","5":"Mens E-Mail","6":"1","7":"0"},{"1":"4","2":"2","3":"101.64","4":"Web","5":"Mens E-Mail","6":"1","7":"0"},{"1":"5","2":"4","3":"241.42","4":"Multichannel","5":"No E-Mail","6":"0","7":"0"},{"1":"7","2":"5","3":"29.99","4":"Phone","5":"Mens E-Mail","6":"1","7":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p><br />
+</p>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>変数名</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>cust_id</td>
+<td>顧客ID</td>
+</tr>
+<tr class="even">
+<td>recency (<span class="math inline">\(x_1\)</span>)</td>
+<td>最終購買からの経過月数</td>
+</tr>
+<tr class="odd">
+<td>history (<span class="math inline">\(x_2\)</span>)</td>
+<td>昨年の購入金額</td>
+</tr>
+<tr class="even">
+<td>channel (<span class="math inline">\(x_3\)</span>)</td>
+<td>昨年の購買チャネル（Multichannel，Phone，Web）</td>
+</tr>
+<tr class="odd">
+<td>segment</td>
+<td>配信したプロモーションメールの種類（Mens E-Mail, No E-Mail）</td>
+</tr>
+<tr class="even">
+<td>treatment (<span class="math inline">\(z\)</span>)</td>
+<td><strong>Mens E-Mail が配信されていれば1となるダミー変数 ⇒
+介入</strong></td>
+</tr>
+<tr class="odd">
+<td>spend (<span class="math inline">\(y\)</span>)</td>
+<td>購入金額</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>分析例①のRCTデータから「優良顧客にプロモーションメールを多く配信した（＝セレクションバイアスがある）状況」を人工的に作り出したシミュレーションデータ</li>
+<li>優良顧客の条件
+<ul>
+<li>昨年の購入金額が300より大きい（history &gt; 300）</li>
+<li>最終購買からの経過月数が6より小さい（recency &lt; 6）</li>
+<li>昨年の購買チャネルで複数チャネルを利用（channel ==
+“Multichannel”）</li>
+</ul></li>
+</ul>
+<p><strong>データ出典</strong> ： <a href="https://gihyo.jp/book/2020/978-4-297-11117-5">安井（2020）『効果検証入門』技術評論社</a></p>
+<br />
+<details>
+<summary>
+バイアスデータの作成Rコード（クリックで表示）
+</summary>
+<div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># バイアスデータの作成</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># 要パッケージインストール</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data_bias <span class="ot">&lt;-</span> data_rct <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">obs_rate_c =</span> <span class="fu">ifelse</span>((history <span class="sc">&gt;</span> <span class="dv">300</span>) <span class="sc">|</span> (recency <span class="sc">&lt;</span> <span class="dv">6</span>) <span class="sc">|</span> (channel <span class="sc">==</span> <span class="st">&quot;Multichannel&quot;</span>), <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="co"># 対照群</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">obs_rate_t =</span> <span class="fu">ifelse</span>((history <span class="sc">&gt;</span> <span class="dv">300</span>) <span class="sc">|</span> (recency <span class="sc">&lt;</span> <span class="dv">6</span>) <span class="sc">|</span> (channel <span class="sc">==</span> <span class="st">&quot;Multichannel&quot;</span>), <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="co"># 介入群</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">random_number =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="fu">nrow</span>(data_rct))) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((treatment <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> random_number <span class="sc">&lt;</span> obs_rate_c ) <span class="sc">|</span> (treatment <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> random_number <span class="sc">&lt;</span> obs_rate_t)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cust_id<span class="sc">:</span>spend)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 介入群・対照群の共変量の比較</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>data_bias <span class="sc">%&gt;%</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(segment) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_history =</span> <span class="fu">mean</span>(history),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_recency =</span> <span class="fu">mean</span>(recency),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">ratio_web =</span> <span class="fu">mean</span>(channel <span class="sc">==</span> <span class="st">&quot;Web&quot;</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">ratio_phone =</span> <span class="fu">mean</span>(channel <span class="sc">==</span> <span class="st">&quot;Phone&quot;</span>),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">ratio_multi =</span>  <span class="fu">mean</span>(channel <span class="sc">==</span> <span class="st">&quot;Multichannel&quot;</span>))</span></code></pre></div>
+</div>
+</details>
 </div>
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
 <div id="傾向スコアの推定とマッチング" class="section level4">
 <h4>傾向スコアの推定とマッチング</h4>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MatchIt パッケージのインストール（初回のみ実行）</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;MatchIt&quot;) </span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>data_bias <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_bias.csv&quot;</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 傾向スコアの推定</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>match <span class="ot">&lt;-</span> <span class="fu">matchit</span>(</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, <span class="co"># formula:傾向スコア推定モデル</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 共変量のバランスの確認</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(match)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングデータの作成</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>matched_data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>matched_data</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングペアの確認</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>matched_pair <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(match)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>matched_pair</span></code></pre></div>
-<p><strong><code>matchit(formula, data, replace)</code>：傾向スコアの計算</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MatchIt パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;MatchIt&quot;) </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>data_bias <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_bias.csv&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>data_bias<span class="sc">$</span>channel <span class="ot">&lt;-</span> <span class="fu">factor</span>(data_bias<span class="sc">$</span>channel)  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># matchitは文字列（character型）を扱う際にエラーが出るためchannel列をfactor型に変換</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 傾向スコアの推定</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>match <span class="ot">&lt;-</span> <span class="fu">matchit</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, <span class="co"># formula:傾向スコア推定モデル</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 共変量のバランスの確認</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(match)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングデータの作成</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>matched_data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>matched_data</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングペアの確認</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>matched_pair <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(match)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>matched_pair</span></code></pre></div>
+<p><strong><code>matchit(formula, data, replace)</code>：傾向スコアの推定</strong></p>
 <ul>
-<li><strong><code>formula</code></strong>：介入変数（目的変数）と共変量（説明変数）の指定</li>
+<li><strong><code>formula</code></strong>：傾向スコア計算のための介入変数（目的変数）と共変量（説明変数）の指定</li>
 <li><strong><code>data</code></strong>：分析データの指定<br />
 </li>
 <li><strong><code>replace</code></strong>：マッチング対象の復元抽出の有無
 ⇒ <code>TRUE</code> で復元抽出，<code>FALSE</code> で非復元抽出</li>
+<li><code>summary</code>
+でマッチング後の介入群と対照群の共変量のバランスを確認できる</li>
 </ul>
 <p><br />
 <strong><code>match.data(object)</code>：マッチング・データの作成</strong></p>
@@ -3053,19 +3121,19 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 </div>
 <div id="attの推定" class="section level4">
 <h4>ATTの推定</h4>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ATTの推定</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> matched_data,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weights)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）頑健な標準偏差の計算</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)   <span class="co"># 要パッケージインストール</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co"># 要パッケージインストール</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(result, <span class="at">vcov. =</span> vcovCL, <span class="at">cluster =</span> <span class="sc">~</span> weights)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ATTの推定</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> matched_data,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weights)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）頑健な標準偏差の計算</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)   <span class="co"># 要パッケージインストール</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co"># 要パッケージインストール</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(result, <span class="at">vcov. =</span> vcovCL, <span class="at">cluster =</span> <span class="sc">~</span> weights)</span></code></pre></div>
 </div>
 <div id="rコード出力-1" class="section level4">
 <h4>Rコード出力</h4>
@@ -3091,7 +3159,6 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 ## channelMultichannel    0.0634   0.0634
 ## channelPhone           0.0360   0.0360
 ## channelWeb             0.0275   0.0275
-## 
 ## 
 ## Summary of Balance for Matched Data:
 ##                     Means Treated Means Control Std. Mean Diff. Var. Ratio
@@ -3120,22 +3187,24 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 <li>“Summary of Balance for All Data”
 がマッチング前の介入群（Treated）と対照群（Control）の共変量の比較，
 “Summary of Balance for Matched Data” がマッチング後の共変量の比較</li>
-<li>「最終購買からの経過月数（recency）」に注目すると，マッチング前は介入群に比べて対照群の経過月数が1.6ヶ月長いが，マッチング後はその差が0.1ヶ月に減少している</li>
+<li>「最終購買からの経過月数（recency）」に注目すると，マッチング前は介入群に比べて対照群の経過月数が1.6ヶ月長いが，マッチング後はその差が0.1ヶ月に減少している<br />
+<br /></li>
 </ul>
 </div>
 <div id="マッチングデータの作成最初の6人分" class="section level5">
 <h5>マッチングデータの作成（最初の6人分）</h5>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["cust_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["recency"],"name":[2],"type":["int"],"align":["right"]},{"label":["history_segment"],"name":[3],"type":["chr"],"align":["left"]},{"label":["history"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[5],"type":["int"],"align":["right"]},{"label":["womens"],"name":[6],"type":["int"],"align":["right"]},{"label":["zip_code"],"name":[7],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[8],"type":["int"],"align":["right"]},{"label":["channel"],"name":[9],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[10],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[11],"type":["int"],"align":["right"]},{"label":["visit"],"name":[12],"type":["int"],"align":["right"]},{"label":["conversion"],"name":[13],"type":["int"],"align":["right"]},{"label":["spend"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["distance"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["weights"],"name":[16],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"3) $200 - $350","4":"329.08","5":"1","6":"1","7":"Rural","8":"1","9":"Web","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0","15":"0.5412018","16":"0.8168392","_rn_":"1"},{"1":"2","2":"9","3":"5) $500 - $750","4":"675.83","5":"1","6":"0","7":"Rural","8":"1","9":"Web","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0","15":"0.4954307","16":"1.0000000","_rn_":"2"},{"1":"3","2":"9","3":"5) $500 - $750","4":"675.07","5":"1","6":"1","7":"Rural","8":"1","9":"Phone","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0","15":"0.4889719","16":"1.0000000","_rn_":"3"},{"1":"4","2":"2","3":"2) $100 - $200","4":"101.64","5":"0","6":"1","7":"Urban","8":"0","9":"Web","10":"Mens E-Mail","11":"1","12":"1","13":"0","14":"0","15":"0.6326420","16":"1.0000000","_rn_":"4"},{"1":"5","2":"4","3":"3) $200 - $350","4":"241.42","5":"0","6":"1","7":"Rural","8":"1","9":"Multichannel","10":"No E-Mail","11":"0","12":"0","13":"0","14":"0","15":"0.6653349","16":"2.0420979","_rn_":"5"},{"1":"7","2":"5","3":"1) $0 - $100","4":"29.99","5":"1","6":"0","7":"Surburban","8":"0","9":"Phone","10":"Mens E-Mail","11":"1","12":"0","13":"0","14":"0","15":"0.5240859","16":"1.0000000","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["cust_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["recency"],"name":[2],"type":["int"],"align":["right"]},{"label":["history"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[4],"type":["fct"],"align":["left"]},{"label":["segment"],"name":[5],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[6],"type":["int"],"align":["right"]},{"label":["spend"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["distance"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["weights"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"329.08","4":"Web","5":"No E-Mail","6":"0","7":"0","8":"0.5412018","9":"0.8168392","_rn_":"1"},{"1":"2","2":"9","3":"675.83","4":"Web","5":"Mens E-Mail","6":"1","7":"0","8":"0.4954307","9":"1.0000000","_rn_":"2"},{"1":"3","2":"9","3":"675.07","4":"Phone","5":"Mens E-Mail","6":"1","7":"0","8":"0.4889719","9":"1.0000000","_rn_":"3"},{"1":"4","2":"2","3":"101.64","4":"Web","5":"Mens E-Mail","6":"1","7":"0","8":"0.6326420","9":"1.0000000","_rn_":"4"},{"1":"5","2":"4","3":"241.42","4":"Multichannel","5":"No E-Mail","6":"0","7":"0","8":"0.6653349","9":"2.0420979","_rn_":"5"},{"1":"7","2":"5","3":"29.99","4":"Phone","5":"Mens E-Mail","6":"1","7":"0","8":"0.5240859","9":"1.0000000","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p><br /></p>
 </div>
 <div id="マッチングペアの確認最初の3ペア6人分" class="section level5">
 <h5>マッチングペアの確認（最初の3ペア6人分）</h5>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["subclass"],"name":[2],"type":["fct"],"align":["left"]},{"label":["weights"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["cust_id"],"name":[4],"type":["int"],"align":["right"]},{"label":["recency"],"name":[5],"type":["int"],"align":["right"]},{"label":["history_segment"],"name":[6],"type":["chr"],"align":["left"]},{"label":["history"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["mens"],"name":[8],"type":["int"],"align":["right"]},{"label":["womens"],"name":[9],"type":["int"],"align":["right"]},{"label":["zip_code"],"name":[10],"type":["chr"],"align":["left"]},{"label":["newbie"],"name":[11],"type":["int"],"align":["right"]},{"label":["channel"],"name":[12],"type":["chr"],"align":["left"]},{"label":["segment"],"name":[13],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[14],"type":["int"],"align":["right"]},{"label":["visit"],"name":[15],"type":["int"],"align":["right"]},{"label":["conversion"],"name":[16],"type":["int"],"align":["right"]},{"label":["spend"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["distance"],"name":[18],"type":["dbl"],"align":["right"]}],"data":[{"1":"2","2":"1","3":"1","4":"2","5":"9","6":"5) $500 - $750","7":"675.83","8":"1","9":"0","10":"Rural","11":"1","12":"Web","13":"Mens E-Mail","14":"1","15":"0","16":"0","17":"0","18":"0.4954307","_rn_":"1"},{"1":"15208","2":"1","3":"1","4":"20276","5":"6","6":"1) $0 - $100","7":"51.20","8":"1","9":"0","10":"Rural","11":"0","12":"Phone","13":"No E-Mail","14":"0","15":"0","16":"0","17":"0","18":"0.4953798","_rn_":"2"},{"1":"3","2":"2","3":"1","4":"3","5":"9","6":"5) $500 - $750","7":"675.07","8":"1","9":"1","10":"Rural","11":"1","12":"Phone","13":"Mens E-Mail","14":"1","15":"0","16":"0","17":"0","18":"0.4889719","_rn_":"3"},{"1":"29983","2":"2","3":"1","4":"40039","5":"10","6":"3) $200 - $350","7":"295.18","8":"1","9":"1","10":"Urban","11":"1","12":"Multichannel","13":"No E-Mail","14":"0","15":"0","16":"0","17":"0","18":"0.4889782","_rn_":"4"},{"1":"4","2":"3","3":"1","4":"4","5":"2","6":"2) $100 - $200","7":"101.64","8":"0","9":"1","10":"Urban","11":"0","12":"Web","13":"Mens E-Mail","14":"1","15":"1","16":"0","17":"0","18":"0.6326420","_rn_":"5"},{"1":"10891","2":"3","3":"1","4":"14493","5":"3","6":"3) $200 - $350","7":"324.46","8":"1","9":"0","10":"Rural","11":"0","12":"Web","13":"No E-Mail","14":"0","15":"0","16":"0","17":"0","18":"0.6326231","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["subclass"],"name":[2],"type":["fct"],"align":["left"]},{"label":["weights"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["cust_id"],"name":[4],"type":["int"],"align":["right"]},{"label":["recency"],"name":[5],"type":["int"],"align":["right"]},{"label":["history"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["channel"],"name":[7],"type":["fct"],"align":["left"]},{"label":["segment"],"name":[8],"type":["chr"],"align":["left"]},{"label":["treatment"],"name":[9],"type":["int"],"align":["right"]},{"label":["spend"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["distance"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"2","2":"1","3":"1","4":"2","5":"9","6":"675.83","7":"Web","8":"Mens E-Mail","9":"1","10":"0","11":"0.4954307","_rn_":"1"},{"1":"15208","2":"1","3":"1","4":"20276","5":"6","6":"51.20","7":"Phone","8":"No E-Mail","9":"0","10":"0","11":"0.4953798","_rn_":"2"},{"1":"3","2":"2","3":"1","4":"3","5":"9","6":"675.07","7":"Phone","8":"Mens E-Mail","9":"1","10":"0","11":"0.4889719","_rn_":"3"},{"1":"29983","2":"2","3":"1","4":"40039","5":"10","6":"295.18","7":"Multichannel","8":"No E-Mail","9":"0","10":"0","11":"0.4889782","_rn_":"4"},{"1":"4","2":"3","3":"1","4":"4","5":"2","6":"101.64","7":"Web","8":"Mens E-Mail","9":"1","10":"0","11":"0.6326420","_rn_":"5"},{"1":"10891","2":"3","3":"1","4":"14493","5":"3","6":"324.46","7":"Web","8":"No E-Mail","9":"0","10":"0","11":"0.6326231","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <ul>
@@ -3143,7 +3212,8 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 <li>treatment
 を確認するとペアのどちらかが1（介入あり），どちらかが0（介入なし）となっている</li>
 <li>distance
-が傾向スコアの値で，マッチングされたペアはほぼ同じ値となっている</li>
+が傾向スコアの値で，マッチングされたペアはほぼ同じ値となっている<br />
+<br /></li>
 </ul>
 </div>
 <div id="結果の出力" class="section level5">
@@ -3175,13 +3245,14 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 <li>ATTは <span class="math inline">\(\beta = 1.018\)</span>
 で有意に推定されており，「プロモーションメールを配信した顧客（介入群）におけるプロモーションメールの効果は1.018ドル」と判断できる
 <ul>
-<li>仮に介入群にプロモーションメールを配信しなければ，介入群の購入金額は平均的には1.018ドル低い</li>
+<li>介入群はプロモーションメールが配信されたことで購入金額が平均的には1.018ドル増えた</li>
 </ul></li>
 <li>ATTとATEは異なることに注意
 <ul>
 <li>ATTは「介入を受けたサンプルにおける介入効果」，ATEは「サンプル全体における介入効果」</li>
-<li>分析データは優良顧客にプロモーションメールを多く配信しており，介入群の方がプロモーション効果が高いことが想定される（ATT
-&gt; ATE）</li>
+<li>分析データは優良顧客にプロモーションメールを多く配信しており，優良顧客の多い介入群の方がプロモーション効果が高いことが想定される（ATT
+&gt; ATE）<br />
+<br /></li>
 </ul></li>
 </ul>
 </div>
@@ -3200,7 +3271,7 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <ul>
-<li>元データからマッチングしたデータのみ抜き出して分析していることにより，回帰係数の標準偏差が大きく推定される傾向（＝p値が大きくなる）があり，<code>coeftest</code>
+<li>元データからマッチングしたデータのみ抜き出して分析していることにより，回帰係数の標準偏差が大きく推定される性質（＝p値が大きくなる）があり，<code>coeftest</code>
 関数でそれを補正した標準偏差を計算できる</li>
 <li>補正しない結果と比較すると，p値が小さくなっていることが分かる</li>
 </ul>
@@ -3212,42 +3283,45 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 <h2>3. 分析例③：IPW推定法（ATE）*</h2>
 <div id="rコード-2" class="section level3">
 <h3>Rコード</h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># WeightIt パッケージのインストール（初回のみ実行）</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;WeightIt&quot;) </span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WeightIt)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ウエイトの計算</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>weighting <span class="ot">&lt;-</span> <span class="fu">weightit</span>(</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;ps&quot;</span>,</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">&quot;ATE&quot;</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ATEの推定</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data_bias, </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weighting<span class="sc">$</span>weights)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）頑健な標準偏差の計算</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(result, <span class="at">vcov. =</span> vcovCL, <span class="at">cluster =</span> weighting<span class="sc">$</span>weights)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）バイアスを無視して推定したATE</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>result_bias1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel,</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data_bias)</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_bias1)</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）バイアスと共変量を無視して推定したATE</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>result_bias2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data_bias)</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_bias2)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># WeightIt パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;WeightIt&quot;) </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WeightIt)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ウエイトの計算</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>weighting <span class="ot">&lt;-</span> <span class="fu">weightit</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, <span class="co"># formula:傾向スコア推定モデル</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ATEの推定</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data_bias, </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weighting<span class="sc">$</span>weights)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）頑健な標準偏差の計算</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(result, <span class="at">vcov. =</span> vcovCL, <span class="at">cluster =</span> weighting<span class="sc">$</span>weights)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）バイアスを無視して推定したATE</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>result_bias1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data_bias)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_bias1)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># （参考）バイアスと共変量を無視して推定したATE</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>result_bias2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data_bias)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result_bias2)</span></code></pre></div>
+<p><strong><code>weightit(formula, data)</code>：IPW推定のウエイト計算</strong></p>
+<ul>
+<li><strong><code>formula</code></strong>：傾向スコア計算のための介入変数（目的変数）と共変量（説明変数）の指定</li>
+<li><strong><code>data</code></strong>：分析データの指定</li>
+</ul>
 <div id="rコード出力-2" class="section level4">
 <h4>Rコード出力</h4>
 <div id="結果の出力-1" class="section level5">
@@ -3341,15 +3415,15 @@ x_3\)</span>：最終購買からの経過月数（recency），昨年の購入�
 ## Multiple R-squared:  0.001008,   Adjusted R-squared:  0.000977 
 ## F-statistic: 32.16 on 1 and 31861 DF,  p-value: 1.433e-08</code></pre>
 <ul>
-<li>各手法によるATEの推定値は以下の通りで，「IPW推定」よりも「バイアスを無視」の方が「真のATE」に近い
+<li>各手法によるATEの推定値は以下の通りで，「IPW推定：0.879」よりも「バイアスを無視：0.847」の方が「真のATE（RCTデータ）：0.768」に近い
 <ul>
 <li>IPW推定：0.879</li>
 <li>バイアスを無視：0.847</li>
 <li>バイアスと共変量を無視：0.979</li>
 <li>真のATE（RCTデータ）：0.768</li>
 </ul></li>
-<li>その理由は「バイアスを無視」モデルではバイアスを発生させた原因の共変量を説明変数として利用した回帰分析を実施しているから</li>
-<li>現実のデータ観測ではバイアス発生の原因を特定することは困難であり，介入効果推定のために必要な共変量が観測されているかは分からないが，そのような場合でも傾向スコア分析およびIPW推定量は望ましい性質がある（詳細は以下の参考文献の10～12章を参照）</li>
+<li>その理由は「バイアスを無視」モデルではバイアスを発生させた原因の共変量を説明変数として利用した回帰分析を実施しているためである</li>
+<li>現実のデータ観測ではバイアス発生の全ての原因を特定することは困難であり，また介入効果推定のために必要な共変量が観測されているかは判断できないないが，そのような場合でも傾向スコア分析およびIPW推定量は介入効果を推定する上で望ましい性質がある（詳細は以下の参考文献の10～12章を参照）</li>
 </ul>
 <p><a href="https://www.kyoritsu-pub.co.jp/book/b10011781.html">高橋（2022）『統計的因果推論の理論と実装（Wonderful
 Rシリーズ）』共立出版</a></p>
@@ -3359,44 +3433,60 @@ Rシリーズ）』共立出版</a></p>
 </div>
 <div id="データ分析実習" class="section level2">
 <h2>4. データ分析実習</h2>
+<div id="課題" class="section level3">
+<h3>課題</h3>
+<p>分析例②のデータからATC（介入を受けなかったサンプルにおける介入効果），つまり「プロモーションメールを配信しなかった顧客にもしプロモーションメールを配信していれば得られた購入金額の増加分」を推定せよ。<br />
+傾向スコア分析でATCを推定する場合は，以下のように <code>matchit</code>
+関数の引数に <code>estimand = &quot;ATC&quot;</code>
+を追加すれば，その他はATT推定と同じ手順でATCを推定できる。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>match <span class="ot">&lt;-</span> <span class="fu">matchit</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, <span class="co"># formula:傾向スコア推定モデル</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">&quot;ATC&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <br />
 <details>
 <summary>
 Rコード（クリックで表示）
 </summary>
 <div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ATTの推定</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(visit <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> matched_data,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weights)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = visit ~ treatment + recency + history + channel, 
-##     data = matched_data, weights = weights)
-## 
-## Weighted Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.9906 -0.1971 -0.1576 -0.0600  5.2777 
-## 
-## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   1.299e-01  9.770e-03  13.296  &lt; 2e-16 ***
-## treatment     8.361e-02  5.240e-03  15.957  &lt; 2e-16 ***
-## recency      -7.123e-03  7.217e-04  -9.870  &lt; 2e-16 ***
-## history       7.198e-05  9.567e-06   7.524  5.5e-14 ***
-## channelPhone -2.263e-02  7.805e-03  -2.900  0.00374 ** 
-## channelWeb    8.962e-03  7.776e-03   1.153  0.24910    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.3698 on 24216 degrees of freedom
-## Multiple R-squared:  0.02042,    Adjusted R-squared:  0.02021 
-## F-statistic: 100.9 on 5 and 24216 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>data_bias <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_bias.csv&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>data_bias<span class="sc">$</span>channel <span class="ot">&lt;-</span> <span class="fu">factor</span>(data_bias<span class="sc">$</span>channel)  </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># matchitは文字列（character型）を扱う際にエラーが出るため共変量のchannelをfactor型に変換</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>match <span class="ot">&lt;-</span> <span class="fu">matchit</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  treatment <span class="sc">~</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, <span class="co"># formula:傾向スコア推定モデル</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_bias,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">&quot;ATC&quot;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 共変量のバランスの確認</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(match)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングデータの作成</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>matched_data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>matched_data</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># マッチングペアの確認（省略化）</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>matched_pair <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(match)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>matched_pair</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ATCの推定</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(spend <span class="sc">~</span> treatment <span class="sc">+</span> recency <span class="sc">+</span> history <span class="sc">+</span> channel, </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> matched_data,</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> weights)</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 結果の出力</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 </div>
 </details>
+</div>
 </div>
 
 
