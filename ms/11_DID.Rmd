@@ -24,3 +24,129 @@ library(broom)
 library(knitr)
 library(tidyverse)
 ```
+
+
+```{r eval=FALSE, include=FALSE}
+if (0) {
+# データ作成
+library(CausalImpact)
+library(Ecdat)
+# library(tidyverse)
+
+# タバコデータ
+data(Cigar)
+skip_state <- c(3,9,10,22,21,31,33,48)
+
+Cigar <- Cigar %>% 
+  filter(!state %in% skip_state,
+         year >=70) %>% 
+  mutate(area = if_else(state == 5, "CA", "Rest of US"))
+
+Cigar_did_sum <- Cigar %>% 
+  mutate(
+    post = if_else(year > 87, 1, 0),
+    ca = if_else(state == 5, 1, 0),
+    state = factor(state),
+    year_dummy = paste0("y", year)
+  ) %>% 
+  group_by(year, year_dummy, post, ca) %>% 
+  summarise(sales = sum(sales*pop16)/sum(pop16)) %>% 
+  ungroup() %>% 
+  select(year_dummy:sales) %>% 
+  rename(treatment = ca,
+         year = year_dummy)
+
+lm(sales ~ treatment + post + treatment*post + year, data = Cigar_did_sum) %>% 
+  summary()
+
+Cigar_did_sum$sales <- round(Cigar_did_sum$sales, 2) 
+
+write.csv(Cigar_did_sum, "data/data_cigar.csv", row.names = FALSE)
+# write_csv(Cigar_did_sum, "data/data_cigar.csv")
+
+# データ分析実習
+set.seed(1)
+n <- 50
+data <- data.frame(id = rep(1:25, 2) %>% sort()) %>% 
+  mutate(store_id = paste0("store", formatC(id, width = 2, flag = "0")),
+         post = rep(c(0, 1), 25),
+         treatment = if_else(id >= 20, 1, 0)) %>% 
+  mutate(did = post * treatment) %>% 
+  mutate(PI = 1.2 + 0.03 * post + 0.15 * treatment + 0.60 * did + rnorm(n)*0.5) %>% 
+  select(store_id, post, treatment, PI)
+
+data$PI <- round(data$PI, 3)
+
+lm(PI ~ post + treatment + post*treatment + store_id, data = data) %>% 
+  summary()
+
+write.csv(data, "data/data_did.csv", row.names = FALSE)
+}
+```
+
+
+## 1. 分析例①：DID*
+### データ
+**米国での禁煙キャンペーン（data_cigar.csv）**
+
+```{r, echo=FALSE}
+data_cigar <- read_csv("data/data_cigar.csv")
+data_cigar
+```
+
+### Rコード
+```{r, results='hide'}
+# データの読み込み
+data_cigar <- read.csv("data/data_cigar.csv")
+
+# 回帰分析の実行
+result <- lm(sales ~ post + treatment + post * treatment + year, data = data_cigar)
+
+# 推定結果の表示
+summary(result)
+```
+
+
+#### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+
+## 4. データ分析実習
+### データ
+**チラシ出稿データ（data_did.csv）**
+
+```{r, echo=FALSE}
+data_did <- read_csv("data/data_did.csv")
+data_did
+```
+
+
+
+### 課題
+
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE, results='hide'}
+# データの読み込み
+data_did <- read_csv("data/data_did.csv")
+
+# 回帰分析の実行
+result <- lm(PI ~ post + treatment + post * treatment + store_id, data = data_did)
+
+# 推定結果の表示
+summary(result)
+
+
+library(lme4)
+result <- lmer(PI ~ post + treatment + post * treatment + (1|store_id), data = data_did)
+summary(result)
+```
+</div></details>
+
+
