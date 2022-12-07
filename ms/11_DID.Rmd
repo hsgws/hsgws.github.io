@@ -16,7 +16,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 10)
 # packages
 library(plotly)
 library(broom)
@@ -98,8 +98,8 @@ data_cigar
 | 変数名 | 内容                                                         |
 | ------ | ------------------------------------------------------------ |
 | year  | 年（分析ではダミー変数化して利用）                                                           |
-| post  | 禁煙キャンペーンダミー（1988年以降＝1，1987年以前＝0）       |
-| treat | カリフォルニア州ダミー（カリフォルニア州＝1，その他州＝0） |
+| post  | 時点ダミー（キャンペーン導入前の1987年以前＝0，導入後の1988年以降＝1）       |
+| treat | 介入ダミー（カリフォルニア州＝1，その他州＝0） |
 | sales  | 16才以上人口1人あたりのタバコ購入箱数（その他州はカリフォルニア州以外の州の平均値）                        |
 
 - 米国カリフォルニア州で1988年に導入された禁煙キャンペーン [1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99) ⇒ 介入
@@ -114,7 +114,7 @@ sales = \alpha + \beta_1 post + \beta_2 treat + \beta_3 post\times treat + \sum_
 $$
 
 - $\beta_3$ が禁煙キャンペーン（介入）によるタバコ購入箱数の変化
-- $\sum_{j=1970}^{1992}\theta_j year_j$ は年による変動を調整する共変量項（固定効果）
+- $\sum_{j=1970}^{1992}\theta_j year_j$ は年による変動を吸収する共変量項（固定効果）
 
 
 ### Rコード
@@ -156,25 +156,51 @@ result %>%
 
 ## 2. 分析例②：Causal Impact*
 ### データ
-**チラシ出稿と点数PI（data_did.csv）**
+**都道府県別の月次宿泊者数（monthly_hotel_data.csv）**
+```{r, echo=FALSE}
+monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv")
+monthly_hotel_data
+```
+
+**データ出典**：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html)
+
+<br />
+```{r, echo=FALSE}
+monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv", skip = 1)
+
+library(lubridate)
+monthly_hotel_data %>% 
+  mutate(date = ym(paste0(year, month, "-")),
+         y1 = y1/1000) %>% 
+  select(date, y1) %>% 
+  ggplot(mapping = aes(x = date, y = y1)) +
+  geom_line() + 
+  geom_vline(xintercept = ym("2018-09"), linetype="dashed", color = "red") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 years") +
+  labs(title = "北海道の月次宿泊者数（2012～2018年，単位千人）") 
+```
+
+- 2018年9月6日に発生した北海道胆振東部地震の影響で北海道の宿泊者数が減少   
+⇒ Causal Impact で2018年9～12月の宿泊者数がどの程度減少したか検証
+- 北海道以外の都道府県の宿泊者数データは予測モデルの説明変数として利用
 
 
-```{r}
+### Rコード
+```{r, results='hide', fig.show='hide'}
 library(CausalImpact) # 要パッケージのインストール
 
 # データの読み込み＆前処理
 monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv", skip = 1)
 # csvファイルの1行目は都道府県名のため skip = 1 で読み込みスキップ
 
-monthly_hotel_data <- subset(monthly_hotel_data, year < 2020) # 2011～2019年のデータのみ抽出
 monthly_hotel_data <- monthly_hotel_data[, 3:47]/1000  # 不要な1・2行目（year, month)を削除＆千人単位に変換
 
 # 分析の実行
 impact <- CausalImpact(
-  monthly_hotel_data, 
-  pre.period = c(1, 92),    # 介入前期間 (2011/01~2018/08, 1~92行目)
-  post.period = c(93, 108), # 介入後期間 (2018/09~2019/12, 93~108行目)
-  model.args = list(nseasons = 12)
+  monthly_hotel_data,
+  pre.period = c(1, 80),    # 介入前期間 (2012/01~2018/08, 1~80行目)
+  post.period = c(81, 84), # 介入後期間 (2018/09~2018/12, 81~84行目)
+  model.args = list(nseasons = 12)  # nseasons = 12 で月次周期を予測モデルに追加
 )
 
 # 推定結果の出力
@@ -185,9 +211,29 @@ plot(impact)
 ```
 
 
+**`CausalImpact(data, pre.period, post.period, model.args)`：Causal Impact の実行**
 
-CausalImpact
-https://google.github.io/CausalImpact/CausalImpact.html
+- **`data`**：1列目が分析対象の時系列データ，2列目以降は予測モデルの説明変数として利用
+- **`pre.period`**：介入前の期間指定
+- **`post.period`**：介入後の期間指定
+- **`model.args`**：予測モデルのオプション（詳細は `CausalImpact` のヘルプを参照）
+
+参考：[CausalImpact (https://google.github.io/CausalImpact/CausalImpact.html)](https://google.github.io/CausalImpact/CausalImpact.html)
+
+
+#### Rコードの出力
+##### 推定結果の出力
+```{r echo=FALSE}
+summary(impact)
+```
+
+
+##### 結果の図示
+```{r echo=FALSE}
+plot(impact)
+```
+
+
 
 
 
@@ -204,8 +250,8 @@ data_did
 | 変数名 | 内容                                                         |
 | ------ | ------------------------------------------------------------ |
 | store  | 店舗ID（分析ではダミー変数化して利用）                     |
-| post   | チラシ出稿後ダミー（チラシ出稿後＝1，チラシ出稿前＝0）     |
-| treat  | チラシ出稿店舗ダミー（チラシ掲載店舗＝1，それ以外＝0）       |
+| post   | 時点ダミー（チラシ出稿前＝0，チラシ出稿後＝1）     |
+| treat  | 介入ダミー（チラシ掲載店舗＝1，それ以外＝0）       |
 | PI     | チラシ出稿前およびチラシ出稿後1週間の掲載商品の点数PI（千人あたり販売量） |
 
 - 地域内25店舗のうち，5店舗（s20~s25）を対象としたチラシを出稿した状況を想定
