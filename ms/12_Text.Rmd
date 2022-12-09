@@ -24,3 +24,167 @@ library(broom)
 library(knitr)
 library(tidyverse)
 ```
+
+
+
+```{r eval=FALSE, include=FALSE}
+if(0) {
+  amzn <- read_csv("data/amazon_tablet_review.csv")
+  
+  amzn %>% 
+    group_by(star) %>% 
+    summarise(n = n())
+  
+  for (i in 1:5) {
+    tmp <- amzn %>% 
+      filter(star == i) %>% 
+      select(review)
+    write.table(tmp, file = paste0("data/tablet/S", i, ".txt"), row.names = FALSE, col.names = FALSE)
+  }
+}
+```
+
+
+## 1. 分析例①：対応分析
+
+
+
+
+### Rコード
+<details><summary>データ前処理のRコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+library(tidyverse)
+library(magrittr)
+library(RMeCab)
+
+mecab_out <- docDF("data/okinawa", type = 1, pos = c("名詞", "動詞", "形容詞"))
+df <- mecab_out %>% 
+  set_colnames(str_remove(colnames(.), ".txt")) %>% 
+  filter(POS2 %in% c("一般", "固有", "自立")) %>% 
+  filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 
+  mutate(sum = select(., F20:M70) %>% rowSums()) %>% 
+  filter(sum >= 7) %>% 
+  set_rownames(.$TERM) %>% 
+  select(F20:M70)
+
+write.csv(df, "data/data_okinawa.csv")
+```
+</div></details>
+
+
+```{r}
+library(FactoMineR)
+library(factoextra)
+
+okinawa <- read.csv("data/data_okinawa.csv", row.names = 1)
+result <- CA(okinawa)
+
+result <- CA(okinawa, graph = FALSE)
+fviz_ca_biplot(result,
+               select.row = list(contrib = 50))
+```
+
+
+## 2. 分析例②：LDA*
+
+
+### Rコード
+<br />
+<details><summary>データ前処理のRコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+library(tidyverse)
+library(magrittr)
+library(RMeCab)
+
+review <- read_csv("data/amazon_tablet_review.csv")
+
+# 形態素解析
+mecab_out <- docDF(
+  review$review %>% 
+    t() %>% 
+    as.data.frame(), 
+  column = 1:nrow(review), 
+  type = 1, 
+  pos = c("名詞", "動詞", "形容詞"), 
+  minFreq = 3
+)
+
+# 分析用データの作成
+df <- mecab_out %>% 
+  filter(POS2 %in% c("一般", "固有名詞", "自立")) %>%   # 分析対象単語の抽出
+  filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>%   # ストップワードの削除
+  mutate(TERM = tolower(TERM)) %>%  # アルファベットの大文字を小文字へ変換
+  select(-c(POS1:POS2)) %>%   # 重複単語行の統合
+  group_by(TERM) %>% 
+  summarise_all(list(sum)) %>% 
+  column_to_rownames("TERM") %>%  # 単語列を行名に指定
+  select(which(colSums(.) > 0))   # 前処理後に単語数がゼロとなった列を削除
+
+write.csv(df, "data/data_tablet_lda.csv")
+```
+</div></details>
+
+
+```{r}
+library(tm)
+library(topicmodels)
+
+data_tablet_lda <- read.csv("data/data_tablet_lda.csv", row.names = 1)
+
+lda_data <- as.DocumentTermMatrix(t(data_tablet_lda), weighting = weightTf)
+
+set.seed(1)
+result <- LDA(lda_data, k = 5)
+
+terms(result, 15)
+```
+
+
+
+
+## 3. データ分析実習
+
+
+<br />
+<details><summary>データ前処理のRコード（クリックで表示）</summary><div>
+```{r}
+library(tidyverse)
+library(magrittr)
+library(RMeCab)
+
+# 形態素解析
+mecab_out <- docDF("data/tablet", type = 1, pos = c("名詞", "動詞", "形容詞"))
+
+# 分析用データの作成
+df <- mecab_out %>% 
+  set_colnames(str_remove(colnames(.), ".txt")) %>% 	  # 列名の ".txt" を除外
+  filter(POS2 %in% c("一般", "固有名詞", "自立")) %>%	  # 分析対象単語の抽出
+  filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 	# ストップワードの削除
+  mutate(TERM = tolower(TERM)) %>% 	# アルファベットの大文字を小文字へ変換
+  select(-c(POS1:POS2)) %>% 	# 重複単語行の統合
+  group_by(TERM) %>% 
+  summarise_all(list(sum)) %>% 
+  mutate(sum = select(., S1:S5) %>% rowSums()) %>% 	# 頻出数7未満の単語の削除
+  filter(sum >= 7) %>% 
+  select(-c(sum)) %>% 
+  column_to_rownames("TERM")	# 単語列を行名に指定
+
+write.csv(df, "data/data_tablet_ca.csv")
+```
+</div></details>
+
+
+<br />
+<details><summary>対応分析 Rコード（クリックで表示）</summary><div>
+```{r}
+library(FactoMineR)
+library(factoextra)
+
+data_tablet_ca <- read.csv("data/data_tablet_ca.csv", row.names = 1)
+
+result <- CA(data_tablet_ca)
+
+result <- CA(data_tablet_ca, graph = FALSE)
+fviz_ca_biplot(result, select.row = list(contrib = 80))
+```
+</div></details>
