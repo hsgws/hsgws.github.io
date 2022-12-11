@@ -16,13 +16,14 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 10)
 # packages
 library(plotly)
 library(broom)
 # library(pander)
 library(knitr)
 library(tidyverse)
+library(magrittr)
 ```
 
 
@@ -45,12 +46,40 @@ if(0) {
 ```
 
 
+## Rでの日本語テキストの分析
+
+- 以降では，形態素解析実行後の加工済みのデータの分析例を紹介するが，Rで形態素解析を実行する場合は形態素解析ソフト MeCab と RMeCab パッケージを利用するのが一般的
+- R はバージョン 4.2 からデフォルトの文字コードが UTF-8 となったため，MeCab と RMeCab パッケージのインスト－ルには注意が必要（下記参考URLを参照）
+- Windows のメモ帳や Excel の CSV で日本語を含むテキストデータファイルを作成する場合は，データを保存する際に文字コードを UTF-8 に指定して保存すること
+  - その他文字コード（主に Shift JIS）で保存されたデータは，R でデータを読み込む際に文字コードを指定すれば文字化けせずに読み込める
+
+ 
+##### 参考URL
+- RMeCab パッケージ：[GitHub - IshidaMotohiro/RMeCab: Interface to MeCab](https://github.com/IshidaMotohiro/RMeCab)
+- MeCab のインストール：[アールメカブ | R+Linux+Python+CPP](https://rmecab.jp/new/)
+
+##### データ加工・前処理に関する参考文献
+- [村松（2021）『改訂2版 Rユーザのための RStudio［実践］入門』技術評論社](https://gihyo.jp/book/2021/978-4-297-12170-9)
+- [本橋（2018）『前処理大全』技術評論社](https://gihyo.jp/book/2018/978-4-7741-9647-3)
+
+
 ## 1. 分析例①：対応分析
 
+### データ
+**沖縄県宿泊者のクチコミ（data_okinawa.csv）**
+
+```{r, echo=FALSE}
+read.csv("data/data_okinawa.csv", row.names = 1) %>% 
+  head()
+```
+
+- 総単語数：72単語
+- "F" は女性，"M" は男性，"20～70" は年齢層を表す
 
 
+**データ出典** ：[石田（2017）『Rによるテキストマイニング入門(第2版)』森北出版株式会社](https://www.morikita.co.jp/books/mid/084842)
 
-### Rコード
+<br />
 <details><summary>データ前処理のRコード（クリックで表示）</summary><div>
 ```{r eval=FALSE}
 library(tidyverse)
@@ -72,23 +101,69 @@ write.csv(df, "data/data_okinawa.csv")
 </div></details>
 
 
-```{r}
-library(FactoMineR)
-library(factoextra)
+### Rコード
 
-okinawa <- read.csv("data/data_okinawa.csv", row.names = 1)
+```{r results='hide', fig.show='hide'}
+# パッケージのインストール（初回のみ実行）
+# install.packages("FactoMineR") 
+# install.packages("factoextra")
+
+library(FactoMineR) 
+
+# データの読み込み
+okinawa <- read.csv("data/data_okinawa.csv", row.names = 1) # row.names = 1 でデータ内の1列目の単語を行名に指定
+
+# 対応分析
 result <- CA(okinawa)
 
+# マップ上の単語数を減らした図の作成
+library(factoextra)
+fviz_ca_biplot(result, select.row = list(contrib = 60)) # 単語数を60個に制限
+```
+
+
+**`CA(X)`：対応分析**
+
+- **`X`**：データまたはクロス集計表
+
+
+**`fviz_ca_biplot(X, select.row)`：作図を拡張するための関数**
+
+- **`X`**：`CA` 関数の出力
+- **`select.row`**：表示する単語数の指定（`contrib`で影響度の高い順版で単語を指定）
+
+
+#### Rコードの出力
+##### FactoMineR パッケージ
+```{r echo=FALSE}
+result <- CA(okinawa)
+```
+
+右下の "Plots" に出力された図は "Zoom" から拡大，"Export" から保存が可能
+
+
+##### factoextra パッケージ
+```{r echo=FALSE}
 result <- CA(okinawa, graph = FALSE)
-fviz_ca_biplot(result,
-               select.row = list(contrib = 50))
+fviz_ca_biplot(result, select.row = list(contrib = 60))
 ```
 
 
 ## 2. 分析例②：LDA*
 
+### データ
+**あるタブレット製品のAmazonレビュー（data_tablet_lda.csv）**
 
-### Rコード
+```{r, echo=FALSE}
+read.csv("data/data_tablet.csv", row.names = 1) %>% 
+  head()
+```
+
+- 総単語数：383単語
+- レビュー数：233件
+
+**データ出典** ：[照井・佐藤（2022）『現代マーケティング・リサーチ 新版』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641166080)
+
 <br />
 <details><summary>データ前処理のRコード（クリックで表示）</summary><div>
 ```{r eval=FALSE}
@@ -120,71 +195,126 @@ df <- mecab_out %>%
   column_to_rownames("TERM") %>%  # 単語列を行名に指定
   select(which(colSums(.) > 0))   # 前処理後に単語数がゼロとなった列を削除
 
-write.csv(df, "data/data_tablet_lda.csv")
+write.csv(df, "data/data_tablet.csv")
 ```
 </div></details>
 
 
-```{r}
+### Rコード
+```{r results='hide'}
 library(tm)
 library(topicmodels)
 
-data_tablet_lda <- read.csv("data/data_tablet_lda.csv", row.names = 1)
+# データの読み込み＆分析用に変換
+data_tablet <- read.csv("data/data_tablet.csv", row.names = 1)
+lda_data <- as.DocumentTermMatrix(t(data_tablet), weighting = weightTf)
 
-lda_data <- as.DocumentTermMatrix(t(data_tablet_lda), weighting = weightTf)
+# LDAの実行
+set.seed(1) # 推定用の乱数初期値の固定
+result <- LDA(lda_data, k = 5, control = list(seed = 1))
 
-set.seed(1)
-result <- LDA(lda_data, k = 5)
-
+# 各トピック上位15単語
 terms(result, 15)
+
+# 各レビューのトピック分布
+posterior(result)$topic
 ```
 
 
+**`as.DocumentTermMatrix(x, weighting)`：LDA パッケージ用にデータを変換**
+
+- **`x`**：単語の BOW データ ⇒ 列が単語の形式で指定する必要があるため，読み込みデータを `t()` で行と列を転置
+- **`weighting`**：重みの指定 ⇒ LDA の場合は `weightTf`
+
+**`LDA(x, k, control)`：LDA パッケージ用にデータを変換**
+
+- **`x`**：`as.DocumentTermMatrix` で変換したデータ
+- **`k`**：トピック数
+- **`control`**：オプション ⇒ `seed` の指定で分析繰り返しても同じ出力を取得可能
+
+
+#### Rコードの出力
+
+##### 各トピック上位15単語
+```{r echo=FALSE}
+terms(result, 15)
+```
+
+##### 各レビューのトピック分布（最初の10件のみ表示）
+```{r echo=FALSE}
+posterior(result)$topic %>% 
+  head(10)
+```
 
 
 ## 3. データ分析実習
 
+### データ
+**スマートウォッチ8製品のAmazonレビュー（data_tablet_lda.csv）**
+
+```{r, echo=FALSE}
+read.csv("data/data_smartwatch.csv", row.names = 1) %>% 
+  head()
+```
+
+
+| 列名  | 製品名                    | データ出典（レビューのURL）                       |
+| --------- | ------------------------- | ---------------------------------------------------- |
+| Apple8    | Apple Watch Series 8      | https://www.amazon.co.jp/product-reviews/B0BDHWX8ZQ/ |
+| AppleSE   | Apple Watch SE（第2世代） | https://www.amazon.co.jp/product-reviews/B0BDJLWN1N/ |
+| FitbitC5  | Fitbit Charge 5           | https://www.amazon.co.jp/product-reviews/B09CSX5G3V/ |
+| GarminFA  | GARMIN ForeAthlete 55     | https://www.amazon.co.jp/product-reviews/B096KJL2DS/ |
+| HuaweiB7  | HUAWEI Band 7             | https://www.amazon.co.jp/product-reviews/B09YRV54M4/ |
+| HuaweiGT3 | HUAWEI WATCH GT 3         | https://www.amazon.co.jp/product-reviews/B09KV7L86G/ |
+| Pixel     | Google Pixel Watch        | https://www.amazon.co.jp/product-reviews/B0BGXH42B7/ |
+| XiaomiB7  | Xiaomi Smart Band 7       | https://www.amazon.co.jp/product-reviews/B0B3GP8B31/ |
+
+- 各製品のレビューの「トップレビュー」順で30件ずつレビューを取得
+- 画像のみのレビューは除外
+
 
 <br />
 <details><summary>データ前処理のRコード（クリックで表示）</summary><div>
-```{r}
+```{r eval=FALSE}
 library(tidyverse)
 library(magrittr)
 library(RMeCab)
 
 # 形態素解析
-mecab_out <- docDF("data/tablet", type = 1, pos = c("名詞", "動詞", "形容詞"))
+mecab_out <- docDF("data/smart_watch", type = 1, pos = c("名詞", "動詞", "形容詞"))
 
 # 分析用データの作成
 df <- mecab_out %>% 
-  set_colnames(str_remove(colnames(.), ".txt")) %>% 	  # 列名の ".txt" を除外
+  set_colnames(str_remove(colnames(.), ".csv")) %>% 	  # 列名の ".txt" を除外
   filter(POS2 %in% c("一般", "固有名詞", "自立")) %>%	  # 分析対象単語の抽出
   filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 	# ストップワードの削除
   mutate(TERM = tolower(TERM)) %>% 	# アルファベットの大文字を小文字へ変換
   select(-c(POS1:POS2)) %>% 	# 重複単語行の統合
   group_by(TERM) %>% 
   summarise_all(list(sum)) %>% 
-  mutate(sum = select(., S1:S5) %>% rowSums()) %>% 	# 頻出数7未満の単語の削除
+  mutate(sum = select(., -c(TERM)) %>% rowSums()) %>% 	# 頻出数7未満の単語の削除
   filter(sum >= 7) %>% 
   select(-c(sum)) %>% 
   column_to_rownames("TERM")	# 単語列を行名に指定
 
-write.csv(df, "data/data_tablet_ca.csv")
+write.csv(df, "data/data_smartwatch.csv")
 ```
 </div></details>
 
 
+### 課題
+スマートウォッチ8製品のレビューデータで対応分析を実行し，結果を解釈せよ。
+
 <br />
 <details><summary>対応分析 Rコード（クリックで表示）</summary><div>
-```{r}
+```{r fig.show='hide'}
 library(FactoMineR)
+
+data_tablet <- read.csv("data/data_smartwatch.csv", row.names = 1)
+result <- CA(data_tablet)
+
 library(factoextra)
-
-data_tablet_ca <- read.csv("data/data_tablet_ca.csv", row.names = 1)
-
-result <- CA(data_tablet_ca)
-
-result <- CA(data_tablet_ca, graph = FALSE)
+result <- CA(data_tablet, graph = FALSE)
 fviz_ca_biplot(result, select.row = list(contrib = 80))
 ```
 </div></details>
