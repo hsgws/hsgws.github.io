@@ -66,15 +66,15 @@ if(0) {
 ## 1. 分析例①：対応分析
 
 ### データ
-**沖縄県宿泊者のクチコミ（data_okinawa.csv）**
+**沖縄県観光客の自由記述アンケート（data_okinawa.csv）**
 
 ```{r, echo=FALSE}
 read.csv("data/data_okinawa.csv", row.names = 1) %>% 
   head()
 ```
 
-- 総単語数：72単語
-- "F" は女性，"M" は男性，"20～70" は年齢層を表す
+- 総単語数（行数）：72単語
+- 列名の "F" は女性，"M" は男性，"20～70" は年齢層を表す
 
 
 **データ出典** ：[石田（2017）『Rによるテキストマイニング入門(第2版)』森北出版株式会社](https://www.morikita.co.jp/books/mid/084842)
@@ -87,23 +87,23 @@ library(magrittr)
 library(RMeCab)
 
 mecab_out <- docDF("data/okinawa", type = 1, pos = c("名詞", "動詞", "形容詞"))
-df <- mecab_out %>% 
-  set_colnames(str_remove(colnames(.), ".txt")) %>% 
-  filter(POS2 %in% c("一般", "固有", "自立")) %>% 
-  filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 
-  mutate(sum = select(., F20:M70) %>% rowSums()) %>% 
-  filter(sum >= 7) %>% 
-  set_rownames(.$TERM) %>% 
-  select(F20:M70)
 
-write.csv(df, "data/data_okinawa.csv")
+df <- mecab_out %>% 
+  set_colnames(str_remove(colnames(.), ".txt")) %>% # 列名の ".txt" を除外
+  filter(POS2 %in% c("一般", "固有", "自立")) %>%   # 分析対象単語の抽出
+  filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>%  # ストップワードの削除 
+  mutate(sum = select(., F20:M70) %>% rowSums()) %>% # 頻出数7未満の単語の削除
+  filter(sum >= 7) %>% 
+  select(-c(POS1:POS2))
+
+write_excel_csv(df, "data/data_okinawa.csv")
 ```
 </div></details>
 
 
 ### Rコード
 
-```{r results='hide', fig.show='hide'}
+```{r results='hold', fig.show='hide'}
 # パッケージのインストール（初回のみ実行）
 # install.packages("FactoMineR") 
 # install.packages("factoextra")
@@ -118,7 +118,7 @@ result <- CA(okinawa)
 
 # マップ上の単語数を減らした図の作成
 library(factoextra)
-fviz_ca_biplot(result, select.row = list(contrib = 60)) # 単語数を60個に制限
+fviz_ca_biplot(result, select.row = list(contrib = 60)) # 単語数を60個に削減
 ```
 
 
@@ -149,7 +149,7 @@ fviz_ca_biplot(result, select.row = list(contrib = 60))
 ```
 
 
-## 2. 分析例②：LDA*
+## 2. 分析例②：トピックモデル*
 
 ### データ
 **あるタブレット製品のAmazonレビュー（data_tablet_lda.csv）**
@@ -159,8 +159,8 @@ read.csv("data/data_tablet.csv", row.names = 1) %>%
   head()
 ```
 
-- 総単語数：383単語
-- レビュー数：233件
+- 総単語数（行数）：383単語
+- レビュー数（列数）：233件
 
 **データ出典** ：[照井・佐藤（2022）『現代マーケティング・リサーチ 新版』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641166080)
 
@@ -193,15 +193,17 @@ df <- mecab_out %>%
   group_by(TERM) %>% 
   summarise_all(list(sum)) %>% 
   column_to_rownames("TERM") %>%  # 単語列を行名に指定
-  select(which(colSums(.) > 0))   # 前処理後に単語数がゼロとなった列を削除
+  select(which(colSums(.) > 0)) %>%    # 前処理後に単語数がゼロとなった列を削除
+  rownames_to_column(var = "TERM")
 
-write.csv(df, "data/data_tablet.csv")
+write_excel_csv(df, "data/data_tablet.csv")
 ```
 </div></details>
 
 
 ### Rコード
 ```{r results='hide'}
+# パッケージの読み込み（要インストール）
 library(tm)
 library(topicmodels)
 
@@ -230,7 +232,8 @@ posterior(result)$topic
 
 - **`x`**：`as.DocumentTermMatrix` で変換したデータ
 - **`k`**：トピック数
-- **`control`**：オプション ⇒ `seed` の指定で分析繰り返しても同じ出力を取得可能
+- **`control`**：オプション
+  - 推定には乱数を使うため，実行のたびに少し異なる分析結果が出力される。同じ出力を得るためには，`seed` の設定で乱数を固定する。
 
 
 #### Rコードの出力
@@ -247,7 +250,68 @@ posterior(result)$topic %>%
 ```
 
 
-## 3. データ分析実習
+## 3. 分析例③：共起ネットワーク*
+
+### データ
+**沖縄県観光客の自由記述アンケート（data_okinawa2.csv）**
+```{r, echo=FALSE}
+read.csv("data/data_okinawa2.csv") %>% 
+  head()
+```
+
+
+| 変数名      | 内容                    |
+| ---------   | ------------------------- |
+| N1          | 連続する2つの単語の第1単語       | 
+| N2          | 連続する2つの単語の第2単語       | 
+| freq        | 出現数（4回以上出現した単語の組み合わせ）        | 
+
+**データ出典** ：[石田（2017）『Rによるテキストマイニング入門(第2版)』森北出版株式会社](https://www.morikita.co.jp/books/mid/084842)
+
+<br />
+<details><summary>データ前処理のRコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+library(tidyverse)
+library(magrittr)
+library(RMeCab)
+
+mecab_out <- docDF("data/okinawa", type = 1, pos = c("名詞", "動詞", "形容詞"),
+                   N = 2, nDF = TRUE)
+
+df <- mecab_out %>% 
+  filter(! N1 %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 
+  filter(! N2 %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>% 
+  mutate(freq = select(., -c(N1:POS2)) %>% rowSums()) %>% 
+  filter(freq > 3) %>% 
+  select(c(N1:N2, freq))
+
+write_excel_csv(df, "data/data_okinawa2.csv")
+```
+</div></details>
+
+### Rコード
+```{r fig.show='hide'}
+# パッケージの読み込み（要インストール）
+library(igraph)
+
+# データの読み込み
+data_okinawa2 <- read.csv("data/data_okinawa2.csv")
+
+# 共起ネットワーク図の作成
+graph_df <- graph.data.frame(data_okinawa2)
+plot(graph_df, vertex.label = V(graph_df)$name)
+```
+
+#### Rコードの出力
+```{r echo=FALSE}
+plot(graph_df, vertex.label = V(graph_df)$name)
+```
+
+本ページ上では出力図の文字が小さくて分かりづらいが，R上では Zoom をクリックすることで出力図を拡大表示できる。
+
+
+
+## 4. データ分析実習
 
 ### データ
 **スマートウォッチ8製品のAmazonレビュー（data_tablet_lda.csv）**
@@ -271,6 +335,7 @@ read.csv("data/data_smartwatch.csv", row.names = 1) %>%
 
 - 各製品のレビューの「トップレビュー」順で30件ずつレビューを取得
 - 画像のみのレビューは除外
+- 総単語数（行数）：146単語
 
 
 <br />
@@ -294,10 +359,9 @@ df <- mecab_out %>%
   summarise_all(list(sum)) %>% 
   mutate(sum = select(., -c(TERM)) %>% rowSums()) %>% 	# 頻出数7未満の単語の削除
   filter(sum >= 7) %>% 
-  select(-c(sum)) %>% 
-  column_to_rownames("TERM")	# 単語列を行名に指定
+  select(-c(sum)) 
 
-write.csv(df, "data/data_smartwatch.csv")
+write_excel_csv(df, "data/data_smartwatch.csv")
 ```
 </div></details>
 
@@ -307,14 +371,13 @@ write.csv(df, "data/data_smartwatch.csv")
 
 <br />
 <details><summary>対応分析 Rコード（クリックで表示）</summary><div>
-```{r fig.show='hide'}
+```{r fig.show='hide', eval=FALSE}
 library(FactoMineR)
 
-data_tablet <- read.csv("data/data_smartwatch.csv", row.names = 1)
-result <- CA(data_tablet)
+data_smartwatch <- read.csv("data/data_smartwatch.csv", row.names = 1)
+result <- CA(data_smartwatch)
 
 library(factoextra)
-result <- CA(data_tablet, graph = FALSE)
-fviz_ca_biplot(result, select.row = list(contrib = 80))
+fviz_ca_biplot(result, select.row = list(contrib = 80)) # マップ上の単語を80個に削減
 ```
 </div></details>
