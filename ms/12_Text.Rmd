@@ -94,7 +94,7 @@ df <- mecab_out %>%
   filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>%  # ストップワードの削除 
   mutate(sum = select(., F20:M70) %>% rowSums()) %>% # 頻出数7未満の単語の削除
   filter(sum >= 7) %>% 
-  select(-c(POS1:POS2))
+  select(-c(POS1:POS2, sum))
 
 write_excel_csv(df, "data/data_okinawa.csv")
 ```
@@ -193,6 +193,7 @@ df <- mecab_out %>%
   group_by(TERM) %>% 
   summarise_all(list(sum)) %>% 
   column_to_rownames("TERM") %>%  # 単語列を行名に指定
+  set_colnames(paste0("Review", 1:240)) %>% 
   select(which(colSums(.) > 0)) %>%    # 前処理後に単語数がゼロとなった列を削除
   rownames_to_column(var = "TERM")
 
@@ -259,12 +260,14 @@ read.csv("data/data_okinawa2.csv") %>%
   head()
 ```
 
-
 | 変数名      | 内容                    |
 | ---------   | ------------------------- |
 | N1          | 連続する2つの単語の第1単語       | 
 | N2          | 連続する2つの単語の第2単語       | 
 | freq        | 出現数（4回以上出現した単語の組み合わせ）        | 
+
+- 分析例①と同じデータ
+- ただし性別・年齢層の違いは無視して自由記述回答全体を使って単語の共起関係を抽出した
 
 **データ出典** ：[石田（2017）『Rによるテキストマイニング入門(第2版)』森北出版株式会社](https://www.morikita.co.jp/books/mid/084842)
 
