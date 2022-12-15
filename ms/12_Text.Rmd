@@ -152,7 +152,7 @@ fviz_ca_biplot(result, select.row = list(contrib = 60))
 ## 2. 分析例②：トピックモデル*
 
 ### データ
-**あるタブレット製品のAmazonレビュー（data_tablet_lda.csv）**
+**あるタブレット製品のAmazonレビュー（data_tablet.csv）**
 
 ```{r, echo=FALSE}
 read.csv("data/data_tablet.csv", row.names = 1) %>% 
@@ -322,7 +322,7 @@ plot(graph_df, vertex.label = V(graph_df)$name)
 ## 4. データ分析実習
 
 ### データ
-**スマートウォッチ8製品のAmazonレビュー（data_tablet_lda.csv）**
+**スマートウォッチ8製品のAmazonレビュー（data_smartwatch.csv）**
 
 ```{r, echo=FALSE}
 read.csv("data/data_smartwatch.csv", row.names = 1) %>% 
