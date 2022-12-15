@@ -180,8 +180,7 @@ mecab_out <- docDF(
     as.data.frame(), 
   column = 1:nrow(review), 
   type = 1, 
-  # pos = c("名詞", "動詞", "形容詞"), 
-  pos = c("名詞", "形容詞"),
+  pos = c("名詞", "動詞", "形容詞"), 
   minFreq = 3
 )
 
@@ -190,12 +189,10 @@ df <- mecab_out %>%
   filter(POS2 %in% c("一般", "固有名詞", "自立")) %>%   # 分析対象単語の抽出
   filter(! TERM %in% c("ある", "いう", "いる", "する" ,"できる", "なる", "思う")) %>%   # ストップワードの削除
   mutate(TERM = tolower(TERM)) %>%  # アルファベットの大文字を小文字へ変換
-  filter(! TERM %in% letters) %>%   # アルファベット1文字の単語を削除
   select(-c(POS1:POS2)) %>%   # 重複単語行の統合
   group_by(TERM) %>% 
   summarise_all(list(sum)) %>% 
   column_to_rownames("TERM") %>%  # 単語列を行名に指定
-  set_colnames(paste0("Review", 1:240)) %>% 
   set_colnames(paste0("Review", 1:240)) %>% 
   select(which(colSums(.) > 0)) %>%    # 前処理後に単語数がゼロとなった列を削除
   rownames_to_column(var = "TERM")
@@ -220,12 +217,10 @@ set.seed(1) # 推定用の乱数初期値の固定
 result <- LDA(lda_data, k = 5, control = list(seed = 1))
 
 # 各トピック上位15単語
-top_term <- terms(result, 15)
-top_term
+terms(result, 15)
 
 # 各レビューのトピック分布
-topic_dist <- posterior(result)$topic
-topic_dist
+posterior(result)$topic
 ```
 
 
