@@ -1,0 +1,230 @@
+---
+title: "CM倍速再生"
+date: "更新：`r Sys.time()`"
+output: 
+  html_document: 
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(magrittr)
+```
+
+
+- 機能CM：[VEZEL e:HEV「充実機能紹介」篇 - YouTube](https://www.youtube.com/watch?v=Itx477wrIgM)
+- 感情CM：[【VEZEL e:HEV】WEBCM「GOOD GROOVE」篇 Long ver. - YouTube](https://www.youtube.com/watch?v=P4dZyrK4COI)
+
+
+## データ加工
+```{r message=FALSE}
+raw_data <- read_csv("data/【修正後】CMに関するアンケート（回答） - フォームの回答 1.csv")
+col_names <- read_csv("data/col_names.csv")
+
+data <- raw_data %>% 
+  set_colnames(col_names$name) %>% 
+  # パターン
+  mutate(
+    pattern = str_extract(birth, "\\d") %>% as.factor(),
+    type = case_when(e0_1 == "はい" | e0_3 == "はい" ~ "emotion",
+                     TRUE ~ "function"),
+    speed = case_when(e0_1 == "はい" | f0_1 == "はい" ~ "x1",
+                      TRUE ~ "x2"),
+    .after = time
+  ) %>%
+  # 回答尺度 → 数値
+  mutate(
+    across(c(e3:e10, f1, f4:f10),
+           ~ case_when(.x == "非常に当てはまる" ~ 5,
+                       .x == "当てはまる" ~ 4,
+                       .x == "どちらとも言えない" ~ 3,
+                       .x == "当てはまらない" ~ 2,
+                       .x == "全く当てはまらない" ~ 1))
+  ) %>% 
+  # デモグラフィック属性
+  mutate(
+    age = str_replace(age, "代", "s") %>% as.factor(),
+    # age = str_remove_all(age, "代") %>% as.factor(),
+    license = if_else(license == "はい", "yes", "no"),
+    car = if_else(car == "はい", "yes", "no"),
+    gender = case_when(gender == "男性" ~ "male",
+                       gender == "女性" ~ "female",
+                       TRUE ~ "other"),
+    family = case_when(family == "一人暮らし" ~ 1,
+                       family == "夫婦二人暮らし" ~ 2,
+                       family == "夫婦子供の二世帯家族（子供が未就学児）" ~ 3,
+                       family == "夫婦と子供の二世帯家族（小学生〜大学生中心）" ~ 4,
+                       family == "子供・親・祖父母などの三世代家族" ~ 5,
+                       family == "その他" ~ 6) %>% as.factor(),
+    family_size = str_extract(family_size, "\\d") %>% as.integer()
+  ) %>% 
+  # 機能確認質問
+  mutate(
+    f2 = if_else(f2 == "自動ドア：足をかざせば開閉可能", 1, 0),
+    f3 = if_else(f3 == "窓：紫外線や日差しの熱を低減する", 1, 0)
+  ) %>% 
+  # e1:このCMに当てはまるイメージを全て選んでください
+  # e2:このCMに当てはまるイメージを全て選んでください
+  mutate(
+    # e1
+    e1_cool = if_else(str_detect(e1, "クール"), 1, 0),
+    e1_cute = if_else(str_detect(e1, "キュート"), 1, 0),
+    e1_reckless = if_else(str_detect(e1, "がむしゃら"), 1, 0),
+    e1_relax = if_else(str_detect(e1, "のんびり"), 1, 0),
+    e1_indoor = if_else(str_detect(e1, "インドアな感じ"), 1, 0),
+    e1_outdoor = if_else(str_detect(e1, "アウトドアな感じ"), 1, 0),
+    # e2
+    e2_bridge = if_else(str_detect(e2, "橋"), 1, 0),
+    e2_road = if_else(str_detect(e2, "山道"), 1, 0),
+    e2_highway = if_else(str_detect(e2, "高速道路"), 1, 0),
+    e2_camp = if_else(str_detect(e2, "キャンプ"), 1, 0),
+    e2_mountain = if_else(str_detect(e2, "山の車道"), 1, 0),
+    .after = e2
+  ) %>% 
+  # 共通質問の統合（7 ~ 10)
+  mutate(
+    y7 = replace_na(e7, 0) + replace_na(f7, 0),
+    y8 = replace_na(e8, 0) + replace_na(f8, 0),
+    y9 = replace_na(e9, 0) + replace_na(f9, 0),
+    y10 = replace_na(e10, 0) + replace_na(f10, 0)
+  ) %>% 
+  # 出力列の選択
+  select(pattern:family_size, e1_cool:e6, f1:f6, y7:y10)
+
+# 保存
+# write_excel_csv(data, file = "data/data.csv")
+```
+
+## t検定
+### 機能CM
+
+| 列   | 質問                                 |
+| ---- | ------------------------------------ |
+| y7   | この車に乗ってどこかに行きたくなった |
+| y8   | またこのCMを見たいと思った           |
+| y9   | このCMの内容に共感した               |
+| y10  | この車を買いたくなった               |
+
+
+```{r}
+# 両側検定
+data %>% 
+  filter(type == "function") %>% 
+  {
+    t.test(y7 ~ speed, data = .) %>% print()
+    t.test(y8 ~ speed, data = .) %>% print()
+    t.test(y9 ~ speed, data = .) %>% print()
+    t.test(y10 ~ speed, data = .) %>% print()
+  }
+
+# 片側検定 (x1 > x2)
+data %>% 
+  filter(type == "function") %>% 
+  {
+    t.test(y7 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y8 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y9 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y10 ~ speed, data = ., alternative = "greater") %>% print()
+  }
+```
+
+### 感情CM
+```{r}
+# 両側検定
+data %>% 
+  filter(type == "emotion") %>% 
+  {
+    t.test(y7 ~ speed, data = .) %>% print()
+    t.test(y8 ~ speed, data = .) %>% print()
+    t.test(y9 ~ speed, data = .) %>% print()
+    t.test(y10 ~ speed, data = .) %>% print()
+  }
+
+# 片側検定 (x1 > x2)
+data %>% 
+  filter(type == "emotion") %>% 
+  {
+    t.test(y7 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y8 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y9 ~ speed, data = ., alternative = "greater") %>% print()
+    t.test(y10 ~ speed, data = ., alternative = "greater") %>% print()
+  }
+```
+
+
+## 分散分析
+```{r}
+aov(y8 ~ type * speed, data = data) %>% 
+  summary()
+
+aov(y10 ~ type * speed, data = data) %>% 
+  summary()
+```
+
+
+## カイ二乗検定
+### 機能CM：f2（ドア） & f3（窓）
+```{r}
+# f2（ドア）
+f2_table <- data %>% 
+  filter(type == "function") %>% 
+  select(speed, f2) %>% 
+  table()
+
+f2_table
+prop.table(f2_table, margin = 1)
+
+chisq.test(f2_table)
+
+# f3（窓）
+f3_table <- data %>% 
+  filter(type == "function") %>% 
+  select(speed, f3) %>% 
+  table()
+
+f3_table
+prop.table(f3_table, margin = 1)
+
+chisq.test(f3_table)
+```
+
+### 感情CM：e1（イメージ） & e2（画像）
+```{r}
+# e1（イメージ）
+e1_table <- data %>% 
+  filter(type == "emotion") %>% 
+  group_by(speed) %>% 
+  summarise(across(e1_cool:e1_outdoor, sum),
+            .groups = "drop") %>% 
+  column_to_rownames("speed") %>% 
+  as.matrix() %>% 
+  as.table()
+
+e1_table
+prop.table(e1_table, margin = 1)
+
+chisq.test(e1_table)
+
+# e2（画像）
+e2_table <- data %>% 
+  filter(type == "emotion") %>% 
+  group_by(speed) %>% 
+  summarise(across(e2_bridge:e2_mountain, sum),
+            .groups = "drop") %>% 
+  column_to_rownames("speed") %>% 
+  as.matrix() %>% 
+  as.table()
+
+e2_table
+prop.table(e2_table, margin = 1)
+
+chisq.test(e2_table)
+```
