@@ -2761,7 +2761,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">CM倍速再生</h1>
-<h4 class="date">更新：2023-01-11 22:06:33</h4>
+<h4 class="date">更新：2023-01-12 15:50:25</h4>
 
 </div>
 
@@ -3107,6 +3107,129 @@ data %&gt;%
 ## sample estimates:
 ## mean in group x1 mean in group x2 
 ##         2.638095         2.445455</code></pre>
+</div>
+</div>
+<div id="分散分析" class="section level2">
+<h2>分散分析</h2>
+<pre class="r"><code>aov(y8 ~ type * speed, data = data) %&gt;% 
+  summary()</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)  
+## type          1    0.0   0.015   0.015  0.901  
+## speed         1    3.8   3.819   4.003  0.046 *
+## type:speed    1    2.2   2.201   2.308  0.129  
+## Residuals   444  423.6   0.954                 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>aov(y10 ~ type * speed, data = data) %&gt;% 
+  summary()</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## type          1   14.3  14.288  13.661 0.000246 ***
+## speed         1    4.6   4.562   4.362 0.037325 *  
+## type:speed    1    0.0   0.009   0.009 0.925382    
+## Residuals   444  464.4   1.046                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="カイ二乗検定" class="section level2">
+<h2>カイ二乗検定</h2>
+<div id="機能cmf2ドア-f3窓" class="section level3">
+<h3>機能CM：f2（ドア） &amp; f3（窓）</h3>
+<pre class="r"><code># f2（ドア）
+f2_table &lt;- data %&gt;% 
+  filter(type == &quot;function&quot;) %&gt;% 
+  select(speed, f2) %&gt;% 
+  table()
+
+f2_table</code></pre>
+<pre><code>##      f2
+## speed  0  1
+##    x1 18 91
+##    x2 28 96</code></pre>
+<pre class="r"><code>prop.table(f2_table, margin = 1)</code></pre>
+<pre><code>##      f2
+## speed         0         1
+##    x1 0.1651376 0.8348624
+##    x2 0.2258065 0.7741935</code></pre>
+<pre class="r"><code>chisq.test(f2_table)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
+## 
+## data:  f2_table
+## X-squared = 0.99183, df = 1, p-value = 0.3193</code></pre>
+<pre class="r"><code># f3（窓）
+f3_table &lt;- data %&gt;% 
+  filter(type == &quot;function&quot;) %&gt;% 
+  select(speed, f3) %&gt;% 
+  table()
+
+f3_table</code></pre>
+<pre><code>##      f3
+## speed   0   1
+##    x1  12  97
+##    x2  10 114</code></pre>
+<pre class="r"><code>prop.table(f3_table, margin = 1)</code></pre>
+<pre><code>##      f3
+## speed          0          1
+##    x1 0.11009174 0.88990826
+##    x2 0.08064516 0.91935484</code></pre>
+<pre class="r"><code>chisq.test(f3_table)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
+## 
+## data:  f3_table
+## X-squared = 0.29428, df = 1, p-value = 0.5875</code></pre>
+</div>
+<div id="感情cme1イメージ-e2画像" class="section level3">
+<h3>感情CM：e1（イメージ） &amp; e2（画像）</h3>
+<pre class="r"><code># e1（イメージ）
+e1_table &lt;- data %&gt;% 
+  filter(type == &quot;emotion&quot;) %&gt;% 
+  group_by(speed) %&gt;% 
+  summarise(across(e1_cool:e1_outdoor, sum),
+            .groups = &quot;drop&quot;) %&gt;% 
+  column_to_rownames(&quot;speed&quot;) %&gt;% 
+  as.matrix() %&gt;% 
+  as.table()
+
+e1_table</code></pre>
+<pre><code>##    e1_cool e1_cute e1_reckless e1_relax e1_indoor e1_outdoor
+## x1      31      36          13       12         2         84
+## x2      23      29          12       12         0         96</code></pre>
+<pre class="r"><code>prop.table(e1_table, margin = 1)</code></pre>
+<pre><code>##       e1_cool    e1_cute e1_reckless   e1_relax  e1_indoor e1_outdoor
+## x1 0.17415730 0.20224719  0.07303371 0.06741573 0.01123596 0.47191011
+## x2 0.13372093 0.16860465  0.06976744 0.06976744 0.00000000 0.55813953</code></pre>
+<pre class="r"><code>chisq.test(e1_table)</code></pre>
+<pre><code>## Warning in chisq.test(e1_table): カイ自乗近似は不正確かもしれません</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  e1_table
+## X-squared = 4.6775, df = 5, p-value = 0.4565</code></pre>
+<pre class="r"><code># e2（画像）
+e2_table &lt;- data %&gt;% 
+  filter(type == &quot;emotion&quot;) %&gt;% 
+  group_by(speed) %&gt;% 
+  summarise(across(e2_bridge:e2_mountain, sum),
+            .groups = &quot;drop&quot;) %&gt;% 
+  column_to_rownames(&quot;speed&quot;) %&gt;% 
+  as.matrix() %&gt;% 
+  as.table()
+
+e2_table</code></pre>
+<pre><code>##    e2_bridge e2_road e2_highway e2_camp e2_mountain
+## x1        46      60         29      39          47
+## x2        65      58         34      46          43</code></pre>
+<pre class="r"><code>prop.table(e2_table, margin = 1)</code></pre>
+<pre><code>##    e2_bridge   e2_road e2_highway   e2_camp e2_mountain
+## x1 0.2081448 0.2714932  0.1312217 0.1764706   0.2126697
+## x2 0.2642276 0.2357724  0.1382114 0.1869919   0.1747967</code></pre>
+<pre class="r"><code>chisq.test(e2_table)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  e2_table
+## X-squared = 3.1078, df = 4, p-value = 0.54</code></pre>
 </div>
 </div>
 
