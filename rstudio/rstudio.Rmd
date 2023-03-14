@@ -45,7 +45,7 @@ library(knitr)
 - Windows はドキュメントフォルダ（C:\\Users\\[ユーザー名]\\Documents）
 - Mac はユーザーフォルダ（/User/[ユーザー名]）
 
-に Project フォルダと拡張子が「Roroj」のファイルが作成される（例：seminar.Roroj）。
+に Project フォルダと拡張子が「Rproj」のファイルが作成される（例：seminar.Rproj）。
 授業ではこのファイルを開いて Rstudio を起動する。
 
 \
