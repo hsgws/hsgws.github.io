@@ -31,15 +31,18 @@ library(knitr)
 
 ## 売上データ
 #### sales-price-promo.txt
-```{r}
+```{r eval=FALSE, include=TRUE}
 sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "")
 
-# 文字化けする場合は「fileEncoding = "shift-jis"」を引数に追加
+# 読み込んだデータが文字化けする場合や実行時に「不正なマルチバイト文字があります」のエラーが表示される場合は「fileEncoding = "shift-jis"」を引数に追加
 sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
                                 fileEncoding = "shift-jis")
 ```
 
 ```{r, echo=FALSE}
+sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
+                                fileEncoding = "shift-jis")
+
 head(sales.price.promo)
 ```
 
@@ -103,7 +106,7 @@ RegModel.1 %>%
   print()
 ```
 
-## 4.1 信頼係数
+## 4.1 信頼区間
 ```{r}
 confint(RegModel.1, level = 0.95)
 ```
