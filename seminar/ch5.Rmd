@@ -24,57 +24,54 @@ library(plotly)
 library(broom)
 # library(pander)
 library(knitr)
-
-# data
-# ch5_data <- read.table("data/ch5_data.txt", header = T, sep = "\t")
 ```
 
 ## 売上データ
 #### sales-price-promo.txt
-```{r eval=FALSE, include=TRUE}
-sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "")
+```{r message=FALSE}
+sales.price.promo <- read.table("dataset/sales-price-promo.txt", header = T)
 
-# 読み込んだデータが文字化けする場合や実行時に「不正なマルチバイト文字があります」のエラーが表示される場合は「fileEncoding = "shift-jis"」を引数に追加
-sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
-                                fileEncoding = "shift-jis")
+# tidyverseパッケージを使う場合（推奨）
+library(tidyverse)
+sales.price.promo <- read_table("dataset/sales-price-promo.txt")
 ```
 
 ```{r, echo=FALSE}
-sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
-                                fileEncoding = "shift-jis")
-
+# sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
+#                                 fileEncoding = "shift-jis")
 head(sales.price.promo)
 ```
 
 - 変数（オブジェクト）名にマイナス記号 "-" は使えないため，ドット記号 "." に置き換えた
 - **以下では教科書のデータをそのまま用いるが，本来であればエラーを防ぐためデータ内の日本語は避けた方がよい**
 
-#### Mac OS で Import Dataset を使う場合
-- Mac では「From Text (base)」では文字化けが修正できないので「From Text (readr)」を利用する
-  - Delimiter：Whitespase に変更
-  - Local：Configure から Encoding を「SHIFT-JIS」に変更
-- 読み込み後に警告メッセージが表示されることがあるが，データが正しく表示されれば問題はない
-- 読み込み時にファイル名のマイナス記号 "-" が自動でアンダーバー記号 "_" に変更されるため，右上ペインの Environment タブの Data からデータの変数名を確認
+<!-- #### Mac OS で Import Dataset を使う場合 -->
+<!-- - Mac では「From Text (base)」では文字化けが修正できないので「From Text (readr)」を利用する -->
+<!--   - Delimiter：Whitespase に変更 -->
+<!--   - Local：Configure から Encoding を「SHIFT-JIS」に変更 -->
+<!-- - 読み込み後に警告メッセージが表示されることがあるが，データが正しく表示されれば問題はない -->
+<!-- - 読み込み時にファイル名のマイナス記号 "-" が自動でアンダーバー記号 "_" に変更されるため，右上ペインの Environment タブの Data からデータの変数名を確認 -->
 
 
 ## 3.2 散布図
 ```{r, eval=FALSE}
-plot(x = sales.price.promo$価格, y = sales.price.promo$売上,
-     xlab = "価格", ylab = "売上")
+plot(x = sales.price.promo$価格, y = sales.price.promo$売上, xlab = "価格", ylab = "売上")
 ```
 
 - データセット内の特定の変数列を指定したいときは，「`"データ名"$"変数名"`」のように `$` でつなげて指定する
 - `xlab` と `ylab` は x 軸と y 軸のラベル名を指定する引数
 
 ```{r, echo=FALSE}
-plot(x = sales.price.promo$価格, y = sales.price.promo$売上,
-     xlab = "価格", ylab = "売上")
+plot(x = sales.price.promo$価格, y = sales.price.promo$売上, xlab = "価格", ylab = "売上")
 ```
 
 
 ## 3.3 相関係数
-```{r}
+```{r results='hold'}
 cor.test(x = sales.price.promo$価格, y = sales.price.promo$売上)
+
+# または
+# cor.test(~ 価格 + 売上, data = sales.price.promo)
 ```
 
 ## 4 単回帰モデル
@@ -97,7 +94,6 @@ summary(RegModel.1)
 `lm` の実行結果は `<-` の左側のオブジェクト（上の例では `RegModel.1`）に入っており，`summary` で結果を表示することができる。
 特定の結果のみ抜き出したいときは専用の関数が用意されている。「4.1 信頼係数」では `RegModel.1` から `confint` 関数で回帰係数の95%区間を抜き出している。
 詳細は `?lm` を実行して `lm` 関数のヘルプを参照。
-
 
 
 ```{r, echo=FALSE}
@@ -132,8 +128,11 @@ summary(RegModel.2)
 
 ## ヨーグルトデータ
 #### yogurt.txt
-```{r}
-yogurt <- read.table("data/yogurt.txt", header = T, sep = "\t")
+```{r message=FALSE}
+yogurt <- read.table("dataset/yogurt.txt", header = T)
+
+# tidyverse
+yogurt <- read_table("dataset/yogurt.txt")
 ```
 
 ```{r, echo=FALSE}
@@ -150,8 +149,9 @@ summary(RegModel.3)
 ## 参考：ggplot2 パッケージによる散布図
 ```{r}
 library(ggplot2)
-ggplot(data = sales.price.promo, 
-       mapping = aes(x = 価格, y = 売上, group = factor(販促), colour = factor(販促))) + 
+
+ggplot(sales.price.promo) +
+  aes(x = 価格, y = 売上, group = factor(販促), colour = factor(販促)) +
   geom_point()
 ```
 

@@ -1,0 +1,5 @@
+library(mlogit)
+data(Catsup)
+Catdata <- mlogit.data(Catsup, choice = "choice", shape = "wide", varying = c(2:13), sep=".")
+Cat1<-mlogit(choice ~ disp+feat+price , data = Catdata)
+summary(Cat1)
