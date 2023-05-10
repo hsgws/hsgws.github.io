@@ -32,11 +32,12 @@ library(knitr)
 
 変数名に "-" は使えないので，"." に変更（binomial-choice → binomial.choice)。
 
-```{r}
-binomial.choice <- read.table("data/binomial-choice.txt", 
-                              header = TRUE, 
-                              sep = "", 
-                              fileEncoding = "shift-jis")
+```{r message=FALSE, warning=FALSE}
+binomial.choice <- read.table("dataset/binomial-choice.txt", header = TRUE)
+
+# または
+library(tidyverse)
+binomial.choice <- read_table("dataset/binomial-choice.txt")
 ```
 
 ```{r, echo=FALSE}

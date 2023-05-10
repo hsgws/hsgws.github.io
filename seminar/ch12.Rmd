@@ -26,21 +26,25 @@ library(broom)
 library(knitr)
 
 # data
-Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
-Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
+# Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
+# Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
 ```
 
 
 ## データ
 #### Cleaner.txt
 ```{r}
-Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
+Cleaner <- read.table("dataset/Cleaner.txt", header = T)
+Cleaner <- Cleaner[, 2:9] # 1列目の"番号"は不要のため除外
+
 head(Cleaner)
 ```
 
 #### Camera.txt
 ```{r}
-Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
+Camera <- read.table("dataset/Camera.txt", header = T)
+Camera <- Camera[, 2:9]
+
 head(Camera)
 ```
 

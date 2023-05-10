@@ -29,7 +29,7 @@ library(knitr)
 ## データ
 #### CSIdata.txt
 ```{r}
-CSIdata <- read.table("data/CSIdata.txt", header = T, sep = ";")
+CSIdata <- read.table("dataset/CSIdata.txt", header = T, sep = ";")
 head(CSIdata)
 ```
 

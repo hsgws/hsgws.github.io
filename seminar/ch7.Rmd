@@ -29,9 +29,17 @@ library(knitr)
 
 ## データ
 #### seg.txt
-```{r}
-seg <- read.table("data/seg.txt", header = T, sep = ",")
+```{r message=FALSE}
+# seg <- read.table("dataset/seg.txt", header = T, sep = ",")
+seg <- read.csv("dataset/seg.txt")
+
+# または
+library(tidyverse)
+seg <- read_csv("dataset/seg.txt")
 ```
+
+`seg.txt` は拡張子は "txt" だが，中身はカンマ区切りの CSV ファイルのため，`read.csv` または `read_csv` で読み込める。
+
 
 ```{r, echo=FALSE}
 head(seg)
@@ -85,25 +93,24 @@ print(Cluster$size)
 
 
 ## 5.4 セグメントのプロファイリング
-```{r, eval=FALSE}
-# 表7.10 性別比率
-tapply(X = seg$性別 - 1, INDEX = Cluster$cluster, FUN = mean)   # セグメント別比率（女性比率）
-mean(seg$性別 - 1)    # データ全体の比率（女性比率）
+### R の標準関数
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+## 表7.10 性別比率
+tapply(X = seg$性別 == 1, INDEX = Cluster$cluster, FUN = mean)   # セグメント別比率（男性比率）
+mean(seg$性別 == 1)    # データ全体の比率（男性比率）
 
-# 表7.11 年齢
+## 表7.11 年齢
 tapply(X = seg$年齢, INDEX = Cluster$cluster, FUN = mean)   # セグメント別平均
 mean(seg$年齢)    # データ全体の平均
 
-# 表7.12 投資経験年数
+## 表7.12 投資経験年数
 tapply(X = seg$投資経験年数, INDEX = Cluster$cluster, FUN = mean)   # セグメント別平均
 mean(seg$投資経験年数)    # データ全体の平均
 
-# 表7.13 投資の形態
+## 表7.13 投資の形態
 num_table <- xtabs(~ Cluster$cluster + seg$取引形態)  # 人数
 prop.table(num_table, 1) # 人数比
 ```
-
-注：性別データは「女性=2，男性=1」なので，`seg$性別 - 1` で1を引いて「女性=1，男性=0」に変換して平均を取ることで女性比率を計算
 
 **`tapply(X, INDEX, FUN)`**：グループ毎に関数を適用
 
@@ -119,8 +126,8 @@ prop.table(num_table, 1) # 人数比
 
 #### 性別比率
 ```{r, results='hold', echo=FALSE}
-tapply(seg$性別-1, Cluster$cluster, mean)   # セグメント別比率（女性比率）
-mean(seg$性別-1)    # データ全体の比率（女性比率）
+tapply(X = seg$性別 == 1, INDEX = Cluster$cluster, FUN = mean)   # セグメント別比率（男性比率）
+mean(seg$性別 == 1)    # データ全体の比率（男性比率）
 ```
 
 #### 平均年齢
@@ -139,3 +146,25 @@ mean(seg$投資経験年数)    # データ全体の平均
 ```{r, results='hold', echo=FALSE}
 prop.table(xtabs(~ Cluster$cluster + seg$取引形態), 1)
 ```
+
+
+### tidyverse
+```{r message=FALSE, results='hold'}
+## seg データにクラスタ番号を追加
+seg <- data.frame(seg, cluster = Cluster$cluster)
+
+## 表 7.10 ~ 7.12
+seg %>% 
+  group_by(cluster) %>% 
+  summarise(male_ratio = mean(性別 == 1),
+            age_mean = mean(年齢),
+            year_mean = mean(投資経験年数))
+
+## 表 7.13
+seg %>% 
+  group_by(cluster, 取引形態) %>% 
+  summarise(n = n()) %>% 
+  mutate(ratio = n/sum(n)) %>% 
+  pivot_wider(id_cols = cluster, names_from = 取引形態, values_from = ratio)
+```
+

@@ -31,6 +31,7 @@ library(knitr)
 #### RFM.txt
 ```{r}
 RFM <- read.table("data/RFM.txt", header = T, sep = ",")
+RFM <- read.csv("dataset/RFM.txt", header = T)
 ```
 
 ```{r, echo=FALSE}
@@ -101,10 +102,6 @@ RFM <- RFM %>%
 head(RFM)
 ```
 
-- `dplyr` はデータ加工に便利なパッケージ。使い方は以下の参考書を参照，またはネットで検索すると紹介ページが多数見つかる。
-  - [前処理大全［データ分析のためのSQL/R/Python実践テクニック］：書籍案内｜技術評論社](https://gihyo.jp/book/2018/978-4-7741-9647-3)
-  - [改訂2版 Rユーザのための RStudio［実践］入門 〜tidyverseによるモダンな分析フローの世界：書籍案内｜技術評論社](https://gihyo.jp/book/2021/978-4-297-12170-9)
-
 
 ### 箱ひげ図
 ```{r, eval=FALSE}
@@ -115,7 +112,7 @@ boxplot(M ~ R_Rank, data = RFM)
 boxplot(F ~ R_Rank, data = RFM)
 ```
 
-**`boxplot(formula, data)`：線形回帰モデルの推定**
+**`boxplot(formula, data)`：箱ひげ図の作成**
 
 - **`formula`**：目的変数（縦軸）・グループ（横軸）の指定
   - 「目的変数 ~ グループを表す変数」のように，`~` の左側に目的変数，右側にグループを表す変数を記述する
@@ -127,16 +124,17 @@ boxplot(F ~ R_Rank, data = RFM)
 ```
 
 ### 分散分析
-```{r, message=FALSE}
+```{r, message=FALSE, results='hold'}
 # 一元配置分散分析
 aov_M <- aov(M ~ R_Rank, data = RFM)
 summary(aov_M)
 
-RFM %>% 
-  group_by(R_Rank) %>% 
-  summarise(mean = mean(M),
-            sd = sd(M),
-            n = n())
+# 図 10.11 下側
+# RFM %>% 
+#   group_by(R_Rank) %>% 
+#   summarise(mean = mean(M),
+#             sd = sd(M),
+#             n = n())
 ```
 
 **`aov(formula, data)`：分散分析**
