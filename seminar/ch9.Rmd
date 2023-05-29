@@ -86,23 +86,25 @@ legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
 
 非線形最小二乗法では，パラメータ（m，p，q）に適当な初期値を与えて，バスモデルの左辺 $n$ と右辺 $p(m-N_{t-1}) + q \frac{N_{t-1}}{m} (m-N_{t-1})$ の残差二乗和（＝左辺と左辺の差の二乗の合計値）を計算し，その残差二乗和が小さくなるようにパラメータを更新していき，残差二乗和が最小となるm，p，qの値を見つけて推定値とする。
 
+初期値のうち潜在市場規模mの設定によっては，うまくパラメータが推定できない場合があるので，エラーが出る場合はmの初期値を変更してみること。
+
 ```{r}
-n <- Bass$購買者数
-Nt <- Bass$一期前累積購買者数
+# データの列名の変更
+colnames(Bass) <- c("time", "n", "Nt", "Nt1", "Nt1s")
 
 # パラメータ推定
-result <- nls(n ~ p*(m - Nt) + q*Nt/m*(m - Nt),  # 式(9.1)
-              start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
+result <- nls(n ~ p * (m - Nt1) + q * Nt1/m * (m - Nt1),  # 式(9.1)
+              data = Bass, start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
 summary(result)
 
-# 購買者数の予測値の計算
-prediction <- predict(result) 
+# 購買者数の予測値の計算とデータへの追加
+Bass$prediction <- predict(result) 
 
 # 予測値プロット
 cols <- c("black", "red")  # 折れ線グラフの色
 ltys <- c(3, 2)    # 折れ線グラフの線のタイプ
-plot(x = Bass$時点, y = Bass$購買者数, type = "b", col = cols[1], lty = ltys[1],
+plot(x = Bass$time, y = Bass$n, type = "b", col = cols[1], lty = ltys[1],
      xlab = "時点", ylab = "")
-lines(x = Bass$時点, y = prediction, col = cols[2], lty = ltys[2])
+lines(x = Bass$time, y = Bass$prediction, col = cols[2], lty = ltys[2])
 legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
 ```
