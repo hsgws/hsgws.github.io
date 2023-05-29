@@ -164,6 +164,12 @@ seg %>%
 seg %>% 
   group_by(cluster, 取引形態) %>% 
   summarise(n = n()) %>% 
+  mutate(ratio = n/sum(n)) 
+
+### pivot_wider で表を横長に変更可能
+seg %>% 
+  group_by(cluster, 取引形態) %>% 
+  summarise(n = n()) %>% 
   mutate(ratio = n/sum(n)) %>% 
   pivot_wider(id_cols = cluster, names_from = 取引形態, values_from = ratio)
 ```
