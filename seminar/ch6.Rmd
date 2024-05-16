@@ -96,6 +96,11 @@ plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因
 # マップにブランド名を追加
 plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
 text(FactorModel$scores, labels = rownames(senbei))
+
+# car package
+library(car)
+plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
+pointLabel(FactorModel$scores, labels = rownames(senbei))
 ```
 
 - 出力した図は右下ペインの Plots に表示され，[Export] → [Save as Image] からPCに保存できる。
