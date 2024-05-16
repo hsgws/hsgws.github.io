@@ -97,7 +97,7 @@ plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因
 plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
 text(FactorModel$scores, labels = rownames(senbei))
 
-# car package
+# car package を使うケース
 library(car)
 plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
 pointLabel(FactorModel$scores, labels = rownames(senbei))
