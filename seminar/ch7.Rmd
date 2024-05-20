@@ -166,7 +166,7 @@ seg %>%
   summarise(n = n()) %>% 
   mutate(ratio = n/sum(n)) 
 
-### pivot_wider で表を横長に変更可能
+### pivot_wider で表をクロス集計表に変更
 seg %>% 
   group_by(cluster, 取引形態) %>% 
   summarise(n = n()) %>% 
