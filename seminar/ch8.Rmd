@@ -56,6 +56,57 @@ summary(result1)
 - 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い。グラフ化も同様。
 - 後述の conjoint パッケージを利用すれば，直行表の作成から部分効用，重要度の計算まで一括で行うことができる。
 
+#### 補足
+教科書の分析データでは属性の水準（説明変数）を複数の列に分けて 1 or 0 の数値データとして記録しているが，lm 関数は文字の列を自動でダミー変数化してくれるため，以下のように属性と水準を文字のまま記録したデータでも同じ結果を得られる。
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# conjoint1_text <- read.table("dataset/conjoint1_text.txt", header = T)
+library(tidyverse)
+conjoint1_text <- conjoint1 %>% 
+  mutate(
+    バッテリ = case_when(
+      X4時間 == 1 ~ "4時間",
+      X6時間 == 1 ~ "6時間",
+      .default = "2時間"
+    ),
+    保証期間 = case_when(
+      X2年 == 1 ~ "2年",
+      .default = "1年"
+    ),
+    色 = case_when(
+      赤 == 1 ~ "赤",
+      シルバー == 1 ~ "シルバー",
+      .default = "黒"
+    )
+  ) %>% 
+  select(カードNo., バッテリ, 保証期間, 色, 選好順位, 全体効用)
+
+conjoint1_text
+```
+
+```{r}
+# 文字列説明変数の重回帰分析
+result <- lm(全体効用 ~ 保証期間 + バッテリ + 色, data = conjoint1_text)
+summary(result)
+```
+
+教科書とは"色"属性の基準が異なるため，教科書の例と係数の値は異なる。
+ただし，ダミー変数の定義から，この推定値でも部分効用や重要度を計算すると教科書と同じ数値が得られる。
+
+
+```{r}
+# 属性の基準を指定する場合
+conjoint1_text$バッテリ <- relevel(factor(conjoint1_text$バッテリ), ref = "2時間")
+conjoint1_text$保証期間 <- relevel(factor(conjoint1_text$保証期間), ref = "1年")
+conjoint1_text$色 <- relevel(factor(conjoint1_text$色), ref = "黒")
+
+result <- lm(全体効用 ~ 保証期間 + バッテリ + 色, data = conjoint1_text)
+summary(result)
+```
+
 ### 部分効用
 ```{r}
 # 回帰係数の確認・抽出
