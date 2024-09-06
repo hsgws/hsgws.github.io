@@ -1,0 +1,30 @@
+h1{
+  font-weight: bold;
+}
+
+h2{
+  margin:40px 0 10pt 0;
+  padding-bottom: .25em;
+  border-bottom: 1.5px solid  #ccc;
+  /**/ font-weight: bold; 
+}
+
+h3{
+  margin:25pt 0 10pt 0;
+  padding:0 .5em;
+  border-left: 4px solid #ccc;
+  font-weight: bold;
+}
+
+h4{
+  margin:15pt 0 5pt 0;
+  font-weight: bold;
+}
+
+h5{
+  margin:15pt 0 5pt 0;
+}
+
+h5{
+  margin:5pt 0 5pt 0;
+}
