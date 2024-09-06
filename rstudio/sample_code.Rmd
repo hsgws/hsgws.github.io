@@ -1,0 +1,19 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+データの散布図と回帰分析
+
+```{r}
+# データの読み込み
+sample_data <- read.csv("data/sample_data.csv")
+
+# データの基礎集計と散布図
+summary(sample_data)
+plot(x = sample_data$price, y = sample_data$sales)
+
+# 回帰分析
+result <- lm(sales ~ price + promotion, data = sample_data)
+summary(result)
+```
