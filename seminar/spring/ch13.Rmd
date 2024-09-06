@@ -1,0 +1,84 @@
+---
+title: "第13章 マーケットバスケットとクロスセリング"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データ
+#### apriori.txt
+```{r}
+apriori <- read.csv("dataset/apriori.txt", header = T)
+head(apriori)
+```
+
+
+## 3 マーケットバスケット分析
+```{r, message=FALSE, eval=FALSE}
+library(arules)
+
+# transactions 形式へデータを変換
+y.tran <- as(as.matrix(apriori), "transactions")
+
+# アソシエーション分析の実行
+rules <- apriori(y.tran, parameter = list(supp = 0.4, conf = 0.5))
+
+# 抽出ルール数
+print(rules)
+
+# リフト上位20ルール
+inspect(head(sort(rules, by = "lift"), n = 20))
+```
+
+
+**`apriori(data, parameter)`：アソシエーション分析**
+
+- **`data`**：データの指定
+- **`parameter`**：支持度(`supp`)と信頼度(`conf`)を list 形式で指定
+
+
+`print(rules)` で抽出ルール数を出力して**「set of 0 rules」**（ルール数がゼロ）と表示される場合は，`apriori` 関数の引数で支持度(`supp`)と信頼度(`conf`) の数値を小さくすればルールが抽出できる。
+ただし，小さくした分，分析結果の支持度や信頼度の水準は低くなる。  
+<br />
+
+##### apriori 関数の出力
+```{r, message=FALSE, echo=FALSE}
+library(arules)
+
+# transactions 形式へデータを変換
+y.tran <- as(as.matrix(apriori), "transactions")
+
+# アソシエーション分析の実行
+rules <- apriori(y.tran, parameter = list(supp = 0.4, conf = 0.5))
+```
+
+##### 抽出ルール数
+```{r, message=FALSE, echo=FALSE}
+print(rules)
+```
+
+##### リフト上位20ルール
+```{r, message=FALSE, echo=FALSE}
+inspect(head(sort(rules, by = "lift"), n = 20))
+```

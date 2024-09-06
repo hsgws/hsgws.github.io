@@ -1,0 +1,179 @@
+---
+title: "第10章 顧客の管理"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+
+## データ
+#### RFM.txt
+```{r}
+RFM <- read.table("data/RFM.txt", header = T, sep = ",")
+RFM <- read.csv("dataset/RFM.txt", header = T)
+```
+
+```{r, echo=FALSE}
+head(RFM)
+```
+
+
+## 4.1 RFM 分析
+### 顧客のランク付け
+#### 方法1（carパッケージ）
+```{r message=FALSE}
+library(car)
+R_Rank <- Recode(RFM$R, 
+                 '0:30="R_Rank1"; 
+                  31:60="R_Rank2"; 
+                  61:90="R_Rank3"; 
+                  91:180="R_Rank4"; 
+                  else="R_Rank5"',
+                 as.factor = TRUE)
+
+F_Rank <- Recode(RFM$F, 
+                 '1="F_Rank1"; 
+                  2="F_Rank2"; 
+                  3:9="F_Rank3"; 
+                  10:29="F_Rank4"; 
+                  else="F_Rank5"',
+                 as.factor = TRUE)
+
+M_Rank <- Recode(RFM$M, 
+                 '0:49999="M_Rank1";
+                  50000:99999="M_Rank2";
+                  100000:299999="M_Rank3";
+                  300000:499999="M_Rank4";
+                  else="M_Rank5"',
+                 as.factor = TRUE)
+
+# データセットへの追加
+RFM <- cbind(RFM, R_Rank, F_Rank, M_Rank)
+head(RFM)
+```
+
+`Recode`
+
+- `0:30="R_Rank1"` のように，左辺に数値の範囲，右辺に変換したい文字列を指定
+- `as.factor = TRUE` を追加すると，データの型を factor 型に変更可能
+
+
+#### 方法2（dplyrパッケージ）
+```{r, message=FALSE}
+library(dplyr)
+RFM <- RFM %>% 
+  mutate(R_Rank = case_when(R > 180 ~ "R_Rank1",
+                            R > 90 & R <= 180 ~ "R_Rank2",
+                            R > 60 & R <= 90 ~ "R_Rank3",
+                            R > 30 & R <= 60 ~ "R_Rank4",
+                            R <= 30 ~ "R_Rank5") %>% as.factor(),
+         F_Rank = case_when(F == 1 ~ "F_Rank1",
+                            F == 2 ~ "F_Rank2",
+                            F >= 3 & F < 10 ~ "F_Rank3",
+                            F >= 10 & F < 30 ~ "F_Rank4",
+                            F >= 30 ~ "F_Rank5") %>% as.factor(),
+         M_Rank = case_when(M < 50000 ~ "M_Rank1",
+                            M >= 50000 & M < 100000 ~ "M_Rank2",
+                            M >= 100000 & M < 300000 ~ "M_Rank3",
+                            M >= 300000 & M < 500000 ~ "M_Rank4",
+                            M >= 500000  ~ "M_Rank5") %>% as.factor())
+
+head(RFM)
+```
+
+
+### 箱ひげ図
+```{r, eval=FALSE}
+# 累積購買金額 × R_Rank（図10.7）
+boxplot(M ~ R_Rank, data = RFM)
+
+# 累積購買回数 × R_Rank（図10.8）
+boxplot(F ~ R_Rank, data = RFM)
+```
+
+**`boxplot(formula, data)`：箱ひげ図の作成**
+
+- **`formula`**：目的変数（縦軸）・グループ（横軸）の指定
+  - 「目的変数 ~ グループを表す変数」のように，`~` の左側に目的変数，右側にグループを表す変数を記述する
+- **`data`**：データの指定
+
+```{r, echo=FALSE}
+boxplot(M ~ R_Rank, data = RFM)
+boxplot(F ~ R_Rank, data = RFM)
+```
+
+### 分散分析
+```{r, message=FALSE, results='hold'}
+# 一元配置分散分析
+aov_M <- aov(M ~ R_Rank, data = RFM)
+summary(aov_M)
+
+# 図 10.11 下側
+# RFM %>% 
+#   group_by(R_Rank) %>% 
+#   summarise(mean = mean(M),
+#             sd = sd(M),
+#             n = n())
+```
+
+**`aov(formula, data)`：分散分析**
+
+- **`formula`**：目的変数と説明変数（要因と水準）の指定
+  - 「目的変数 ~ 説明変数」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 教科書の例では，目的変数は累積購買金額（M），説明変数はRのランク（R_Rank）
+- **`data`**：データの指定
+
+
+```{r, message=FALSE}
+# 多重比較
+library(multcomp)
+glht_M <- glht(aov_M, linfct = mcp(R_Rank = "Tukey"))
+summary(glht_M)
+```
+
+**`glht(model, linfct)`：多重比較**
+
+- **`model`**：分散分析の出力
+- **`linfct`**：仮説の指定
+  - 多重比較の場合は `mcp`
+  - `R_Rank = "Tukey"` でRランクの全てのペアで比較
+
+
+## 4.2 ロジスティクス回帰
+
+```{r, message=FALSE}
+RFM$DM <- as.factor(RFM$DM)   # DMへの反応(yes, no)を factor 型へ変換
+# ロジスティクス回帰 (glm) の目的変数は，因子(factor)型または，1 or 0 (yes = 1, no = 0) にする必要がある
+
+result <- glm(DM ~ log(M) + log(F) + log(R), family = "binomial", data = RFM)
+summary(result)
+```
+
+**`glm(fomula, family, data)`：一般化線型モデルの推定**
+
+- **`fomula`**：目的変数と説明変数の指定
+- **`family`**：データが従う確率分布の指定
+  - ロジスティクス回帰の場合は `"binomial"` を指定
+  - `family` を変更すれば，ポアソン回帰などのその他の一般化線型モデルも推定可能
+- **`data`**：データの指定

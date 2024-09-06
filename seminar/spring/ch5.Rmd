@@ -1,0 +1,161 @@
+---
+title: "第5章 市場反応分析 (I)"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## 売上データ
+#### sales-price-promo.txt
+```{r message=FALSE}
+sales.price.promo <- read.table("dataset/sales-price-promo.txt", header = T)
+
+# tidyverseパッケージを使う場合（推奨）
+library(tidyverse)
+sales.price.promo <- read_table("dataset/sales-price-promo.txt")
+```
+
+```{r, echo=FALSE}
+# sales.price.promo <- read.table("data/sales-price-promo.txt", header = T, sep = "", 
+#                                 fileEncoding = "shift-jis")
+head(sales.price.promo)
+```
+
+- 変数（オブジェクト）名にマイナス記号 "-" は使えないため，ドット記号 "." に置き換えた
+- **以下では教科書のデータをそのまま用いるが，本来であればエラーを防ぐためデータ内の日本語は避けた方がよい**
+
+<!-- #### Mac OS で Import Dataset を使う場合 -->
+<!-- - Mac では「From Text (base)」では文字化けが修正できないので「From Text (readr)」を利用する -->
+<!--   - Delimiter：Whitespase に変更 -->
+<!--   - Local：Configure から Encoding を「SHIFT-JIS」に変更 -->
+<!-- - 読み込み後に警告メッセージが表示されることがあるが，データが正しく表示されれば問題はない -->
+<!-- - 読み込み時にファイル名のマイナス記号 "-" が自動でアンダーバー記号 "_" に変更されるため，右上ペインの Environment タブの Data からデータの変数名を確認 -->
+
+
+## 3.2 散布図
+```{r, eval=FALSE}
+plot(x = sales.price.promo$価格, y = sales.price.promo$売上, xlab = "価格", ylab = "売上")
+```
+
+- データセット内の特定の変数列を指定したいときは，「`"データ名"$"変数名"`」のように `$` でつなげて指定する
+- `xlab` と `ylab` は x 軸と y 軸のラベル名を指定する引数
+
+```{r, echo=FALSE}
+plot(x = sales.price.promo$価格, y = sales.price.promo$売上, xlab = "価格", ylab = "売上")
+```
+
+
+## 3.3 相関係数
+```{r results='hold'}
+cor.test(x = sales.price.promo$価格, y = sales.price.promo$売上)
+
+# または
+# cor.test(~ 価格 + 売上, data = sales.price.promo)
+```
+
+## 4 単回帰モデル
+```{r, results='hide'}
+# 回帰分析の実行
+RegModel.1 <- lm(売上 ~ 価格, data = sales.price.promo)
+
+# 推定結果の表示
+summary(RegModel.1)
+```
+
+**`lm(formula, data)`：線形回帰モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数が2個以上ある場合は，`+` で追加する
+
+- **`data`**：分析データの指定  
+
+`lm` の実行結果は `<-` の左側のオブジェクト（上の例では `RegModel.1`）に入っており，`summary` で結果を表示することができる。
+特定の結果のみ抜き出したいときは専用の関数が用意されている。「4.1 信頼係数」では `RegModel.1` から `confint` 関数で回帰係数の95%区間を抜き出している。
+詳細は `?lm` を実行して `lm` 関数のヘルプを参照。
+
+
+```{r, echo=FALSE}
+RegModel.1 %>% 
+  summary() %>% 
+  print()
+```
+
+## 4.1 信頼区間
+```{r}
+confint(RegModel.1, level = 0.95)
+```
+
+## 4.4 売上の予測
+
+教科書では手計算で予測値を求めているが，R上で予測用データを作成して予測を実行することができる。説明変数が多い場合は，Rで予測を行った方が正確である。
+
+```{r}
+# 予測用の価格データの作成
+newprice <- data.frame(価格 = 350)
+
+# 予測の実行
+predict(RegModel.1, newdata = newprice)
+```
+注：教科書との数値の差は小数点4桁以上を計算に利用しているかどうか
+
+## 5 重回帰モデル
+```{r}
+RegModel.2 <- lm(売上 ~ 価格 + 販促, data = sales.price.promo)
+summary(RegModel.2)
+```
+
+## ヨーグルトデータ
+#### yogurt.txt
+```{r message=FALSE}
+yogurt <- read.table("dataset/yogurt.txt", header = T)
+
+# tidyverse
+yogurt <- read_table("dataset/yogurt.txt")
+```
+
+```{r, echo=FALSE}
+head(yogurt)
+```
+
+## 6.3 交差価格弾力性
+```{r}
+RegModel.3 <- lm(log(Y1) ~ log(X1) + log(X2), data = yogurt)   # log()で対数変換
+summary(RegModel.3)
+```
+
+
+## 参考：ggplot2 パッケージによる散布図
+```{r}
+library(ggplot2)
+
+ggplot(sales.price.promo) +
+  aes(x = 価格, y = 売上, group = factor(販促), colour = factor(販促)) +
+  geom_point()
+```
+
+データの可視化については以下の文献などを参照。
+
+- [松村他 (2021) 『改訂2版 Rユーザのための RStudio［実践］入門』技術評論社](https://gihyo.jp/book/2021/978-4-297-12170-9)
+- [ヒーリー (2021) 『データ分析のためのデータ可視化入門』講談社サイエンティフィク](https://www.kspub.co.jp/book/detail/5164044.html)

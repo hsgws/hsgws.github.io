@@ -1,0 +1,182 @@
+---
+title: "第14章 定性調査データの分析"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データ
+#### CSIdata.txt
+```{r}
+CSIdata <- read.table("dataset/CSIdata.txt", header = T, sep = ";")
+head(CSIdata)
+```
+
+
+## 5.6 顧客満足度の分析
+
+教科書では sem パッケージによる分析方法が紹介されているが，以下ではモデルの記述が簡単な lavaan パッケージを利用した方法を紹介する。
+推定結果は関数内部の推定アルゴリズムの違いなどによって教科書の結果とは若干異なる。
+また，パス図も EasyGraphviz ではなく，semPlot パッケージを使った作成方法を紹介する。  
+<br />
+
+### パラメータ推定
+```{r, message=FALSE, results='hide'}
+library(lavaan)
+
+# モデル定義
+model <-　
+"
+  # 観測モデル
+    知覚品質 =~ y1 + y2 + y3 + y4
+    顧客期待 =~ y5 + y6 + y7
+    顧客満足 =~ y8 + y9 + y10
+    
+  # 構造モデル
+    知覚品質 ~ 顧客期待
+    顧客満足 ~ 顧客期待 + 知覚品質
+"
+
+# 推定
+result <- lavaan::sem(model, data = CSIdata)
+
+# 結果出力
+summary(result, fit.measures = TRUE, standardized = TRUE)
+```
+
+
+#### `sem(model, data)`：共分散構造分析の実行
+
+- **`model`**：モデル（パス図）定義
+  - モデルは " "（または ' '）で囲んで定義する
+  - モデルの書き方は下記を参照
+  
+- **`data`**：分析データの指定  
+
+sem パッケージの `sem` 関数との競合を防ぐため `lavaan::` をつけた。sem パッケージを同時に利用しない場合は省略可能。  
+<br />
+
+
+#### モデル（パス図）定義の書き方
+
+- **観測モデル**
+  - 「潜在変数 =~ 観測変数1 + 観測変数2」のように，`=~` の左側に潜在変数，右側に潜在変数を構成する観測変数を記述
+  - 観測変数が2個以上ある場合は `+` で追加する
+
+
+- **構造モデル**
+  - 「潜在変数1 ~ 潜在変数2 + 潜在変数3」のように，`~` の左側に「矢印を受ける潜在変数（終点）」，「矢印を出す潜在変数（始点）」を記述
+  - 複数の始点がある場合は `+` で追加する
+  - 潜在変数間の相関関係をモデル化したい場合は「潜在変数1 ~~ 潜在変数2」のように，`~~` で潜在変数をつなげる  
+<br />
+
+```{r, message=FALSE, echo=FALSE}
+summary(result, fit.measures = TRUE, standardized = TRUE)
+```
+<br />
+
+共分散構造分析の分析結果は，一般的には標準化された係数で報告する。パス図も標準化された係数で作成する。
+lavaan では summary 出力の "Std.all" の列の数値が標準化された係数となる。
+
+### パス図作成
+```{r, message=FALSE, warning=FALSE}
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel")
+```
+
+モデル内で潜在変数名を日本語で定義していた場合，Mac では semPlot で変数名が出力されないことがある。
+その場合は潜在変数名をアルファベットで定義しなおせば，変数名が出力される。
+
+
+### CSI スコアの計算
+```{r, message=FALSE, results='hold', fig.show='hide'}
+# 因子スコアの計算
+score <- predict(result)
+
+# CSIスコアの計算
+csscore <- (score[,"顧客満足"] - min(score[,"顧客満足"]))/(max(score[,"顧客満足"]) - min(score[,"顧客満足"]))*100
+
+mean(csscore)   # 平均値
+median(csscore) # 中央値
+
+# ヒストグラム
+hist(csscore)
+```
+
+```{r, message=FALSE, fig.show='hold', echo=FALSE}
+hist(csscore)
+```
+
+## 6.1 SERVQUAL
+### パラメータ推定
+```{r, message=FALSE, results='hide'}
+# 相関係数行列（データ）
+library(sem)
+cor <- readMoments(names = c("y1", "y2", "y3", "y4","y5", "y6","y7", "y8", "y9", "y10"),
+                   text = "
+        1.00
+        0.76 1.00
+        0.39 0.32 1.00
+        0.48 0.39 0.68 1.00
+        0.46 0.28 0.33 0.45 1.00
+        0.40 0.45 0.37 0.40 0.72 1.00
+        0.23 0.37 0.42 0.31 0.37 0.47 1.00
+        0.31 0.39 0.34 0.34 0.42 0.47 0.81 1.00
+        0.48 0.23 0.30 0.31 0.33 0.40 0.44 0.48 1.00
+        0.38 0.23 0.40 0.31 0.33 0.30 0.44 0.48 0.80 1.00")
+
+# モデル定義
+model <-　
+"
+  # 観測モデル
+    信頼性 =~ y1 + y2
+    有形性 =~ y3 + y4
+    応答性 =~ y5 + y6
+    保証性 =~ y7 + y8
+    共感性 =~ y9 + y10
+    
+  # 構造モデル
+    知覚品質 =~ 信頼性 + 有形性 + 応答性 + 保証性 + 共感性
+"
+
+# 推定
+result <- lavaan::sem(model, sample.cov = cor, sample.nobs = 100)
+
+# 結果出力
+summary(result, fit.measures = TRUE, standardized = TRUE)
+```
+
+- 分散共分散行列または相関係数行列を sem パッケージの引数とする場合は，`sample.cov` で指定し，`sample.nobs` にサンプルサイズを指定する必要がある
+- 高次因子分析は観測モデル・構造モデルともに因子分析なので，構造モデルのモデル定義は `~` ではなく `=~` を使う  
+<br />
+
+```{r, message=FALSE, echo=FALSE}
+summary(result, fit.measures = TRUE, standardized = TRUE)
+```
+<br />
+
+### パス図作成
+```{r, message=FALSE, warning=FALSE}
+semPaths(result, what = "std", style = "lisrel")
+```

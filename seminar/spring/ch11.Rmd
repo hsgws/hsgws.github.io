@@ -1,0 +1,119 @@
+---
+title: "第11章 市場反応分析 (II)"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+
+## データ
+#### binomial-choice.txt
+
+変数名に "-" は使えないので，"." に変更（binomial-choice → binomial.choice)。
+
+```{r message=FALSE, warning=FALSE}
+binomial.choice <- read.table("dataset/binomial-choice.txt", header = TRUE)
+
+# または
+library(tidyverse)
+binomial.choice <- read_table("dataset/binomial-choice.txt")
+```
+
+```{r, echo=FALSE}
+head(binomial.choice)
+```
+
+## 3.1 ブランド価値を含むモデル
+### ロジット・モデル
+```{r}
+logit <- glm(B1 ~ (P1 - P2), data = binomial.choice, family = binomial)
+summary(logit)
+```
+
+- ロジット・モデルの推定方法は第10章のロジスティクス回帰と同じ
+- 説明変数の「ブランドB1とB2の価格差」は `fomula` に `P1 - P2` を指定 
+- 次のプロビット・モデルの推定は `family` を `family = binomial(link = "probit")` へ変更する
+
+### プロビット・モデル
+```{r}
+probit <- glm(B1 ~ (P1 - P2), data = binomial.choice, family = binomial(link = "probit"))
+summary(probit)
+```
+
+
+## 3.2 ブランド価値を含まないモデル
+```{r}
+logit <- glm(B1 ~ 0 + (P1 - P2), data = binomial.choice, family = binomial)
+# または logit <- glm(B1 ~ (P1 - P2) - 1, data = binomial.choice, family = binomial)
+summary(logit)
+```
+
+
+
+## 4.1 多項ロジットモデル
+```{r, message=FALSE}
+library(mlogit)
+
+# データの読み込み
+data(Catsup)
+head(Catsup)
+```
+
+
+```{r, message=FALSE, results='hide'}
+# データの加工
+Catdata <- mlogit.data(Catsup, choice = "choice", shape = "wide", varying = c(2:13), sep = ".")
+
+# 加工データの表示
+head(Catdata)
+```
+
+**`mlogit.data(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
+
+- **`data`**：データの指定
+- **`choice`**：データ内の選択結果を示す変数名
+- **`shape`**：データ形式の指定（`long` または `wide`） ⇒ Catsup データは1行が1購買機会を表す `wide` 形式
+- **`varying`**：選択肢別の説明変数の列番号（`2:13` は2～13列を表す）
+- **`seq`**：説明変数と選択肢を区切る文字の指定（disp.heinz41，disp.heinz32 などの "."）
+
+```{r, message=FALSE, echo=FALSE}
+head(Catdata)
+```
+
+
+```{r, message=FALSE, results='hide'}
+# 分析の実行
+result <- mlogit(choice ~ disp + feat + price, data = Catdata)
+summary(result)
+```
+
+**`mlogit(formula, data, reflevel)`：多項ロジットモデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`data`**：`mlogit.data` コマンドで変換したデータの指定
+
+
+```{r, echo=FALSE}
+summary(result)
+```

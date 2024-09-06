@@ -1,0 +1,176 @@
+---
+title: "第7章 市場セグメンテーション"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+
+## データ
+#### seg.txt
+```{r message=FALSE}
+# seg <- read.table("dataset/seg.txt", header = T, sep = ",")
+seg <- read.csv("dataset/seg.txt")
+
+# または
+library(tidyverse)
+seg <- read_csv("dataset/seg.txt")
+```
+
+`seg.txt` は拡張子は "txt" だが，中身はカンマ区切りの CSV ファイルのため，`read.csv` または `read_csv` で読み込める。
+
+
+```{r, echo=FALSE}
+head(seg)
+```
+
+## 5.2 因子分析
+```{r}
+# 因子分析
+# seg[, 2:28]でデータ内の2~28列目の質問項目（q1~q27）のみ指定
+FactorModel <- factanal(seg[, 2:28], factors = 4, scores = "regression", rotation = "varimax")
+
+# 分析結果（因子負荷量）の表示
+print(FactorModel, sort = TRUE)
+```
+
+- Loadings の空白欄は数値が小さくその因子に影響を与えないため省略されている
+
+
+## 5.3 クラスター分析
+```{r, results='hide'}
+# クラスター分析
+Cluster <- kmeans(x = FactorModel$scores, centers = 4, nstart = 10)
+
+# 各セグメントの因子スコアの平均値（重心）
+Cluster$centers
+
+# 各セグメントの所属人数
+print(Cluster$size) 
+```
+
+
+**`kmeans(x, centers, nstart)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：クラスター数
+- **`nstart`**：シード初期値 → 指定しないと毎回結果が若干異なる
+- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `Cluster$centers`）
+- 各セグメントの所属人数は `$size` で取り出す（同 `Cluster$size`）
+- プロファイリングで利用する各回答者の所属セグメント番号 `$cluster` で取り出す（同 `Cluster$cluster`）
+
+
+#### 各セグメントの重心
+```{r, echo=FALSE}
+Cluster$centers
+```
+
+#### 各セグメントの所属人数
+```{r, echo=FALSE}
+print(Cluster$size) 
+```
+
+
+## 5.4 セグメントのプロファイリング
+### R の標準関数
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+## 表7.10 性別比率
+tapply(X = seg$性別 == 1, INDEX = Cluster$cluster, FUN = mean)   # セグメント別比率（男性比率）
+mean(seg$性別 == 1)    # データ全体の比率（男性比率）
+
+## 表7.11 年齢
+tapply(X = seg$年齢, INDEX = Cluster$cluster, FUN = mean)   # セグメント別平均
+mean(seg$年齢)    # データ全体の平均
+
+## 表7.12 投資経験年数
+tapply(X = seg$投資経験年数, INDEX = Cluster$cluster, FUN = mean)   # セグメント別平均
+mean(seg$投資経験年数)    # データ全体の平均
+
+## 表7.13 投資の形態
+num_table <- xtabs(~ Cluster$cluster + seg$取引形態)  # 人数
+prop.table(num_table, 1) # 人数比
+```
+
+**`tapply(X, INDEX, FUN)`**：グループ毎に関数を適用
+
+- **`X`**：集計したい変数
+- **`INDEX`**：グループ番号 ⇒ セグメント番号
+- **`FUN`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+ 
+**`xtabs(~ index + x)`**：クロス集計表の作成
+
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`x`**：集計したい変数
+- **`prop.table(xtabsの出力, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+
+#### 性別比率
+```{r, results='hold', echo=FALSE}
+tapply(X = seg$性別 == 1, INDEX = Cluster$cluster, FUN = mean)   # セグメント別比率（男性比率）
+mean(seg$性別 == 1)    # データ全体の比率（男性比率）
+```
+
+#### 平均年齢
+```{r, results='hold', echo=FALSE}
+tapply(seg$年齢, Cluster$cluster, mean)   # セグメント別平均
+mean(seg$年齢)    # データ全体の平均
+```
+
+#### 平均投資経験年数
+```{r, results='hold', echo=FALSE}
+tapply(seg$投資経験年数, Cluster$cluster, mean)   # セグメント別平均
+mean(seg$投資経験年数)    # データ全体の平均
+```
+
+#### 投資の形態
+```{r, results='hold', echo=FALSE}
+prop.table(xtabs(~ Cluster$cluster + seg$取引形態), 1)
+```
+
+
+### tidyverse
+```{r message=FALSE, results='hold'}
+## seg データにクラスタ番号を追加
+seg <- data.frame(seg, cluster = Cluster$cluster)
+
+## 表 7.10 ~ 7.12
+seg %>% 
+  group_by(cluster) %>% 
+  summarise(male_ratio = mean(性別 == 1),
+            age_mean = mean(年齢),
+            year_mean = mean(投資経験年数))
+
+## 表 7.13
+seg %>% 
+  group_by(cluster, 取引形態) %>% 
+  summarise(n = n()) %>% 
+  mutate(ratio = n/sum(n)) 
+
+### pivot_wider で表をクロス集計表に変更
+seg %>% 
+  group_by(cluster, 取引形態) %>% 
+  summarise(n = n()) %>% 
+  mutate(ratio = n/sum(n)) %>% 
+  pivot_wider(id_cols = cluster, names_from = 取引形態, values_from = ratio)
+```
+

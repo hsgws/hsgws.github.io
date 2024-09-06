@@ -1,0 +1,114 @@
+---
+title: "第9章 新製品の普及"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+
+## データ
+#### Bass.txt
+```{r message=FALSE}
+# Bass <- read.table("dataset/Bass.txt", header = T, sep = ",")
+Bass <- read.csv("dataset/Bass.txt")
+
+# または
+library(tidyverse)
+Bass <- read_csv("dataset/Bass.txt")
+```
+
+```{r, echo=FALSE}
+head(Bass)
+```
+
+
+## 6.1 回帰分析
+```{r}
+result <- lm(購買者数 ~ 一期前累積購買者数 + 一期前累積購買者数の二乗, data = Bass)
+summary(result)
+```
+
+`4.999e+03`は $4.999 \times 10^3 = 4999$，`9.994e-02`は $9.994 \times 10^{-2} = 0.09994$ を意味する
+
+
+#### m, p, qの計算
+```{r}
+a <- result$coefficients[1]
+b <- result$coefficients[2]
+c <- result$coefficients[3]
+m <- (-b-sqrt(b^2-4*a*c))/(2*c)
+p <- a/m
+q <- p+b
+
+print(c(m, p, q))
+```
+
+
+#### 購買者数と予測値の推移
+```{r}
+# 図9.12
+cols <- c("black", "red")  # 折れ線グラフの色
+ltys <- c(3, 2)    # 折れ線グラフの線のタイプ
+plot(x = Bass$時点, y = Bass$購買者数, type = "b", col = cols[1], lty = ltys[1],
+     xlab = "時点", ylab = "")
+lines(x = Bass$時点, y = result$fitted.values, col = cols[2], lty = ltys[2])
+legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
+```
+
+
+教科書では図9.12を描くのに予測値を新しい変数として作成してデータセットに追加しているが，`lm` 関数の出力に予測値 `fitted.values` が含まれているため，それを利用した
+
+
+## 参考：非線形最小二乗法
+
+教科書の式(9.4)の回帰分析（`lm` 関数）を使ったバスモデルの推定はコンピュータの性能が低い時代の方法で，現代ではm，p，qは非線形最小二乗法（`nls` 関数）で，教科書の式(9.1)から直接推定した方が早い。
+
+非線形最小二乗法では，パラメータ（m，p，q）に適当な初期値を与えて，バスモデルの左辺 $n_t$ と右辺 $p(m-N_{t-1}) + q \frac{N_{t-1}}{m} (m-N_{t-1})$ の残差二乗和（＝左辺と右辺の差の二乗の合計値） 
+
+$$\sum_{t=1}^T \left( n_t - p(m-N_{t-1}) - q \frac{N_{t-1}}{m} (m-N_{t-1})\right)^2$$
+
+を計算し，その残差二乗和が小さくなるようにパラメータを更新していき，残差二乗和が最小となるm，p，qの値を見つけて推定値とする。
+
+初期値のうち潜在市場規模mの設定によっては，うまくパラメータが推定できない場合があるので，エラーが出る場合はmの初期値を変更してみること。
+
+```{r}
+# データの列名の変更
+colnames(Bass) <- c("time", "n", "Nt", "Nt1", "Nt1s")
+
+# パラメータ推定
+result <- nls(n ~ p * (m - Nt1) + q * Nt1/m * (m - Nt1),  # 式(9.1)
+              data = Bass, start = list(p = 0.1, q = 0.1, m = 5000))  # パラメータの初期値
+summary(result)
+
+# 購買者数の予測値の計算とデータへの追加
+Bass$prediction <- predict(result) 
+
+# 予測値プロット
+cols <- c("black", "red")  # 折れ線グラフの色
+ltys <- c(3, 2)    # 折れ線グラフの線のタイプ
+plot(x = Bass$time, y = Bass$n, type = "b", col = cols[1], lty = ltys[1],
+     xlab = "時点", ylab = "")
+lines(x = Bass$time, y = Bass$prediction, col = cols[2], lty = ltys[2])
+legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
+```

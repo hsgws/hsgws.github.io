@@ -1,0 +1,103 @@
+---
+title: "第12章 ブランドと属性の同時マップ"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+
+# data
+# Cleaner <- read.table("data/Cleaner.txt", header = T, sep = "", row.names = 1)
+# Camera <- read.table("data/Camera.txt", header = T, sep = "", row.names = 1)
+```
+
+
+## データ
+#### Cleaner.txt
+```{r}
+Cleaner <- read.table("dataset/Cleaner.txt", header = T)
+Cleaner <- Cleaner[, 2:9] # 1列目の"番号"は不要のため除外
+
+head(Cleaner)
+```
+
+#### Camera.txt
+```{r}
+Camera <- read.table("dataset/Camera.txt", header = T)
+Camera <- Camera[, 2:9]
+
+head(Camera)
+```
+
+#### curry
+データファイルがないのでR上でデータ入力。
+```{r}
+curry <- data.frame(甘口 = c(75, 125), 中辛 = c(80, 90), 辛口 = c(145, 85))
+rownames(curry) <- c("東日本", "西日本")
+head(curry)
+```
+
+
+## 1.2 独立性の検定
+```{r, results='hold'}
+# カイ二乗検定
+chi2test <- chisq.test(curry)
+print(chi2test)
+
+# 期待度数
+chi2test$expected
+```
+
+
+## 3.1 コレスポンデンス分析（掃除機）
+```{r, eval=FALSE}
+library(FactoMineR)
+
+# コレスポンデンス分析の実行
+ca <- CA(Cleaner)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```
+
+- 教科書のデータはブランド名が番号（1～10）になっているが，具体的なブランド名があるデータではデータ読込の際にブランド名を行名（row name）に指定すれば，マップ上にブランド名も表示される
+
+
+```{r, results='hold', fig.show='hold', echo=FALSE}
+library(FactoMineR)
+
+# コレスポンデンス分析の実行
+ca <- CA(Cleaner)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```
+
+
+## 3.2 コレスポンデンス分析（デジタルカメラ）
+```{r, results='hold', fig.show='hold'}
+# コレスポンデンス分析の実行
+ca <- CA(Camera)
+
+# 製品のクラスタリング
+hc <- HCPC(ca, nb.clust = 4)
+```

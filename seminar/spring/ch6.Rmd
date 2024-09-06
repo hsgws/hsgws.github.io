@@ -1,0 +1,190 @@
+---
+title: "第6章 市場の発見と知覚マップ"
+date: "更新：`r Sys.time()`"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: "pygments"
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データ
+#### senbei.txt
+```{r message=FALSE}
+senbei <- read.table("dataset/senbei.txt", header = T, sep = "\t", row.names = 1)
+
+# または
+library(tidyverse)
+senbei <- read_table("dataset/senbei.txt")
+
+senbei <- senbei %>% 
+  column_to_rownames("製品名")
+  
+```
+
+```{r, echo=FALSE}
+head(senbei)
+```
+
+後の知覚マップ作成時にブランド名をマップ上に載せるため，データの第1列のブランド名を行名として読み込む
+
+- `read.table` 関数の場合はデータの1列目（"製品"）を行名に指定する引数 `row.names = 1` を追加
+- `read_table` 関数の場合はデータ読込後に `column_to_rownames` 関数で"製品"列を行名に変更
+
+
+## 4.1 相関係数行列
+```{r}
+cor(senbei)
+```
+
+## 5 因子分析
+```{r, results='hide'}
+# 因子分析の実行（因子数2）
+FactorModel <- factanal(senbei, factors = 2, scores = "regression", rotation = "varimax")
+
+# 分析結果（因子負荷量）の表示
+print(FactorModel, sort = TRUE)    # sort = TRUE で負荷量の順番に質問項目を並び替え
+
+# 因子スコアの表示
+print(FactorModel$scores)
+```
+
+**`factanal(data, factors, scores, rotation)`**：因子分析の実行
+
+- **`data`**：分析データの指定
+- **`factors`**：因子数の指定
+- **`scores`**：因子スコアの計算方法の指定
+- **`rotation`**：因子の回転の指定
+
+`factanal` の結果の変数（上記コードでは `FactorModel`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`FactorModel$socres` のように `$` の後ろに取り出したい変数名を指定する。
+
+
+#### 因子負荷量
+```{r, echo=FALSE}
+print(FactorModel, sort = TRUE)
+```
+
+#### 因子スコア
+```{r, echo=FALSE}
+print(FactorModel$scores)
+```
+
+#### 知覚マップ
+```{r fig.show='hold', message=FALSE, warning=FALSE}
+# 知覚マップの作成
+plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
+
+# マップにブランド名を追加
+plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
+text(FactorModel$scores, labels = rownames(senbei))
+
+# car package を使うケース
+library(car)
+plot(FactorModel$scores, xlab = "マーケティング因子", ylab = "製品因子")
+pointLabel(FactorModel$scores, labels = rownames(senbei))
+```
+
+- 出力した図は右下ペインの Plots に表示され，[Export] → [Save as Image] からPCに保存できる。
+
+
+### （参考）分析結果の保存
+
+論文・レポートで分析結果の表を作成する場合，分析結果をCSVファイルで出力すると作業が楽になる。
+因子負荷量と因子スコアは `write.csv` 関数で出力可能。詳細は `write.csv` 関数のヘルプを参照。
+
+```{r}
+# 因子負荷量
+write.csv(FactorModel$loadings, file = "loadings.csv")
+
+# 因子スコア
+write.csv(FactorModel$scores, file = "scores.csv")
+```
+
+
+<!-- ### （参考2）因子数が3個以上の場合 -->
+
+<!-- - `factanal` の引数 `factors` を変更すると因子数を変更できる（因子数3の場合 `factors = 3`） -->
+<!-- - 因子数を3個以上の知覚マップを作成する場合は，因子数に合わせて2個以上の知覚マップを作成する -->
+
+
+<!-- 教科書の senbei データでは因子数3以上で因子分析を実行すると「3 個の因子は 5 個の変数に対しては多すぎます」とエラーが表示されて実行できないため，以下では教科書7章のデータの一部を利用した分析例を紹介する。 -->
+
+<!-- #### 分析例 -->
+<!-- ```{r, results='hold', fig.show='hold'} -->
+<!-- # 教科書7章データの一部を利用 -->
+<!-- seg <- read.csv("dataset/seg.txt") -->
+<!-- seg <- seg[1:50, 2:28]  # 最初の50行 × 設問列（2~28行） -->
+
+<!-- # 因子分析の実行（因子数3） -->
+<!-- FactorModel3 <- factanal(seg, factors = 3, scores = "regression", rotation = "varimax") -->
+
+<!-- # 知覚マップ1（Factor1 × Factor2） -->
+<!-- plot(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor2"], -->
+<!--      xlab = "Factor1", ylab = "Factor2") -->
+<!-- pointLabel(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor2"], -->
+<!--            labels = rownames(FactorModel3$scores)) -->
+
+<!-- # 知覚マップ2（Factor1 × Factor3） -->
+<!-- plot(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor3"], -->
+<!--      xlab = "Factor1", ylab = "Factor3") -->
+<!-- pointLabel(x = FactorModel3$scores[, "Factor1"], y = FactorModel3$scores[, "Factor3"], -->
+<!--            labels = rownames(FactorModel3$scores)) -->
+<!-- ``` -->
+
+
+## 6.2 共通因子数の設定
+```{r, fig.show='hold', results='hold'}
+# 主成分分析
+PCA <- princomp(x = senbei, cor = TRUE)
+
+# 固有値
+PCA$sd^2
+
+# スクリーンプロット
+screeplot(PCA)
+```
+
+
+## 7 サブマーケットと市場構造
+```{r, fig.show='hide'}
+# 知覚マップ上での因子スコアの座標間距離の計算
+d <- dist(FactorModel$scores)
+
+# 階層的クラスター分析
+clstr <- hclust(d, method = "ward.D")
+
+# デンドログラムの表示
+plot(clstr)
+```
+
+**`dist(x)`**：座標間距離の計算
+
+- **`x`**：知覚マップ上の各ブランドの座標（＝因子スコア）
+
+**`hclust(d, method)`**：階層的クラスタリング
+
+- **`d`**：`dist(x)`で計算した座標間距離
+- **`method`**：クラスタリングの方法の指定
+
+```{r, echo=FALSE}
+plot(clstr)
+```
