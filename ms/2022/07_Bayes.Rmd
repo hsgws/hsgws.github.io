@@ -1,0 +1,187 @@
+---
+title: "階層ベイズモデル"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+
+## 1. 分析例
+### データ
+
+**醤油のID付POSデータ**（sec8_data1.csv）
+```{r, echo=FALSE}
+sec8_data1 <- read.csv("data/sec8_data1.csv")
+head(sec8_data1)
+```
+
+| 変数名       | 内容                          |
+| ------------ | ----------------------------- |
+| PNL          | 消費者パネルID                |
+| Date         | 購買日                        |
+| Product1 ~ 3 | 購買の有無（0＝非購買，1＝購買） |
+| Choice       | 購買ブランド（1,2,3） ⇒ 以降ではA,B,C表記                  |
+| Price1 ~ 3   | 価格掛率（定価＝1）                     |
+| Disp1 ~ 3    | 山積み陳列実施の有無（1＝実施，0＝非実施）         |
+| Ad1 ~ 3      | チラシ掲載の有無（1＝実施，0＝非実施）              |
+
+
+**消費者属性データ**（sec8_data2.csv）
+```{r, echo=FALSE}
+sec8_data2 <- read.csv("data/sec8_data2.csv")
+head(sec8_data2)
+```
+
+| 変数名 | 内容           |
+| ------ | -------------- |
+| PNL    | 消費者パネルID |
+| age    | 年齢           |
+| family | 家族人数       |
+
+
+
+**データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（8章）
+
+- sec8_data1.csv は1家計（パネル）の複数購買機会でのブランド選択が記録されたID付POSデータ（または消費者パネルデータとも呼ばれる）
+- sec8_data1.csv と sec8_data2.csv の消費者パネルID（PNL）は対応している
+- 分析のためには sec8_data1.csv を加工する必要があるが，加工方法が特殊なため加工済みのデータ（yxdata.RData）を用意した
+
+
+### モデル
+#### 効用関数（個体内モデル）
+$$
+\begin{align}
+U_{hA} &= \beta_{hA} + \beta_1 \text{Price}_{hA} + \beta_2 \text{Display}_{hA} + \beta_3 \text{Ad}_{hA} + \varepsilon_{hA} \\
+U_{hB} &= \beta_{hB} + \beta_1 \text{Price}_{hB} + \beta_2 \text{Display}_{hB} + \beta_3 \text{Ad}_{hB} + \varepsilon_{hB} \\
+U_{hC} &= 0 + \beta_1 \text{Price}_{hC} + \beta_2 \text{Display}_{hC} + \beta_3 \text{Ad}_{hC} + \varepsilon_{hC}
+\end{align}
+$$
+
+#### 階層モデル
+$$
+  \beta_{hj} = \Delta_{j1} \text{age}_h + \Delta_{j2} \text{family}_h + u_{hj} \qquad (j = A, B, 1, 2, 3)
+$$
+
+### Rコード
+```{r, results='hide', message=FALSE, fig.keep='none'}
+# データ sec8_data1 と sec8_data2 は "Import Dataset" で読込済みとする
+library(bayesm)
+
+id <- sec8_data2$PNL  # 消費者パネルIDの抽出
+H <- 103  # 消費者パネル数
+J <- 3    # ブランド数
+K <- 3    # マーケティング変数の数 (Prie, Disp Ad)
+
+# 加工済みの yxdata (list 形式の消費者パネル別選択データ) の読み込み
+load("data/yxdata.RData")
+
+# 属性データの標準化（平均のみ）
+zdata <- scale(sec8_data2[,c("age", "family")], scale = FALSE)
+
+# rhierMnlRwMixture コマンドでの分析のためにデータを list 形式に変換
+dataset <- list(lgtdata = yxdata, Z = zdata, p = J)
+
+## lgtdata : list 形式の消費者行動データ
+## Z : 消費者の属性データ
+## p : ブランド数
+
+# MCMCの設定
+set.seed(1)  # 乱数の初期値
+mcmc <- list(R = 3000) # MCMCのサンプル数
+prior <- list(ncomp = 1)  # 事前分布の設定 ⇒ 初期設定の散漫な事前分布
+
+# MCMCの実行
+out <- rhierMnlRwMixture(Data = dataset, Prior = prior, Mcmc = mcmc)
+
+# パネル毎の係数 beta の推定値（出力省略）
+R <- 3000
+beta_all <- apply(out$betadraw[,,(0.1*R):R], 1, rowMeans)
+# print(beta_all)
+
+# パネル毎の係数 beta の推定値プロット
+plot(out$betadraw)
+
+# 係数 Delta の推定値と出力整形
+summary_Delta <- summary(out$Deltadraw, QUANTILES = FALSE)
+Delta_mean <- matrix(summary_Delta[,1], nrow =5, byrow = TRUE)
+Delta_sd <- matrix(summary_Delta[,2], nrow =5, byrow = TRUE)
+
+rownames(Delta_mean) <- c("Brand.1", "Brand.2", "Price", "Disp", "Ad")
+colnames(Delta_mean) <- c("age", "family")
+rownames(Delta_sd) <- c("Brand.1", "Brand.2", "Price", "Disp", "Ad")
+colnames(Delta_sd) <- c("age", "family")
+
+print(Delta_mean)
+print(Delta_sd)
+```
+
+
+<br />
+<details><summary>yxdata（list 形式の消費者パネル別選択データ）の作成プログラム（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# 消費者パネルデータ (sec8_data1) を消費者パネル毎の list 形式データに変換
+yxdata <- list()
+for (h in 1:H) {
+  data_h <- subset(sec8_data1, PNL == id[h])
+  ydata_h <- data_h$Choice
+  xdata_h <- createX(p = J, na = K, nd = NULL, Xa = data_h[,7:15], Xd = NULL, base = 3)
+  yxdata[[h]] <- list(id = id[h], y = ydata_h, X = xdata_h)
+}
+```
+</div></details>
+<br />
+
+
+#### Rコードの出力
+##### パネル毎の係数 $\beta_h$ の推定値プロット
+```{r, echo=FALSE}
+plot(out$betadraw)
+```
+
+##### 係数 $\Delta$ の推定値
+上：Delta_mean（事後平均），下：Delta_sd（事後標準偏差）
+```{r, echo=FALSE}
+print(Delta_mean)
+print(Delta_sd)
+```
+
+
+### 推定結果
+
+##### 係数 $\Delta$ の推定値
+|         | age           | family          |
+| ------- | ------------- | ------------- |
+| Brand.1 | 0.024  \ (0.042) | 0.042  \ (0.046) |
+| Brand.2 | 0.101  \ (0.089) | **0.050**  \ (0.022) |
+| Price   | -0.042 \ (0.040) | -0.427 \ (0.275) |
+| Disp    | **-0.574** \ (0.297) | -0.579 \ (0.584) |
+| Ad      | 0.147  \ (0.132) | -0.198 \ (0.278) |
+
+
+- 括弧の付いていない数値は係数の事後平均，括弧内の数値は係数の事後標準偏差
+- 太字は90％有意水準で有意（[事後平均÷事後標準偏差]＞1.64 で判断）
+
+
+年齢が高いほど山積み陳列に反応しにくく，家族人数が多いほどブランドBの選好度が高い。  
+⇒ 価格とチラシが有意でないことを含め，年齢が高い消費者ほど購買ブランドが固定化している可能性がある。
+

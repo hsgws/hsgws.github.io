@@ -1,0 +1,272 @@
+---
+title: "因果推論"
+date: "更新：`r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+
+## 1.分析例①：t 検定
+### データ
+**ウェブページのA/Bテストデータ（web_page_data.csv）**
+
+```{r, echo=FALSE}
+web_page_data <- read.csv("data/web_page_data.csv")
+head(web_page_data)
+```
+
+| 変数名  | 内容                                        |
+| ------- | ------------------------------------------- |
+| Page    | サイトデザイン (Page A or Page B)           |
+| Time    | サイトの滞在時間                            |
+
+- サイト訪問者へデザインの異なる Page A と Page B をランダムに表示して滞在時間を計測
+- データは実データではなく演習用の架空データ
+
+**データ出典**：[Bruce et al. (2020)『データサイエンスのための統計学入門 第2版』オライリー・ジャパン](https://www.oreilly.co.jp/books/9784873119267/)
+
+
+### 仮説
+##### 帰無仮説
+$$\mu_A = \mu_B$$
+
+##### 対立仮説
+$$\mu_A \neq \mu_B$$
+
+- $\mu_A$：Page A の滞在時間の平均値
+- $\mu_B$：Page B の滞在時間の平均値
+
+
+### Rコード
+#### 基礎集計
+```{r results='hide'}
+# データの読み込み
+web_page_data <- read.csv("data/web_page_data.csv")
+
+# データから Page A または Page B のみの行を抽出
+PageA <- subset(web_page_data, Page == "Page A")
+PageB <- subset(web_page_data, Page == "Page B")
+
+# 滞在時間の基礎集計
+summary(PageA$Time)
+summary(PageB$Time)
+```
+
+**`subset(x, subset)`：データから条件が一致する行のみ抽出**
+
+- **`x`**：元データ
+- **`subset`**：抽出条件
+
+上記コードでは，web_page_data からサイトデザインが Page A （または Page B）の行のみ抽出。
+Page A の行はデータ内の Page 列が "Page A" の行のため，`Page == "Page A"` で抽出条件を指定（`=` ではなく，`==` であることに注意）。
+
+##### Rコード出力
+```{r echo=FALSE}
+summary(PageA$Time)
+summary(PageB$Time)
+```
+
+#### t 検定
+```{r results='hide'}
+t.test(PageA$Time, PageB$Time)
+# または t.test(Time ~ Page, data = web_page_data)
+```
+
+方法1 **`t.test(x, y)`**
+
+- **`x, y`**：平均値の差を検定したい2つのデータセット
+
+
+方法2 **`t.test(formula, data)`**
+
+- **`formula`**：`~` の左側に目的変数（差を検定したい値），右側にグループ分けの基準
+- **`data`**：観測データの指定
+
+`t.test` はデフォルトでは，比較する2つの集団で分散が異なる可能性を想定したWelchのt検定で両側検定（対立仮説 $x \neq y$）の検定結果が出力される。2つの集団で分散が等しいと想定される場合のt検定や片側検定（対立仮説 $x > y$ または $x < y$）の実行方法は `t.test` のヘルプを参照。
+
+##### Rコード出力
+```{r echo=FALSE}
+t.test(PageA$Time, PageB$Time)
+```
+
+
+## 2.分析例②：分散分析*
+### データ
+**プロモーションメールの配信データ (data_pm.csv)**
+
+```{r, echo=FALSE}
+data_pm <- read_csv("data/data_pm.csv")
+head(data_pm)
+```
+\
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| recency         | 最終購買からの経過月数                                       |
+| history_segment            | 昨年の購買金額の階級                                         |
+| history        | 昨年の購入金額                                               |
+| mens            | 昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| womens          | 昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| zip_code        | 居住地区の分類（Rural，Surburban，Urban）                    |
+| newbie         | 過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）         |
+| channel                    | 昨年の購買チャネル（Multichannel，Phone，Web）               |
+| **segment**         | 配信したプロモーションメールの種類（Womens E-Mail，Mens E-Mail, No E-Mail） |
+| visit           | メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし） |
+| conversion      | メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし） |
+| **spend**           | 購入金額                                                     |
+（太字は以下の分析例で使用する変数）
+
+- ECサイトの会員へ3種類のプロモーションメール（Womens E-Mail＝女性向け，Mens E-Mail＝男性向け, No E-Mail＝配信なし）を配信した実験データ
+- 実験はRCTで行われており，3種類のプロモーションメールはランダムに配信されている
+
+
+**データ出典** ： [MineThatData E-Mail Analytics And Data Mining Challenge dataset](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
+
+
+### 仮説
+##### 帰無仮説
+$$\mu_{W} = \mu_{M} = \mu_{No}$$
+
+##### 対立仮説
+帰無仮説のどれかひとつでも等号が成り立たない
+
+- $\mu_{W}$：女性向けプロモーションメール配信グループの平均購入金額
+- $\mu_{M}$：男性向けプロモーションメール配信グループの平均購入金額
+- $\mu_{Naaao}$：プロモーションメール未配信グループの平均購入金額
+
+
+### Rコード
+```{r echo=TRUE, results='hide'}
+# データの読み込み
+data_pm <- read_csv("data/data_pm.csv")
+data_pm$segment <- factor(data_pm$segment) # segment列をfactor形式へ変更
+
+# 分散分析
+result_aov <- aov(spend ~ segment, data = data_pm)
+summary(result_aov)
+
+# 多重比較
+# install.packages("multcomp") # 多重比較のパッケージ，初回のみ実行
+library(multcomp)
+result_mult <- glht(result_aov, linfct = mcp(segment = "Tukey"))
+summary(result_mult)
+```
+
+**`aov(formula, data)`：分散分析**
+
+- **`formula`**：目的変数と説明変数（グループ分けの基準）の指定
+  - 「目的変数 ~ 説明変数」のように，`~` の左側に目的変数，右側に説明変数を記述する
+  - 説明変数は factor 形式で指定する必要がある
+- **`data`**：データの指定
+
+
+**`glht(model, linfct)`：多重比較**
+
+- **`model`**：分散分析の出力
+- **`linfct`**：仮説の指定
+  - 多重比較の場合は `mcp`
+  - `segment = "Tukey"` でテューキー法によりメール3種の購入金額平均を一対比較
+
+
+##### Rコード出力
+##### 分散分析
+```{r echo=FALSE}
+summary(result_aov)
+```
+
+##### 多重比較
+```{r echo=FALSE}
+summary(result_mult)
+```
+
+
+## 3.データ分析実習
+### データ
+**プロモーションメールの配信データ (data_pm.csv，分析例②と同一データ) **
+
+```{r, echo=FALSE}
+data_pm <- read_csv("data/data_pm.csv")
+head(data_pm)
+```
+\
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| recency         | 最終購買からの経過月数                                       |
+| history_segment            | 昨年の購買金額の階級                                         |
+| history        | 昨年の購入金額                                               |
+| mens            | 昨年に男性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| womens          | 昨年に女性向け商品を購入しているか（1＝購入，0＝非購入）     |
+| zip_code        | 居住地区の分類（Rural，Surburban，Urban）                    |
+| newbie         | 過去12ヶ月以内の新規顧客（1＝新規顧客，0＝それ以外）         |
+| channel                    | 昨年の購買チャネル（Multichannel，Phone，Web）               |
+| **segment**         | 配信したプロモーションメールの種類（Womens E-Mail，Mens E-Mail, No E-Mail） |
+| visit           | メール配信後2週間以内のサイト訪問の有無（1＝訪問あり，0＝訪問なし） |
+| conversion      | メール配信後2週間以内の商品購買の有無（1＝購買あり，0＝購買なし） |
+| **spend**           | 購入金額                                                     |
+（太字は以下の分析例で使用する変数）
+
+- ECサイトの会員へ3種類のプロモーションメール（Womens E-Mail＝女性向け，Mens E-Mail＝男性向け, No E-Mail＝配信なし）を配信した実験データ
+- 実験はRCTで行われており，3種類のプロモーションメールはランダムに配信されている
+- プロモーションメールは3種類あるが，「Mens E-Mail」と「No E-Mail」の比較のみ行う
+
+**データ出典** ： [MineThatData E-Mail Analytics And Data Mining Challenge dataset](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
+
+### 課題
+「$\mu_M$：男性向けプロモーションメール配信グループの平均購入金額」と「$\mu_{No}$：プロモーションメール未配信グループの平均購入金額」は異なるか？  
+以下の仮説を t 検定で検定して，プロモーションメールの効果を検証せよ。
+
+##### 帰無仮説
+$$\mu_{M} = \mu_{No}$$
+
+##### 対立仮説
+$$\mu_{M} \neq \mu_{No}$$
+
+
+##### 注意点
+- data_pm は3種類の配信プロモーションメール（Womens E-Mail，Mens E-Mail, No E-Mail）を含むため，まずは男性向けメールが配信された行（`segment == "Mens Email"`）とメール未配信の行（`segment == "No E-Mail"`）を抽出する必要がある
+- 条件に一致する行を抽出する関数 `subset` の使い方は分析例①を参照
+
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+data_pm <- read_csv("data/data_pm.csv")
+
+# データから Mens Email または No E-Mail のみの行を抽出
+mens <- subset(data_pm, segment == "Mens E-Mail")
+no <- subset(data_pm, segment == "No E-Mail")
+
+# 基礎集計
+summary(mens$spend)
+summary(no$spend)
+
+# t検定
+t.test(mens$spend, no$spend)
+
+# または以下
+# data_pm <- subset(data_pm, segment == "Mens E-Mail" | segment == "No E-Mail") # "|" は「or」を表す
+# t.test(spend ~ segment, data = data_pm)
+```
+</div></details>
