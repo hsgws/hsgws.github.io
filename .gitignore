@@ -1,7 +1,5 @@
-# */data
-# */dataset
-*/data*
-*/template
+template/
+data*/
 
 *.csv
 *.txt
