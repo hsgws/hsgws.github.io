@@ -1,0 +1,324 @@
+---
+title: "回帰分析①"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+目次に * が付いている箇所は授業では時間があれば紹介する。
+
+
+## 1. 分析例
+### データ
+**醤油の日次販売データ（sec3_reg.csv）**
+
+- 観測期間：2000/01/02～2003/07/31（1,314日間）
+
+```{r, echo=FALSE}
+sec3_reg <- read.csv("data/sec3_reg.csv")
+head(sec3_reg) %>% 
+  kbl() %>% 
+  kable_styling("striped") %>% 
+  scroll_box()
+```
+\
+
+| 変数名                    | 内容                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| Date                      | 日付                                                         |
+| PI_A ($y$)                | 商品Aの点数PI（来店客1000人当たり販売点数）                  |
+| PriceIndex_A ($x_{1}$)    | 商品Aの価格掛率（1なら定価販売，0.8なら2割引）               |
+| PriceIndex_B ($x_{2}$)    | 商品Bの価格掛率                                              |
+| Display_A ($x_{3}$)       | 商品Aの山積み陳列実施の有無（1＝実施，0＝非実施）            |
+| Display_B ($x_{4}$)       | 商品Bの山積み陳列実施の有無                                  |
+
+
+**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（実習用に一部変更）
+
+### モデル
+$$
+\log(y) = \beta_0 + \beta_1 \log(x_{1}) + \beta_2 \log(x_{2}) + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon
+$$
+
+**目的変数**：商品Aの点数PI  
+**説明変数**：商品A・Bの価格掛率の対数値 ，商品A・Bの山積み陳列実施の有無 
+
+
+#### 回帰係数の意味と期待される符号
+
+| 係数      | 意味                                | 期待される符号 |
+| --------- | ----------------------------------- | -------------- |
+| $\beta_0$ | ベースとなる点数PI水準（切片）      | -              |
+| $\beta_1$ | 自己商品（商品A）の自己価格弾力性       | マイナス       |
+| $\beta_2$ | 競合商品（商品B）の交差価格弾力性   | プラス         |
+| $\beta_3$ | 自己商品（商品A）の山積み陳列の影響 | プラス         |
+| $\beta_4$ | 競合商品（商品B）の山積み陳列の影響 | マイナス       |
+
+<!-- - $\beta_0$ ： ベースとなる点数PI水準（切片） -->
+<!-- - $\beta_1$ ： 自己商品（商品A）の価格弾力性 -->
+<!-- - $\beta_2$ ： 競合商品（商品B）の交差価格弾力性 -->
+<!-- - $\beta_3$ ： 自己商品（商品A）の山積み陳列の影響 -->
+<!-- - $\beta_4$ ： 競合商品（商品B）の山積み陳列の影響 -->
+
+<!-- 多くの場合，値下げによって商品の販売点数は増加すると想定される。説明変数における自己商品価格「$\log(x_{1})$ ：商品Aの価格掛率の対数」は，割引額が大きくなるほどマイナスに大きくなるため，**$\beta_1$ の係数はマイナスが期待される**（マイナス×マイナス＝プラスで目的変数 $y$ に対して販売点数増加の影響）。 -->
+<!-- 競合商品価格「$\log(x_{2})$： 商品Bの価格掛率の対数値」の割引額が大きくなると，競合商品Bへのスイッチが起こり，自己商品Aの販売点数は減少するため，**$\beta_2$ の係数はプラスが期待される**。 -->
+
+<!-- 同様に，山積み陳列を実施すると商品の販売点数は増加すると想定される。よって，自己商品Aの山積み陳列の影響 **$\beta_3$ の係数はプラス**，競合商品Bの山積み陳列の影響 **$\beta_4$ の係数はマイナスが期待される**。 -->
+
+<!-- 目的変数 ($y$) と価格に関わる説明変数 ($x_{1}$・$x_{2}$) は対数を取っているため，回帰係数 $\beta_1$・$\beta_2$ の解釈は「商品A（商品B）の価格掛率を1％変化させると，商品Aの点数PIが $\beta_1$  ($\beta_2$) ％変化する」となる。また，山積み陳列実施の回帰係数 $\beta_3$・$\beta_4$ の解釈は，「商品A（商品B）の山積み陳列を実施すると商品Aの点数PIが $\beta_3$  ($\beta_4$) $\times 100$ ％だけ変化する」となる。 -->
+
+### Rコード
+```{r, results='hide'}
+# データの読み込み
+sec3_reg <- read.csv("data/sec3_reg.csv")
+
+# 回帰分析の実行
+result <- lm(log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B, data = sec3_reg)
+
+# 推定結果の表示
+summary(result)
+```
+
+**`lm(formula, data)`：線形回帰モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述
+  - 説明変数が2個以上ある場合は `+` で追加
+- **`data`**：分析データの指定  
+
+**補足**：Rコードで先頭が "#" の行はコメント行として扱われ，その行は実行されない 
+
+
+#### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+result %>%
+  tidy() %>%
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
+```
+
+- PriceIndex_Aの係数 $\beta_1$ の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。
+  - 目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.022％変化する」と解釈できる。
+
+- PriceIndex_Bの係数 $\beta_2$ とDisplay_Aの係数 $\beta_3$ も期待通りの符号で5％有意水準で有意に推定されている一方で，Display_Bの係数 $\beta_4$ の係数は5％有意水準で有意と判断されず，目的変数に対して影響していない。
+
+⇒ 競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。
+
+
+### 目的変数の予測*
+目的変数を対数変換したモデルで予測を行うと，予測結果も対数変換された値で出力され，95％区間の解釈が難しくなるため，以降では対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
+
+```{r, results='hide'}
+# 原数値モデルの推定
+result_raw <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B, data = sec3_reg)
+
+# 推定結果の表示
+summary(result_raw)
+
+# 予測する状況の説明変数
+prediction_data <- data.frame(
+  PriceIndex_A = 0.8,  # ⇒ 商品Aは定価から2割引
+  PriceIndex_B = 1,    # ⇒ 商品Bの定価販売
+  Display_A = 1,       # ⇒ 商品Aの山積み陳列あり
+  Display_B = 0        # ⇒ 商品Bの山積み陳列なし
+)
+
+# 予測の実行
+prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
+
+# 予測値：商品Aの点数PI
+prediction
+```
+
+**`predict(object, newdata, interval)`：線形回帰モデルによる予測**
+
+- 引数
+  - **`object`**：回帰分析の結果オブジェクト（`lm`関数の出力）
+  - **`newdata`**：予測用の説明変数データ
+  - **`interval`**：予測値の95%区間の指定
+- 出力
+  - **`fit`**：予測値
+  - **`lwr`**：95%区間の下側
+  - **`upr`**：95%区間の上側
+
+⇒ 詳細は `help(predict.lm)` を実行して，関数のヘルプを参照。
+
+**補足**：Rコードは "(" や "＋" ，","（コンマ）の後で改行が可能
+
+
+#### Rコードの出力
+```{r echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+summary(result_raw)
+
+cat("# 予測値：商品Aの点数PI\n")
+prediction
+```
+
+複数の説明変数の状況で予測を行いたい場合は，以下のようなCSVファイルを作成して，`predict` 関数の引数 `newdata` に指定すれば，一括で予測結果を計算できる。以下の予測状況は商品Aの価格掛率を0.7～1.0まで0.1刻みとした状況。
+
+
+```{r, echo=FALSE}
+prediction_data <- data.frame(
+  PriceIndex_A = c(0.7, 0.8, 0.9, 1), 
+  PriceIndex_B = c(1, 1, 1, 1), 
+  Display_A = c(1, 1, 1, 1),
+  Display_B = c(0, 0, 0, 0)
+)
+
+prediction_data
+```
+
+```{r}
+# 予測の実行
+prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
+
+# 予測値：商品Aの点数PI
+prediction
+```
+
+
+### 曜日ダミーの追加*
+以降も対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
+
+```{r, results='hide'}
+# データ内のDate列を日付型に変換
+sec3_reg$Date <- as.Date(sec3_reg$Date)
+
+# データに曜日列を追加
+sec3_reg$days <- weekdays(sec3_reg$Date)
+
+# ダミー変数の基準を日曜日に設定したい場合は以下の2行を実行
+# sec3_reg$days <- as.factor(sec3_reg$days)
+# sec3_reg$days <- relevel(sec3_reg$days, ref = "日曜日")
+
+# 回帰分析の実行
+result_days <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days,
+                  data = sec3_reg)
+
+# 推定結果の表示
+summary(result_days)
+
+# 曜日なしモデルとのAICの比較
+AIC(result_raw)
+AIC(result_days)
+```
+
+ダミー変数は 0 or 1 でダミー変数列を作成する以外にも文字でダミー変数列を作成することもできる。
+上の例では `weekdays` 関数で日付から曜日列 `days` をデータに追加して，回帰分析の説明変数とした。  
+なお，`weekdays` 関数の引数は日付型（クラス "Date"）である必要がある。
+`read.csv`関数ではデータファイルの Date 列は文字列型で読み込まれているため，上記コードでは `weekdays` 関数の前に `as.Date` 関数でデータ内の Date 列を日付型に変換した。  
+
+参考：[日付、時間関数Tips大全 - RjpWiki](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8)
+
+
+\
+```{r, echo=FALSE, results='hold'}
+head(sec3_reg) %>% 
+  kbl(caption = "曜日を追加したデータ") %>% 
+  kable_styling("striped") %>% 
+  scroll_box()
+```
+
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+result_days %>% 
+  summary() %>% 
+  print()
+
+cat("\n# 曜日なしモデルとのAICの比較\n")
+AIC(result_raw)
+AIC(result_days)
+```
+
+
+## 2. データ分析実習
+### データ
+
+**ツナ缶の週次販売データ**（data_tuna.csv）
+
+- 観測期間：338週
+
+```{r, echo=FALSE}
+data_tuna <- read.csv("data/data_tuna.csv")
+head(data_tuna) %>% 
+  kbl() %>% 
+  kable_styling("striped", full_width = F) %>% 
+  scroll_box(width = "100%")
+```
+\
+
+| 変数            | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| LMOVE1           | ブランド1の週間販売数量の対数値                              |
+| NSALE1 ~ NSALE7 | ブランド1～7の週間特別陳列実施率（1週間の内で毎日実施していれば1） |
+| LPRICE1 ~ LPRICE7 | ブランド1～7の週間平均価格の対数値                           |
+
+**データ出典** ： bayesm パッケージの tuna データ（実習用に一部変更）
+
+
+### 課題
+以下のモデルで，回帰係数 ($\alpha_0, \beta_1, \dots, \beta_7, \gamma_1, \dots, \gamma_7$) を推定し，各説明変数の目的変数への影響を考察せよ。
+
+#### モデル
+$$
+LMOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7 \gamma_i LPRICE_i + \varepsilon
+$$
+
+**目的変数**：ブランド1の販売数量の対数値 (LMOVE1)  
+**説明変数**：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)
+
+（注）データファイル内のブランド1の週間販売数量（LMOVE1）とブランド1～7の週間平均価格（LPRICE1 ~ LPRICE7）は対数変換済み。
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+data_tuna <- read.csv("data/data_tuna.csv")
+
+# 回帰分析の実行
+result <- lm(LMOVE1 ~ NSALE1 + NSALE2 + NSALE3 + NSALE4 + NSALE5 + NSALE6 + NSALE7 +
+               LPRICE1 + LPRICE2 + LPRICE3 + LPRICE4 + LPRICE5 + LPRICE6 + LPRICE7, 
+             data = data_tuna)
+# または以下でも実行可能（"LMOVE1 ~ ." でLMOVE1以外の変数を全て説明変数として指定）
+# result <- lm(LMOVE1 ~ ., data = data_tuna)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>

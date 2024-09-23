@@ -1,10 +1,8 @@
 # データの読み込み
-mydata <- read.csv("data/data.csv")
+sample_data <- read.csv("data/sample_data.csv")
 
-# データの基礎集計と散布図
-summary(mydata)
-plot(x = mydata$price, y = mydata$sales)
+# データの基礎集計
+summary(sample_data)
 
-# 回帰分析
-result <- lm(sales ~ price + promotion, data = mydata)
-summary(result)
+# salesとpriceの散布図
+plot(x = sample_data$price, y = sample_data$sales)

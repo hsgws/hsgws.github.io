@@ -1,8 +1,10 @@
 template/
 data*/
+TextMining-master/
 
 *.csv
 *.txt
+*.Rproj
 
 # History files
 .Rhistory
