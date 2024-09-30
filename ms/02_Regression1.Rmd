@@ -60,11 +60,11 @@ head(sec3_reg) %>%
 
 ### モデル
 $$
-\log(y) = \beta_0 + \beta_1 \log(x_{1}) + \beta_2 \log(x_{2}) + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon
+y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \beta_4 x_{4} + \varepsilon
 $$
 
 **目的変数**：商品Aの点数PI  
-**説明変数**：商品A・Bの価格掛率の対数値 ，商品A・Bの山積み陳列実施の有無 
+**説明変数**：商品A・Bの価格掛率，商品A・Bの山積み陳列実施の有無 
 
 
 #### 回帰係数の意味と期待される符号
@@ -72,8 +72,8 @@ $$
 | 係数      | 意味                                | 期待される符号 |
 | --------- | ----------------------------------- | -------------- |
 | $\beta_0$ | ベースとなる点数PI水準（切片）      | -              |
-| $\beta_1$ | 自己商品（商品A）の自己価格弾力性       | マイナス       |
-| $\beta_2$ | 競合商品（商品B）の交差価格弾力性   | プラス         |
+| $\beta_1$ | 自己商品（商品A）の価格の影響       | マイナス       |
+| $\beta_2$ | 競合商品（商品B）の価格の影響       | プラス         |
 | $\beta_3$ | 自己商品（商品A）の山積み陳列の影響 | プラス         |
 | $\beta_4$ | 競合商品（商品B）の山積み陳列の影響 | マイナス       |
 
@@ -96,7 +96,7 @@ $$
 sec3_reg <- read.csv("data/sec3_reg.csv")
 
 # 回帰分析の実行
-result <- lm(log(PI_A) ~ log(PriceIndex_A) + log(PriceIndex_B) + Display_A + Display_B, data = sec3_reg)
+result <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B, data = sec3_reg)
 
 # 推定結果の表示
 summary(result)
@@ -129,24 +129,19 @@ result %>%
         col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
 
-- PriceIndex_Aの係数 $\beta_1$ の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される。
-  - 目的変数と説明変数が両対数のため，係数は価格弾力性を意味し，「価格掛率が1％増えると，点数PIは-5.022％変化する」と解釈できる。
+- PriceIndex_Aの係数 $\beta_1$ の符号は期待される通りマイナスで推定されており，p値が5％以下のため，5％有意水準で有意と判断される
+  - 商品Aの価格掛率が0.1上がると商品Aの点数PIが3.2915個減少する (= $-32.915 \times 0.1$) 
 
-- PriceIndex_Bの係数 $\beta_2$ とDisplay_Aの係数 $\beta_3$ も期待通りの符号で5％有意水準で有意に推定されている一方で，Display_Bの係数 $\beta_4$ の係数は5％有意水準で有意と判断されず，目的変数に対して影響していない。
+- Display_Aの係数 $\beta_3$ も期待通りの符号で5％有意水準で有意に推定
+  - 商品Aの山積み陳列が実施されると商品Aの点数PIが5.909個増加する
 
-⇒ 競合商品からの影響として，ブランドAの販売量はブランドBの価格から影響を受けるが，プロモーションからは影響を受けないということが分かる。
+- 一方で，競合商品Bの価格掛率と山積み陳列の係数（$\beta_3, \beta_4$）はどちらも5％有意水準で有意と判断されず，目的変数の商品Aの点数PIに対して影響しているとは言えない
+  - ただし10%の有意水準で判断すると商品Bの山積み陳列が実施されると商品Aの点数PIが-0.884個減少すると解釈される
 
 
 ### 目的変数の予測*
-目的変数を対数変換したモデルで予測を行うと，予測結果も対数変換された値で出力され，95％区間の解釈が難しくなるため，以降では対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
 
 ```{r, results='hide'}
-# 原数値モデルの推定
-result_raw <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B, data = sec3_reg)
-
-# 推定結果の表示
-summary(result_raw)
-
 # 予測する状況の説明変数
 prediction_data <- data.frame(
   PriceIndex_A = 0.8,  # ⇒ 商品Aは定価から2割引
@@ -156,7 +151,7 @@ prediction_data <- data.frame(
 )
 
 # 予測の実行
-prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
+prediction <- predict(result, newdata = prediction_data, interval = "prediction")
 
 # 予測値：商品Aの点数PI
 prediction
@@ -180,13 +175,11 @@ prediction
 
 #### Rコードの出力
 ```{r echo=FALSE, results='hold'}
-cat("# 推定結果の表示\n")
-summary(result_raw)
-
 cat("# 予測値：商品Aの点数PI\n")
 prediction
 ```
 
+\
 複数の説明変数の状況で予測を行いたい場合は，以下のようなCSVファイルを作成して，`predict` 関数の引数 `newdata` に指定すれば，一括で予測結果を計算できる。以下の予測状況は商品Aの価格掛率を0.7～1.0まで0.1刻みとした状況。
 
 
@@ -203,7 +196,7 @@ prediction_data
 
 ```{r}
 # 予測の実行
-prediction <- predict(result_raw, newdata = prediction_data, interval = "prediction")
+prediction <- predict(result, newdata = prediction_data, interval = "prediction")
 
 # 予測値：商品Aの点数PI
 prediction
@@ -211,7 +204,6 @@ prediction
 
 
 ### 曜日ダミーの追加*
-以降も対数変換を行わない原数値を目的・説明変数として利用する回帰モデルを扱う。
 
 ```{r, results='hide'}
 # データ内のDate列を日付型に変換
@@ -225,14 +217,13 @@ sec3_reg$days <- weekdays(sec3_reg$Date)
 # sec3_reg$days <- relevel(sec3_reg$days, ref = "日曜日")
 
 # 回帰分析の実行
-result_days <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days,
-                  data = sec3_reg)
+result_days <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B + days, data = sec3_reg)
 
 # 推定結果の表示
 summary(result_days)
 
 # 曜日なしモデルとのAICの比較
-AIC(result_raw)
+AIC(result)
 AIC(result_days)
 ```
 
@@ -241,7 +232,7 @@ AIC(result_days)
 なお，`weekdays` 関数の引数は日付型（クラス "Date"）である必要がある。
 `read.csv`関数ではデータファイルの Date 列は文字列型で読み込まれているため，上記コードでは `weekdays` 関数の前に `as.Date` 関数でデータ内の Date 列を日付型に変換した。  
 
-参考：[日付、時間関数Tips大全 - RjpWiki](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8)
+<!-- 参考：[日付、時間関数Tips大全 - RjpWiki](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8) -->
 
 
 \
@@ -261,9 +252,99 @@ result_days %>%
   print()
 
 cat("\n# 曜日なしモデルとのAICの比較\n")
-AIC(result_raw)
+AIC(result)
 AIC(result_days)
 ```
+
+上記出力では「days金曜日」以降の列が曜日の影響となり，表示されていない火曜日を基準（火曜日の影響＝0）として解釈を行う。
+ただし全曜日で係数は有意ではなく，火曜日と他の曜日に差があるとは言えない。
+
+
+### 外れ値*
+```{r, echo=FALSE, results='hold', out.width="120%"}
+# ggplot(sec3_reg, mapping = aes(x = as.Date(Date), y = PI_A)) +
+#   geom_line() +
+#   labs(x = "日付", y = "点数PI")
+
+# data <- sec3_reg %>%
+#   mutate(Date = as.Date(Date), PriceIndex_A = PriceIndex_A * 150) %>%
+#   filter(Date < as.Date("2002/01/01")) %>%
+#   select(Date, PI_A, PriceIndex_A) %>%
+#   gather(key = z, value = y, -Date)
+# 
+# ggplot(data, aes(x = Date, y = y, colour = z)) +
+#   geom_line() +
+#   scale_y_continuous(
+#     limits = c(0, 150),
+#     sec.axis = sec_axis(~ . / 150, name = "PriceIndex_A")
+#   ) +
+#   labs(x = "日付", y = "PI_A") +
+#   scale_color_hue(name = "", label = c("PI_A （左軸） ", "PriceIndex_A （右軸） ")) +
+#   theme(legend.position = "bottom")
+
+data <- sec3_reg %>% 
+  mutate(Date = as.Date(Date), PriceIndex_A = PriceIndex_A * 150) %>% 
+  filter(Date < as.Date("2001/01/01")) %>% 
+  select(Date, PI_A, PriceIndex_A)
+
+xlim <- c(min(data$Date) - 1, max(data$Date) + 1)
+
+data %>% 
+  ggplot() +
+  geom_bar(aes(x = Date, y = PI_A), stat = "identity") +
+  geom_line(aes(x = Date, y = PriceIndex_A, colour = "PriceIndex_A")) +
+  scale_x_date(
+    date_labels="%Y-%m",
+    date_breaks = "2 month",
+    limits = xlim,
+    expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+    limits = c(0, 150),
+    sec.axis = sec_axis(~ . / 150, name = "PriceIndex_A")
+  ) +
+  labs(title = "商品Aの点数PIと価格掛率（2000年）", x = "Date", y = "PI_A") +
+  scale_color_hue(name = "", label = c("PriceIndex_A （右軸）")) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  )
+```
+
+データに外れ値（他と比べて異常に大きいまたは小さい値）があると，推定結果が外れ値に引きずられて望ましくない結果が得られることがある。
+sec3_reg.csv では2000年8月1日の点数PIが異常に大きく，外れ値としてデータから除外して分析した方がよい可能性がある。
+
+\
+```{r, results='hide'}
+# 外れ値の除去
+sec3_reg2 <- sec3_reg[sec3_reg$PI_A < 140,]
+
+# モデルの推定
+result_outlier <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B, data = sec3_reg2)
+
+# 推定結果の表示
+summary(result_outlier)
+
+# 除去なしモデルとのAICの比較
+AIC(result)
+AIC(result_outlier)
+```
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+result_outlier %>% 
+  summary() %>% 
+  print()
+
+cat("\n# 除去なしモデルとのAICの比較\n")
+AIC(result)
+AIC(result_outlier)
+```
+
+
+上記コードではR内で外れ値の除去（データセット内で点数PIが140未満の行のみ残す処理）を行っているが，事前にExcelなどで外れ値を除去したデータセットを読み込んで分析することも出来る。
+また，外れ値の対処方法は除去以外にも，外れ値の理由が分かる場合（店舗近くでイベントがあった，大口取引があったなど）はダミー変数を追加して推定することも出来る。
 
 
 ## 2. データ分析実習
