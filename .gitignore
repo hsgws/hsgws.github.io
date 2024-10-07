@@ -5,6 +5,7 @@ TextMining-master/
 *.csv
 *.txt
 *.Rproj
+*.R
 
 # History files
 .Rhistory

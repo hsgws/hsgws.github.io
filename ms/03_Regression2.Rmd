@@ -1,0 +1,412 @@
+---
+title: "回帰分析②"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+目次に * が付いている箇所は授業では時間があれば紹介する。
+
+
+## 1. 分析例：ポアソン回帰
+### データ
+**オーストラリアの病院通院（受診）回数調査データ（data_visit.csv）**
+
+- 観測期間：1977–1978
+- サンプル数：5190人
+
+```{r, echo=FALSE}
+data_visit <- read.csv("data/data_visit.csv")
+head(data_visit) %>% 
+  kbl() %>% 
+  kable_styling("striped") %>% 
+  scroll_box()
+```
+\
+
+| 変数名 | 内容                               |
+| ------ | ---------------------------------- |
+| visits ($y$)      | 過去2週間の受診回数                |
+| gender ($x_1$)    | 性別（female = 女性，male = 男性） |
+| age ($x_2$)       | 年齢（スケール調整のため単位は年齢 ÷ 100）                         |
+| Income ($x_3$)    | 年収（単位：万ドル）             |
+
+**データ出典** ： AER パッケージの DoctorVisits データ（実習用に一部変更）
+
+
+```{r, echo=FALSE, results='hold'}
+data_visit %>% 
+  mutate(visits = as.factor(visits)) %>%
+  group_by(visits) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = visits, y = n)) +
+  geom_bar(stat = "identity") +
+  labs(title = "受診回数と人数", x = "visits（受診回数）", y = "人数") +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+### モデル
+$$
+y \sim Poisson(\lambda)
+$$
+
+$$
+\log(\lambda) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2
+$$
+
+- $\lambda$ は期待値（平均）かつ分散パラメータで $\lambda>0$
+- 回帰モデルの最後の項 $x_1x_2$ は gender × age の交差項
+
+ポアソン分布のパラメータは $\lambda>0$ の制約がある。
+回帰モデルの右辺 $\beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2$ は回帰係数 $\beta$ の符号によってはプラスではなくマイナスの値になることもあるので，左辺の目的変数もプラス・マイナス両方の値がとれるように対数変換をした $\log(\lambda)$ を目的変数としてモデル化する（対数リンクまたはlogリンク）。
+
+ポアソン回帰は上記式の両辺を指数変換した表記 
+$$\lambda = \exp(\beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2)$$
+がされることもある。これは右辺の目的変数が $\lambda>0$ のため，括弧内がマイナスの値でも左辺はプラスの値になるよう指数変換した表記で，上記式と意味は全く同じである。
+
+**補足**：0以上1未満の数値の対数変換と負の数値の指数変換
+
+- $\log(2) = 0.693$
+- $\log(0.5) = \log(2^{-1}) = -\log(2) = -0.693$
+- $\exp(-2) = e^{-2}=\left(\frac{1}{e}\right)^2 = 0.135$
+- $\log(\exp(a)) = \log_e e^a = a$
+
+
+### Rコード
+```{r, results='hide'}
+# データの読み込み
+data_visit <- read.csv("data/data_visit.csv")
+
+# ポアソン回帰の実行
+result <- glm(visits ~ gender + age + income + gender:age, family = poisson, data = data_visit)
+
+# 推定結果の表示
+summary(result)
+
+# 回帰係数の倍率
+exp(coef(result))
+```
+
+**`glm(formula, family, data)`：一般化線形モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`family`**：確率分布の指定 ⇒ ポアソン回帰の場合は `family = poisson`
+- **`data`**：分析データの指定  
+
+**補足**：
+
+- `formula`の説明変数に文字のみの列を指定すると自動でダミー変数に変換してくれる（上記例では gender 列）
+- `formula`内の `:` で説明変数変数の交差項を追加できる（上記例では $x_1x_2$ の gender × age）
+
+
+#### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+
+exp(coef(result))
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+result %>%
+  tidy() %>%
+  mutate(exp.coef = exp(estimate), .after = estimate) %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "exp(回帰係数)", "標準誤差", "t 値", "p 値"))
+```
+
+- age の係数 $\beta_2$ より，年齢が高いほど受診回数が多い
+- income の係数 $\beta_3$ より，収入が多いほど受診回数が少ない
+- gendermale の係数 $\beta_1$ より，男性は女性に比べて受診回数が少ない
+- ただし，gendermale:age（性別ダミーと年齢の交差項）の係数 $\beta_4$ より，男性は女性よりも加齢による受診回数の増加率が大きい
+
+
+```{r, echo=FALSE, results='hold', out.width="100%", out.height="80%"}
+df <- data.frame(age = seq(0, 0.5, 0.01)) %>% 
+  mutate(
+    female = exp(age*0.77965),
+    male = exp(age*0.77965*1.24868)
+  ) %>% 
+  gather(key = "gender", value = "scale", female, male)
+
+# df <- data.frame(age = seq(0, 0.5, 0.01)) %>% 
+#   mutate(
+#     female = exp(age*0.77965),
+#     male = exp(age*0.77965*1.24868)
+#   ) %>% 
+#   gather(key = "gender", value = "scale", female, male)
+
+df %>% 
+  ggplot() +
+  geom_line(aes(x = age, y = scale, colour = gender)) +
+  labs(title = "加齢による受診回数増加率の性別比較", x = "年齢の増加分", y = "受診回数の増加倍率") +
+    theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "right"
+  )
+```
+
+
+### ゼロ過剰モデル*
+
+カウントデータの中には観測値にゼロが多いケースがある。
+ゼロ過剰モデルは，$y = 0$ かどうかを推定するロジスティック回帰と，$y \ge 0$ の場合のカウントデータモデル（ポアソン回帰または負の二項回帰）を組み合わせた手法である。
+
+```{r, results='hide'}
+# パッケージのインストールと読み込み
+# install.packages("pscl")  # 初回のみ実行
+library(pscl)
+
+# ゼロ過剰ポアソンモデルの推定
+result_zip <- zeroinfl(visits ~ gender + age + income + gender:age | gender + age + income + gender:age, 
+                       data = data_visit, dist = "poisson")
+
+# 推定結果の表示
+summary(result_zip)
+
+# 通常モデルとのAICの比較
+AIC(result)
+AIC(result_zip)
+```
+
+**`zeroinfl(formula, data, dist)`：ゼロ過剰モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+  - 説明変数は `|` の左側にカウントデータモデルの説明変数，右側にロジスティック回帰モデルの説明変数を指定
+- **`data`**：分析データの指定
+- **`dist`**：確率分布の指定 ⇒ ポアソン回帰の場合は `dist = "poisson"`
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+result_zip %>% 
+  summary() %>% 
+  print()
+
+cat("\n# 通常モデルとのAICの比較\n")
+AIC(result)
+AIC(result_zip)
+```
+
+- `Count model coefficients (poisson with log link)`：ポアソン回帰の推定値
+- `Zero-inflation model coefficients (binomial with logit link)` ：ロジスティック回帰の推定値
+  - ロジスティック回帰の係数推定値はプラスで有意なら，$y = 0$ となる確率が高まることを意味する
+
+
+<!-- ### 予測* -->
+<!-- ```{r, results='hide'} -->
+<!-- # データを推定用と予測力検証用に分割 -->
+<!-- data_visit <- data_visit[sample(1:nrow(data_visit)), ] -->
+
+<!-- data_visit1 <- data_visit[1:4000, ] -->
+<!-- data_visit2 <- data_visit[4001:nrow(data_visit), ] -->
+
+<!-- # ポアソン回帰 -->
+<!-- result <- glm(visits ~ gender + age + income, family = poisson, data = data_visit) -->
+<!-- summary(result) -->
+
+<!-- prediction <- predict(result, newdata = data_visit2, type = "response") -->
+
+<!-- # ゼロ過剰ポアソン回帰 -->
+<!-- result_zip <- zeroinfl(visits ~ gender + age + income | gender + age + income, data = data_visit, dist = "poisson") -->
+<!-- summary(result_zip) -->
+
+<!-- prediction_zip <- predict(result_zip, newdata = data_visit2, type = "response") -->
+<!-- predprob(result_zip, newdata = data_visit2) -->
+
+<!-- df <- data.frame(a = prediction, b = prediction_zip) -->
+
+<!-- library(Metrics) -->
+<!-- rmse(data_visit2$visits, prediction) -->
+<!-- rmse(data_visit2$visits, prediction_zip) -->
+
+<!-- predict(result_zip, newdata = data_visit2, type = "count") %>%  -->
+<!--   head(20) -->
+
+<!-- predict(result_zip, newdata = data_visit2, type = "response") %>%  -->
+<!--   head(20) -->
+
+<!-- predict(result_zip, newdata = data_visit2, type = "zero") %>%  -->
+<!--   head(20) -->
+
+<!-- predict(result_zip, newdata = data_visit2, type="count")*(1 - predict(result_zip, newdata = data_visit2, type="zero")) %>% head(20) -->
+<!-- ``` -->
+
+## 2. 分析例：負の二項回帰*
+### モデル
+$$
+y \sim NB(\mu, \theta)
+$$
+$$
+\log(\mu) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2
+$$
+
+- $\mu$ は期待値（平均），$\theta$ はサイズパラメータ
+- $\mu > 0$ の制約があるためポアソン回帰と同じく，対数変換した $\mu$ を目的変数とした回帰モデルで推定する
+- 負の二項分布のパラメータには「期待値 $<$ 分散」の関係があるため，期待値より分散が大きいデータに対応できる
+
+### Rコード
+```{r, results='hide'}
+# パッケージのインストールと読み込み
+# install.packages("MASS")  # 初回のみ実行
+library(MASS)
+
+# 負の二項回帰の実行
+result_nb <- glm.nb(visits ~ gender + age + income + gender:age, data = data_visit)
+
+# 推定結果の表示
+summary(result_nb)
+
+# ポアソン回帰とのAICの比較
+AIC(result)
+AIC(result_nb)
+```
+
+**`glm.nb(formula, data)`：負の二項回帰モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`data`**：分析データの指定
+- **`dist`**：確率分布の指定 ⇒ ポアソン回帰の場合は `dist = "poisson"`
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+result_nb %>% 
+  summary() %>% 
+  print()
+
+cat("\n# ポアソン回帰とのAICの比較\n")
+AIC(result)
+AIC(result_nb)
+```
+
+
+## 3. データ分析実習
+### データ
+
+**商品Aの日時販売点数データ**（count_data.csv）
+
+- サンプル数：361日間
+
+```{r, echo=FALSE}
+count_data <- read.csv("data/count_data.csv")
+head(count_data) %>% 
+  kbl() %>% 
+  kable_styling("striped", full_width = T) %>% 
+  scroll_box(width = "100%")
+```
+\
+
+| 変数 | 内容              |
+| ---- | ----------------- |
+| TID  | 時点（単位：1日） |
+| y    | 商品Aの販売点数          |
+| x1   | 商品Aの価格掛率  |
+| x2   | 商品Aの自己エンド（ダミー変数）    |
+| x3   | 商品Aのチラシ（ダミー変数）    |
+| x4   | 商品B（競合）の価格掛率  |
+| x5   | 商品B（競合）のエンド（ダミー変数）    |
+| x6   | 商品B（競合）のチラシ（ダミー変数）    |
+| k    | 当日の来店客数    |
+
+**データ出典** ： 照井・佐藤（2022）「現代マーケティング・リサーチ（新版）」有斐閣，第16章
+
+```{r, echo=FALSE, results='hold'}
+d <- data.frame(x = 0:max(count_data$y), y = 0)
+
+for (i in 0:max(count_data$y)) {
+  d$y[i] <- sum(count_data$y == i)
+}
+
+d %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_bar(stat = "identity") +
+  labs(title = "商品Aの販売点数", x = "点数", y = "日数") +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+### 課題
+以下のオフセット項を含むポアソン回帰モデルで，回帰係数 ($\beta_0, \beta_1, \dots, \beta_6$) を推定し，各説明変数の目的変数への影響を考察せよ。
+
+#### モデル
+$$
+y \sim Poisson(\lambda)
+$$
+
+$$
+\log(\lambda) = \log(k) + \beta_0 + \sum_{k=1}^6 \beta_k x_k \\
+\text{or} \quad \lambda = k\exp\left(\beta_0 + \sum_{k=1}^6 \beta_k x_k\right) 
+$$
+
+**目的変数**：販売点数（y）  
+**説明変数**：自己の価格掛率・エンド・チラシ（x1, x2, x3）と競合の価格掛率・エンド・チラシ（x4, x5, x6）
+
+<!-- 来店客数 k はオフセット項として利用する。 -->
+<!-- Rの実行コードではオフセット項を含むモデルは以下のように，`glm` 関数の引数に `offset = log(k)` を追加することで実行できる（`y ~ x, family, data` 部分は本課題のモデル・データに合わせて変更が必要）。 -->
+
+<!-- `result <- glm(y ~ x, family, data, offset = log(k))` -->
+
+来店客数 k はオフセット項として利用する。
+Rの実行コードではオフセット項を含むモデルは
+\
+\
+　　`glm(y ~ x, family, data, offset = log(k))`
+\
+\
+のように，`glm` 関数の引数に `offset = log(k)` を追加することで実行できる（`y ~ x, family, data` 部分は本課題のモデル・データに合わせて変更が必要）。
+
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+count_data <- read.csv("data/count_data.csv")
+
+# オフセット項ありポアソン回帰の実行
+result <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data, offset = log(k))
+
+# 推定結果の表示
+summary(result)
+
+#（参考）オフセット項なしモデルとの比較
+result_no.offset <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data)
+summary(result_no.offset)
+
+AIC(result)
+AIC(result_no.offset)
+```
+</div></details>
