@@ -3057,7 +3057,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2024/10/11</h4>
+<h4 class="date">更新：2024/10/12</h4>
 
 </div>
 
@@ -3417,7 +3417,7 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 <span id="cb5-17"><a href="#cb5-17"></a>)</span>
 <span id="cb5-18"><a href="#cb5-18"></a></span>
 <span id="cb5-19"><a href="#cb5-19"></a><span class="co"># 多項ロジットモデルの推定</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>( Choice <span class="sc">~</span> <span class="fu">log</span>(Price) <span class="sc">+</span> Display <span class="sc">+</span> Ad, <span class="at">data =</span> soydata, <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span>)</span>
+<span id="cb5-20"><a href="#cb5-20"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(Choice <span class="sc">~</span> Price <span class="sc">+</span> Display <span class="sc">+</span> Ad, <span class="at">data =</span> soydata, <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span>)</span>
 <span id="cb5-21"><a href="#cb5-21"></a></span>
 <span id="cb5-22"><a href="#cb5-22"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb5-23"><a href="#cb5-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
@@ -3452,7 +3452,7 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 <h5>Rコードの出力</h5>
 <pre><code>## 
 ## Call:
-## mlogit(formula = Choice ~ log(Price) + Display + Ad, data = soydata, 
+## mlogit(formula = Choice ~ Price + Display + Ad, data = soydata, 
 ##     reflevel = &quot;C&quot;, method = &quot;nr&quot;)
 ## 
 ## Frequencies of alternatives:choice
@@ -3461,22 +3461,22 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 ## 
 ## nr method
 ## 6 iterations, 0h:0m:0s 
-## g&#39;(-H)^-1g = 1.27E-05 
+## g&#39;(-H)^-1g = 1.1E-05 
 ## successive function values within tolerance limits 
 ## 
 ## Coefficients :
-##                Estimate Std. Error  z-value  Pr(&gt;|z|)    
-## (Intercept):A -2.157295   0.074801 -28.8406 &lt; 2.2e-16 ***
-## (Intercept):B -2.318315   0.085059 -27.2555 &lt; 2.2e-16 ***
-## log(Price)    -7.482272   0.286802 -26.0886 &lt; 2.2e-16 ***
-## Display        0.307216   0.075770   4.0546 5.023e-05 ***
-## Ad             0.819872   0.160994   5.0926 3.533e-07 ***
+##                 Estimate Std. Error  z-value  Pr(&gt;|z|)    
+## (Intercept):A  -2.385687   0.081173 -29.3900 &lt; 2.2e-16 ***
+## (Intercept):B  -2.541778   0.091607 -27.7466 &lt; 2.2e-16 ***
+## Price         -10.047366   0.373369 -26.9100 &lt; 2.2e-16 ***
+## Display         0.275219   0.075820   3.6299 0.0002835 ***
+## Ad              0.963954   0.157353   6.1261 9.008e-10 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Log-Likelihood: -2357.8
-## McFadden R^2:  0.38494 
-## Likelihood ratio test : chisq = 2951.2 (p.value = &lt; 2.22e-16)</code></pre>
+## Log-Likelihood: -2331
+## McFadden R^2:  0.39191 
+## Likelihood ratio test : chisq = 3004.6 (p.value = &lt; 2.22e-16)</code></pre>
 </div>
 </div>
 <div id="推定結果-1" class="section level3">
@@ -3494,37 +3494,37 @@ V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept):A</td>
-<td align="right">-2.157</td>
-<td align="right">0.075</td>
-<td align="right">-28.841</td>
+<td align="right">-2.386</td>
+<td align="right">0.081</td>
+<td align="right">-29.390</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">(Intercept):B</td>
-<td align="right">-2.318</td>
-<td align="right">0.085</td>
-<td align="right">-27.256</td>
+<td align="right">-2.542</td>
+<td align="right">0.092</td>
+<td align="right">-27.747</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">log(Price)</td>
-<td align="right">-7.482</td>
-<td align="right">0.287</td>
-<td align="right">-26.089</td>
+<td align="left">Price</td>
+<td align="right">-10.047</td>
+<td align="right">0.373</td>
+<td align="right">-26.910</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">Display</td>
-<td align="right">0.307</td>
+<td align="right">0.275</td>
 <td align="right">0.076</td>
-<td align="right">4.055</td>
+<td align="right">3.630</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">Ad</td>
-<td align="right">0.820</td>
-<td align="right">0.161</td>
-<td align="right">5.093</td>
+<td align="right">0.964</td>
+<td align="right">0.157</td>
+<td align="right">6.126</td>
 <td align="right">0</td>
 </tr>
 </tbody>

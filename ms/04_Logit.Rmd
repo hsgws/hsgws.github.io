@@ -223,7 +223,7 @@ soydata <- mlogit.data(
 )
 
 # 多項ロジットモデルの推定
-result <- mlogit( Choice ~ log(Price) + Display + Ad, data = soydata, reflevel = "C")
+result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
 
 # 推定結果の表示
 summary(result)
