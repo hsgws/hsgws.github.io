@@ -181,9 +181,9 @@ head(sec4_choice2)
 #### 効用関数
 $$
 \begin{align}
-U_A &= \beta_A + \beta_1 \log(Price_A) + \beta_2 Display_A + \beta_3 Ad_A + \varepsilon_A \\
-U_B &= \beta_B + \beta_1 \log(Price_B) + \beta_2 Display_B + \beta_3 Ad_B + \varepsilon_B \\
-U_C &= 0 + \beta_1 \log(Price_C) + \beta_2 Display_C + \beta_3 Ad_C + \varepsilon_C
+U_A &= \beta_A + \beta_1 Price_A + \beta_2 Display_A + \beta_3 Ad_A + \varepsilon_A \\
+U_B &= \beta_B + \beta_1 Price_B + \beta_2 Display_B + \beta_3 Ad_B + \varepsilon_B \\
+U_C &= 0 + \beta_1 Price_C + \beta_2 Display_C + \beta_3 Ad_C + \varepsilon_C
 \end{align}
 $$
 
@@ -192,7 +192,7 @@ $$
 Pr(Choice=A) = \frac{\exp(V_A)}{\exp(V_A)+\exp(V_B)+\exp(V_C)}
 $$
 $$
-V_j = \beta_j + \beta_1 \log(Price_j) + \beta_2 Display_j + \beta_3 Ad_j \quad (j = A, B, C)
+V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad (j = A, B, C)
 $$
 
 **目的変数**：購買ブランド（A，B，C）  
@@ -269,10 +269,10 @@ result.df <- data.frame(coef, std.err, coef/std.err, pvalue) %>%
 result.df
 ```
 
-- ブランド切片は，ブランドAが $\beta_A = -2.157$，ブランドBが $\beta_B = -2.318$ となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。
+- ブランド切片は，ブランドAが $\beta_A =$ `r round(coef[1], 3)`，ブランドBが $\beta_B =$ `r round(coef[2], 3)` となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。
 
 - マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。
-- ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.307) = 1.360$，チラシ掲載は $\exp(0.820) = 2.271$ となり，チラシ掲載の方がプロモーション効果が高いと分かる。
+- ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がプロモーション効果が高いと分かる。
 
 
 ## 3. データ分析実習
@@ -299,8 +299,10 @@ head(data_milk) %>%
 | price.A ~ price.C | 1リットルあたり価格（145円，150円，155円，160円）        |
 
 
-**データ出典** ：[Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://doi.org/10.3173/air.17.86)
+**データ出典** ：
 
+- [Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://doi.org/10.3173/air.17.86)
+- [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf)
 
 ### 補足説明
 コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。
