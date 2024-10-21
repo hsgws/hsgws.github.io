@@ -1,0 +1,365 @@
+---
+title: "イベント・ヒストリー分析"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+## 1. 分析例①：Cox比例ハザード
+### データ
+
+**新商品の生存期間データ** (sec5_survival.csv)
+
+```{r, echo=FALSE}
+sec5_survival <- read_csv("data/sec5_survival.csv")
+head(sec5_survival)
+```
+
+| 変数          | 内容                                          |
+| ------------- | --------------------------------------------- |
+| pro_id        | 商品ID                                        |
+| **time**          | **商品の市場退出までの週数（生存時間）**                              |
+| **status**        | **市場退出フラグ ⇒ 1＝観測期間内に退出，0＝観測終了時点で生存（打ち切り）**        |
+| line_ex       | 新製品のタイプ・ライン拡張ダミー         |
+| multi_br      | 新製品のタイプ・マルチブランドダミー    |
+| br_ex         | 新製品のタイプ・ブランド拡張ダミー    |
+| ave_price_ind | 発売後4週間平均価格掛率（1＝定価）⇒ 利用しない            |
+| sum_disp      | 発売後4週間山積み陳列実施日数                 |
+| sum_flier     | 発売後4週間チラシ掲載日数                     |
+| ave_PI        | 発売後4週間平均点数PI                         |
+| max_price     | 最大売価                                      |
+| ave_disc      | 発売後4週間平均値引き率（0＝定価販売）                      |
+
+- データに含まれる商品は主にスーパーマーケット等で販売されている食品や日用品である
+- 太字は目的変数の生存時間とイベント発生（市場退出）有無を表す変数である
+- 新製品のタイプのダミー変数は新ブランドが基準
+
+
+### モデル
+
+**目的変数**：time（商品の市場退出までの週数），status（市場退出フラグ）  
+**説明変数**：line_ex, multi_br, br_ex, sum_disp, sum_flier, ave_PI, max_price, ave_disc
+
+
+### Rコード
+
+```{r, results='hide', message=FALSE}
+# データの読込
+sec5_survival <- read.csv("data/sec5_survival.csv")
+
+# survival パッケージの読込み
+library(survival)
+
+# Cox比例ハザードモデルの推定
+result <- coxph(
+  Surv(time, status) ~ line_ex + multi_br + br_ex + sum_disp + sum_flier + ave_PI + max_price + ave_disc,
+  data = sec5_survival
+)
+
+# 推定結果の表示
+summary(result)
+```
+
+**`coxph(fourmula, data)`：Cox比例ハザードモデルの推定**
+
+- **`fourmula`**：目的変数・説明変数の指定
+	- 目的変数は Survival オブジェクト **`Surv(time, event)`** で指定する
+	- **`time`**：生存時間
+	- **`event`**：イベント発生の有無（1＝観測期間内に発生，0＝観測期間終了時点で未発生）
+- **`data`**：分析データの指定
+
+
+##### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+coef <- result$coefficients
+exp_coef <- exp(result$coefficients)
+std.err <- sqrt(diag(result$var))
+zvalue <- coef/std.err
+pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+
+result.df <- data.frame(coef, exp_coef, std.err, zvalue, pvalue) %>% 
+  kable(format = "markdown",
+        digits = 4,
+        col.names = c("回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
+result.df
+```
+
+Cox比例ハザードモデルでは，係数の符号は「プラスはイベントが起きる確率が増える（＝市場退出までの期間が短くなる）」ことを，「マイナスはイベントが起きる確率が減る（＝市場退出までの期間が長くなる）」ことを意味する。  
+</br>
+
+#### 新製品のタイプ
+
+- ライン拡張（line_ex），マルチブランド（multi_br），ブランド拡張（br_ex）は，新ブランドを基準としたダミー変数のため，解釈は「新ブランドの生存時間に与える効果と比較した効果」となる。
+  - ライン拡張（line_ex）とブランド拡張（br_ex）の回帰係数は5％有意水準で有意に推定されており，係数がマイナスのため，「新ブランドに比べて市場退出までの期間が長い」ことを意味する。
+  - 一方，マルチブランド（multi_br）は，p値が 0.450 であり，有意ではなく，「新ブランドとの差はない」ことを意味する。
+
+- 新ブランドと比較してどの程度退出しやすいかは，exp(回帰係数）から評価することができる。
+  - ライン拡張（line_ex）の exp(回帰係数） は 0.832 と計算されており，「ライン拡張は新ブランドに比べて，他の変数が同じ条件なら市場退出の確率は 0.832 倍」と解釈できる。
+  - 同様にブランド拡張（br_ex）は，0.642 倍である。よって，退出しやすさは「新ブランド≒マルチブランド＞ライン拡張＞ブランド拡張」となる。
+
+- 新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。  
+
+
+#### プロモーション
+
+- プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。
+  - exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。
+- 山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。
+
+
+#### 価格
+
+- 価格については，最大売価（max_price）の係数が -0.0001 とほぼゼロで有意に推定されているが，1円単位の効果のため解釈には注意が必要である。
+- 符号はマイナスのため，高価格な商品ほど退出までの期間が長いことを意味する。ただし，最大売価については，全23,457商品の価格幅が10～1500円と広いが，約96％が400円以下である。
+- 300円と400円の影響を比較すると，$\exp(-0.0001 \times 300) = 0.970$，$\exp(-0.0001 \times 400) = 0.961$ と計算されるため，最大売価の影響は限定的であるとも考えられる。
+- 本データには商品カテゴリの情報がないが，商品カテゴリを絞って分析を行うと価格帯も近くなるため，最大売価の影響は異なる結果が得られる可能性もある。
+
+
+#### その他
+
+- 値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。
+  - exp(回帰係数) は1単位増えた場合に，退出確率が何倍になるかを表す指標なので，値引き率（0＝定価）で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。
+- 発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。
+
+
+### 生存率の計算*
+```{r results='hold', fig.show='hold'}
+# 生存確率を計算する製品の属性
+new_data <- data.frame(
+  line_ex = 1,
+  multi_br = 0,
+  br_ex = 0,
+  sum_disp = 0,
+  sum_flier = 0,
+  ave_PI = 0.796825,
+  max_price = 20,
+  ave_disc = 0.00325
+)
+
+# 生存確率の計算
+surv_time <- survfit(result, data = new_data, conf.int = 0.95)
+
+# 計算結果の表示
+summary(surv_time)
+
+# 生存確率の図示
+plot(surv_time)
+```
+
+
+- 計算出力のうち，`survival` が `new_data` で設定した製品の各期の生存確率の推定値を表す。 `n.risk` と `n.event` はそれぞれ，観測データの各期開始時点で生存していた製品数と各期終了までに退出した製品数を表す。
+- Cox比例ハザードモデルでは生存確率はデータの観測のあった期間しか計算できない。sec5_survivalデータの場合は，最初に退出が観測された5週目から最後の退出が観測された51週目まで。観測期間より先（52週目以降）の生存確率を計算したい場合は次のパラメトリックモデルを使う必要がある。
+
+
+## 2. 分析例②：パラメトリックモデル*
+
+パラメトリックモデルは週ごとの生存確率を確率分布によって計算ができるが，選択する確率分布の違いによってパラメータの解釈も異なり，確率分布を選択にも注意が必要となる。
+
+経営学を含む社会科学分野でパラメトリックモデルによる生存時間解析を説明している文献として，以下を紹介する。
+
+- [ダハナ・勝又（2023）「Rによるマーケティング・データ分析（9章）」新世社](https://www.saiensu.co.jp/search/?isbn=978-4-88384-367-1&y=2023)
+- [佐藤（2015）「マーケティングの統計モデル（5章）」朝倉書店](http://www.asakura.co.jp/books/isbn/978-4-254-12853-6/)
+- [森田（2014）「実証分析入門（15章）」日本評論社](https://www.nippyo.co.jp/shop/book/6554.html)
+- [Allison 著，福田 訳（2021）「イベント・ヒストリー分析」共立出版](https://www.kyoritsu-pub.co.jp/book/b10003363.html)
+
+
+### データ
+
+**新商品の生存期間データ** (sec5_survival.csv) ⇒ 分析例①と同じデータ
+
+
+### Rコード
+```{r, results='hide', message=FALSE}
+# データ sec5_survival は読込済みとする
+# survival パッケージの読込み
+library(survival)
+
+# 指数分布モデルの推定
+result <- survreg(
+  Surv(time, status) ~ line_ex + multi_br + br_ex + sum_disp + sum_flier + ave_PI + max_price + ave_disc,
+  data = sec5_survival, 
+  dist = "exponential"
+)
+
+# 推定結果の表示
+summary(result)
+
+# 係数の推定結果が「e-01」などと表示されて見にくい場合は以下を実行して再度summaryを実行
+# options(scipen = 1)
+```
+
+**`survreg(fourmula, data, dist)`：パラメトリックハザードモデルの推定**
+
+- **`fourmula`**：目的変数・説明変数の指定
+	- 目的変数は Survival オブジェクト **`Surv(time, event)`** で指定する
+	- **`time`**：生存時間
+	- **`event`**：イベント発生の有無（1＝観測期間内に発生，0＝観測期間終了時点で未発生）
+- **`data`**：分析データの指定
+- **`dist`**：確率分布の指定
+
+
+##### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+#### 推定結果
+```{r, echo=FALSE}
+coef <- result$coefficients
+#names(coef)[10] <- "Log(scale)"
+std.err <- sqrt(diag(result$var))
+zvalue <- coef/std.err
+pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+
+result.df <- data.frame(coef, std.err, zvalue, pvalue) %>% 
+  kable(format = "markdown",
+        digits = 4,
+        col.names = c("係数", "標準誤差", "z 値", "p 値"))
+result.df
+```
+
+Rでのパラメトリックモデルは加速故障モデル (accelerated failure time model) という方法で説明変数の係数が推定されており，係数の符号の解釈はCox比例ハザードモデルとは逆になる。
+プラスなら生存時間が長くなることを，マイナスなら生存時間が短くなることを意味する。
+
+
+### 生存率の計算
+最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523} の3商品の生存確率の計算と比較を行う。3商品のデータと生存確率の計算コードは以下の通りである。
+
+```{r, echo=FALSE}
+row <- c(49, 593, 15751)
+sec5_survival[row,]
+```
+
+```{r, results='hold'}
+row <- c(49, 593, 15751)  # sec5_survivalにおける商品ID＝{52, 686, 20523}の行番号
+pct <- 1:99/100           # 百分位数 (0.01 ~ 0.99)
+
+# 生存確率の計算（詳細は predict.survreg のヘルプを参照）
+pred <- predict(
+  result, 
+  newdata = sec5_survival[row,],
+  type = "quantile",
+  p = pct, 
+  se = TRUE
+)
+
+# 生存確率のプロット
+matplot(x = t(pred$fit), y = 1 - pct, type = "l", 
+        lty = 1, col = 1:3,
+        xlab = "週", ylab = "生存確率")
+legend("topright", legend = sec5_survival$pro_id[row], lty = 1, col = 1:3)
+```
+
+生存確率が50％となる週は，ID 52が50週，ID 686が21週，ID 20523が9週である。
+
+
+## 3. データ分析実習
+### データ
+**電話回線の契約データ** (data_churn.csv)
+
+```{r, echo=FALSE}
+data_churn <- read_csv("data/data_churn.csv")
+head(data_churn)
+```
+
+| 変数             | 内容                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| customerID       | 顧客ID                                                       |
+| **gender**           | **性別 (Male, Female)**                                          |
+| **SeniorCitizen**    | **高齢者フラグ (1＝高齢者, 0＝それ以外)**                        |
+| **Partner**          | **パートナーの有無 (Yes, No)**                                   |
+| **Dependents**       | **扶養家族の有無 (Yes, No)**                                     |
+| **tenure**           | **電話回線の契約月数**                                                     |
+| PhoneService     | 電話回線サービスの契約 (Yes, No)                             |
+| MultipleLines    | 複数回線の契約 ("Yes", "No", "No phone service")             |
+| InternetService  | インターネット回線の契約 ("DSL", "Fiber optic", "No")        |
+| OnlineSecurity   | セキュリティ・サービスの契約 ("Yes", "No", "No internet service") |
+| OnlineBackup     | バックアップ・サービスの契約 ("Yes", "No", "No internet service") |
+| DeviceProtection | 機器保証サービスの契約 ("Yes", "No", "No internet service")  |
+| TechSupport      | 技術サポートの契約 ("Yes", "No", "No internet service")      |
+| StreamingTV      | TVストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| StreamingMovies  | 映画ストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| Contract         | 契約形態 ("Month-to-month"＝月次契約, "One year"＝1年契約,  "Two year"＝2年契約) |
+| PaperlessBilling | ペーパーレス請求書サービスの利用 ("Yes", "No")               |
+| PaymentMethod    | 料金支払い方法 </br> ("Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)") |
+| **MonthlyCharges**   | **月額料金**                                                     |
+| TotalCharges     | 総支払い金額                                                 |
+| **Churn**            | **電話回線の解約の有無 ⇒ 1＝解約済み, 0＝契約中（打ち切り) **                                    |
+
+（太字は分析で利用する変数）  
+</br>
+
+
+**データ出典**：[Telco Customer Churn | Kaggle](https://www.kaggle.com/blastchar/telco-customer-churn)
+
+<!-- - [Cognos Analytics - IBM Business Analytics Community](https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets)  -->
+<!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
+<!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
+
+<!-- Business Analytics - IBM Business Analytics Community -->
+<!-- https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4 -->
+
+
+
+### 課題
+
+以下のモデルでCox比例ハザードモデルを推定し，各説明変数が解約までの時間に与える影響を考察せよ。
+MonthlyCharges（月額料金）以外はダミー変数のため，基準となっている値に注意すること。
+
+**目的変数**：tenure（電話回線の契約月数），Churn（電話回線の解約の有無）  
+**説明変数**：gender, SeniorCitizen, Partner, Dependents, MonthlyCharges
+
+
+</br>
+**注意点**
+
+gender や Partner などの文字データの変数を，R のモデル式 (fourmula) の説明変数にそのまま指定すれば，R の内部で自動的にダミー変数化され，回帰係数が出力される。推定結果を解釈する際には，どの水準がダミー変数の基準になっているかを注意する必要がある。
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読込
+data_churn <- read.csv("data/data_churn.csv")
+
+# survival パッケージの読込み
+library(survival)
+
+# Cox比例ハザードモデルの推定
+result <- coxph(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges,
+                data = data_churn)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
