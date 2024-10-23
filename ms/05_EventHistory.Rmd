@@ -250,7 +250,7 @@ result.df <- data.frame(coef, std.err, zvalue, pvalue) %>%
 result.df
 ```
 
-Rでのパラメトリックモデルは加速故障モデル (accelerated failure time model) という方法で説明変数の係数が推定されており，係数の符号の解釈はCox比例ハザードモデルとは逆になる。
+Rでのパラメトリックモデルは加速故障時間モデル (accelerated failure time model) という方法で説明変数の係数が推定されており，係数の符号の解釈はCox比例ハザードモデルとは逆になる。
 プラスなら生存時間が長くなることを，マイナスなら生存時間が短くなることを意味する。
 
 
