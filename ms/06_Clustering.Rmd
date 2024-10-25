@@ -129,8 +129,9 @@ Big Five データでは，E・N・A・C・O の5指標の質問項目できれ�
 
 
 ### Rコード（クラスター分析）
+#### Kmeansによるクラスタリング
 ```{r, results='hide'}
-set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
+set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
 
 # クラスター分析（kmens法，クラスター数＝4）
 result <- kmeans(x = fa$scores, centers = 4)
@@ -144,22 +145,6 @@ print(result$cluster)
 # 各セグメントの所属人数・比率
 print(result$size)
 print(result$size/nrow(data_bf))	# 人数比（nrow はデータの行数を取得する関数）
-
-# 各セグメントのプロファイリング
-## data_bfに各回答者のセグメント所属番号を追加
-data_bf <- data.frame(data_bf, cluster = result$cluster)
-
-# 平均年齢
-mean(data_bf$age) # データ全体
-tapply(data_bf$age, data_bf$cluster, mean)  # セグメント別
-
-# 女性比率
-mean(data_bf$gender)  # データ全体
-tapply(data_bf$gender, data_bf$cluster, mean) # セグメント別
-
-# 人種比率
-table(data_bf$race)/nrow(data_bf) # データ全体
-prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
 ```
 
 **`kmeans(x, centers)`**：Kmeans法によるクラスター分析
@@ -167,18 +152,7 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
 - **`x`**：クラスター分析を実行するデータの指定
 - **`centers`**：：クラスター数
 - 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `result$centers`）
-- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）
-
-**`tapply(x, index, fun)`**：グループ毎に関数を適用
-
-- **`x`**：集計したい変数
-- **`index`**：グループ番号 ⇒ セグメント番号
-- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
- 
-**`table(x1, x2, ...)`**：クロス集計表の作成
-
-- **`x*`**：クロス集計したい変数（1個以上の変数を指定）
-- **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）  
 <br />
 
 ##### Rコードの出力
@@ -197,6 +171,44 @@ head(result$cluster, 20)
 print(result$size)	# 所属人数
 print(result$size/nrow(data_bf))	# 人数比 （nrow はデータの行数を得る関数）
 ```
+
+#### 各セグメントのプロファイリング
+```{r, results='hide'}
+## data_bfに各回答者のセグメント所属番号を追加
+data_bf$cluster <- result$cluster 
+print(data_bf) 
+
+# 平均年齢
+mean(data_bf$age) # データ全体
+tapply(data_bf$age, data_bf$cluster, mean)  # セグメント別
+
+# 女性比率
+mean(data_bf$gender)  # データ全体
+tapply(data_bf$gender, data_bf$cluster, mean) # セグメント別
+
+# 人種比率
+table(data_bf$race)/nrow(data_bf) # データ全体
+prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
+```
+
+**`tapply(x, index, fun)`**：グループ毎に関数を適用
+
+- **`x`**：集計したい変数
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+ 
+**`table(x1, x2, ...)`**：クロス集計表の作成
+
+- **`x*`**：クロス集計したい変数（1個以上の変数を指定）
+- **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+<br />
+
+##### Rコードの出力
+data_bfに各回答者のセグメント所属番号を追加（最初の6人分のみ表示）
+```{r echo=FALSE, paged.print=FALSE, results='hold'}
+head(data_bf)
+```
+
 
 平均年齢
 ```{r, echo=FALSE, results='hold'}
