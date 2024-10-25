@@ -1,0 +1,90 @@
+---
+title: "第5回：補足 生存時間の図示"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+## データ読み込み
+```{r}
+data_churn <- read.csv("data/data_churn.csv")
+```
+
+
+## 1. カプラン・マイヤー法
+```{r echo=TRUE}
+library(survival)
+
+# 生存確率の推定
+km_fit <- survfit(Surv(tenure, Churn) ~ 1, type = "kaplan-meier", data = data_churn)
+summary(km_fit)
+
+# 生存確率の図示
+plot(km_fit, xlab = "契約月数", ylab = "生存確率")
+```
+
+図中点線は生存確率の上下95％区間
+
+
+## 2. パラメトリックモデル
+```{r echo=TRUE}
+library(eha)  # 要 eha パッケージのインストール
+
+# データの加工
+# パラメトリックモデルでは y = 0 (tenure = 0) の行を扱えないため削除
+data_churn <- data_churn[data_churn$tenure > 0, ]   
+
+# eha パッケージでは文字列を自動でダミー変数に変換してくれないので 0 or 1 に変換
+data_churn$gender <- ifelse(data_churn$gender == "Male", 1, 0)  # Male = 1
+data_churn$Partner <- ifelse(data_churn$Partner == "Yes", 1, 0) # Yes = 1
+data_churn$Dependents <- ifelse(data_churn$Dependents == "Yes", 1, 0) # Yes = 1
+```
+
+### 説明変数なしのモデル
+```{r echo=TRUE, paged.print=FALSE}
+# ワイブル分布
+weibull_fit_nocovariate <- aftreg(Surv(tenure, Churn) ~ 1, dist = "weibull", data = data_churn)
+print(weibull_fit_nocovariate)
+
+# 指数分布
+exp_fit_nocovariate <- aftreg(Surv(tenure, Churn) ~ 1, dist = "weibull", shape = 1, data = data_churn)
+print(exp_fit_nocovariate)
+
+# モデル比較
+AIC(weibull_fit_nocovariate, exp_fit_nocovariate)
+BIC(weibull_fit_nocovariate, exp_fit_nocovariate)
+
+# 生存時間の図示
+plot(
+  weibull_fit_nocovariate, # 推定結果
+  fn = "sur",              # sur で生存時間の図示，haz でハザードの経時変化を図示
+  xlim = c(0, 500)         # 図示する期間（data_churn の場合は月数）
+)
+```
+
+横軸＝月，縦軸＝生存確率
+
+### 説明変数ありのモデル
+```{r echo=TRUE, paged.print=FALSE}
+# ワイブル分布
+weibull_fit <- aftreg(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges, dist = "weibull", data = data_churn)
+print(weibull_fit)
+
+# 指数分布
+exp_fit <- aftreg(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges, dist = "weibull", shape = 1, data = data_churn)
+print(exp_fit)
+
+# モデル比較
+AIC(weibull_fit, exp_fit, weibull_fit_nocovariate, exp_fit_nocovariate)
+BIC(weibull_fit, exp_fit, weibull_fit_nocovariate, exp_fit_nocovariate)
+
+# 生存時間の図示
+plot(
+  weibull_fit,     # 推定結果
+  fn = "sur",      # sur で生存時間の図示，haz でハザードの経時変化を図示
+  xlim = c(0, 500) # 図示する期間（data_churn の場合は月数）
+)
+```
+
+説明変数ありのモデルで説明変数を指定しないで図示した場合は各説明変数の平均値で生存確率を計算
