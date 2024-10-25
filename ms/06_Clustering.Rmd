@@ -1,0 +1,528 @@
+---
+title: "クラスタリング"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(magrittr)
+library(kableExtra)
+```
+
+
+## 1. 分析例①：クラスター分析
+### データ
+**Big Five（個人のパーソナリティ）に関するアンケートデータ** (data_bf.csv)
+
+```{r, echo=FALSE}
+data_bf <- read_csv("data/data_bf.csv")
+head(data_bf)
+```
+
+**データ出典** ：[Open psychology data: Raw data from online personality tests](https://openpsychometrics.org/_rawdata/)
+
+- 上記サイトの "Answers to the Big Five Personality Test, constructed with items from the International Personality Item Pool." を利用
+- 本分析例のため元データの一部を修正・削除した
+
+| 変数名   | 内容                                             |
+| -------- | ------------------------------------------------ |
+| E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
+| N1 ~ N10 | 神経症的傾向（Neuroticism）に関する質問項目      |
+| A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
+| C1 ~ C10 | 誠実性（Conscientiousness）に関する質問項目      |
+| O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
+| age      | 年齢                                             |
+| gender   | 性別（0＝男性，1＝女性）                         |
+| race     | 人種（13種類）                                    |
+
+⇒ [質問項目（50問）と人種の詳細](05_Clustering_bigfive.html)
+
+<br />
+**Big Five**：心理学分野で開発された個人パーソナリティの分類するための5指標
+
+- 外向性：自己主張や社交性の高さ
+- 神経症的傾向：心理的ストレスを受けやすさ
+- 協調性：思いやりや調和性の高さ
+- 誠実性：自己コントロール能力や計画性の高さ
+- 開放性：好奇心や想像力の高さ
+
+参考 [ビッグファイブ (心理学) - Wikipedia](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))
+
+
+### 分析目的
+1. 計50問の設問を因子分析にかけてパーソナリティ因子を抽出
+2. パーソナリティ因子によって回答者を Kmeans 法でクラスタリング（グループ化）
+3. 各グループのプロファイリング（平均年齢や性別比を計算）
+
+
+### Rコード（因子分析）
+```{r, results='hide'}
+# データの読込
+data_bf <- read.csv("data/data_bf.csv")
+
+# 因子分析
+fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression")
+
+# 因子負荷量
+print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
+
+# 因子スコア（最初の6人分のみ表示）
+head(fa$scores)
+```
+
+**`factanal(data, factors, scores)`**：因子分析の実行
+
+- **`data`**：分析データの指定 ⇒ `data_bf[,1:50]` でデータ内の質問項目（1〜50列）のみ指定
+- **`factors`**：因子数の指定 ⇒ Big Five尺度の通り5を指定
+- **`scores`**：因子スコアの計算方法
+- デフォルトではバリマックス回転で推定される
+  - 回転を変更したい場合は `rotation` の引数を追加（詳細は `factanal` のヘルプを参照）
+
+`factanal` の結果の変数（上記コードでは `fa`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`fa$socres` のように `$` の後ろに取り出したい変数名を指定する。  
+<br />
+
+##### Rコードの出力
+因子負荷量
+```{r, echo=FALSE}
+print(fa, cutoff = 0.3)
+```
+
+因子スコア（最初の6人分のみ表示）
+```{r, echo=FALSE}
+head(fa$scores)
+```
+
+
+### 推定結果（因子分析）
+因子負荷量では，各列で**数値の絶対値**が大きいものを1つの因子としてまとめることが出来る。
+プラスで大きければ，その因子に対して正の影響，マイナスで大きければ負の影響を意味する。
+Big Five データでは，E・N・A・C・O の5指標の質問項目できれいにまとまっていることが確認でき，各因子は以下のように解釈できる。
+
+- Factor 1：外向性（Extraversion）
+- Factor 2：神経症的傾向（Neuroticism）
+- Factor 3：協調性（Agreeableness）
+- Factor 4：誠実性（Conscientiousness）
+- Factor 5：開放性（Openness to experience）
+
+因子スコアからは各回答者（全19,202人）の5指標の強さが分かる。
+1番の回答者は，Factor 1・4 が大きく，Factor 2 が小さいので，「外向性と誠実性が高く，神経症的傾向にない人物」と判断できる。
+次のクラスター分析では，全19,202人分の因子スコアを Kmeans 法でセグメント分けを行う。  
+
+
+### Rコード（クラスター分析）
+```{r, results='hide'}
+set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
+
+# クラスター分析（kmens法，クラスター数＝4）
+result <- kmeans(x = fa$scores, centers = 4)
+
+# 各セグメントの因子スコアの平均値（代表値）
+print(result$centers)
+
+# 各回答者の所属セグメント番号
+print(result$cluster)
+
+# 各セグメントの所属人数・比率
+print(result$size)
+print(result$size/nrow(data_bf))	# 人数比（nrow はデータの行数を取得する関数）
+
+# 各セグメントのプロファイリング
+## data_bfに各回答者のセグメント所属番号を追加
+data_bf <- data.frame(data_bf, cluster = result$cluster)
+
+# 平均年齢
+mean(data_bf$age) # データ全体
+tapply(data_bf$age, data_bf$cluster, mean)  # セグメント別
+
+# 女性比率
+mean(data_bf$gender)  # データ全体
+tapply(data_bf$gender, data_bf$cluster, mean) # セグメント別
+
+# 人種比率
+table(data_bf$race)/nrow(data_bf) # データ全体
+prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
+```
+
+**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：：クラスター数
+- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `result$centers`）
+- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）
+
+**`tapply(x, index, fun)`**：グループ毎に関数を適用
+
+- **`x`**：集計したい変数
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+ 
+**`table(x1, x2, ...)`**：クロス集計表の作成
+
+- **`x*`**：クロス集計したい変数（1個以上の変数を指定）
+- **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+<br />
+
+##### Rコードの出力
+各セグメントの因子スコアの平均値（代表値）
+```{r, echo=FALSE}
+print(result$centers)
+```
+
+各回答者の所属セグメント番号（最初の20人分のみ表示）
+```{r, echo=FALSE}
+head(result$cluster, 20)
+```
+
+各セグメントの所属人数・比率
+```{r, echo=FALSE, results='hold'}
+print(result$size)	# 所属人数
+print(result$size/nrow(data_bf))	# 人数比 （nrow はデータの行数を得る関数）
+```
+
+平均年齢
+```{r, echo=FALSE, results='hold'}
+average_age <- tapply(data_bf$age, result$cluster, mean)
+mean(data_bf$age)
+average_age
+```
+
+女性比率
+```{r, echo=FALSE, results='hold'}
+ratio_gender <- tapply(data_bf$gender, result$cluster, mean)
+mean(data_bf$gender)
+ratio_gender
+```
+
+人種比率
+```{r, echo=FALSE, results='hold'}
+table(data_bf$race)/nrow(data_bf) # データ全体
+prop.table(table(data_bf$cluster,data_bf$race), 1)  # セグメント別
+```
+
+### 推定結果（クラスター分析）
+```{r, echo=FALSE, warning=FALSE}
+data.frame(result$centers) %>% 
+  mutate(segment = 1:4, .before = "Factor1") %>% 
+  kable(digits = 3,
+        col.names = c("セグメント", "外向性", "神経症的傾向", "協調性", "勤勉性", "開放性")
+        ) %>% 
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+**各セグメントの解釈**
+
+- セグメント1：協調性が最も低く，開放性が高い
+- セグメント2：神経症的傾向が最も高く，協調性と開放性も高い
+- セグメント3：神経症的傾向が最も低く，外向性と協調性が高い
+- セグメント4：開放性が最も低く，外向性も低い
+
+<br />
+
+```{r, echo=FALSE, warning=FALSE}
+n <- nrow(data_bf)
+prof.df <- data.frame(n = c(result$size, n),
+                      nr = c(result$size/n, 1),
+                      age = c(average_age, mean(data_bf$age)),
+                      gen = c(ratio_gender, mean(data_bf$gender)))
+rownames(prof.df) <- c(1:4, "全体")
+
+prof.df %>% 
+  kable(digits = c(0, 3, 1, 3),
+        col.names = c("人数", "人数比", "平均年齢", "女性比率")) %>% 
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+**プロファイリング**（人種の解釈は省略）
+
+- セグメント1は人数比が最も小さく，全体平均に比べてセグメント構成員の女性比率が低い
+- セグメント3は人数比が最も大きく，全体平均に比べてセグメント構成員の平均年齢が高い
+- セグメント2・4は全体平均に比べてセグメント構成員の女性比率が高い  
+<br />
+
+
+**補足**
+
+分析例では事前にセグメント数を4として Kmeans 法を実行したが，Kmeans 法では最適なセグメント数を明確に決める方法がない。
+セグメント数を変えてクラスター分析を行い，結果が最も解釈がしやすい数を選ぶのがよい。
+
+
+
+## 2. 分析例②：潜在クラスモデル*
+
+### データ
+**醤油カテゴリのID付POSデータ**（sec6_mixture.csv）
+```{r, echo=FALSE}
+sec6_mixture <- read_csv("data/sec6_mixture.csv")
+head(sec6_mixture)
+```
+
+| 変数名  | 内容                               |
+| ------- | ---------------------------------- |
+| pid     | 消費者ID                           |
+| A ~ I   | 商品A～Iの購買回数                 |
+| **ALL**     | **観測期間における全商品（A～I）の購買回数**|
+| **Ap ~ Ip** | **商品A～Iの購買時の平均価格掛率**|
+| Ae ~ Ie | 商品A～Iの購買時の山積み陳列実施数 |
+| Aa ~ Ia | 商品A～Iの購買時のチラシ掲載日数   |
+（太字は以下の分析例で使用する変数。ただし商品AはPBで価格変動が少ないためApは利用しない。）  
+
+**データ出典** ：佐藤（2015）「マーケティングの統計モデル」朝倉書店，第6章
+
+
+### Rコード
+#### 通常のポアソン回帰
+```{r, results='hide'}
+# データの読み込み
+sec6_mixture <- read.csv("data/sec6_mixture.csv")
+
+# ポアソン回帰の実行
+result_glm <- glm(
+  ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
+  family = "poisson", 
+  data = sec6_mixture
+)
+
+# 結果の表示
+summary(result_glm)
+```
+
+**`glm(formula, family, data)` ：ポアソン回帰の推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`family`**：分析モデル（データが従う確率分布）の指定 ⇒ ポアソン回帰の場合は `"poisson"` を指定
+- **`data`**：分析データの指定  
+
+
+##### Rコードの出力
+```{r, echo=FALSE, warning=FALSE}
+summary(result_glm)
+```
+
+
+#### 潜在クラスモデル（有限混合ポアソン回帰）
+```{r, results='hide', message=FALSE}
+set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
+
+library(flexmix)
+
+# セグメント数1～5の潜在クラスポアソン回帰の一括実行
+result_mixture <- initFlexmix(
+  ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
+  k = 1:5,
+  model = FLXMRglm(family = "poisson"),
+  data = sec6_mixture
+)
+
+# モデル比較（最適セグメント数の決定）
+print(result_mixture)
+
+# 最良モデルの選択（BIC基準）
+best_model <- getModel(result_mixture, which = "BIC")
+
+# 最良モデルのセグメント構成比
+summary(best_model)
+
+# 各セグメントの係数推定値
+summary(refit(best_model))
+```
+
+**`initFlexmix(formula, k, model, data)` ：ポアソン回帰の推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`k`**：推定するセグメント数 ⇒ `k = 1:5` でセグメント数1〜5のモデルを一括で実行可能
+- **`model`**：分析モデルの指定 ⇒ ポアソン回帰の場合は `FLXMRglm(family = "poisson")`，線形回帰分析の場合は不要
+- **`data`**：分析データの指定  
+
+
+##### Rコードの出力
+モデル比較
+```{r, echo=FALSE, warning=FALSE}
+print(result_mixture)
+```
+
+最良モデル (k=4) のセグメント構成比（pior列）
+```{r, echo=FALSE, warning=FALSE}
+summary(best_model)
+```
+
+各セグメントの係数推定値
+```{r, echo=FALSE, warning=FALSE}
+summary(refit(best_model))
+```
+
+
+### 推定結果
+
+```{r echo=FALSE}
+tmp <- refit(best_model)
+df <- cbind(
+  tmp@components[[1]][["Comp.1"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.2"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.3"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.4"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  summary(result_glm)$coefficients[, c("Estimate", "Pr(>|z|)")]
+)
+
+df %>% 
+  kable(digits = 3,
+        col.names = c(rep(c("推定値", "p値"), 5))) %>%
+  add_header_above(c(" " = 1, "セグメント1 (28%)" = 2, "セグメント2 (26%)" = 2, "セグメント3 (27%)" = 2, "セグメント4 (18%)" = 2, "ポアソン回帰" = 2)) %>% 
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+<!-- ```{r echo=FALSE} -->
+<!-- tmp <- refit(best_model) -->
+<!-- df <- cbind( -->
+<!--   tmp@components[[1]][["Comp.1"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.2"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.3"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.4"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.5"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   summary(result_glm)$coefficients[, c("Estimate", "Pr(>|z|)")] -->
+<!-- ) -->
+
+<!-- df %>%  -->
+<!--   kable( -->
+<!--     digits = 3, -->
+<!--     col.names = c(rep(c("推定値", "p値"), 6)) -->
+<!--   ) %>% -->
+<!--   add_header_above(c(" " = 1, "セグメント1 (6.5%)" = 2, "セグメント2 (36.9%)" = 2, "セグメント3 (19.7%)" = 2, "セグメント4 (17.3%)" = 2, "セグメント5 (19.5%)" = 2, "ポアソン回帰" = 2)) %>% -->
+<!--   kable_styling(bootstrap_options = c("striped")) -->
+<!-- ``` -->
+
+
+<!-- |           | セグメント1<br />（49％） | セグメント2<br />（35％） | セグメント3<br />（35％） | セグメント4<br />（26％） | 通常の<br />ポアソン回帰 | -->
+<!-- | --------- | ---------------------------- | --------------------------- | --------------------------- | --------------------------- | ------------ | -->
+<!-- | Intercept | **1.053**                    | **2.283**                   | **0.949**                   | **4.178**                   | **2.636**    | -->
+<!-- | log(Bp)   | 0.687                        | **4.125**                   | -1.274                      | **3.643**                   | **1.464**    | -->
+<!-- | log(Cp)   | -0.016                       | 0.336                       | **1.667**                   | **6.974**                   | **1.833**    | -->
+<!-- | log(Dp)   | 0.078                        | 0.160                       | **-3.145**                  | -1.382                      | **-0.651**   | -->
+<!-- | log(Ep)   | -0.374                       | **-10.093**                 | **-8.800**                  | 2.336                       | **-2.050**   | -->
+<!-- | log(Fp)   | 0.188                        | 0.835                       | **2.827**                   | **-3.337**                  | 0.006        | -->
+<!-- | log(Gp)   | 0.154                        | **5.680**                   | **-6.866**                  | 3.171                       | 0.296        | -->
+<!-- | log(Hp)   | 0.001                        | 0.347                       | **-4.369**                  | **-1.423**                  | **-0.726**   | -->
+<!-- | log(Ip)   | 0.525                        | -**6.032**                  | **5.595**                   | -0.288                      | **1.347**    | -->
+<!-- 括弧内は人数比，太字は5％有意水準で有意に推定された係数。   -->
+<!-- <br /> -->
+
+- 消費者の28％を占めるセグメント1は全ての製品の価格が非有意 ⇒ 家庭内在庫がなくなれば購入する消費者？
+- セグメント2は商品E・Iが値引きされていると購買しやすい
+- セグメント3は商品D・E・G・Hが値引きされていると購買しやすい
+
+
+## 3. データ分析実習
+
+### データ
+**個人投資行動に関するアンケートデータ** (seg.csv)  
+
+- 質問文は「あなたは以下のような状況の際にどの程度投資したいと考えますか」
+- q01～q27の質問項目は5段階尺度による回答（1＝全く当てはまらない，…，5＝とてもあてはまる）
+
+```{r, echo=FALSE}
+seg <- read_csv("data/seg.csv")
+head(seg)
+```
+
+
+| 変数名 | 内容・質問項目                                               |
+| ------ | ------------------------------------------------------------ |
+| q01    | インターネットの掲示板から得た情報が良好であった場合         |
+| q02    | インターネットのブログで得た情報が良好であった場合           |
+| q03    | インターネットのパブリックサイトで得た情報が良好であった場合 |
+| q04    | インターネットのSNS等で得た情報が良好であった場合            |
+| q05    | インターネットのコミュニティで得た情報が良好であった場合     |
+| q06    | 市場心理が良好だと感じられたとき                             |
+| q07    | 為替動向が良好だと感じられたとき                             |
+| q08    | 証券市場が安定的だと感じられたとき                           |
+| q09    | 国内の政治状況が安定的だと感じられたとき                     |
+| q10    | 国外の政治状況が安定的だと感じられたとき                     |
+| q11    | 将来的に高い利益成長がありそうだと考えられるとき             |
+| q12    | 高い配当が期待できそうな企業だと考えられたとき               |
+| q13    | 投資先企業の業務内容に期待が持てた場合                       |
+| q14    | 国内景気が上向きだと感じられたとき                           |
+| q15    | 金融機関担当者から得た情報が良好であった場合                 |
+| q16    | 金融機関担当者から銘柄の推奨があった場合                     |
+| q17    | 友人・知人から得た情報が良好であった場合                     |
+| q18    | 友人・知人から銘柄の推奨があった場合                         |
+| q19    | 株価が安定的に推移しているとき                               |
+| q20    | 株価が大きく変動しているとき                                 |
+| q21    | 現在，項履歴の状況にあると判断できるとき                     |
+| q22    | 株主優待の中身に興味を持った場合                             |
+| q23    | 投資先企業が社会貢献をしていると考えられた場合               |
+| q24    | 新聞で得た情報が良好であった場合                             |
+| q25    | 雑誌から得た情報が良好であった場合                           |
+| q26    | 先立つ投資で利益を得た場合                                   |
+| q27    | まとまったお金が必要となりそうなとき                         |
+| age    | 年齢                                                         |
+| gender | 性別（0＝男性，1＝女性）                                                        |
+| year   | 投資経験年数                                                 |
+| type   | 取引形態（1＝対面，2＝インターネット，3＝ 対面とインターネットの併用）            |
+
+
+**データ出典** ：照井・佐藤（2013）「現代マーケティング・リサーチ」有斐閣，第7章（課題のため質問番号等を調整）
+
+
+### 課題
+1. 投資行動に関するアンケートの質問項目 q01～q27 を用いて**因子数を4**とした因子分析を行い各因子を解釈せよ。
+2. 因子分析で得られた因子スコアを用いて**セグメント数を5**とした kmeans 法によるクラスター分析を実行せよ。  
+3. 各セグメントのプロファイリング（平均年齢，性別比率，平均投資経験年数，取引形態の違い）を行い，各セグメントの特徴を明らかにせよ。  
+<br />
+
+**補足説明**
+
+- 因子負荷量から因子を解釈する際に，どの因子にも属さない質問項目がある場合もある。
+
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読込
+seg <- read.csv("data/seg.csv")
+
+# 課題1（因子分析）
+fa <- factanal(seg[, 1:27], factors = 4, scores = "regression")
+print(fa, cutoff = 0.3)
+
+# 課題2（クラスター分析）
+set.seed(1)
+result <- kmeans(fa$scores, centers = 5)
+print(result$centers)  # 各セグメントの因子スコア平均値
+
+# 課題3（プロファイリング）
+seg <- data.frame(seg, cluster = result$cluster)
+
+print(result$size)	# 人数
+print(result$size/nrow(seg))			# 人数比
+
+mean(seg$age)   # 平均年齢（全体）
+tapply(seg$age, seg$cluster, mean)    # 平均年齢（セグメント別）
+
+mean(seg$gender)  # 女性比率（全体）
+tapply(seg$gender, seg$cluster, mean) # 女性比率（セグメント別）
+
+mean(seg$year)  # 平均投資経験年数（全体）
+tapply(seg$year, seg$cluster, mean)   # 平均投資経験年数（セグメント別）
+
+table(seg$type)/nrow(seg) # データ全体
+prop.table(table(seg$cluster, seg$type), 1)  # セグメント別
+```
+</div></details>
