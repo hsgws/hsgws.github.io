@@ -28,7 +28,7 @@ library(kableExtra)
 ```
 
 
-## 1. 分析例①：クラスター分析
+## 1. 分析例①：因子分析＋K-means 法
 ### データ
 **Big Five（個人のパーソナリティ）に関するアンケートデータ** (data_bf.csv)
 
@@ -53,7 +53,7 @@ head(data_bf)
 | gender   | 性別（0＝男性，1＝女性）                         |
 | race     | 人種（13種類）                                    |
 
-⇒ [質問項目（50問）と人種の詳細](05_Clustering_bigfive.html)
+⇒ [質問項目（50問）と人種の詳細](06_Clustering_bigfive.html)
 
 <br />
 **Big Five**：心理学分野で開発された個人パーソナリティの分類するための5指標
@@ -67,7 +67,7 @@ head(data_bf)
 参考 [ビッグファイブ (心理学) - Wikipedia](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))
 
 
-### 分析目的
+### 分析手順
 1. 計50問の設問を因子分析にかけてパーソナリティ因子を抽出
 2. パーソナリティ因子によって回答者を Kmeans 法でクラスタリング（グループ化）
 3. 各グループのプロファイリング（平均年齢や性別比を計算）
@@ -128,7 +128,7 @@ Big Five データでは，E・N・A・C・O の5指標の質問項目できれ�
 次のクラスター分析では，全19,202人分の因子スコアを Kmeans 法でセグメント分けを行う。  
 
 
-### Rコード（クラスター分析）
+### Rコード（K-means 法）
 #### Kmeansによるクラスタリング
 ```{r, results='hide'}
 set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
@@ -197,9 +197,9 @@ prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
 - **`index`**：グループ番号 ⇒ セグメント番号
 - **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
  
-**`table(x1, x2, ...)`**：クロス集計表の作成
+**`table(x1, x2, ...)`**：集計表の作成
 
-- **`x*`**：クロス集計したい変数（1個以上の変数を指定）
+- **`x*`**：集計したい変数（2個以上の変数を指定するとクロス集計表を作成）
 - **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
 <br />
 
@@ -230,7 +230,7 @@ table(data_bf$race)/nrow(data_bf) # データ全体
 prop.table(table(data_bf$cluster,data_bf$race), 1)  # セグメント別
 ```
 
-### 推定結果（クラスター分析）
+### 推定結果（K-means 法）
 ```{r, echo=FALSE, warning=FALSE}
 data.frame(result$centers) %>% 
   mutate(segment = 1:4, .before = "Factor1") %>% 
@@ -277,8 +277,124 @@ prof.df %>%
 セグメント数を変えてクラスター分析を行い，結果が最も解釈がしやすい数を選ぶのがよい。
 
 
+## 2. 分析例②-1：階層的クラスタリング*
+### データ
+**品目別1世帯当たり年間支出金額（都道府県庁所在地）**
 
-## 2. 分析例②：潜在クラスモデル*
+```{r, echo=FALSE}
+kakei2023 <- read_csv("data/kakei2023.csv")
+head(kakei2023)
+```
+
+**データ出典** ：[総務省 家計調査（家計収支編 都市階級・地方・都道府県庁所在市別１世帯当たり支出金額，購入数量及び平均価格）](https://www.e-stat.go.jp/stat-search/files?page=1&stat_infid=000040140558)
+
+
+### Rコード
+```{r, results='hide', fig.show='hide'}
+# データの読込
+kakei2023 <- read.csv("data/kakei2023.csv", row.names = 1)  # row.names = 1 で1列目（都市名）を行名に指定
+
+apply(kakei2023, 2, mean) # 各列の平均
+apply(kakei2023, 2, sd)   # 各列の標準偏差
+
+# 各列の標準化
+kakei2023s <- scale(kakei2023)
+
+apply(kakei2023s, 2, mean)  # 標準化後の各列の平均
+apply(kakei2023s, 2, sd)    # 標準化後の各列の標準偏差
+
+# 都道府県間の類似度（距離）の計算
+dist <- dist(kakei2023s)
+
+# 階層的クラスタリング
+hc <- hclust(d = dist, method = "ward.D2")
+plot(hc)
+```
+
+**`apply(x, margin, fun)`**：データの行または列ごとに関数を適用
+
+- **`x`**：データ
+- **`margin`**：関数の適用方向 ⇒ 1 = 行（横方向），2 = 列（縦方向）
+- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+
+**`scale(x)`**：データの標準化
+
+- **`x`**：データ
+- `scale` 関数は各列（縦方向）にデータを標準化
+
+**`hclust(d, method)`**：階層的クラスタリングの実行
+
+- **`d`**：データ
+- **`method`**：クラスタリングの方法の指定（`ward.D2` は Ward 法）  
+<br />
+
+##### Rコードの出力
+各列の平均と標準偏差
+```{r, echo=FALSE}
+apply(kakei2023, 2, mean) # 各列の平均
+apply(kakei2023, 2, sd)   # 各列の標準偏差
+```
+
+標準化後の各列の平均と標準偏差
+```{r, echo=FALSE}
+apply(kakei2023s, 2, mean)  # 標準化後の各列の平均
+apply(kakei2023s, 2, sd)    # 標準化後の各列の標準偏差
+```
+
+階層的クラスタリング（デンドログラム）
+```{r, echo=FALSE, out.width='150%'}
+plot(hc, cex = 0.7)
+```
+
+
+## 3. 分析例②-2：K-means 法*
+
+### データ
+品目別1世帯当たり年間支出金額（都道府県庁所在地） ⇒ 分析例②-1と同一データ
+
+### Rコード
+```{r, results='hide', fig.show='hide'}
+set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
+
+# クラスター分析（kmens法，クラスター数＝4）
+result <- kmeans(x = kakei2023s, centers = 4)
+
+# 各セグメントの標準化支出金額の平均値（代表値）
+print(result$centers)
+
+# 各都市の所属セグメント番号
+print(result$cluster)
+
+# 各セグメントの所属都市数・比率
+print(result$size)
+print(result$size/47)	# 比率
+
+# 各セグメントの代表値の図示（出力省略）
+for (i in 1:4) {
+  barplot(result$centers[i,], ylim = c(-1.3, 1.3), las = 2, main = paste("セグメント", i))
+}
+```
+
+
+##### Rコードの出力
+各セグメントの標準化支出金額の平均値（代表値）
+```{r, echo=FALSE, warning=FALSE}
+print(result$centers)
+```
+
+各都市の所属セグメント番号
+```{r, echo=FALSE}
+print(result$cluster)
+```
+
+各セグメントの所属都市数・比率
+```{r, echo=FALSE, results='hold'}
+print(result$size)
+print(result$size/47)	# 比率
+```
+
+
+## 4. 分析例③：潜在クラスモデル*
 
 ### データ
 **醤油カテゴリのID付POSデータ**（sec6_mixture.csv）
@@ -441,7 +557,7 @@ df %>%
 - セグメント3は商品D・E・G・Hが値引きされていると購買しやすい
 
 
-## 3. データ分析実習
+## 4. データ分析実習
 
 ### データ
 **個人投資行動に関するアンケートデータ** (seg.csv)  
