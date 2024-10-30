@@ -4568,7 +4568,7 @@ set.seed(1)
 result &lt;- kmeans(fa$scores, centers = 5)
 print(result$centers)  # 各セグメントの因子スコア平均値
 
-# 課題3（プロファイリング）
+# 課題3（プロファイリング）  
 seg$cluster &lt;- result$cluster
 
 print(result$size)  # 人数
