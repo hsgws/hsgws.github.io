@@ -2985,7 +2985,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2024/10/28</h4>
+<h4 class="date">更新：2024/10/30</h4>
 
 </div>
 
@@ -4569,7 +4569,7 @@ result &lt;- kmeans(fa$scores, centers = 5)
 print(result$centers)  # 各セグメントの因子スコア平均値
 
 # 課題3（プロファイリング）
-seg &lt;- data.frame(seg, cluster = result$cluster)
+seg$cluster &lt;- result$cluster
 
 print(result$size)  # 人数
 print(result$size/nrow(seg))            # 人数比

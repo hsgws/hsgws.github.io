@@ -636,7 +636,7 @@ result <- kmeans(fa$scores, centers = 5)
 print(result$centers)  # 各セグメントの因子スコア平均値
 
 # 課題3（プロファイリング）
-seg <- data.frame(seg, cluster = result$cluster)
+seg$cluster <- result$cluster
 
 print(result$size)	# 人数
 print(result$size/nrow(seg))			# 人数比
