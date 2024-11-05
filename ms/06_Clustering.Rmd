@@ -7,7 +7,7 @@ output:
     toc_float:
       collapsed: false
     df_print: "paged"
-    # highlight: pygments
+    highlight: pygments
     # theme: lumen
     md_extensions: -ascii_identifiers
     css: "template/style_ch.css"
