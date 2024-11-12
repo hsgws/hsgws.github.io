@@ -33,7 +33,7 @@ library(knitr)
 \
 図1：RStudio の起動画面
 ![](fig/rstudio/rstudio_start.png "起動画面")
-
+\
 
 ## 2. Project の作成
 データなどのファイル管理のため最初に以下の手順で授業用の Project を作成する。
