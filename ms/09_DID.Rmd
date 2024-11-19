@@ -1,0 +1,279 @@
+---
+title: "差分の差分法"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 10)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+
+```{r eval=FALSE, include=FALSE}
+if (0) {
+# データ作成
+library(CausalImpact)
+library(Ecdat)
+# library(tidyverse)
+
+# タバコデータ
+data(Cigar)
+skip_state <- c(3,9,10,22,21,31,33,48)
+
+Cigar <- Cigar %>% 
+  filter(!state %in% skip_state,
+         year >=70) %>% 
+  mutate(area = if_else(state == 5, "CA", "Rest of US"))
+
+Cigar_did_sum <- Cigar %>% 
+  mutate(
+    post = if_else(year > 87, 1, 0),
+    ca = if_else(state == 5, 1, 0),
+    state = factor(state),
+    year_dummy = paste0("y", year)
+  ) %>% 
+  group_by(year, year_dummy, post, ca) %>% 
+  summarise(sales = sum(sales*pop16)/sum(pop16)) %>% 
+  ungroup() %>% 
+  select(year_dummy:sales) %>% 
+  rename(treat = ca,
+         year = year_dummy)
+
+lm(sales ~ treat + post + treat*post + year, data = Cigar_did_sum) %>% 
+  summary()
+
+Cigar_did_sum$sales <- round(Cigar_did_sum$sales, 2) 
+
+write.csv(Cigar_did_sum, "data/data_cigar.csv", row.names = FALSE)
+# write_csv(Cigar_did_sum, "data/data_cigar.csv")
+
+# データ分析実習
+set.seed(1)
+n <- 50
+data <- data.frame(id = rep(1:25, 2) %>% sort()) %>% 
+  mutate(store = paste0("s", formatC(id, width = 2, flag = "0")),
+         post = rep(c(0, 1), 25),
+         treat = if_else(id >= 20, 1, 0)) %>% 
+  mutate(did = post * treat) %>% 
+  mutate(PI = 1.2 + 0.03 * post + 0.15 * treat + 0.60 * did + rnorm(n)*0.5) %>% 
+  select(store, post, treat, PI)
+
+data$PI <- round(data$PI, 3)
+
+lm(PI ~ post + treat + post*treat + store, data = data) %>% 
+  summary()
+
+write.csv(data, "data/data_did.csv", row.names = FALSE)
+}
+```
+
+
+## 1. 分析例①：DID
+### データ
+**米国での禁煙キャンペーン（data_cigar.csv）**
+
+```{r, echo=FALSE}
+data_cigar <- read_csv("data/data_cigar.csv")
+data_cigar
+```
+\
+
+| 変数名 | 内容                                                         |
+| ------ | ------------------------------------------------------------ |
+| year  | 年（分析ではダミー変数化して利用）                                                           |
+| post  | 時点ダミー（キャンペーン導入前の1987年以前＝0，導入後の1988年以降＝1）       |
+| treat | 介入ダミー（カリフォルニア州＝1，その他州＝0） |
+| sales  | 16才以上人口1人あたりのタバコ購入箱数（その他州はカリフォルニア州以外の州の平均値）                        |
+
+- 米国カリフォルニア州で1988年に導入された禁煙キャンペーン [1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99) ⇒ 介入
+  - タバコ1箱あたり25セントの増税＋タバコによる健康被害の教育
+- カリフォルニア州に禁煙キャンペーンが導入されなかった場合の反事実をその他州から補完
+
+**データ出典** ：[Ecdatパッケージ](https://cran.r-project.org/web/packages/Ecdat/index.html)のCigarデータ および [安井（2020）『効果検証入門』技術評論社](https://gihyo.jp/book/2020/978-4-297-11117-5)
+
+### モデル
+$$
+sales = \alpha + \beta_1 post + \beta_2 treat + \beta_3 post\times treat + \sum_{j=1970}^{1992}\theta_j year_j + \varepsilon
+$$
+
+- $\beta_3$ が禁煙キャンペーン（介入）によるタバコ購入箱数の変化
+- $\sum_{j=1970}^{1992}\theta_j year_j$ は年による変動を吸収する共変量項（固定効果）
+
+
+### Rコード
+```{r, results='hide'}
+# データの読み込み
+data_cigar <- read.csv("data/data_cigar.csv")
+
+# 回帰分析の実行
+result <- lm(sales ~ post + treat + post*treat + year, data = data_cigar)
+
+# 推定結果の表示
+summary(result)
+```
+
+- 回帰分析で説明変数の交差項は `*` で繋げた項を追加することで推定できる
+- 共変量の `year` の係数は関心がないので解釈しない
+
+
+#### Rコードの出力
+```{r, echo=FALSE}
+result %>% 
+  summary() %>% 
+  print()
+```
+
+
+### 推定結果
+```{r, echo=FALSE}
+result %>%
+  tidy() %>%
+  filter(!str_detect(term, "year")) %>% 
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
+```
+
+⇒ カリフォルニア州では禁煙キャンペーンの導入により1人あたりのタバコ購入箱数は20.53箱減少
+
+
+## 2. 分析例②：Causal Impact*
+### データ
+**都道府県別の月次宿泊者数（monthly_hotel_data.csv）**
+```{r, echo=FALSE}
+monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv")
+monthly_hotel_data
+```
+
+**データ出典**：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html)
+
+<br />
+```{r, echo=FALSE}
+monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv", skip = 1)
+
+library(lubridate)
+monthly_hotel_data %>% 
+  mutate(date = ym(paste0(year, month, "-")),
+         y1 = y1/1000) %>% 
+  select(date, y1) %>% 
+  ggplot(mapping = aes(x = date, y = y1)) +
+  geom_line() + 
+  geom_vline(xintercept = ym("2018-09"), linetype="dashed", color = "red") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 years") +
+  labs(title = "北海道の月次宿泊者数（2012～2018年，単位千人）") 
+```
+
+- 2018年9月6日に発生した北海道胆振東部地震の影響で北海道の宿泊者数が減少   
+⇒ Causal Impact で2018年9～12月の宿泊者数がどの程度減少したか検証
+- 北海道以外の都道府県の宿泊者数データは予測モデルの説明変数として利用
+
+
+### Rコード
+```{r, results='hide', fig.show='hide'}
+library(CausalImpact) # 要パッケージのインストール
+
+# データの読み込み＆前処理
+monthly_hotel_data <- read.csv("data/monthly_hotel_data.csv", skip = 1)
+# csvファイルの1行目は都道府県名のため skip = 1 で読み込みスキップ
+
+monthly_hotel_data <- monthly_hotel_data[, 3:49]/1000  # 不要な1・2行目（year, month)を削除＆千人単位に変換
+
+# 分析の実行
+impact <- CausalImpact(
+  monthly_hotel_data,
+  pre.period = c(1, 80),    # 介入前期間 (2012/01~2018/08, 1~80行目)
+  post.period = c(81, 84), # 介入後期間 (2018/09~2018/12, 81~84行目)
+  model.args = list(nseasons = 12)  # nseasons = 12 で月次周期を予測モデルに追加
+)
+
+# 推定結果の出力
+summary(impact)
+
+# 結果の図示
+plot(impact)
+```
+
+
+**`CausalImpact(data, pre.period, post.period, model.args)`：Causal Impact の実行**
+
+- **`data`**：1列目が分析対象の時系列データ，2列目以降は予測モデルの説明変数として利用
+- **`pre.period`**：介入前の期間指定
+- **`post.period`**：介入後の期間指定
+- **`model.args`**：予測モデルのオプション（詳細は `CausalImpact` のヘルプを参照）
+
+参考：[CausalImpact (https://google.github.io/CausalImpact/CausalImpact.html)](https://google.github.io/CausalImpact/CausalImpact.html)
+
+#### Rコードの出力
+##### 推定結果の出力
+```{r echo=FALSE}
+summary(impact)
+```
+
+
+##### 結果の図示
+```{r echo=FALSE}
+plot(impact)
+```
+
+
+## 3. データ分析実習
+### データ
+**チラシ出稿と点数PI（data_did.csv）**
+
+```{r, echo=FALSE}
+data_did <- read_csv("data/data_did.csv")
+data_did
+```
+\
+
+| 変数名 | 内容                                                         |
+| ------ | ------------------------------------------------------------ |
+| store  | 店舗ID（分析ではダミー変数化して利用）                     |
+| post   | 時点ダミー（チラシ出稿前＝0，チラシ出稿後＝1）     |
+| treat  | 介入ダミー（チラシ掲載店舗＝1，それ以外＝0）       |
+| PI     | チラシ出稿前およびチラシ出稿後1週間の掲載商品の点数PI（千人あたり販売量） |
+
+- 地域内25店舗のうち，5店舗（s20~s25）を対象としたチラシを出稿した状況を想定
+- 介入群はチラシ対象の5店舗，対照群はその他20店舗
+
+**データ出典** ：架空のシミュレーションデータ
+
+### 課題
+DIDとして以下の回帰モデルを推定し，チラシによる効果（＝掲載商品の販売量の増加分）を検証せよ。
+
+$$
+PI = \alpha + \beta_1 post + \beta_2 treat + \beta_3 post\times treat + \sum_{j=1}^{25}\theta_j store_j + \varepsilon
+$$
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE, results='hide'}
+# データの読み込み
+data_did <- read_csv("data/data_did.csv")
+
+# 回帰分析の実行
+result <- lm(PI ~ post + treat + post * treat + store, data = data_did)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
+
+
