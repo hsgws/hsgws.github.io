@@ -61,7 +61,7 @@ lm(sales ~ treat + post + treat*post + year, data = Cigar_did_sum) %>%
 
 Cigar_did_sum$sales <- round(Cigar_did_sum$sales, 2) 
 
-write.csv(Cigar_did_sum, "data/data_cigar.csv", row.names = FALSE)
+# write.csv(Cigar_did_sum, "data/data_cigar.csv", row.names = FALSE)
 # write_csv(Cigar_did_sum, "data/data_cigar.csv")
 
 # データ分析実習
@@ -80,14 +80,14 @@ data$PI <- round(data$PI, 3)
 lm(PI ~ post + treat + post*treat + store, data = data) %>% 
   summary()
 
-write.csv(data, "data/data_did.csv", row.names = FALSE)
+# write.csv(data, "data/data_did.csv", row.names = FALSE)
 }
 ```
 
 
 ## 1. 分析例①：DID
 ### データ
-**米国での禁煙キャンペーン（data_cigar.csv）**
+**米国の1人あたり年間タバコ購入箱数（data_cigar.csv）**
 
 ```{r, echo=FALSE}
 data_cigar <- read_csv("data/data_cigar.csv")
@@ -100,13 +100,27 @@ data_cigar
 | year  | 年（1971~1992年，分析ではダミー変数化して利用）                                                           |
 | post  | 時点ダミー（キャンペーン導入前の1987年以前＝0，導入後の1988年以降＝1）       |
 | treat | 介入ダミー（カリフォルニア州＝1，その他州＝0） |
-| sales  | 16才以上人口1人あたりのタバコ購入箱数（その他州はカリフォルニア州以外の州の平均値）                        |
+| sales  | 16才以上人口1人あたりの年間タバコ購入箱数（その他州はカリフォルニア州以外の州の平均値）                        |
 
 - 米国カリフォルニア州で1988年に導入された禁煙キャンペーン [1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99) ⇒ 介入
   - タバコ1箱あたり25セントの増税＋タバコによる健康被害の教育
 - カリフォルニア州に禁煙キャンペーンが導入されなかった場合の反事実をその他州から補完
+  - ただし，キャンペーン実施の1988年以降にタバコ増税があった9州は対照群から除いた
 
 **データ出典** ：[Ecdatパッケージ](https://cran.r-project.org/web/packages/Ecdat/index.html)のCigarデータ および [安井（2020）『効果検証入門』技術評論社](https://gihyo.jp/book/2020/978-4-297-11117-5)
+
+\
+```{r echo=FALSE}
+data_cigar %>% 
+  mutate(post = factor(post),
+         treat = factor(treat),
+         y = str_remove(year, "y") %>% as.numeric()) %>% 
+  ggplot(mapping = aes(x = post, y = sales, colour = treat)) +
+  geom_point(position = position_jitter(width = 0.1), size = 2) +
+  geom_smooth(mapping = aes(group = treat), method = "lm", se = FALSE) +
+  labs(title = "キャンペーン導入前後の1人あたり年間タバコ購入箱数") 
+```
+
 
 ### モデル
 $$
