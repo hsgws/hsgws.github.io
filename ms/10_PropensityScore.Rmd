@@ -169,19 +169,19 @@ match <- matchit(
   replace = TRUE # 復元マッチング
 )
 
-# 共変量のバランスの確認
-summary(match)
-
 # マッチングデータの作成
 matched_data <- match.data(match)
 matched_data
 
-# （参考）共変量バランスの図示
-library(cobalt) # 要パッケージインストール
-love.plot(match, thresholds = 0.1, abs = TRUE, stars = "raw")
+# 共変量のバランスの確認
+summary(match)
 
 # （参考）マッチングペアの確認
 get_matches(match)
+
+# （参考）共変量バランスの図示
+library(cobalt) # 要パッケージインストール
+love.plot(match, thresholds = 0.1, abs = TRUE, stars = "raw")
 ```
 
 **`matchit(formula, data, replace)`：傾向スコアの推定**
@@ -203,6 +203,15 @@ get_matches(match)
 
 
 #### Rコード出力
+#####  マッチングデータの作成（最初の6人分）
+```{r echo=FALSE}
+head(matched_data)
+```
+
+- distance：傾向スコアの値
+- weights：マッチングした対照群サンプルの重みを表し，介入効果の推定に利用 ⇒ 何度もマッチング対象となった対照群サンプルは大きい重み  
+<br />
+
 ##### 共変量のバランスの確認
 ```{r echo=FALSE}
 summary(match)
@@ -211,15 +220,6 @@ summary(match)
 - "Summary of Balance for All Data" ：マッチング前の介入群（Treated）と対照群（Control）の共変量の比較
 - "Summary of Balance for Matched Data" ：マッチング後の共変量の比較
 - 「最終購買からの経過月数（recency）」に注目すると，マッチング前は介入群に比べて対照群の経過月数が1.6ヶ月長いが，マッチング後はその差が0.1ヶ月に減少している  
-<br />
-
-#####  マッチングデータの作成（最初の6人分）
-```{r echo=FALSE}
-head(matched_data)
-```
-
-- distance：傾向スコアの値
-- weights：マッチングした対照群サンプルの重みを表し，介入効果の推定に利用 ⇒ 何度もマッチング対象となった対照群サンプルは大きい重み  
 <br />
 
 ##### （参考）共変量バランスの図示
@@ -262,16 +262,25 @@ summary(result)
 - 重み付き最小二乗法はデータの各行の重要度が違う場合などに利用される回帰分析の一種であり，傾向スコアマッチングでは何度もマッチング対象となった対照群サンプルの重要度（重み）を考慮してパラメータの推定を行う
 
 
-##### 結果の出力
+#### Rコード出力
 ```{r echo=FALSE}
 summary(result)
 ```
 
-- 介入効果（ATT）は $\beta = 0.95$ で有意に推定されており，「プロモーションメールを配信した顧客（介入群）におけるプロモーションメールの効果は0.95ドル」と判断できる
-  - 介入群はプロモーションメールが配信されたことで購入金額が平均的には0.951ドル増えた
+### 推定結果
+```{r, echo=FALSE}
+result %>%
+  tidy() %>%
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
+```
+
+- 介入効果（ATT）は $\beta = 0.952$ で有意に推定されており，「プロモーションメールを配信した顧客（介入群）におけるプロモーションメールの効果は0.95ドル」と判断できる
+  - 介入群はプロモーションメールが配信されたことで購入金額が平均的には0.952ドル増えた
 - ATTとATEは異なることに注意
   - ATTは「介入を受けたサンプルにおける介入効果」，ATEは「サンプル全体における介入効果」
-  - 分析データは優良顧客にプロモーションメールを多く配信しており，優良顧客の多い介入群の方がプロモーション効果が高いことが想定される（ATT > ATE）  
+  - 分析データは優良顧客にプロモーションメールを多く配信しており，顧客全体に対するプロモーション効果よりも優良顧客に対するプロモーション効果が高いことが想定される（ATT > ATE）  
 <br />
 
 
@@ -309,12 +318,20 @@ summary(result)
 
 
 #### Rコード出力
-##### 結果の出力
 ```{r echo=FALSE}
 summary(result)
 ```
 
-- 介入効果（ATE）は $\beta = 0.88$ で有意に推定
+### 推定結果
+```{r, echo=FALSE}
+result %>%
+  tidy() %>%
+  kable(format = "markdown",
+        digits = 3,
+        col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
+```
+
+- 介入効果（ATE）は $\beta = 0.879$ で有意に推定
 - 想定通り，「優良顧客の多い介入群における介入効果（ATT）」よりも「顧客全体での介入効果（ATE）」が小さくなった（ATT > ATE）
 
 
