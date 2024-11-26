@@ -369,12 +369,12 @@ match <- matchit(
   estimand = "ATC" # ATC推定のためのマッチング
 )
 
-# 共変量のバランスの確認
-summary(match)
-
 # マッチングデータの作成
 matched_data <- match.data(match)
 matched_data
+
+# 共変量のバランスの確認
+summary(match)
 
 # ATCの推定
 result <- lm(

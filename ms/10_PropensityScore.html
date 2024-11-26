@@ -3372,12 +3372,12 @@ Rコード（クリックで表示）
 <span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">&quot;ATC&quot;</span> <span class="co"># ATC推定のためのマッチング</span></span>
 <span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>)</span>
 <span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co"># 共変量のバランスの確認</span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="fu">summary</span>(match)</span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co"># マッチングデータの作成</span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>matched_data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match)</span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>matched_data</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co"># マッチングデータの作成</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>matched_data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>matched_data</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co"># 共変量のバランスの確認</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="fu">summary</span>(match)</span>
 <span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a></span>
 <span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co"># ATCの推定</span></span>
 <span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
