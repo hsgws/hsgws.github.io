@@ -347,7 +347,7 @@ read.csv("data/data_smartwatch.csv", row.names = 1) %>%
 ```
 
 
-| 列名  | 製品名                    | データ出典（レビューのURL）                       |
+| 列名  | 製品名                    | データ出典（製品ページのURL）                       |
 | --------- | ------------------------- | ---------------------------------------------------- |
 | Apple8    | Apple Watch Series 8      | https://www.amazon.co.jp/dp/B0BDHWX8ZQ/ |
 | AppleSE   | Apple Watch SE（第2世代） | https://www.amazon.co.jp/dp/B0BDJLWN1N/ |
