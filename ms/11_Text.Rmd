@@ -349,16 +349,16 @@ read.csv("data/data_smartwatch.csv", row.names = 1) %>%
 
 | 列名  | 製品名                    | データ出典（レビューのURL）                       |
 | --------- | ------------------------- | ---------------------------------------------------- |
-| Apple8    | Apple Watch Series 8      | https://www.amazon.co.jp/product-reviews/B0BDHWX8ZQ/ |
-| AppleSE   | Apple Watch SE（第2世代） | https://www.amazon.co.jp/product-reviews/B0BDJLWN1N/ |
-| FitbitC5  | Fitbit Charge 5           | https://www.amazon.co.jp/product-reviews/B09CSX5G3V/ |
-| GarminFA  | GARMIN ForeAthlete 55     | https://www.amazon.co.jp/product-reviews/B096KJL2DS/ |
-| HuaweiB7  | HUAWEI Band 7             | https://www.amazon.co.jp/product-reviews/B09YRV54M4/ |
-| HuaweiGT3 | HUAWEI WATCH GT 3         | https://www.amazon.co.jp/product-reviews/B09KV7L86G/ |
-| Pixel     | Google Pixel Watch        | https://www.amazon.co.jp/product-reviews/B0BGXH42B7/ |
-| XiaomiB7  | Xiaomi Smart Band 7       | https://www.amazon.co.jp/product-reviews/B0B3GP8B31/ |
+| Apple8    | Apple Watch Series 8      | https://www.amazon.co.jp/dp/B0BDHWX8ZQ/ |
+| AppleSE   | Apple Watch SE（第2世代） | https://www.amazon.co.jp/dp/B0BDJLWN1N/ |
+| FitbitC5  | Fitbit Charge 5           | https://www.amazon.co.jp/dp/B09CSX5G3V/ |
+| GarminFA  | GARMIN ForeAthlete 55     | https://www.amazon.co.jp/dp/B096KJL2DS/ |
+| HuaweiB7  | HUAWEI Band 7             | https://www.amazon.co.jp/dp/B09YRV54M4/ |
+| HuaweiGT3 | HUAWEI WATCH GT 3         | https://www.amazon.co.jp/dp/B09KV7L86G/ |
+| Pixel     | Google Pixel Watch        | https://www.amazon.co.jp/dp/B0BGXH42B7/ |
+| XiaomiB7  | Xiaomi Smart Band 7       | https://www.amazon.co.jp/dp/B0B3GP8B31/ |
 
-- 各製品のレビューの「トップレビュー」順で30件ずつレビューを取得
+- 各製品のレビューの「トップレビュー」順で30件ずつレビューを取得（取得日2022年12月）
 - 画像のみのレビューは除外
 - 総単語数（行数）：146単語
 
