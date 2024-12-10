@@ -120,7 +120,7 @@ model <- SSModel(
 # パラメータの推定
 fit <- fitSSM(model, inits = rep(0, 3))
 
-# 状態の推定（カルマンフィルタ，平滑化）
+# 状態の推定（カルマンフィルタ＆平滑化）
 result <- KFS(fit$model)
 
 # 状態の推定値
@@ -141,14 +141,16 @@ fit$model$Q   # システムモデルの誤差項の分散
 **`fitSSM(model, inits)`：パラメータの推定**
 
 - **`model`**：`SSModel` で作成したモデルの指定
-- **`inits`**：推定パラメータの初期値 ⇒ `SSModel` 内の `NA` の数だけ指定（`rep(0,3)` は0を3つ並べる関数）
+- **`inits`**：推定パラメータの初期値
+  - パラメータは `SSModel` のモデル定義で `NA` とした3個の分散パラメータ ⇒ `rep(0,3)` は0を3つ並べる関数
+  - 状態の推定は `KFS` 関数で行う
 - `fitSSM` 関数の出力のうちパラメータ推定値は `model`（上記例では `fit$model`）に保存されている。
 
 
-**`KFS(model)`：状態のフィルタリング＆平滑化（カルマンフィルタ）**
+**`KFS(model)`：状態の推定（カルマンフィルタによるフィルタリング＆平滑化）**
 
-- **`model`**：`fitSSM` で推定したモデルの指定
-- `KFS` 関数の出力のうち平滑化状態の推定値は `alphahat`（上記例では `result$alphahat`）に保存されている。その他の出力は `KFS` のヘルプの `Value` を参照。
+- **`model`**：`fitSSM` で推定したモデルの指定（`fit$model`）
+- `KFS` 関数の出力のうち平滑化された状態の推定値は `alphahat`（上記例では `result$alphahat`）に保存されている。その他の出力は `KFS` のヘルプの `Value` を参照。
 
 
 #### Rコードの出力
@@ -203,24 +205,21 @@ newdata$H <- fit$model$H    # 観測モデルの分散
 newdata$Q <- fit$model$Q    # システムモデルの分散
 
 # 予測の実行
-pred <- predict(fit$model, n.ahead = 14, newdata = newdata, interval = "prediction", level = 0.95)
+pred <- predict(fit$model, newdata = newdata, interval = "prediction")
 
 # 予測結果
 pred
 ```
 
-**`predict(model, n.ahead, newdata, interval, level)`：予測の実行**
+**`predict(model, newdata, interval)`：予測の実行**
 
 - **`model`**：`fitSSM` で推定したモデル
-- **`n.ahead`**：予測する期間数
 - **`newdata`**：予測用の説明変数データ
 	- 予測を行う際にも，予測用の説明変数（今回は祝日フラグ）が入った `SSModel` を作成する必要がある
-	- 目的変数（販売本数）は，予測期間分（7日間）の欠損値 `rep(NA, 7)` を指定
+	- 目的変数（販売本数）は，予測期間分（14日間）の欠損値 `rep(NA, 14)` を指定
 	- 分散パラメータは `fitSSM` で推定したものを代入
 	- 説明変数がないモデル（例えばトレンドと周期成分のみ）の場合は `newdata` は不要
 - **`interval`**：予測の場合は `prediction` を指定
-- **`level`**：予測（信頼）区間の指定
-
 
 #### 予測結果の評価
 ```{r message=FALSE, warning=FALSE, results='hide', fig.show='hide'}
@@ -238,9 +237,9 @@ lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
 lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
 ```
 
-**`mae(actual, predicted)`, mape(actual, predicted)`, `rmse(actual, predicted)`：予測値の評価**
+**`mae(actual, predicted)`, `mape(actual, predicted)`, `rmse(actual, predicted)`：予測値の評価**
 
-- **`actual`**：実績値
+- **`actual`**：実績値（観測データ）
 - **`predicted`**：予測値
   - KFASパッケージの `predict` 関数の出力の予測値は `pred[, "fit"]` で抜き出す。`pred$fit` では抜き出せないことに注意。
 
@@ -252,8 +251,8 @@ pred
 ```
 
 - fit：予測値
-- lwr：95％信頼区間の下限
-- upr：95％信頼区間の上限
+- lwr：95％予測区間の下限
+- upr：95％予測区間の上限
 
 
 ##### 予測結果の評価
@@ -283,7 +282,7 @@ lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
 
 - 黒の実線：実績値
 - 赤の実線：予測値
-- 赤の点線：予測値の95％信頼区間
+- 赤の点線：予測値の95％予測区間
 
 <!-- ```{r echo=FALSE} -->
 <!-- ggplot(test_data, mapping = aes(y = num, x = date)) + -->
@@ -337,8 +336,8 @@ autoplot(result_noholiday$alphahat[, c("level", "sea_dummy1")])
 ##### 予測
 ```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
 # 予測の実行
-# 説明変数を含まないモデルは予測用データの作成は不要
-pred_noholiday <- predict(fit_noholiday$model, n.ahead = 14, interval = "prediction", level = 0.95)
+# 説明変数を含まないモデルは予測用データの作成は不要の代わりに n.ahead で予測期間を指定
+pred_noholiday <- predict(fit_noholiday$model, n.ahead = 14, interval = "prediction")
 
 # 予測結果
 pred_noholiday
@@ -382,7 +381,7 @@ rmse(test_data$num, pred_noholiday[, "fit"])
   - MAPE：0.102（あり）vs. 0.094（なし）
   - RMSE：23.72（あり）vs. 24.52（なし）
 - RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は RMSE が小さいモデルを採択した方がよい
-- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％信頼区間は「説明変数あり」モデルの方が狭くなる
+- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％予測区間は「説明変数あり」モデルの方が狭くなる
 
 
 ## 2.分析例②：時変回帰係数*
@@ -583,7 +582,7 @@ newdata <- SSModel(
 newdata$H <- fit$model$H
 newdata$Q <- fit$model$Q
 
-pred <- predict(fit$model, n.ahead = 24, newdata = newdata, interval = "prediction", level = 0.95)
+pred <- predict(fit$model, newdata = newdata, interval = "prediction")
 
 # モデル比較指標
 mape(test_data$y1, pred[, "fit"])

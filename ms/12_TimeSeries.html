@@ -2954,7 +2954,7 @@ s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0,
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># パラメータの推定</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model, <span class="at">inits =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">3</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># 状態の推定（カルマンフィルタ，平滑化）</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># 状態の推定（カルマンフィルタ＆平滑化）</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">KFS</span>(fit<span class="sc">$</span>model)</span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># 状態の推定値</span></span>
@@ -2974,18 +2974,22 @@ s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0,
 <ul>
 <li><strong><code>model</code></strong>：<code>SSModel</code>
 で作成したモデルの指定</li>
-<li><strong><code>inits</code></strong>：推定パラメータの初期値 ⇒
-<code>SSModel</code> 内の <code>NA</code>
-の数だけ指定（<code>rep(0,3)</code> は0を3つ並べる関数）</li>
+<li><strong><code>inits</code></strong>：推定パラメータの初期値
+<ul>
+<li>パラメータは <code>SSModel</code> のモデル定義で <code>NA</code>
+とした3個の分散パラメータ ⇒ <code>rep(0,3)</code>
+は0を3つ並べる関数</li>
+<li>状態の推定は <code>KFS</code> 関数で行う</li>
+</ul></li>
 <li><code>fitSSM</code> 関数の出力のうちパラメータ推定値は
 <code>model</code>（上記例では
 <code>fit$model</code>）に保存されている。</li>
 </ul>
-<p><strong><code>KFS(model)</code>：状態のフィルタリング＆平滑化（カルマンフィルタ）</strong></p>
+<p><strong><code>KFS(model)</code>：状態の推定（カルマンフィルタによるフィルタリング＆平滑化）</strong></p>
 <ul>
 <li><strong><code>model</code></strong>：<code>fitSSM</code>
-で推定したモデルの指定</li>
-<li><code>KFS</code> 関数の出力のうち平滑化状態の推定値は
+で推定したモデルの指定（<code>fit$model</code>）</li>
+<li><code>KFS</code> 関数の出力のうち平滑化された状態の推定値は
 <code>alphahat</code>（上記例では
 <code>result$alphahat</code>）に保存されている。その他の出力は
 <code>KFS</code> のヘルプの <code>Value</code> を参照。</li>
@@ -3066,28 +3070,26 @@ s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0,
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>newdata<span class="sc">$</span>Q <span class="ot">&lt;-</span> fit<span class="sc">$</span>model<span class="sc">$</span>Q    <span class="co"># システムモデルの分散</span></span>
 <span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># 予測の実行</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit<span class="sc">$</span>model, <span class="at">n.ahead =</span> <span class="dv">14</span>, <span class="at">newdata =</span> newdata, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit<span class="sc">$</span>model, <span class="at">newdata =</span> newdata, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
 <span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># 予測結果</span></span>
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>pred</span></code></pre></div>
-<p><strong><code>predict(model, n.ahead, newdata, interval, level)</code>：予測の実行</strong></p>
+<p><strong><code>predict(model, newdata, interval)</code>：予測の実行</strong></p>
 <ul>
 <li><strong><code>model</code></strong>：<code>fitSSM</code>
 で推定したモデル</li>
-<li><strong><code>n.ahead</code></strong>：予測する期間数</li>
 <li><strong><code>newdata</code></strong>：予測用の説明変数データ
 <ul>
 <li>予測を行う際にも，予測用の説明変数（今回は祝日フラグ）が入った
 <code>SSModel</code> を作成する必要がある</li>
-<li>目的変数（販売本数）は，予測期間分（7日間）の欠損値
-<code>rep(NA, 7)</code> を指定</li>
+<li>目的変数（販売本数）は，予測期間分（14日間）の欠損値
+<code>rep(NA, 14)</code> を指定</li>
 <li>分散パラメータは <code>fitSSM</code> で推定したものを代入</li>
 <li>説明変数がないモデル（例えばトレンドと周期成分のみ）の場合は
 <code>newdata</code> は不要</li>
 </ul></li>
 <li><strong><code>interval</code></strong>：予測の場合は
 <code>prediction</code> を指定</li>
-<li><strong><code>level</code></strong>：予測（信頼）区間の指定</li>
 </ul>
 </div>
 <div id="予測結果の評価" class="section level4">
@@ -3104,11 +3106,11 @@ s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0,
 <span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">lines</span>(test_data<span class="sc">$</span>date, pred[, <span class="st">&quot;fit&quot;</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
 <span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">lines</span>(test_data<span class="sc">$</span>date, pred[, <span class="st">&quot;lwr&quot;</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>)</span>
 <span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="fu">lines</span>(test_data<span class="sc">$</span>date, pred[, <span class="st">&quot;upr&quot;</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="st">&quot;dashed&quot;</span>)</span></code></pre></div>
-<p><strong><code>mae(actual, predicted)</code>, mape(actual,
-predicted)<code>,</code>rmse(actual,
-predicted)`：予測値の評価</strong></p>
+<p><strong><code>mae(actual, predicted)</code>,
+<code>mape(actual, predicted)</code>,
+<code>rmse(actual, predicted)</code>：予測値の評価</strong></p>
 <ul>
-<li><strong><code>actual</code></strong>：実績値</li>
+<li><strong><code>actual</code></strong>：実績値（観測データ）</li>
 <li><strong><code>predicted</code></strong>：予測値
 <ul>
 <li>KFASパッケージの <code>predict</code> 関数の出力の予測値は
@@ -3142,8 +3144,8 @@ predicted)`：予測値の評価</strong></p>
 ## 91 229.8866 186.63759 273.1357</code></pre>
 <ul>
 <li>fit：予測値</li>
-<li>lwr：95％信頼区間の下限</li>
-<li>upr：95％信頼区間の上限</li>
+<li>lwr：95％予測区間の下限</li>
+<li>upr：95％予測区間の上限</li>
 </ul>
 </div>
 <div id="予測結果の評価-1" class="section level5">
@@ -3161,7 +3163,7 @@ predicted)`：予測値の評価</strong></p>
 <ul>
 <li>黒の実線：実績値</li>
 <li>赤の実線：予測値</li>
-<li>赤の点線：予測値の95％信頼区間</li>
+<li>赤の点線：予測値の95％予測区間</li>
 </ul>
 <!-- ```{r echo=FALSE} -->
 <!-- ggplot(test_data, mapping = aes(y = num, x = date)) + -->
@@ -3221,8 +3223,8 @@ s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
 <div id="予測-1" class="section level5">
 <h5>予測</h5>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># 予測の実行</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co"># 説明変数を含まないモデルは予測用データの作成は不要</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>pred_noholiday <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_noholiday<span class="sc">$</span>model, <span class="at">n.ahead =</span> <span class="dv">14</span>, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co"># 説明変数を含まないモデルは予測用データの作成は不要の代わりに n.ahead で予測期間を指定</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>pred_noholiday <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_noholiday<span class="sc">$</span>model, <span class="at">n.ahead =</span> <span class="dv">14</span>, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># 予測結果</span></span>
 <span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>pred_noholiday</span>
@@ -3286,7 +3288,7 @@ s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0,
 </ul></li>
 <li>RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は
 RMSE が小さいモデルを採択した方がよい</li>
-<li>誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％信頼区間は「説明変数あり」モデルの方が狭くなる</li>
+<li>誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％予測区間は「説明変数あり」モデルの方が狭くなる</li>
 </ul>
 </div>
 </div>
@@ -3552,7 +3554,7 @@ Rコード（クリックで表示）
 <span id="cb24-32"><a href="#cb24-32" tabindex="-1"></a>newdata<span class="sc">$</span>H <span class="ot">&lt;-</span> fit<span class="sc">$</span>model<span class="sc">$</span>H</span>
 <span id="cb24-33"><a href="#cb24-33" tabindex="-1"></a>newdata<span class="sc">$</span>Q <span class="ot">&lt;-</span> fit<span class="sc">$</span>model<span class="sc">$</span>Q</span>
 <span id="cb24-34"><a href="#cb24-34" tabindex="-1"></a></span>
-<span id="cb24-35"><a href="#cb24-35" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit<span class="sc">$</span>model, <span class="at">n.ahead =</span> <span class="dv">24</span>, <span class="at">newdata =</span> newdata, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb24-35"><a href="#cb24-35" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit<span class="sc">$</span>model, <span class="at">newdata =</span> newdata, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
 <span id="cb24-36"><a href="#cb24-36" tabindex="-1"></a></span>
 <span id="cb24-37"><a href="#cb24-37" tabindex="-1"></a><span class="co"># モデル比較指標</span></span>
 <span id="cb24-38"><a href="#cb24-38" tabindex="-1"></a><span class="fu">mape</span>(test_data<span class="sc">$</span>y1, pred[, <span class="st">&quot;fit&quot;</span>])</span>
