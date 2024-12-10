@@ -32,7 +32,7 @@ library(kableExtra)
 **緑茶ペットボトルの日次販売本数データ（data_tea.csv）**
 
 - オフィス街のコンビニでの販売データ
-- 13週（91日）のデータを訓練期間11週（77日）と予測期間2週（14日間）に分割して，前半の訓練期間でパラメータを推定，後半の予測期間で予測力の検証を行う
+- 13週（91日）のデータを訓練（パラメータ推定期間）11週（77日）と予測期間2週（14日間）に分割して，前半の訓練期間でモデルを構築し，後半の予測期間で予測力の検証を行う
 
 
 ```{r, echo=FALSE}
@@ -73,13 +73,14 @@ s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0, \sigma^2_s)
 $$
 
 - $y_t$：販売本数
-- $x_t$：祝日ダミー
 - $a_t$：トレンド成分
 - $s_t$：曜日周期成分
+- $x_t$：祝日ダミー
 - $\beta$：祝日効果
 
 
 ### Rコード（推定）
+#### モデルの定義
 ```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
 # パッケージのインストール（初回のみ実行）
 # install.packages("KFAS")  # 状態空間モデルのパッケージ
@@ -100,13 +101,24 @@ model <- SSModel(
   H = NA,
   data = train_data
 )
+```
 
-# 分散パラメータの推定
+**`SSModel(formula, H, data)`：モデルの記述・作成**
+
+- **`formula`**：目的変数・説明変数の指定
+	- `SSMtrend(1, Q = NA)`：1次のトレンド項
+	- `SSMseasonal(period, sea.type = "dummy", Q = NA)`：曜日周期項
+	  - `period` はモデル化する周期 ⇒ 日次データであれば曜日周期で `period = 7`, 月次データであれば月周期で `period = 12`
+	- `Q`：システムモデルの分散（`Q = NA` で分散を推定）
+	- 説明変数は回帰分析などと同様に `+` で追加
+- **`H`**：観測モデルの分散（`H = NA` で分散を推定）
+- **`data`**：観測データの指定
+
+
+#### パラメータ・状態の推定
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide', fig.keep='none'}
+# パラメータの推定
 fit <- fitSSM(model, inits = rep(0, 3))
-
-# 分散パラメータの推定値
-fit$model$H   # 観測モデルの誤差項の分散
-fit$model$Q   # システムモデルの誤差項の分散
 
 # 状態の推定（カルマンフィルタ，平滑化）
 result <- KFS(fit$model)
@@ -117,21 +129,14 @@ result$alphahat
 # （参考）状態の推定値の図示
 # install.packages("ggfortify") # 結果図示用のパッケージ，初回のみ実行
 library(ggfortify)
-autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
+plot_data <- cbind(train_data$num, result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
+colnames(plot_data) <- c("data", "holiday" ,"level", "sea_dummy1")
+autoplot(plot_data)
+
+# （参考）分散パラメータの推定値
+fit$model$H   # 観測モデルの誤差項の分散
+fit$model$Q   # システムモデルの誤差項の分散
 ```
-
-
-**`SSModel(formula, H, data)`：モデルの記述・作成**
-
-- **`formula`**：目的変数・説明変数の指定
-	- `SSMtrend(1, Q = NA)`：1次のトレンド項
-	- `SSMseasonal(period, sea.type = "dummy", Q = NA)`：曜日周期項
-	  - `period` はモデル化する周期 ⇒ 日次データであれば曜日周期で `period = 7`, 月次データであれば月周期で `period = 12`
-	- `Q = NA` ならシステムモデルの分散を推定（＝時変の係数）
-	- `Q`：システムモデルの分散（＝時変の係数）
-- **`H`**：観測モデルの分散（$\sigma^2_y$）
-- **`data`**：観測データの指定
-
 
 **`fitSSM(model, inits)`：パラメータの推定**
 
@@ -147,21 +152,11 @@ autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
 
 
 #### Rコードの出力
-##### パラメータ推定値
-```{r echo=FALSE}
-fit$model$H   # 観測モデルの誤差項の分散
-fit$model$Q   # システムモデルの誤差項の分散
-```
-
-システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $a_t$ の分散 $Q_1$，曜日周期成分 $s_t$ の分散 $Q_2$
-
-
 ##### 状態の推定値（最初の10日分のみ表示）
 ```{r echo=FALSE}
 result$alphahat %>% head(10)
 ```
 
-- result.muhat：観測期間の売上予測値（当てはめ値） ⇒ level + sea_dummy1 + holiday * x
 - holiday：祝日効果 $\beta$ の推定値
 - level：トレンドの推定値
 - sea_dummy1：曜日周期成分の推定値
@@ -169,14 +164,32 @@ result$alphahat %>% head(10)
 
 
 ##### （参考）状態の推定値の図示
+
 ```{r echo=FALSE}
-autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
+autoplot(plot_data)
 ```
 
-上から，祝日効果，トレンド，曜日周期
+<!-- ```{r echo=FALSE} -->
+<!-- autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")]) -->
+<!-- ``` -->
+上から，観測データ，祝日効果，トレンド，曜日周期
 
+
+##### （参考）分散パラメータ推定値
+観測モデルの誤差項の分散
+```{r echo=FALSE}
+fit$model$H   # 観測モデルの誤差項の分散
+```
+
+システムモデルの誤差項の分散
+```{r echo=FALSE}
+fit$model$Q   # システムモデルの誤差項の分散
+```
+
+システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $a_t$ の分散 $\sigma^2_a$，曜日周期成分 $s_t$ の分散 $\sigma^2_s$
 
 ### Rコード（予測）
+#### 予測
 ```{r message=FALSE, warning=FALSE, results='hide', fig.show='hide'}
 # 予測用データの作成
 newdata <- SSModel(
@@ -194,25 +207,6 @@ pred <- predict(fit$model, n.ahead = 14, newdata = newdata, interval = "predicti
 
 # 予測結果
 pred
-
-# 予測結果の評価
-# install.packages("Metrics") # 評価指標計算用のパッケージ, 初回のみ実行
-library(Metrics)
-mape(test_data$num, pred[, "fit"])
-rmse(test_data$num, pred[, "fit"])
-
-# （参考）予測結果の図示
-# install.packages("ggplot2") # 図示用のパッケージ, 初回のみ実行
-library(ggplot2)
-test_data <- cbind(test_data, pred)
-test_data$date <- as.Date(test_data$date)
-
-ggplot(test_data, mapping = aes(y = num, x = date)) +
-  geom_line() +
-  geom_line(aes(y = fit), colour = "red") +
-  geom_line(aes(y = lwr), colour = "red", linetype = "dotted") +
-  geom_line(aes(y = upr), colour = "red", linetype = "dotted") +
-  scale_x_date(date_labels = "%m-%d", date_breaks = "1 days")
 ```
 
 **`predict(model, n.ahead, newdata, interval, level)`：予測の実行**
@@ -228,7 +222,23 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
 - **`level`**：予測（信頼）区間の指定
 
 
-**`mape(actual, predicted)`, `rmse(actual, predicted)`：予測値の評価**
+#### 予測結果の評価
+```{r message=FALSE, warning=FALSE, results='hide', fig.show='hide'}
+# install.packages("Metrics") # 評価指標計算用のパッケージ, 初回のみ実行
+library(Metrics)
+mae(test_data$num, pred[, "fit"])
+mape(test_data$num, pred[, "fit"])
+rmse(test_data$num, pred[, "fit"])
+
+# （参考）予測結果の図示
+test_data$date <- as.Date(test_data$date)
+plot(x = test_data$date, y = test_data$num, type = "l", ylim = c(50, 350), xlab = "date", ylab = "num")
+lines(test_data$date, pred[, "fit"], type = "l", col = "red")
+lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
+lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
+```
+
+**`mae(actual, predicted)`, mape(actual, predicted)`, `rmse(actual, predicted)`：予測値の評価**
 
 - **`actual`**：実績値
 - **`predicted`**：予測値
@@ -241,21 +251,48 @@ ggplot(test_data, mapping = aes(y = num, x = date)) +
 pred
 ```
 
+- fit：予測値
+- lwr：95％信頼区間の下限
+- upr：95％信頼区間の上限
+
+
 ##### 予測結果の評価
+MAE
+```{r echo=FALSE}
+mae(test_data$num, pred[, "fit"])
+```
+
+MAPE
 ```{r echo=FALSE}
 mape(test_data$num, pred[, "fit"])
+```
+
+RMSE
+```{r echo=FALSE}
 rmse(test_data$num, pred[, "fit"])
 ```
 
 ##### （参考）予測結果の図示
 ```{r echo=FALSE}
-ggplot(test_data, mapping = aes(y = num, x = date)) +
-  geom_line() +
-  geom_line(aes(y = fit), colour = "red") +
-  geom_line(aes(y = lwr), colour = "red", linetype = "dotted") +
-  geom_line(aes(y = upr), colour = "red", linetype = "dotted") +
-  scale_x_date(date_labels = "%m-%d", date_breaks = "1 days")
+par(mar=c(3, 3, 1, 1))
+plot(test_data$date, test_data$num, type = "l", ylim = c(50, 350), xlab = "date", ylab = "num")
+lines(test_data$date, pred[, "fit"], type = "l", col = "red")
+lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
+lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
 ```
+
+- 黒の実線：実績値
+- 赤の実線：予測値
+- 赤の点線：予測値の95％信頼区間
+
+<!-- ```{r echo=FALSE} -->
+<!-- ggplot(test_data, mapping = aes(y = num, x = date)) + -->
+<!--   geom_line() + -->
+<!--   geom_line(aes(y = fit), colour = "red") + -->
+<!--   geom_line(aes(y = lwr), colour = "red", linetype = "dotted") + -->
+<!--   geom_line(aes(y = upr), colour = "red", linetype = "dotted") + -->
+<!--   scale_x_date(date_labels = "%m-%d", date_breaks = "1 days") -->
+<!-- ``` -->
 
 
 ### 説明変数を含まないモデル*
@@ -307,6 +344,7 @@ pred_noholiday <- predict(fit_noholiday$model, n.ahead = 14, interval = "predict
 pred_noholiday
 
 # 予測結果の評価
+mae(test_data$num, pred_noholiday[, "fit"])
 mape(test_data$num, pred_noholiday[, "fit"])
 rmse(test_data$num, pred_noholiday[, "fit"])
 ```
@@ -324,14 +362,27 @@ pred_noholiday
 ```
 
 ##### 予測結果の評価
+MAE
+```{r echo=FALSE}
+mae(test_data$num, pred_noholiday[, "fit"])
+```
+
+MAPE
 ```{r echo=FALSE}
 mape(test_data$num, pred_noholiday[, "fit"])
+```
+
+RMSE
+```{r echo=FALSE}
 rmse(test_data$num, pred_noholiday[, "fit"])
 ```
 
-- 説明変数（祝日ダミー）の有無で予測力を比較すると，MAPEでは 0.102（あり）vs. 0.094（なし），RMSEでは  23.7（あり）vs. 24.5（なし）と，2つの指標で評価が分かれる
-  - RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は RMSE が良いモデルを採択した方がよい
-- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％区間は「説明変数あり」モデルの方が狭くなる ⇒ 両モデルの予測結果の出力を比較せよ
+- 説明変数（祝日ダミー）の有無で予測力を比較すると，指標で評価が分かれる
+  - MAE：18.47（あり）vs. 15.99（なし）
+  - MAPE：0.102（あり）vs. 0.094（なし）
+  - RMSE：23.72（あり）vs. 24.52（なし）
+- RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は RMSE が小さいモデルを採択した方がよい
+- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％信頼区間は「説明変数あり」モデルの方が狭くなる
 
 
 ## 2.分析例②：時変回帰係数*
@@ -439,23 +490,24 @@ autoplot(result$alphahat)
 
 ## 3.データ分析実習
 ### データ
-**北海道の月次宿泊者数データ** (hokkaido.csv) 
+**47都道府県の月次宿泊者数データ** (data_travel.csv) 
 
 - データ観測期間は2011年1月～2020年12月の120ヶ月
-- 2020年以降のデータは新型コロナの影響で市場環境が大きく変わっているため，2011年1月～2017年12月（84ヶ月）を訓練期間，2018年1月～2019年12月（24ヶ月）を予測期間として分析を行う
+- 2020年以降のデータは新型コロナの影響で市場環境が大きく変わっているため，2011年1月～2017年12月（84ヶ月）を推定期間，2018年1月～2019年12月（24ヶ月）を予測期間として分析を行う
+- CSVファイルは1行目が県名になっているので，**ファイルを読み込む際は `read.csv("data/data_travel.csv", skip = 1)` として，`skip = 1` を追加**する必要がある
 
 ```{r, echo=FALSE}
-hokkaido <- read.csv("data/hokkaido.csv")
-head(hokkaido)
+data_travel <- read.csv("data/data_travel.csv")
+head(data_travel)
 ```
 
 
 | 変数名 | 内容           |
 | ------ | -------------- |
 | date   | 日付（年-月） |
-| num    | 宿泊者数 （単位・千人）      |
 | leap    | うるう月ダミー       |
 | holiday    | 休日数（土日・祝日）       |
+| y1 ~ y47    | 月次宿泊者数（単位・千人，y1＝北海道 ~ y47＝沖縄）       |
 
 **データ出典**：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html)
 
@@ -463,30 +515,36 @@ head(hokkaido)
 ```{r, echo=FALSE}
 library(lubridate)
 
-hokkaido %>% 
+data_travel <- read.csv("data/data_travel.csv", skip = 1)
+
+data_travel %>% 
   mutate(date = ym(date)) %>% 
-  ggplot(mapping = aes(x = date, y = num)) +
+  ggplot(mapping = aes(x = date, y = y1)) +
   geom_line() +
   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") +
-  labs(title = "北海道の月次宿泊者数データ") +
+  labs(title = "北海道（y1）の月次宿泊者数データ") +
   ylab(label = "宿泊者数（単位：千人）")
 ```
 
 
 ### 課題
-1. データを訓練期間（2011年1月～2017年12月，84ヶ月）と予測期間（2018年1月～2019年12月，24ヶ月）に分割せよ
-2. 訓練期間データで以下の2つの状態空間モデルを推定せよ
-3. 2つのモデルで24ヶ月先までの予測を行い，どちらのモデルの予測精度が高いか予測期間データのMAPEとRMSEで比較せよ
 
-##### **モデル1**
-宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月
+北海道（y1）の月次宿泊者数を予測するモデルを以下の手順で構築せよ。
 
-##### **モデル2**
-宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月 ＋ 休日数
+1. データを訓練期間（2011年1月～2017年12月，84ヶ月）と予測期間（2018年1月～2019年12月，24ヶ月）に分割，
+2. 訓練期間データで以下のモデルの状態空間モデルを推定，
+3. 24ヶ月先までの予測を行いMAPEで予測精度を確認
 
+- 北海道の宿泊者数を目的変数にする場合は `SSModel` の `formula` で目的変数を `y1` と指定すれば良い
+- 時間が余れば他の都道府県でも予測を試してみる
+
+
+##### **モデル**
+月次宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月 ＋ 休日数
 
 - 訓練期間：2011年1月～2017年12月（84ヶ月）⇒ データの1～84行目
 - 予測期間：2018年1月～2019年12月（24ヶ月）⇒ データの85～108行目
+
 
 <br />
 <details><summary>Rコード（クリックで表示）</summary><div>
@@ -496,85 +554,194 @@ library(KFAS)
 library(Metrics)
 
 # データの読み込み
-hokkaido <- read.csv("data/hokkaido.csv")
+data_travel <- read.csv("data/data_travel.csv", skip = 1)
 
 # 訓練・予測期間の分割
-train_data <- hokkaido[1:84,]
-test_data <- hokkaido[85:108,]
+train_data <- data_travel[1:84,]
+test_data <- data_travel[85:108,]
 
-# モデル1
-## モデル定義
-model1 <- SSModel(
-  num ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap,
+# モデル定義
+model <- SSModel(
+  y1 ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
   H = NA,
   data = train_data
 )
 
-## 推定
-fit1 <- fitSSM(model1, inits = rep(0, 3))
-result1 <- KFS(fit1$model)
+# パラメータ・状態の推定
+fit <- fitSSM(model, inits = rep(0, 3))
+result <- KFS(fit$model)
 
-## 予測
-newdata1 <- SSModel(
-  rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap,
+result$alphahat
+
+# 予測
+newdata <- SSModel(
+  rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
   H = NA, 
   data = test_data
 )
 
-newdata1$H <- fit1$model$H
-newdata1$Q <- fit1$model$Q
+newdata$H <- fit$model$H
+newdata$Q <- fit$model$Q
 
-pred1 <- predict(fit1$model, n.ahead = 24, newdata = newdata1, interval = "prediction", level = 0.95)
+pred <- predict(fit$model, n.ahead = 24, newdata = newdata, interval = "prediction", level = 0.95)
 
-# モデル2
-## モデル定義
-model2 <- SSModel(
-  num ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
-  H = NA,
-  data = train_data
-)
+# モデル比較指標
+mape(test_data$y1, pred[, "fit"])
 
-## 推定
-fit2 <- fitSSM(model2, inits = rep(0, 3))
-result2 <- KFS(fit2$model)
-
-## 予測
-newdata2 <- SSModel(
-  rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
-  H = NA,
-  data = test_data
-)
-
-newdata2$H <- fit2$model$H
-newdata2$Q <- fit2$model$Q
-
-pred2 <- predict(fit2$model, n.ahead = 24, newdata = newdata2, interval = "prediction", level = 0.95)
-
-# モデル比較
-rmse(test_data$num, pred1[, "fit"])
-rmse(test_data$num, pred2[, "fit"])
-
-mape(test_data$num, pred1[, "fit"])
-mape(test_data$num, pred2[, "fit"])
-
-# 平滑化状態の図示（モデル1）
+# 状態の推定値の図示
 library(ggfortify)
-autoplot(result1$alphahat[, c("leap" ,"level", "sea_dummy1")])
+plot_data <- cbind(train_data$y1, result$alphahat[, c("leap" , "holiday", "level", "sea_dummy1")])
+colnames(plot_data) <- c("data", "leap" , "holiday", "level", "sea_dummy1")
+autoplot(plot_data)
 
-# （参考）予測期間の実績値と予測値の図示（モデル1）
-test_data <- cbind(test_data, pred1)
-
-library(lubridate)  # 要 lubridate パッケージのインストール
-test_data$date <- ym(test_data$date) # date列（「年-月」表記）をDate形式へ変更
-
-ggplot(test_data, mapping = aes(y = num, x = date)) +
-  geom_line() +
-  geom_line(aes(y = fit), colour = "red") +
-  geom_line(aes(y = lwr), colour = "red", linetype = "dotted") +
-  geom_line(aes(y = upr), colour = "red", linetype = "dotted") +
-  scale_x_date(date_labels = "%Y-%m", date_breaks = "2 months")
+# 予測結果の図示
+library(lubridate)
+test_data$date <- ym(test_data$date)
+plot(x = test_data$date, y = test_data$y1, type = "l", ylim = c(1000, 5000), xlab = "date", ylab = "num")
+lines(test_data$date, pred[, "fit"], type = "l", col = "red")
+lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
+lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
 ```
 </div></details>
+
+
+<!-- ### データ -->
+<!-- **北海道の月次宿泊者数データ** (hokkaido.csv)  -->
+
+<!-- - データ観測期間は2011年1月～2020年12月の120ヶ月 -->
+<!-- - 2020年以降のデータは新型コロナの影響で市場環境が大きく変わっているため，2011年1月～2017年12月（84ヶ月）を訓練期間，2018年1月～2019年12月（24ヶ月）を予測期間として分析を行う -->
+
+<!-- ```{r, echo=FALSE} -->
+<!-- hokkaido <- read.csv("data/hokkaido.csv") -->
+<!-- head(hokkaido) -->
+<!-- ``` -->
+
+
+<!-- | 変数名 | 内容           | -->
+<!-- | ------ | -------------- | -->
+<!-- | date   | 日付（年-月） | -->
+<!-- | num    | 宿泊者数 （単位・千人）      | -->
+<!-- | leap    | うるう月ダミー       | -->
+<!-- | holiday    | 休日数（土日・祝日）       | -->
+
+<!-- **データ出典**：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html) -->
+
+
+<!-- ```{r, echo=FALSE} -->
+<!-- library(lubridate) -->
+
+<!-- hokkaido %>%  -->
+<!--   mutate(date = ym(date)) %>%  -->
+<!--   ggplot(mapping = aes(x = date, y = num)) + -->
+<!--   geom_line() + -->
+<!--   scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") + -->
+<!--   labs(title = "北海道の月次宿泊者数データ") + -->
+<!--   ylab(label = "宿泊者数（単位：千人）") -->
+<!-- ``` -->
+
+
+<!-- ### 課題 -->
+<!-- 1. データを訓練期間（2011年1月～2017年12月，84ヶ月）と予測期間（2018年1月～2019年12月，24ヶ月）に分割せよ -->
+<!-- 2. 訓練期間データで以下の2つの状態空間モデルを推定せよ -->
+<!-- 3. 2つのモデルで24ヶ月先までの予測を行い，どちらのモデルの予測精度が高いか予測期間データのMAPEとRMSEで比較せよ -->
+
+<!-- ##### **モデル1** -->
+<!-- 宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月 -->
+
+<!-- ##### **モデル2** -->
+<!-- 宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月 ＋ 休日数 -->
+
+
+<!-- - 訓練期間：2011年1月～2017年12月（84ヶ月）⇒ データの1～84行目 -->
+<!-- - 予測期間：2018年1月～2019年12月（24ヶ月）⇒ データの85～108行目 -->
+
+<!-- <br /> -->
+<!-- <details><summary>Rコード（クリックで表示）</summary><div> -->
+<!-- ```{r, eval=FALSE} -->
+<!-- # パッケージの読み込み -->
+<!-- library(KFAS) -->
+<!-- library(Metrics) -->
+
+<!-- # データの読み込み -->
+<!-- hokkaido <- read.csv("data/hokkaido.csv") -->
+
+<!-- # 訓練・予測期間の分割 -->
+<!-- train_data <- hokkaido[1:84,] -->
+<!-- test_data <- hokkaido[85:108,] -->
+
+<!-- # モデル1 -->
+<!-- ## モデル定義 -->
+<!-- model1 <- SSModel( -->
+<!--   num ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap, -->
+<!--   H = NA, -->
+<!--   data = train_data -->
+<!-- ) -->
+
+<!-- ## 推定 -->
+<!-- fit1 <- fitSSM(model1, inits = rep(0, 3)) -->
+<!-- result1 <- KFS(fit1$model) -->
+
+<!-- ## 予測 -->
+<!-- newdata1 <- SSModel( -->
+<!--   rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap, -->
+<!--   H = NA,  -->
+<!--   data = test_data -->
+<!-- ) -->
+
+<!-- newdata1$H <- fit1$model$H -->
+<!-- newdata1$Q <- fit1$model$Q -->
+
+<!-- pred1 <- predict(fit1$model, n.ahead = 24, newdata = newdata1, interval = "prediction", level = 0.95) -->
+
+<!-- # モデル2 -->
+<!-- ## モデル定義 -->
+<!-- model2 <- SSModel( -->
+<!--   num ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday, -->
+<!--   H = NA, -->
+<!--   data = train_data -->
+<!-- ) -->
+
+<!-- ## 推定 -->
+<!-- fit2 <- fitSSM(model2, inits = rep(0, 3)) -->
+<!-- result2 <- KFS(fit2$model) -->
+
+<!-- ## 予測 -->
+<!-- newdata2 <- SSModel( -->
+<!--   rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday, -->
+<!--   H = NA, -->
+<!--   data = test_data -->
+<!-- ) -->
+
+<!-- newdata2$H <- fit2$model$H -->
+<!-- newdata2$Q <- fit2$model$Q -->
+
+<!-- pred2 <- predict(fit2$model, n.ahead = 24, newdata = newdata2, interval = "prediction", level = 0.95) -->
+
+<!-- # モデル比較 -->
+<!-- rmse(test_data$num, pred1[, "fit"]) -->
+<!-- rmse(test_data$num, pred2[, "fit"]) -->
+
+<!-- mape(test_data$num, pred1[, "fit"]) -->
+<!-- mape(test_data$num, pred2[, "fit"]) -->
+
+<!-- # 平滑化状態の図示（モデル1） -->
+<!-- library(ggfortify) -->
+<!-- autoplot(result1$alphahat[, c("leap" ,"level", "sea_dummy1")]) -->
+
+<!-- # （参考）予測期間の実績値と予測値の図示（モデル1） -->
+<!-- test_data <- cbind(test_data, pred1) -->
+
+<!-- library(lubridate)  # 要 lubridate パッケージのインストール -->
+<!-- test_data$date <- ym(test_data$date) # date列（「年-月」表記）をDate形式へ変更 -->
+
+<!-- ggplot(test_data, mapping = aes(y = num, x = date)) + -->
+<!--   geom_line() + -->
+<!--   geom_line(aes(y = fit), colour = "red") + -->
+<!--   geom_line(aes(y = lwr), colour = "red", linetype = "dotted") + -->
+<!--   geom_line(aes(y = upr), colour = "red", linetype = "dotted") + -->
+<!--   scale_x_date(date_labels = "%Y-%m", date_breaks = "2 months") -->
+<!-- ``` -->
+<!-- </div></details> -->
 
 
 <!-- ```{r} -->
