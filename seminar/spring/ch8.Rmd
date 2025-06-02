@@ -127,6 +127,10 @@ print(battery)
 color <- c(coef[c("赤", "シルバー")], "黒" = 0)
 color <- color - mean(color)
 print(color)
+
+# グラフ
+ut <- c(warranty, battery, color)
+barplot(ut)
 ```
 
 ### 重要度
@@ -137,6 +141,9 @@ importance <- c(warranty = max(warranty) - min(warranty),
 
 importance <- importance/sum(importance)
 print(importance)
+
+# グラフ
+barplot(importance)
 ```
 
 
