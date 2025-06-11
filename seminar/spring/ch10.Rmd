@@ -1,6 +1,6 @@
 ---
 title: "第10章 顧客の管理"
-date: "更新：`r Sys.time()`"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
 output:
   html_document:
     toc: true
@@ -30,7 +30,7 @@ library(knitr)
 ## データ
 #### RFM.txt
 ```{r}
-RFM <- read.table("data/RFM.txt", header = T, sep = ",")
+# RFM <- read.table("dataset/RFM.txt", header = T, sep = ",")
 RFM <- read.csv("dataset/RFM.txt", header = T)
 ```
 
@@ -45,11 +45,11 @@ head(RFM)
 ```{r message=FALSE}
 library(car)
 R_Rank <- Recode(RFM$R, 
-                 '0:30="R_Rank1"; 
-                  31:60="R_Rank2"; 
+                 '0:30="R_Rank5"; 
+                  31:60="R_Rank4"; 
                   61:90="R_Rank3"; 
-                  91:180="R_Rank4"; 
-                  else="R_Rank5"',
+                  91:180="R_Rank2"; 
+                  else="R_Rank1"',
                  as.factor = TRUE)
 
 F_Rank <- Recode(RFM$F, 
