@@ -1,6 +1,6 @@
 ---
 title: "第9章 新製品の普及"
-date: "更新：`r Sys.time()`"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
 output:
   html_document:
     toc: true
@@ -78,6 +78,23 @@ legend("topright", legend = c("購買者数", "予測"), col = cols, lty = ltys)
 
 
 教科書では図9.12を描くのに予測値を新しい変数として作成してデータセットに追加しているが，`lm` 関数の出力に予測値 `fitted.values` が含まれているため，それを利用した
+
+
+#### ggplot2
+```{r}
+Bass <- Bass %>% 
+  mutate(予測 = result$fitted.values)
+
+plot_data <- Bass %>%
+  select(時点, 購買者数, 予測) %>% 
+  pivot_longer(-時点, names_to = "データ", values_to = "購買者数")
+
+ggplot(plot_data) +
+  aes(x = 時点, y = 購買者数, color = データ) + 
+  geom_line(aes(linetype = データ)) + 
+  geom_point(aes(shape = データ))
+```
+
 
 
 ## 参考：非線形最小二乗法

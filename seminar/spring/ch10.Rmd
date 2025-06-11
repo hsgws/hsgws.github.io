@@ -99,6 +99,31 @@ RFM <- RFM %>%
                             M >= 300000 & M < 500000 ~ "M_Rank4",
                             M >= 500000  ~ "M_Rank5") %>% as.factor())
 
+RFM <- RFM %>% 
+  mutate(
+    # Recency
+    R_Rank = case_when(
+      R > 180 ~ "R_Rank1",
+      R > 90 & R <= 180 ~ "R_Rank2",
+      R > 60 & R <= 90 ~ "R_Rank3",
+      R > 30 & R <= 60 ~ "R_Rank4",
+      R <= 30 ~ "R_Rank5") %>% as.factor(),
+    # Frequency
+    F_Rank = case_when(
+      F == 1 ~ "F_Rank1",
+      F == 2 ~ "F_Rank2",
+      F >= 3 & F < 10 ~ "F_Rank3",
+      F >= 10 & F < 30 ~ "F_Rank4",
+      F >= 30 ~ "F_Rank5") %>% as.factor(),
+    # Monetary
+    M_Rank = case_when(
+      M < 50000 ~ "M_Rank1",
+      M >= 50000 & M < 100000 ~ "M_Rank2",
+      M >= 100000 & M < 300000 ~ "M_Rank3",
+      M >= 300000 & M < 500000 ~ "M_Rank4",
+      M >= 500000  ~ "M_Rank5") %>% as.factor()
+  )
+
 head(RFM)
 ```
 
@@ -122,6 +147,23 @@ boxplot(F ~ R_Rank, data = RFM)
 boxplot(M ~ R_Rank, data = RFM)
 boxplot(F ~ R_Rank, data = RFM)
 ```
+
+#### ggolot2
+```{r fig.show='hold'}
+# 累積購買金額 × R_Rank
+ggplot(data = RFM) +
+  aes(x = R_Rank, y = M, colour = R_Rank) +
+  stat_boxplot(geom = "errorbar", width = 0.3) +
+  geom_boxplot(fill = "lightgray")
+
+# 累積購買回数 × R_Rank
+ggplot(data = RFM) +
+  aes(x = R_Rank, y = F, colour = R_Rank) +
+  stat_boxplot(geom = "errorbar", width = 0.3) +
+  geom_boxplot(fill = "lightgray")
+```
+
+
 
 ### 分散分析
 ```{r, message=FALSE, results='hold'}
