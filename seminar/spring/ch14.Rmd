@@ -1,6 +1,6 @@
 ---
 title: "第14章 定性調査データの分析"
-date: "更新：`r Sys.time()`"
+date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
 output:
   html_document:
     toc: true
@@ -36,26 +36,94 @@ head(CSIdata)
 
 ## 5.6 顧客満足度の分析
 
-教科書では sem パッケージによる分析方法が紹介されているが，以下ではモデルの記述が簡単な lavaan パッケージを利用した方法を紹介する。
+教科書では sem パッケージによる分析方法のみ紹介されているが，以下ではモデルの記述が簡単な lavaan パッケージを利用した方法も紹介する（SEM推定時は lavaan を推奨）。
 推定結果は関数内部の推定アルゴリズムの違いなどによって教科書の結果とは若干異なる。
 また，パス図も EasyGraphviz ではなく，semPlot パッケージを使った作成方法を紹介する。  
-<br />
 
-### パラメータ推定
+### sem：パラメータ推定
+```{r, message=FALSE, results='hide'}
+library(sem)
+
+# 相関係数計算
+co <- cor(CSIdata)
+
+# モデル定義
+model <- specifyModel(text = "
+  知覚品質 -> y1, NA,  1	#測定方程式, 識別性制約のため係数を１に固定
+  知覚品質 -> y2, b12, NA
+  知覚品質 -> y3, b13, NA
+  知覚品質 -> y4, b14, NA
+  顧客期待 -> y5, NA,  1
+  顧客期待 -> y6, b22, NA
+  顧客期待 -> y7, b23, NA
+  顧客満足 -> y8, NA, 1
+  顧客満足 -> y9, b32, NA
+  顧客満足 -> y10, b33, NA
+  y1 <-> y1, e01, NA		#測定方程式の分散設定
+  y2 <-> y2, e02, NA
+  y3 <-> y3, e03, NA
+  y4 <-> y4, e04, NA
+  y5 <-> y5, e05, NA
+  y6 <-> y6, e06, NA
+  y7 <-> y7, e07, NA
+  y8 <-> y8, e08, NA
+  y9 <-> y9, e09, NA
+  y10 <-> y10, e10, NA
+  知覚品質     -> 顧客満足,  b1,NA	#構造方程式
+  顧客期待     -> 顧客満足,  b2,NA
+  顧客期待     -> 知覚品質,  b4,NA
+  知覚品質    <-> 知覚品質 , NA, 1	#構造方程式の分散設定
+  顧客期待    <-> 顧客期待 , NA, 1
+  顧客満足    <-> 顧客満足 , NA, 1
+")
+
+# 推定
+result <- sem(model, S = co, N = 100)
+
+# 結果出力
+summary(
+  result, 
+  fit.indices = c("GFI", "AGFI", "RMSEA","NFI", "NNFI", "CFI", "RNI", "IFI", "SRMR", "AIC", "AICc", "BIC", "CAIC")
+)
+stdCoef(result)
+```
+
+
+#### `sem(model, co, N)`：共分散構造分析の実行
+
+- **`model`**：モデル（パス図）定義
+  - モデルは `specifyModel` で定義する
+  - モデルの書き方は教科書を参照
+  
+- **`S`**：相関係数行列
+- **`N`**：サンプル数
+
+
+```{r, message=FALSE, echo=FALSE}
+summary(
+  result, 
+  fit.indices = c("GFI", "AGFI", "RMSEA","NFI", "NNFI", "CFI", "RNI", "IFI", "SRMR", "AIC", "AICc", "BIC", "CAIC")
+)
+```
+
+
+### lavaan：パラメータ推定
+
+lavaan ではモデル定義に全角文字を含むとエラーが出るため，潜在変数も半角文字で定義した。
+
 ```{r, message=FALSE, results='hide'}
 library(lavaan)
 
 # モデル定義
-model <-　
+model <-
 "
   # 観測モデル
-    知覚品質 =~ y1 + y2 + y3 + y4
-    顧客期待 =~ y5 + y6 + y7
-    顧客満足 =~ y8 + y9 + y10
-    
+    PQ =~ y1 + y2 + y3 + y4
+    CE =~ y5 + y6 + y7
+    CS =~ y8 + y9 + y10
   # 構造モデル
-    知覚品質 ~ 顧客期待
-    顧客満足 ~ 顧客期待 + 知覚品質
+    PQ ~ CE
+    CS ~ CE + PQ
 "
 
 # 推定
@@ -115,7 +183,7 @@ semPaths(result, what = "std", style = "lisrel")
 score <- predict(result)
 
 # CSIスコアの計算
-csscore <- (score[,"顧客満足"] - min(score[,"顧客満足"]))/(max(score[,"顧客満足"]) - min(score[,"顧客満足"]))*100
+csscore <- (score[,"CS"] - min(score[,"CS"]))/(max(score[,"CS"]) - min(score[,"CS"]))*100
 
 mean(csscore)   # 平均値
 median(csscore) # 中央値
@@ -132,7 +200,7 @@ hist(csscore)
 ### パラメータ推定
 ```{r, message=FALSE, results='hide'}
 # 相関係数行列（データ）
-library(sem)
+library(sem)  # readMoments のために読込
 cor <- readMoments(names = c("y1", "y2", "y3", "y4","y5", "y6","y7", "y8", "y9", "y10"),
                    text = "
         1.00
@@ -150,14 +218,14 @@ cor <- readMoments(names = c("y1", "y2", "y3", "y4","y5", "y6","y7", "y8", "y9",
 model <-　
 "
   # 観測モデル
-    信頼性 =~ y1 + y2
-    有形性 =~ y3 + y4
-    応答性 =~ y5 + y6
-    保証性 =~ y7 + y8
-    共感性 =~ y9 + y10
+    Reliability =~ y1 + y2
+    Tangible =~ y3 + y4
+    Responsiveness =~ y5 + y6
+    Assurance =~ y7 + y8
+    Empathy =~ y9 + y10
     
   # 構造モデル
-    知覚品質 =~ 信頼性 + 有形性 + 応答性 + 保証性 + 共感性
+    PQ =~ Reliability + Tangible + Responsiveness + Assurance + Empathy
 "
 
 # 推定
