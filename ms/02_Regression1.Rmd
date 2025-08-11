@@ -324,10 +324,6 @@ result_outlier <- lm(PI_A ~ PriceIndex_A + PriceIndex_B + Display_A + Display_B,
 
 # 推定結果の表示
 summary(result_outlier)
-
-# 除去なしモデルとのAICの比較
-AIC(result)
-AIC(result_outlier)
 ```
 
 #### Rコードの出力
@@ -337,9 +333,9 @@ result_outlier %>%
   summary() %>% 
   print()
 
-cat("\n# 除去なしモデルとのAICの比較\n")
-AIC(result)
-AIC(result_outlier)
+# cat("\n# 除去なしモデルとのAICの比較\n")
+# AIC(result)
+# AIC(result_outlier)
 ```
 
 
