@@ -4,7 +4,7 @@ date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     #number_section: true
     toc_float:
       collapsed: false
@@ -20,6 +20,8 @@ output:
 ```{r setup, include=FALSE}
 # knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+Sys.setenv(LANG = "ja_JP.UTF-8")
+
 library(plotly)
 library(knitr)
 ```
@@ -47,7 +49,9 @@ RStudio のダウンロードページ [RStudio (https://posit.co/download/rstud
 - Mac はユーザーフォルダ（/User/[ユーザー名]）
 
 に Project フォルダと拡張子が「Rproj」のファイルが作成される（例：seminar.Rproj）。
-このファイルを開いて Rstudio を起動すれば，データを読み込む際のパス（保存場所）指定などを簡略化できる。
+このファイルを開いて Rstudio を起動すれば，データを読み込む際のパス（保存場所）指定などを簡略化できる。  
+
+今後のために，Project フォルダをエクスプローラーにピン留めするか，デスクトップにショートカットを作成することを推奨。
 
 \
 図2：Project の作成画面
@@ -89,6 +93,16 @@ R では `<-` の
 - 左側に出力の名前（同じく `sample_data`）
 
 を定義することでプログラムを記述していく。
+
+
+#### データ読込時のエラー
+
+以下のようなエラーが表示される場合は，`read.csv` の引数の場所（`"data/sample_data.csv"`）にデータが保存されてないので，パスが正しいか確認すること。
+
+```{r echo=FALSE, error=TRUE}
+read.csv("sample_data.csv")
+```
+
 
 
 ## 4. プログラムの実行
@@ -206,12 +220,11 @@ RStudio にはコード補完機能があり，関数やデータを途中まで
 
 ## 5. その他
 ### Posit Cloud
-共用パソコンやタブレットなどを利用しており，R と RStudio がインストールできない場合は [Posit Cloud](https://posit.cloud/) で RStudio を利用できる。
+共用パソコンやタブレットなどを利用しており，R と RStudio がインストールできない場合は [Posit Cloud](https://posit.cloud/) でブラウザ上で RStudio を利用できる。
 ただし，無料アカウントの場合は利用可能計算時間（月25時間）や利用可能メモリ（1GB）などの制約がある。登録方法や使い方などは以下の参考リンクを参照。
 
 参考リンク（2026/04/14アクセス）
 
-- [Posit Cloud](https://posit.cloud/)
 - [【インストール不要】WebでRStudioを使える「Posit Cloud」ー無料枠やデータ入出力の解説ー | Hira Labo](https://hira-labo.com/archives/2570)
 - [Posit Cloud (旧RStudio Cloud)とは](https://shunichinomura.github.io/cloud.html)
 
