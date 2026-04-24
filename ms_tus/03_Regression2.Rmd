@@ -90,14 +90,6 @@ $$
 $$\lambda = \exp(\beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2)$$
 がされることもある。これは右辺の目的変数が $\lambda>0$ のため，括弧内がマイナスの値でも左辺はプラスの値になるよう指数変換した表記で，上記式と意味は全く同じである。
 
-**補足**：0以上1未満の数値の対数変換と負の数値の指数変換
-
-- $\log(2) = 0.693$
-- $\log(0.5) = \log(2^{-1}) = -\log(2) = -0.693$
-- $\exp(-2) = e^{-2}=\left(\frac{1}{e}\right)^2 = 0.135$
-- $\log(\exp(a)) = \log_e e^a = a$
-
-
 ### Rコード
 ```{r, results='hide'}
 # データの読み込み
@@ -178,11 +170,60 @@ df %>%
 
 
 ## 補足
+### 負の二項回帰*
+#### モデル
+$$
+y \sim NB(\mu, \theta)
+$$
+$$
+\log(\mu) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2
+$$
+
+- $\mu$ は期待値（平均），$\theta$ はサイズパラメータ
+- $\mu > 0$ の制約があるためポアソン回帰と同じく，対数変換した $\mu$ を目的変数とした回帰モデルで推定する
+- 負の二項分布のパラメータには「期待値 $<$ 分散」の関係があるため，期待値より分散が大きいデータに対応できる
+
+#### Rコード
+```{r, results='hide'}
+# パッケージのインストールと読み込み
+# install.packages("MASS")  # 初回のみ実行
+library(MASS)
+
+# 負の二項回帰の実行
+result_nb <- glm.nb(visits ~ gender + age + income + gender:age, data = data_visit)
+
+# 推定結果の表示
+summary(result_nb)
+
+# ポアソン回帰とのAICの比較
+AIC(result)
+AIC(result_nb)
+```
+
+**`glm.nb(formula, data)`：負の二項回帰モデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`data`**：分析データの指定
+- **`dist`**：確率分布の指定 ⇒ ポアソン回帰の場合は `dist = "poisson"`
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
+result_nb %>% 
+  summary() %>% 
+  print()
+
+cat("\n# ポアソン回帰とのAICの比較\n")
+AIC(result)
+AIC(result_nb)
+```
+
 ### ゼロ過剰モデル*
 
 カウントデータの中には観測値にゼロが多いケースがある。
 ゼロ過剰モデルは，$y = 0$ かどうかを推定するロジスティック回帰と，$y \ge 0$ の場合のカウントデータモデル（ポアソン回帰または負の二項回帰）を組み合わせた手法である。
 
+#### Rコード
 ```{r, results='hide'}
 # パッケージのインストールと読み込み
 # install.packages("pscl")  # 初回のみ実行
@@ -224,50 +265,4 @@ AIC(result_zip)
   - ロジスティック回帰の係数推定値はプラスで有意なら，$y = 0$ となる確率が高まることを意味する
 
 
-### 負の二項回帰*
-#### モデル
-$$
-y \sim NB(\mu, \theta)
-$$
-$$
-\log(\mu) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \beta_4x_1x_2
-$$
 
-- $\mu$ は期待値（平均），$\theta$ はサイズパラメータ
-- $\mu > 0$ の制約があるためポアソン回帰と同じく，対数変換した $\mu$ を目的変数とした回帰モデルで推定する
-- 負の二項分布のパラメータには「期待値 $<$ 分散」の関係があるため，期待値より分散が大きいデータに対応できる
-
-### Rコード
-```{r, results='hide'}
-# パッケージのインストールと読み込み
-# install.packages("MASS")  # 初回のみ実行
-library(MASS)
-
-# 負の二項回帰の実行
-result_nb <- glm.nb(visits ~ gender + age + income + gender:age, data = data_visit)
-
-# 推定結果の表示
-summary(result_nb)
-
-# ポアソン回帰とのAICの比較
-AIC(result)
-AIC(result_nb)
-```
-
-**`glm.nb(formula, data)`：負の二項回帰モデルの推定**
-
-- **`formula`**：目的変数・説明変数の指定
-- **`data`**：分析データの指定
-- **`dist`**：確率分布の指定 ⇒ ポアソン回帰の場合は `dist = "poisson"`
-
-#### Rコードの出力
-```{r, echo=FALSE, results='hold'}
-cat("# 推定結果の表示\n")
-result_nb %>% 
-  summary() %>% 
-  print()
-
-cat("\n# ポアソン回帰とのAICの比較\n")
-AIC(result)
-AIC(result_nb)
-```
