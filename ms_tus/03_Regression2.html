@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">回帰分析②</h1>
-<h4 class="date">更新：2026-04-24</h4>
+<h4 class="date">更新：2026-04-27</h4>
 
 </div>
 
@@ -3240,16 +3240,6 @@ gender × age の交差項</li>
 + \beta_3x_3 + \beta_4x_1x_2)\]</span>
 がされることもある。これは右辺の目的変数が <span class="math inline">\(\lambda&gt;0\)</span>
 のため，括弧内がマイナスの値でも左辺はプラスの値になるよう指数変換した表記で，上記式と意味は全く同じである。</p>
-<p><strong>補足</strong>：0以上1未満の数値の対数変換と負の数値の指数変換</p>
-<ul>
-<li><span class="math inline">\(\log(2) = 0.693\)</span></li>
-<li><span class="math inline">\(\log(0.5) = \log(2^{-1}) = -\log(2) =
--0.693\)</span></li>
-<li><span class="math inline">\(\exp(-2) =
-e^{-2}=\left(\frac{1}{e}\right)^2 = 0.135\)</span></li>
-<li><span class="math inline">\(\log(\exp(a)) = \log_e e^a =
-a\)</span></li>
-</ul>
 </div>
 <div id="rコード" class="section level3">
 <h3>Rコード</h3>
@@ -3276,7 +3266,7 @@ a\)</span></li>
 <li><code>formula</code>の説明変数に文字のみの列を指定すると自動でダミー変数に変換してくれる（上記例では
 gender 列）</li>
 <li><code>formula</code>内の <code>:</code>
-で説明変数変数の交差項を追加できる（上記例では <span class="math inline">\(x_1x_2\)</span> の gender × age）</li>
+で説明変数の交差項を追加できる（上記例では <span class="math inline">\(x_1x_2\)</span> の gender × age）</li>
 </ul>
 <div id="rコードの出力" class="section level4">
 <h4>Rコードの出力</h4>
