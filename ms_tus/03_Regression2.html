@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">回帰分析②</h1>
-<h4 class="date">更新：2026-04-27</h4>
+<h4 class="date">更新：2026-04-29</h4>
 
 </div>
 
@@ -3405,8 +3405,6 @@ y \sim NB(\mu, \theta)
 <ul>
 <li><strong><code>formula</code></strong>：目的変数・説明変数の指定</li>
 <li><strong><code>data</code></strong>：分析データの指定</li>
-<li><strong><code>dist</code></strong>：確率分布の指定 ⇒
-ポアソン回帰の場合は <code>dist = &quot;poisson&quot;</code></li>
 </ul>
 </div>
 <div id="rコードの出力-1" class="section level4">
@@ -3452,7 +3450,7 @@ y \sim NB(\mu, \theta)
 ゼロ過剰モデルは，<span class="math inline">\(y = 0\)</span>
 かどうかを推定するロジスティック回帰と，<span class="math inline">\(y
 \ge 0\)</span>
-の場合のカウントデータモデル（ポアソン回帰または負の二項回帰）を組み合わせた手法である。</p>
+の場合のカウントデータモデル（ポアソン回帰や負の二項回帰）を組み合わせた手法である。</p>
 <div id="rコード-2" class="section level4">
 <h4>Rコード</h4>
 <div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># パッケージのインストールと読み込み</span></span>
