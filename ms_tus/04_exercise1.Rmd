@@ -1,0 +1,183 @@
+---
+title: "データ分析実習①"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+## 実習 1
+### データ
+**ツナ缶の週次販売データ**（data_tuna.csv）
+
+- 観測期間：338週
+
+```{r, echo=FALSE}
+data_tuna <- read.csv("data/data_tuna.csv")
+head(data_tuna) %>% 
+  kbl() %>% 
+  kable_styling("striped", full_width = F) %>% 
+  scroll_box(width = "100%")
+```
+\
+
+| 変数            | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| LMOVE1           | ブランド1の週間販売数量の対数値                              |
+| NSALE1 ~ NSALE7 | ブランド1～7の週間特別陳列実施率（1週間の内で毎日実施していれば1） |
+| LPRICE1 ~ LPRICE7 | ブランド1～7の週間平均価格の対数値                           |
+
+**データ出典** ： bayesm パッケージの tuna データ（実習用に一部変更）
+
+
+### 課題
+以下のモデルで，回帰係数 ($\alpha_0, \beta_1, \dots, \beta_7, \gamma_1, \dots, \gamma_7$) を推定し，各説明変数の目的変数への影響を考察せよ。
+
+#### モデル
+$$
+LMOVE_1 = \alpha_0 + \sum_{i=1}^7 \beta_i NSALE_i + \sum_{i=1}^7 \gamma_i LPRICE_i + \varepsilon
+$$
+
+**目的変数**：ブランド1の販売数量の対数値 (LMOVE1)  
+**説明変数**：ブランド1～7の週間特別陳列実施率 (NSALE1 ~ NSALE7) と週間平均価格の対数値 (LPRICE1 ~ LPRICE7)
+
+（注）データファイル内のブランド1の週間販売数量（LMOVE1）とブランド1～7の週間平均価格（LPRICE1 ~ LPRICE7）は対数変換済み。
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+data_tuna <- read.csv("data/data_tuna.csv")
+
+# 回帰分析の実行
+result <- lm(LMOVE1 ~ NSALE1 + NSALE2 + NSALE3 + NSALE4 + NSALE5 + NSALE6 + NSALE7 +
+               LPRICE1 + LPRICE2 + LPRICE3 + LPRICE4 + LPRICE5 + LPRICE6 + LPRICE7, 
+             data = data_tuna)
+# または以下でも実行可能（"LMOVE1 ~ ." でLMOVE1以外の変数を全て説明変数として指定）
+# result <- lm(LMOVE1 ~ ., data = data_tuna)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
+
+
+## 実習 2
+### データ
+
+**商品Aの日時販売点数データ**（count_data.csv）
+
+- サンプル数：361日間
+
+```{r, echo=FALSE}
+count_data <- read.csv("data/count_data.csv")
+head(count_data) %>% 
+  kbl() %>% 
+  kable_styling("striped", full_width = T) %>% 
+  scroll_box(width = "100%")
+```
+\
+
+| 変数 | 内容              |
+| ---- | ----------------- |
+| TID  | 時点（単位：1日） |
+| y    | 商品Aの販売点数          |
+| x1   | 商品Aの価格掛率  |
+| x2   | 商品Aのエンド（ダミー変数）    |
+| x3   | 商品Aのチラシ（ダミー変数）    |
+| x4   | 商品B（競合）の価格掛率  |
+| x5   | 商品B（競合）のエンド（ダミー変数）    |
+| x6   | 商品B（競合）のチラシ（ダミー変数）    |
+| k    | 当日の来店客数    |
+
+**データ出典** ： 照井・佐藤（2022）「現代マーケティング・リサーチ（新版）」有斐閣，第16章
+
+
+```{r, echo=FALSE, results='hold'}
+d <- data.frame(x = 0:max(count_data$y), y = 0)
+
+for (i in 0:max(count_data$y)) {
+  d$y[i] <- sum(count_data$y == i)
+}
+
+d %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_bar(stat = "identity") +
+  labs(title = "商品Aの販売点数", x = "販売点数", y = "日数") +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+### 課題
+以下のオフセット項を含むポアソン回帰モデルで，回帰係数 ($\beta_0, \beta_1, \dots, \beta_6$) を推定し，各説明変数の目的変数への影響を考察せよ。
+
+#### モデル
+$$
+y \sim Poisson(\lambda)
+$$
+
+$$
+\log(\lambda) = \log(k) + \beta_0 + \sum_{k=1}^6 \beta_k x_k \\
+\text{or} \quad \lambda = k\exp\left(\beta_0 + \sum_{k=1}^6 \beta_k x_k\right) 
+$$
+
+**目的変数**：販売点数（y）  
+**説明変数**：自己の価格掛率・エンド・チラシ（x1, x2, x3）と競合の価格掛率・エンド・チラシ（x4, x5, x6）
+
+<!-- 来店客数 k はオフセット項として利用する。 -->
+<!-- Rの実行コードではオフセット項を含むモデルは以下のように，`glm` 関数の引数に `offset = log(k)` を追加することで実行できる（`y ~ x, family, data` 部分は本課題のモデル・データに合わせて変更が必要）。 -->
+
+<!-- `result <- glm(y ~ x, family, data, offset = log(k))` -->
+
+来店客数 k はオフセット項として利用する。
+Rの実行コードではオフセット項を含むモデルは
+
+　　`glm(y ~ x, family, data, offset = log(k))`
+
+のように，`glm` 関数の引数に `offset = log(k)` を追加することで実行できる。
+`y ~ x, family, data` 部分は本課題のモデル・データに合わせて変更すること。
+
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+count_data <- read.csv("data/count_data.csv")
+
+# オフセット項ありポアソン回帰の実行
+result <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data, offset = log(k))
+
+# 推定結果の表示
+summary(result)
+
+#（参考）オフセット項なしのモデル
+result_no.offset <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data)
+summary(result_no.offset)
+```
+</div></details>
