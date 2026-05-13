@@ -1,6 +1,6 @@
 ---
 title: "第6章 市場の発見と知覚マップ"
-date: "更新：`r Sys.time()`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document: 
     toc: true
@@ -30,14 +30,6 @@ library(knitr)
 #### senbei.txt
 ```{r message=FALSE}
 senbei <- read.table("dataset/senbei.txt", header = T, sep = "\t", row.names = 1)
-
-# または
-library(tidyverse)
-senbei <- read_table("dataset/senbei.txt")
-
-senbei <- senbei %>% 
-  column_to_rownames("製品名")
-  
 ```
 
 ```{r, echo=FALSE}
@@ -47,7 +39,6 @@ head(senbei)
 後の知覚マップ作成時にブランド名をマップ上に載せるため，データの第1列のブランド名を行名として読み込む
 
 - `read.table` 関数の場合はデータの1列目（"製品"）を行名に指定する引数 `row.names = 1` を追加
-- `read_table` 関数の場合はデータ読込後に `column_to_rownames` 関数で"製品"列を行名に変更
 
 
 ## 4.1 相関係数行列

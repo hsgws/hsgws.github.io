@@ -1,6 +1,6 @@
 ---
 title: "第8章 製品開発"
-date: "更新：`r Sys.time()`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -35,7 +35,6 @@ conjoint1 <- read.table("dataset/conjoint1.txt", header = T)
 
 - 元データの列名は「6時間」や「2年」で作成されているが，列名の先頭文字に数値は避けた方がよい
 - 列名の先頭文字に数値の場合は `read.table` 関数はデータ読込時に列名の先頭に "X" を自動で追加する
-- `tidyverse` の `read.table` 関数は列名の先頭文字が数値でもそのまま列名として読み込んでしまい，回帰分析で変数指定時に通常の方法ではエラーが発生するため，今回は `read.table` 関数でデータを読み込んだ
 
 
 ```{r, echo=FALSE}
@@ -46,11 +45,6 @@ conjoint1
 ```{r}
 result1 <- lm(全体効用 ~ X2年 + X4時間 + X6時間 + シルバー + 赤, data = conjoint1)
 summary(result1)
-
-# tidyverse
-# conjoint1 <- read_table("dataset/conjoint1.txt")
-# result1 <- lm(全体効用 ~ `2年` + `4時間` + `6時間` + シルバー + 赤, data = conjoint1)
-# summary(result1)
 ```
 
 - 重回帰分析（`lm` 関数）でコンジョイント分析を行う場合，部分効用や重要度は手計算かExcelを利用した方が早い。グラフ化も同様。
@@ -223,10 +217,4 @@ print(orth)
 - 教科書の直行表と conjoint パッケージで作成される直行表は若干異なり，教科書データを使った分析ができないため，ここでは直行表の作成方法の紹介までとする 
 - 直行表を使った集計分析の方法は conjoint パッケージのヘルプ（Rで `??conjoint` を実行）を参照するか，ネットで検索
 - **教科書の直行表の一部は間違っているようなので利用しないこと**
-
-
-## 参考2：選択ベース・コンジョイント
-
-[続・農産物マーケティング活動の手引き - 宮城県公式ウェブサイト](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) の [選択型コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) が参考になる。
-このサイトではExcelで部分効用の推定を行っているが，R では教科書11章で利用する mlogit パッケージで分析できる。
 

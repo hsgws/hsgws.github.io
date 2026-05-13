@@ -1,6 +1,6 @@
 ---
 title: "第11章 市場反応分析 (II)"
-date: "更新：`r Sys.time()`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -30,24 +30,20 @@ library(knitr)
 ## データ
 #### binomial-choice.txt
 
-変数名に "-" は使えないので，"." に変更（binomial-choice → binomial.choice)。
+変数名にマイナス記号 "-" は使えないので，アンダーバー "_" に変更（binomial-choice → binomial_choice)。
 
 ```{r message=FALSE, warning=FALSE}
-binomial.choice <- read.table("dataset/binomial-choice.txt", header = TRUE)
-
-# または
-library(tidyverse)
-binomial.choice <- read_table("dataset/binomial-choice.txt")
+binomial_choice <- read.table("dataset/binomial-choice.txt", header = TRUE)
 ```
 
 ```{r, echo=FALSE}
-head(binomial.choice)
+head(binomial_choice)
 ```
 
 ## 3.1 ブランド価値を含むモデル
 ### ロジット・モデル
 ```{r}
-logit <- glm(B1 ~ (P1 - P2), data = binomial.choice, family = binomial)
+logit <- glm(B1 ~ (P1 - P2), data = binomial_choice, family = binomial)
 summary(logit)
 ```
 
@@ -57,15 +53,15 @@ summary(logit)
 
 ### プロビット・モデル
 ```{r}
-probit <- glm(B1 ~ (P1 - P2), data = binomial.choice, family = binomial(link = "probit"))
+probit <- glm(B1 ~ (P1 - P2), data = binomial_choice, family = binomial(link = "probit"))
 summary(probit)
 ```
 
 
 ## 3.2 ブランド価値を含まないモデル
 ```{r}
-logit <- glm(B1 ~ 0 + (P1 - P2), data = binomial.choice, family = binomial)
-# または logit <- glm(B1 ~ (P1 - P2) - 1, data = binomial.choice, family = binomial)
+logit <- glm(B1 ~ 0 + (P1 - P2), data = binomial_choice, family = binomial)
+# または logit <- glm(B1 ~ (P1 - P2) - 1, data = binomial_choice, family = binomial)
 summary(logit)
 ```
 

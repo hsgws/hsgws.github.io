@@ -1,6 +1,6 @@
 ---
 title: "第14章 定性調査データの分析"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true

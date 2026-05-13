@@ -1,6 +1,6 @@
 ---
 title: "第7章 市場セグメンテーション"
-date: "更新：`r Sys.time()`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -30,15 +30,11 @@ library(knitr)
 ## データ
 #### seg.txt
 ```{r message=FALSE}
-# seg <- read.table("dataset/seg.txt", header = T, sep = ",")
-seg <- read.csv("dataset/seg.txt")
-
-# または
-library(tidyverse)
-seg <- read_csv("dataset/seg.txt")
+seg <- read.table("dataset/seg.txt", header = T, sep = ",")
+# seg <- read.csv("dataset/seg.txt")
 ```
 
-`seg.txt` は拡張子は "txt" だが，中身はカンマ区切りの CSV ファイルのため，`read.csv` または `read_csv` で読み込める。
+`seg.txt` は拡張子は "txt" だが，中身はカンマ区切りの CSV ファイルのため，`read.csv` でも読み込める。
 
 
 ```{r, echo=FALSE}
@@ -146,31 +142,3 @@ mean(seg$投資経験年数)    # データ全体の平均
 ```{r, results='hold', echo=FALSE}
 prop.table(xtabs(~ Cluster$cluster + seg$取引形態), 1)
 ```
-
-
-### tidyverse
-```{r message=FALSE, results='hold'}
-## seg データにクラスタ番号を追加
-seg <- data.frame(seg, cluster = Cluster$cluster)
-
-## 表 7.10 ~ 7.12
-seg %>% 
-  group_by(cluster) %>% 
-  summarise(male_ratio = mean(性別 == 1),
-            age_mean = mean(年齢),
-            year_mean = mean(投資経験年数))
-
-## 表 7.13
-seg %>% 
-  group_by(cluster, 取引形態) %>% 
-  summarise(n = n()) %>% 
-  mutate(ratio = n/sum(n)) 
-
-### pivot_wider で表をクロス集計表に変更
-seg %>% 
-  group_by(cluster, 取引形態) %>% 
-  summarise(n = n()) %>% 
-  mutate(ratio = n/sum(n)) %>% 
-  pivot_wider(id_cols = cluster, names_from = 取引形態, values_from = ratio)
-```
-
