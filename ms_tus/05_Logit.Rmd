@@ -88,6 +88,9 @@ result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomi
 
 # 推定結果の表示
 summary(result)
+
+# オッズ比
+exp(coef(result))
 ```
 
 **`glm(formula, family, data)` ：二項ロジットモデルの推定**
@@ -224,6 +227,9 @@ result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
 
 # 推定結果の表示
 summary(result)
+
+# オッズ比
+exp(coef(result))
 ```
 
 

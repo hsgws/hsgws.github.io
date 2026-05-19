@@ -2834,7 +2834,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2026-05-13</h4>
+<h4 class="date">更新：2026-05-19</h4>
 
 </div>
 
@@ -2955,7 +2955,10 @@ Email と Womens Email
 <span id="cb1-5"><a href="#cb1-5"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(visit <span class="sc">~</span> recency <span class="sc">+</span> <span class="fu">log</span>(history) <span class="sc">+</span> newbie <span class="sc">+</span> segment, <span class="at">family =</span> binomial, <span class="at">data =</span> data_email)</span>
 <span id="cb1-6"><a href="#cb1-6"></a></span>
 <span id="cb1-7"><a href="#cb1-7"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">summary</span>(result)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># オッズ比</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span></code></pre></div>
 <p><strong><code>glm(formula, family, data)</code>
 ：二項ロジットモデルの推定</strong></p>
 <ul>
@@ -3196,7 +3199,10 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 <span id="cb5-20"><a href="#cb5-20"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(Choice <span class="sc">~</span> Price <span class="sc">+</span> Display <span class="sc">+</span> Ad, <span class="at">data =</span> soydata, <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span>)</span>
 <span id="cb5-21"><a href="#cb5-21"></a></span>
 <span id="cb5-22"><a href="#cb5-22"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="fu">summary</span>(result)</span>
+<span id="cb5-24"><a href="#cb5-24"></a></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co"># オッズ比</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span></code></pre></div>
 <p><strong><code>mlogit.data(data, choice, shape, varying, sep)</code>：mlogit
 パッケージ用にデータを変換</strong></p>
 <ul>
