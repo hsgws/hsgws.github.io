@@ -1,0 +1,212 @@
+---
+title: "データ分析実習①"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+## 実習 1
+### データ
+
+**牛乳に関する選択ベース・コンジョイント分析データ (data_milk.csv)**
+```{r, echo=FALSE}
+data_milk <- read_csv("data/data_milk.csv")
+head(data_milk) %>%
+  kbl() %>%
+  kable_styling("striped") %>%
+  scroll_box(width = "100%")
+```
+\
+
+| 変数              | 内容                                      |
+| ----------------- | ----------------------------------------- |
+| id                | 回答者ID（1～10）                          |
+| experiment        | 質問番号（1～8）                          |
+| choice            | 選択結果                                  |
+| int.A ~ int.C     | 切片（int.A = 1，int.B = 1，int.C = 0）   |
+| haccp.A ~ haccp.C | HACCPラベル（厳格な衛生管理の証明）の有無 |
+| eco.A ~ eco.C     | エコラベルの有無                          |
+| price.A ~ price.C | 1リットルあたり価格（145円，150円，155円，160円）        |
+
+
+**データ出典** ：
+
+- [Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://doi.org/10.3173/air.17.86)
+<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) -->
+
+
+### 補足説明
+コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。
+
+| 属性        | 水準                        |
+| ----------- | ---------------------------|
+| HACCPラベル	| あり，なし （2水準）	    |
+| エコラベル	| あり，なし （2水準）			|
+| 1リットルあたり価格	| 145円，150円，155円，160円 （4水準）	|
+
+コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。
+牛乳データでは，3属性とそれぞれの水準数を単純に掛け合わせると，2×2×4＝16通りの製品案が作成されるが，直行表を使うことによって比較する製品案を8通りまで減らすことができる。
+
+選択型コンジョイント（または選択ベース・コンジョイント）では1人の消費者に対して以下の手順で製品案に対する選好を調査する。 
+
+1. 全ての製品案から2つの製品案をランダムに選ぶ
+2. 2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう
+3. 同じ消費者に1と2を何回か繰り返す
+
+本実習のデータの場合は，回答者10人に対して1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。 
+このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。
+
+コンジョイント分析に関しては，以下の参考文献などを参照されたい。
+
+- [照井・佐藤（2013）『現代マーケティング・リサーチ 新版』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641166080)，第8章 
+
+### 課題
+以下のモデルで多項ロジットモデルを用いて選択型コンジョイント分析を行い，消費者の牛乳選択における各属性の影響を考察せよ。
+
+**目的変数**：選択結果 (choice)  
+**説明変数**：HACCPラベル (haccp)，エコラベルの有無 (eco)，1リットルあたり価格 (price)
+
+
+#### 効用関数
+$$
+\begin{align}
+U_j &= \beta_0 + \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} + \beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\
+U_C &= 0 + \varepsilon_C
+\end{align}
+$$
+
+- 選択肢 A・B は直交表から作成された製品案，選択肢 C は「どちらも買わない」を表す
+- 価格はダミー変数化せずにそのままの数値を説明変数として利用する
+- 選択肢 A・B は共通の切片 $\beta_0$（＝「どちらも買わない」に対する牛乳の選好のベースライン）を持つ
+  - データ内に "int" として共通の切片が含まれるため，`mlogit` 関数のモデル定義式（`formula`）で自動で追加される切片を除く必要がある  
+  ⇒ `formula`：`choice ~ 0 + int + haccp + eco + price` （`0 +` で切片を削除）
+
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+library(mlogit)
+
+# データの読み込み
+data_milk <- read.csv("data/data_milk.csv")
+
+# mlogit 関数用にデータを加工
+data_milk_mlogit <- mlogit.data(
+  data_milk, 
+  choice = "choice", 
+  shape = "wide", 
+  varying = 4:15, 
+  sep = "."
+)
+
+# 多項ロジットモデルの推定
+result <- mlogit(
+  choice ~ 0 + int + haccp + eco + price,
+  data = data_milk_mlogit,
+  reflevel = "C"
+)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
+
+
+## 実習 2
+### データ
+**電話回線の契約データ** (data_churn.csv)
+
+```{r, echo=FALSE}
+data_churn <- read_csv("data/data_churn.csv")
+head(data_churn)
+```
+
+| 変数             | 内容                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| customerID       | 顧客ID                                                       |
+| **gender**           | **性別 (Male, Female)**                                          |
+| **SeniorCitizen**    | **高齢者フラグ (1＝高齢者, 0＝それ以外)**                        |
+| **Partner**          | **パートナーの有無 (Yes, No)**                                   |
+| **Dependents**       | **扶養家族の有無 (Yes, No)**                                     |
+| **tenure**           | **電話回線の契約月数**                                                     |
+| PhoneService     | 電話回線サービスの契約 (Yes, No)                             |
+| MultipleLines    | 複数回線の契約 ("Yes", "No", "No phone service")             |
+| InternetService  | インターネット回線の契約 ("DSL", "Fiber optic", "No")        |
+| OnlineSecurity   | セキュリティ・サービスの契約 ("Yes", "No", "No internet service") |
+| OnlineBackup     | バックアップ・サービスの契約 ("Yes", "No", "No internet service") |
+| DeviceProtection | 機器保証サービスの契約 ("Yes", "No", "No internet service")  |
+| TechSupport      | 技術サポートの契約 ("Yes", "No", "No internet service")      |
+| StreamingTV      | TVストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| StreamingMovies  | 映画ストリーミング・サービスの契約 ("Yes", "No", "No internet service") |
+| Contract         | 契約形態 ("Month-to-month"＝月次契約, "One year"＝1年契約,  "Two year"＝2年契約) |
+| PaperlessBilling | ペーパーレス請求書サービスの利用 ("Yes", "No")               |
+| PaymentMethod    | 料金支払い方法 </br> ("Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)") |
+| **MonthlyCharges**   | **月額料金**                                                     |
+| TotalCharges     | 総支払い金額                                                 |
+| **Churn**            | **電話回線の解約の有無 ⇒ 1＝解約済み, 0＝契約中（打ち切り) **                                    |
+
+（太字は分析で利用する変数）  
+</br>
+
+
+**データ出典**：[Telco Customer Churn | Kaggle](https://www.kaggle.com/blastchar/telco-customer-churn)
+
+<!-- - [Cognos Analytics - IBM Business Analytics Community](https://community.ibm.com/community/user/businessanalytics/blogs/steven-macko/2017/06/19/guide-to-ibm-cognos-analytics-sample-data-sets)  -->
+<!-- customer_churn_analysis/WA_Fn-UseC_-Telco-Customer-Churn.csv at master · treselle-systems/customer_churn_analysis · GitHub -->
+<!-- https://github.com/treselle-systems/customer_churn_analysis/blob/master/WA_Fn-UseC_-Telco-Customer-Churn.csv -->
+
+<!-- Business Analytics - IBM Business Analytics Community -->
+<!-- https://community.ibm.com/community/user/businessanalytics/participate/blogs/blogviewer?BlogKey=FF811D76-ABE0-4DF2-BCEA-917176FD72E4 -->
+
+
+
+### 課題
+
+以下のモデルでCox比例ハザードモデルを推定し，各説明変数が解約までの時間に与える影響を考察せよ。
+
+**目的変数**：tenure（電話回線の契約月数），Churn（電話回線の解約の有無）  
+**説明変数**：gender, SeniorCitizen, Partner, Dependents, MonthlyCharges
+
+- Churn は打ち切りを表すダミー変数で，0 は観測終了時点で契約中（＝打ち切り）を意味する。
+- データ内で文字列で記録されている説明変数は（例：gender = Male または Female），R のモデル式 (fourmula) でそのまま指定すれば，R 内部で自動的にダミー変数に変換されて回帰係数が出力される。推定結果を解釈する際にはどの水準がダミー変数の基準になっているかを注意。
+
+</br>
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読込
+data_churn <- read.csv("data/data_churn.csv")
+
+# survival パッケージの読込み
+library(survival)
+
+# Cox比例ハザードモデルの推定
+result <- coxph(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges,
+                data = data_churn)
+
+# 推定結果の表示
+summary(result)
+```
+</div></details>
