@@ -1,0 +1,277 @@
+---
+title: "共分散構造分析"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+```
+
+## 分析例
+### データ
+**大学に対する満足度調査**（data_cs.csv）
+
+```{r, echo=FALSE}
+data_cs <- read.csv("data/data_cs.csv")
+head(data_cs)
+```
+
+| 変数 | 内容                                   |潜在変数	|
+| ---- | -------------------------------------- | ----------- |
+| CE1 | 入学前に期待していた大学の総合的な品質 |顧客期待（CE）|
+| CE2 | 入学前に期待していた学生生活の充実度   |顧客期待（CE）|
+| CE3 | 入学前に期待していた大学の信頼度       |顧客期待（CE）|
+| PQ1 | 現在感じている大学の総合的な品質       |知覚品質（PQ）|
+| PQ2 | 現在感じている学生生活の充実度         |知覚品質（PQ）|
+| PQ3 | 現在感じている大学の信頼度             |知覚品質（PQ）|
+| CS1 | 大学に対する総合的な満足度             |顧客満足（CS）|
+| CS2 | 入学前の期待と比べた現在の大学の評価   |顧客満足（CS）|
+| CS3 | 他大学と比較したときの評価             |顧客満足（CS）|
+
+
+**データ出典**：学部授業でアンケートを実施（2018年度）
+
+- 顧客期待（CE：Consumer Expectation），知覚品質（PQ：Perceptual Quality），顧客満足（CS：Consumer Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度（1＝低い ～ 7＝高い）でアンケート収集
+- サンプル数は100
+- 分析例作成のために元データからシミュレーションデータを生成
+
+
+### モデル（パス図）
+<br />
+<!-- ![](fig/cs.png =100x) -->
+<div style="text-align: center;">
+<img src="fig/cs.png" width="40%">
+</div>
+
+<!-- #### 数式表記 -->
+<!-- 測定方程式（確認的因子分析） -->
+<!-- $$ -->
+<!-- y_1 = \lambda_{11} CE + e_1 \\ -->
+<!-- y_2 = \lambda_{21} CE + e_2 \\ -->
+<!-- y_3 = \lambda_{31} CE + e_3 \\ -->
+<!-- y_4 = \lambda_{42} PQ + e_4 \\ -->
+<!-- y_5 = \lambda_{52} PQ + e_5 \\ -->
+<!-- y_6 = \lambda_{62} PQ + e_6 \\ -->
+<!-- y_7 = \lambda_{73} CS + e_7 \\ -->
+<!-- y_8 = \lambda_{83} CS + e_8 \\ -->
+<!-- y_9 = \lambda_{93} CS + e_9 -->
+<!-- $$ -->
+
+<!-- 構造方程式（回帰分析） -->
+<!-- $$ -->
+<!-- PQ = \beta_{11} CE + v_1 \\ -->
+<!-- CS = \beta_{21} CE + \beta_{22} PQ + v_2 -->
+<!-- $$ -->
+
+
+### Rコード
+```{r message=FALSE, warning=FALSE, results='hide'}
+# lavaan パッケージのインストール（初回のみ実行）
+# install.packages("lavaan") 
+
+# パッケージの読込み
+library(lavaan)
+
+# データの読み込み
+data_cs <- read.csv("data/data_cs.csv")
+
+# モデル（パス図）定義
+model <- "
+  # 測定方程式
+    CE =~ CE1 + CE2 + CE3  # 顧客期待 (CE)
+    PQ =~ PQ1 + PQ2 + PQ3  # 知覚品質 (PQ)
+    CS =~ CS1 + CS2 + CS3  # 顧客満足 (CS)
+  # 構造方程式
+    PQ ~ CE
+    CS ~ CE + PQ
+"
+
+# パラメータ推定
+result <- sem(model, data = data_cs)
+
+# 推定結果
+summary(result, standardized = TRUE)
+
+# 適合度指標
+fitMeasures(result, fit.measures = c("gfi", "rmsea"))
+```
+
+**`sem(model, data)`：共分散構造分析の実行**
+
+- **`model`**：モデル（パス図）定義
+  - モデルは " "（または ' '）で囲んで定義する
+  - モデルの書き方は下記を参照
+  
+- **`data`**：分析データの指定  
+- 出力（上記コードでは `result`）の `summary` に `standardized = TRUE` を追加すると標準化パス係数が出力される
+
+
+**`fitMeasures(object, fit.measures)`：適合度指標の出力**
+
+- **`object`**：`sem` の出力（推定結果）
+- **`fit.measures`**：出力する適合度指標，省略すると全ての指標が出力される
+
+
+
+#### モデル（パス図）定義の書き方
+
+**測定方程式**
+
+- 「潜在変数 =~ 観測変数1 + 観測変数2」のように，`=~` の左側に潜在変数，右側に潜在変数を構成する観測変数を記述
+- 観測変数が2個以上ある場合は `+` で追加する
+
+
+**構造方程式**
+
+- 「潜在変数1 ~ 潜在変数2 + 潜在変数3」のように，`~` の左側に「矢印を受ける潜在変数（終点）」，「矢印を出す潜在変数（始点）」を記述
+- 複数の始点がある場合は `+` で追加する
+- 潜在変数間の相関関係をモデル化したい場合は「潜在変数1 ~~ 潜在変数2」のように，`~~` で潜在変数をつなげる
+
+
+#### Rコードの出力
+##### 推定結果
+```{r, echo=FALSE}
+smry <- summary(result, standardized = TRUE)
+smry
+```
+
+##### 適合度指標
+```{r, echo=FALSE}
+fitMeasures(result, fit.measures = c("gfi", "rmsea"))
+```
+
+
+### 推定結果
+（潜在変数間のパス係数のみ記載）
+```{r, echo=FALSE}
+par <- smry$pe
+result.df <- data.frame(#rname = c("知覚品質 ← 顧客期待", "顧客満足 ← 顧客期待", "顧客満足 ← 知覚品質"), 
+                        rname = c("CE 顧客期待 → PQ 知覚品質", "CE 顧客期待 → CS 顧客満足", "PQ 知覚品質 → CS 顧客満足"),
+                        par$est, par$se, par$pvalue, par$std.all)[10:12,] %>%
+  kable(format = "markdown",
+        row.names = FALSE,
+        col.names = c("", "係数", "標準誤差", "p 値", "標準化係数"),
+        digits = 3)
+result.df
+
+
+```
+
+
+- 「CE 顧客期待 → PQ 知覚品質」のパスは `r round(par$est[10], 3)` (標準化係数 `r round(par$std.all[10], 3)`) で有意に推定されているが，「CE 顧客期待 → CS 顧客満足」のパスは有意でない ⇒ 入学前の期待は大学への品質評価に繋がっているが，大学への満足度には直接繋がっていない
+- 「PQ 知覚品質 → CS 顧客満足」のパスは `r round(par$est[12], 3)` (標準化係数 `r round(par$std.all[12], 3)`) で有意であり，大学への品質評価は満足度に繋がっており，また，入学前の期待は大学への品質評価を通じて間接的に満足度に繋がっている
+
+パス図を作成する際，パス係数は標準化係数（Rの結果出力で `Std.all` の列の値）を用いる。以下に，`semPlot`パッケージを利用したパス図の自動作成プログラムを紹介するが，潜在変数が多い場合に座標調整が面倒なため，パス図はPowerPoint等で作図することを推奨する。
+
+
+#### （参考）semPlot パッケージによるパス図の自動作成
+<!-- # ```{r, message=FALSE, echo=FALSE, eval=FALSE} -->
+<!-- # library(semPlot) -->
+<!-- # semPaths(result, what = "std", style = "lisrel") -->
+<!-- # ``` -->
+
+```{r, message=FALSE}
+# semPlot パッケージのインストール（初回のみ実行）
+# install.packages("semPlot") 
+
+# パッケージの読込み & 作図
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel")
+```
+
+
+## 補足
+### クロンバックのα係数
+
+
+```{r message=FALSE, warning=FALSE, results='hide'}
+# psych パッケージのインストール（初回のみ実行）
+# install.packages("psych") 
+
+# パッケージの読込み
+library(psych)
+
+# 信頼性係数（クロンバックのアルファ）の確認
+CE_alpha <- alpha(data_cs[, 1:3]) # データの1~3列目のCEの質問を指定（以下同様）
+PQ_alpha <- alpha(data_cs[, 4:6])
+CS_alpha <- alpha(data_cs[, 7:9])
+
+summary(CE_alpha)
+summary(PQ_alpha)
+summary(CS_alpha)
+```
+
+**`alpha(data)`：クロンバックアルファの計算**
+
+- **`data`**：クロンバックアルファを計算したいデータの指定
+
+
+#### Rコードの出力
+```{r, echo=FALSE, results='hold'}
+summary(CE_alpha)
+summary(PQ_alpha)
+summary(CS_alpha)
+```
+
+
+### PLS-SEMによる推定
+
+以下に R での PLS-SEM の実行方法を紹介するが，[SmartPLS](https://www.smartpls.com) を使った方が簡単に実行ができる。
+SmartPLS では適合度指標も出力される模様。
+
+```{r, message=FALSE, eval=TRUE}
+# seminr パッケージのインストール（初回のみ実行）
+# install.packages("seminr")
+
+library(seminr)
+
+# 測定方程式
+mm <- constructs(
+  composite("CE", multi_items("CE", 1:3)),
+  composite("PQ", multi_items("PQ", 1:3)),
+  composite("CS", multi_items("CS", 1:3))
+)
+
+# 構造方程式
+sm <- relationships(
+  paths(from = c("CE"), to = c("PQ", "CS")),
+  paths(from = c("PQ"), to = c("CS"))
+)
+
+# パラメータ推定
+result_pls <- estimate_pls(
+  data = data_cs,
+  measurement_model = mm,
+  structural_model = sm
+)
+
+# summary(result_pls)
+
+# bootstrap による標準偏差の計算
+pls_boot <- bootstrap_model(
+  seminr_model = result_pls,
+  nboot = 1000,
+  seed = 1
+)
+
+summary(pls_boot)
+```
+
