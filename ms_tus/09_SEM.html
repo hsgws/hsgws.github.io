@@ -2834,7 +2834,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">共分散構造分析</h1>
-<h4 class="date">更新：2026-06-10</h4>
+<h4 class="date">更新：2026-06-13</h4>
 
 </div>
 
@@ -2846,7 +2846,7 @@ font-size: 0.95em;
 <p><strong>大学に対する満足度調査</strong>（data_cs.csv）</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["CE1"],"name":[1],"type":["int"],"align":["right"]},{"label":["CE2"],"name":[2],"type":["int"],"align":["right"]},{"label":["CE3"],"name":[3],"type":["int"],"align":["right"]},{"label":["PQ1"],"name":[4],"type":["int"],"align":["right"]},{"label":["PQ2"],"name":[5],"type":["int"],"align":["right"]},{"label":["PQ3"],"name":[6],"type":["int"],"align":["right"]},{"label":["CS1"],"name":[7],"type":["int"],"align":["right"]},{"label":["CS2"],"name":[8],"type":["int"],"align":["right"]},{"label":["CS3"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"5","2":"4","3":"6","4":"7","5":"7","6":"7","7":"6","8":"4","9":"3","_rn_":"1"},{"1":"4","2":"4","3":"3","4":"5","5":"6","6":"6","7":"4","8":"6","9":"7","_rn_":"2"},{"1":"7","2":"3","3":"3","4":"7","5":"2","6":"5","7":"3","8":"4","9":"3","_rn_":"3"},{"1":"5","2":"6","3":"6","4":"1","5":"2","6":"1","7":"1","8":"1","9":"2","_rn_":"4"},{"1":"2","2":"2","3":"3","4":"1","5":"5","6":"1","7":"2","8":"1","9":"1","_rn_":"5"},{"1":"4","2":"5","3":"3","4":"2","5":"3","6":"6","7":"1","8":"1","9":"3","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["CE1"],"name":[2],"type":["int"],"align":["right"]},{"label":["CE2"],"name":[3],"type":["int"],"align":["right"]},{"label":["CE3"],"name":[4],"type":["int"],"align":["right"]},{"label":["PQ1"],"name":[5],"type":["int"],"align":["right"]},{"label":["PQ2"],"name":[6],"type":["int"],"align":["right"]},{"label":["PQ3"],"name":[7],"type":["int"],"align":["right"]},{"label":["CS1"],"name":[8],"type":["int"],"align":["right"]},{"label":["CS2"],"name":[9],"type":["int"],"align":["right"]},{"label":["CS3"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"5","3":"4","4":"6","5":"7","6":"7","7":"7","8":"6","9":"4","10":"3","_rn_":"1"},{"1":"2","2":"4","3":"4","4":"3","5":"5","6":"6","7":"6","8":"4","9":"6","10":"7","_rn_":"2"},{"1":"3","2":"7","3":"3","4":"3","5":"7","6":"2","7":"5","8":"3","9":"4","10":"3","_rn_":"3"},{"1":"4","2":"5","3":"6","4":"6","5":"1","6":"2","7":"1","8":"1","9":"1","10":"2","_rn_":"4"},{"1":"5","2":"2","3":"2","4":"3","5":"1","6":"5","7":"1","8":"2","9":"1","10":"1","_rn_":"5"},{"1":"6","2":"4","3":"5","4":"3","5":"2","6":"3","7":"6","8":"1","9":"1","10":"3","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <table>
@@ -2905,14 +2905,14 @@ font-size: 0.95em;
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong>：学部授業でアンケートを実施（2018年度）</p>
+<p><strong>データ出典</strong>：学部授業で実施したアンケート（2018年度）をもとに作成したシミュレーションデータ</p>
 <ul>
 <li>顧客期待（CE：Consumer Expectation），知覚品質（PQ：Perceptual
 Quality），顧客満足（CS：Consumer
 Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度（1＝低い ～
 7＝高い）でアンケート収集</li>
 <li>サンプル数は100</li>
-<li>分析例作成のために元データからシミュレーションデータを生成</li>
+<li>分析例のために元データからシミュレーションデータを作成</li>
 </ul>
 </div>
 <div id="モデルパス図" class="section level3">
@@ -2969,7 +2969,7 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 <span id="cb1-25"><a href="#cb1-25"></a><span class="fu">summary</span>(result, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-26"><a href="#cb1-26"></a></span>
 <span id="cb1-27"><a href="#cb1-27"></a><span class="co"># 適合度指標</span></span>
-<span id="cb1-28"><a href="#cb1-28"></a><span class="fu">fitMeasures</span>(result, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">&quot;gfi&quot;</span>, <span class="st">&quot;rmsea&quot;</span>))</span></code></pre></div>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="fu">fitMeasures</span>(result, <span class="at">fit.measures =</span> <span class="fu">c</span>(<span class="st">&quot;rmsea&quot;</span>, <span class="st">&quot;gfi&quot;</span>))</span></code></pre></div>
 <p><strong><code>sem(model, data)</code>：共分散構造分析の実行</strong></p>
 <ul>
 <li><strong><code>model</code></strong>：モデル（パス図）定義
@@ -3070,8 +3070,8 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 </div>
 <div id="適合度指標" class="section level5">
 <h5>適合度指標</h5>
-<pre><code>##   gfi rmsea 
-## 0.945 0.039</code></pre>
+<pre><code>## rmsea   gfi 
+## 0.039 0.945</code></pre>
 </div>
 </div>
 </div>
@@ -3141,27 +3141,59 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 </div>
 <div id="補足" class="section level2">
 <h2>補足</h2>
-<div id="クロンバックのα係数" class="section level3">
-<h3>クロンバックのα係数</h3>
+<div id="天井床効果" class="section level3">
+<h3>天井・床効果</h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># psych パッケージのインストール（初回のみ実行）</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co"># install.packages(&quot;psych&quot;) </span></span>
 <span id="cb5-3"><a href="#cb5-3"></a></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co"># パッケージの読込み</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="fu">library</span>(psych)</span>
 <span id="cb5-6"><a href="#cb5-6"></a></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># 信頼性係数（クロンバックのアルファ）の確認</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>CE_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) <span class="co"># データの1~3列目のCEの質問を指定（以下同様）</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>PQ_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>])</span>
-<span id="cb5-10"><a href="#cb5-10"></a>CS_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>])</span>
-<span id="cb5-11"><a href="#cb5-11"></a></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="fu">summary</span>(CE_alpha)</span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="fu">summary</span>(PQ_alpha)</span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="fu">summary</span>(CS_alpha)</span></code></pre></div>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># データ集計値</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>des <span class="ot">&lt;-</span> <span class="fu">describe</span>(data_cs[, <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="fu">print</span>(des)</span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co"># 天井・床効果</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>des<span class="sc">$</span>mean <span class="sc">+</span> des<span class="sc">$</span>sd</span>
+<span id="cb5-13"><a href="#cb5-13"></a>des<span class="sc">$</span>mean <span class="sc">-</span> des<span class="sc">$</span>sd</span></code></pre></div>
+<div id="rコードの出力-1" class="section level4">
+<h4>Rコードの出力</h4>
+<p>データ集計値</p>
+<pre><code>##     vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
+## CE1    1 100 3.93 2.09    4.0    3.91 2.97   1   7     6  0.09    -1.31 0.21
+## CE2    2 100 4.02 1.99    4.0    4.03 2.97   1   7     6 -0.06    -1.29 0.20
+## CE3    3 100 4.00 1.96    4.0    4.00 2.97   1   7     6 -0.04    -1.25 0.20
+## PQ1    4 100 3.91 2.06    4.0    3.89 2.97   1   7     6 -0.03    -1.30 0.21
+## PQ2    5 100 3.90 2.07    4.0    3.88 2.97   1   7     6  0.02    -1.39 0.21
+## PQ3    6 100 4.00 2.03    4.0    4.00 2.97   1   7     6 -0.04    -1.36 0.20
+## CS1    7 100 4.07 2.05    4.0    4.09 2.97   1   7     6  0.00    -1.41 0.21
+## CS2    8 100 4.10 1.99    4.0    4.12 2.97   1   7     6  0.01    -1.20 0.20
+## CS3    9 100 3.93 2.07    3.5    3.91 2.22   1   7     6  0.17    -1.36 0.21</code></pre>
+<p>天井・床効果</p>
+<pre><code>## [1] 6.020165 6.014842 5.964328 5.970180 5.967058 6.025095 6.121139 6.087334
+## [9] 5.995860
+## [1] 1.839835 2.025158 2.035672 1.849820 1.832942 1.974905 2.018861 2.112666
+## [9] 1.864140</code></pre>
+</div>
+</div>
+<div id="クロンバックのα係数" class="section level3">
+<h3>クロンバックのα係数</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># パッケージの読込み</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">library</span>(psych)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co"># 信頼性係数（クロンバックのアルファ）の確認</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>CE_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>]) <span class="co"># データの2:4列目のCEの質問を指定（以下同様）</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>PQ_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">5</span><span class="sc">:</span><span class="dv">7</span>])</span>
+<span id="cb8-7"><a href="#cb8-7"></a>CS_alpha <span class="ot">&lt;-</span> <span class="fu">alpha</span>(data_cs[, <span class="dv">8</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb8-8"><a href="#cb8-8"></a></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="fu">summary</span>(CE_alpha)</span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="fu">summary</span>(PQ_alpha)</span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="fu">summary</span>(CS_alpha)</span></code></pre></div>
 <p><strong><code>alpha(data)</code>：クロンバックアルファの計算</strong></p>
 <ul>
 <li><strong><code>data</code></strong>：クロンバックアルファを計算したいデータの指定</li>
 </ul>
-<div id="rコードの出力-1" class="section level4">
+<div id="rコードの出力-2" class="section level4">
 <h4>Rコードの出力</h4>
 <pre><code>## 
 ## Reliability analysis   
@@ -3182,41 +3214,41 @@ Satisfaction）について，それぞれ3問ずつ，7点リッカート尺度
 <p>以下に R での PLS-SEM の実行方法を紹介するが，<a href="https://www.smartpls.com">SmartPLS</a>
 を使った方が簡単に実行ができる。 SmartPLS
 では適合度指標も出力される模様。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># seminr パッケージのインストール（初回のみ実行）</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># install.packages(&quot;seminr&quot;)</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="fu">library</span>(seminr)</span>
-<span id="cb7-5"><a href="#cb7-5"></a></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co"># 測定方程式</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>mm <span class="ot">&lt;-</span> <span class="fu">constructs</span>(</span>
-<span id="cb7-8"><a href="#cb7-8"></a>  <span class="fu">composite</span>(<span class="st">&quot;CE&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;CE&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)),</span>
-<span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">composite</span>(<span class="st">&quot;PQ&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;PQ&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)),</span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">composite</span>(<span class="st">&quot;CS&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;CS&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>))</span>
-<span id="cb7-11"><a href="#cb7-11"></a>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co"># 構造方程式</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a>sm <span class="ot">&lt;-</span> <span class="fu">relationships</span>(</span>
-<span id="cb7-15"><a href="#cb7-15"></a>  <span class="fu">paths</span>(<span class="at">from =</span> <span class="fu">c</span>(<span class="st">&quot;CE&quot;</span>), <span class="at">to =</span> <span class="fu">c</span>(<span class="st">&quot;PQ&quot;</span>, <span class="st">&quot;CS&quot;</span>)),</span>
-<span id="cb7-16"><a href="#cb7-16"></a>  <span class="fu">paths</span>(<span class="at">from =</span> <span class="fu">c</span>(<span class="st">&quot;PQ&quot;</span>), <span class="at">to =</span> <span class="fu">c</span>(<span class="st">&quot;CS&quot;</span>))</span>
-<span id="cb7-17"><a href="#cb7-17"></a>)</span>
-<span id="cb7-18"><a href="#cb7-18"></a></span>
-<span id="cb7-19"><a href="#cb7-19"></a><span class="co"># パラメータ推定</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a>result_pls <span class="ot">&lt;-</span> <span class="fu">estimate_pls</span>(</span>
-<span id="cb7-21"><a href="#cb7-21"></a>  <span class="at">data =</span> data_cs,</span>
-<span id="cb7-22"><a href="#cb7-22"></a>  <span class="at">measurement_model =</span> mm,</span>
-<span id="cb7-23"><a href="#cb7-23"></a>  <span class="at">structural_model =</span> sm</span>
-<span id="cb7-24"><a href="#cb7-24"></a>)</span>
-<span id="cb7-25"><a href="#cb7-25"></a></span>
-<span id="cb7-26"><a href="#cb7-26"></a><span class="co"># summary(result_pls)</span></span>
-<span id="cb7-27"><a href="#cb7-27"></a></span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="co"># bootstrap による標準偏差の計算</span></span>
-<span id="cb7-29"><a href="#cb7-29"></a>pls_boot <span class="ot">&lt;-</span> <span class="fu">bootstrap_model</span>(</span>
-<span id="cb7-30"><a href="#cb7-30"></a>  <span class="at">seminr_model =</span> result_pls,</span>
-<span id="cb7-31"><a href="#cb7-31"></a>  <span class="at">nboot =</span> <span class="dv">1000</span>,</span>
-<span id="cb7-32"><a href="#cb7-32"></a>  <span class="at">seed =</span> <span class="dv">1</span></span>
-<span id="cb7-33"><a href="#cb7-33"></a>)</span>
-<span id="cb7-34"><a href="#cb7-34"></a></span>
-<span id="cb7-35"><a href="#cb7-35"></a><span class="fu">summary</span>(pls_boot)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># seminr パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># install.packages(&quot;seminr&quot;)</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">library</span>(seminr)</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co"># 測定方程式</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>mm <span class="ot">&lt;-</span> <span class="fu">constructs</span>(</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">composite</span>(<span class="st">&quot;CE&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;CE&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)),</span>
+<span id="cb10-9"><a href="#cb10-9"></a>  <span class="fu">composite</span>(<span class="st">&quot;PQ&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;PQ&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)),</span>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">composite</span>(<span class="st">&quot;CS&quot;</span>, <span class="fu">multi_items</span>(<span class="st">&quot;CS&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>))</span>
+<span id="cb10-11"><a href="#cb10-11"></a>)</span>
+<span id="cb10-12"><a href="#cb10-12"></a></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co"># 構造方程式</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a>sm <span class="ot">&lt;-</span> <span class="fu">relationships</span>(</span>
+<span id="cb10-15"><a href="#cb10-15"></a>  <span class="fu">paths</span>(<span class="at">from =</span> <span class="fu">c</span>(<span class="st">&quot;CE&quot;</span>), <span class="at">to =</span> <span class="fu">c</span>(<span class="st">&quot;PQ&quot;</span>, <span class="st">&quot;CS&quot;</span>)),</span>
+<span id="cb10-16"><a href="#cb10-16"></a>  <span class="fu">paths</span>(<span class="at">from =</span> <span class="fu">c</span>(<span class="st">&quot;PQ&quot;</span>), <span class="at">to =</span> <span class="fu">c</span>(<span class="st">&quot;CS&quot;</span>))</span>
+<span id="cb10-17"><a href="#cb10-17"></a>)</span>
+<span id="cb10-18"><a href="#cb10-18"></a></span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="co"># パラメータ推定</span></span>
+<span id="cb10-20"><a href="#cb10-20"></a>result_pls <span class="ot">&lt;-</span> <span class="fu">estimate_pls</span>(</span>
+<span id="cb10-21"><a href="#cb10-21"></a>  <span class="at">data =</span> data_cs,</span>
+<span id="cb10-22"><a href="#cb10-22"></a>  <span class="at">measurement_model =</span> mm,</span>
+<span id="cb10-23"><a href="#cb10-23"></a>  <span class="at">structural_model =</span> sm</span>
+<span id="cb10-24"><a href="#cb10-24"></a>)</span>
+<span id="cb10-25"><a href="#cb10-25"></a></span>
+<span id="cb10-26"><a href="#cb10-26"></a><span class="co"># summary(result_pls)</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="co"># bootstrap による標準偏差の計算</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a>pls_boot <span class="ot">&lt;-</span> <span class="fu">bootstrap_model</span>(</span>
+<span id="cb10-30"><a href="#cb10-30"></a>  <span class="at">seminr_model =</span> result_pls,</span>
+<span id="cb10-31"><a href="#cb10-31"></a>  <span class="at">nboot =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-32"><a href="#cb10-32"></a>  <span class="at">seed =</span> <span class="dv">1</span></span>
+<span id="cb10-33"><a href="#cb10-33"></a>)</span>
+<span id="cb10-34"><a href="#cb10-34"></a></span>
+<span id="cb10-35"><a href="#cb10-35"></a><span class="fu">summary</span>(pls_boot)</span></code></pre></div>
 <pre><code>## 
 ## Results from Bootstrap resamples:  1000
 ## 
