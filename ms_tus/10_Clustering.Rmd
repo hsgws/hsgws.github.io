@@ -1,0 +1,320 @@
+---
+title: "クラスタリング"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(magrittr)
+library(kableExtra)
+```
+
+
+## 分析例①：階層的クラスタリング
+
+### データ
+**品目別1世帯当たり年間支出金額（都道府県庁所在地）**
+
+```{r, echo=FALSE}
+kakei2023 <- read_csv("data/kakei2023.csv")
+head(kakei2023)
+```
+
+**データ出典** ：[総務省 家計調査（家計収支編 都市階級・地方・都道府県庁所在市別１世帯当たり支出金額，購入数量及び平均価格）](https://www.e-stat.go.jp/stat-search/files?page=1&stat_infid=000040140558)
+
+### Rコード
+```{r, results='hide', fig.show='hide'}
+# データの読込
+kakei2023 <- read.csv("data/kakei2023.csv", row.names = 1)  # row.names = 1 で1列目（都市名）を行名に指定
+
+# 各列の標準化
+kakei2023s <- scale(kakei2023)
+head(kakei2023s)
+
+# 都道府県間の類似度（距離行列）の計算
+dist <- dist(kakei2023s)
+
+# 階層的クラスタリング
+hc <- hclust(d = dist, method = "ward.D2")
+plot(hc)
+```
+
+**`scale(x)`**：データの標準化
+
+- **`x`**：データ
+- `scale` 関数は列単位でデータを標準化（平均0・標準偏差1に変換）
+
+**`dist(x)`**：サンプル間の距離行列の計算
+
+- **`x`**：データ
+- デフォルトではユークリッド距離が計算される
+
+**`hclust(d, method)`**：階層的クラスタリングの実行
+
+- **`d`**：距離行列
+- **`method`**：クラスタリングの方法の指定（`ward.D2` は Ward 法）  
+<br />
+
+##### Rコードの出力
+標準化後のデータ
+```{r, echo=FALSE, warning=FALSE}
+head(kakei2023s)
+```
+
+階層的クラスタリング（デンドログラム）
+```{r, echo=FALSE, out.width='150%'}
+plot(hc, cex = 0.7)
+```
+
+
+## 分析例②：非階層的クラスタリング（K-means 法）
+### データ
+品目別1世帯当たり年間支出金額（都道府県庁所在地） ⇒ 分析例①と同一データ
+
+### Rコード
+```{r, results='hide', fig.show='hide'}
+# 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
+set.seed(1) 
+
+# クラスター分析（kmens法，クラスター数＝4）
+result <- kmeans(x = kakei2023s, centers = 4)
+
+# 各セグメントの標準化支出金額の平均値（代表値） & 各都市の所属セグメント番号
+print(result)
+
+# 各セグメントの所属都市数・比率
+print(result$size)
+print(result$size/47)	# 比率
+
+# （参考）各セグメントの代表値の図示
+for (i in 1:4) {
+  barplot(result$centers[i,], ylim = c(-1.3, 1.3), las = 2, main = paste("セグメント", i))
+}
+```
+
+
+**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：セグメント数
+- 各セグメントの代表値は `$centers` で取り出す（上記例では `result$centers`）
+- 各サンプルの所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）  
+<br />
+
+##### Rコードの出力
+
+各セグメントの標準化支出金額の平均値（代表値）
+```{r, echo=FALSE, warning=FALSE}
+print(result$centers)
+```
+
+各都市の所属セグメント番号
+```{r, echo=FALSE}
+print(result$cluster)
+```
+
+各セグメントの所属都市数・比率
+```{r, echo=FALSE, results='hold'}
+print(result$size)
+print(result$size/47)	# 比率
+```
+
+各セグメントの代表値の図示
+```{r, echo=FALSE, results='hold'}
+for (i in 1:4) {
+  barplot(result$centers[i,], ylim = c(-1.3, 1.3), las = 2, main = paste("セグメント", i))
+}
+```
+
+
+
+## 分析例③：潜在クラスモデル*
+
+### データ
+**醤油カテゴリのID付POSデータ**（sec6_mixture.csv）
+```{r, echo=FALSE}
+sec6_mixture <- read_csv("data/sec6_mixture.csv")
+head(sec6_mixture)
+```
+
+| 変数名  | 内容                               |
+| ------- | ---------------------------------- |
+| pid     | 消費者ID                           |
+| A ~ I   | 商品A～Iの購買回数                 |
+| **ALL**     | **観測期間における全商品（A～I）の購買回数**|
+| **Ap ~ Ip** | **商品A～Iの購買時の平均価格掛率**|
+| Ae ~ Ie | 商品A～Iの購買時の山積み陳列実施数 |
+| Aa ~ Ia | 商品A～Iの購買時のチラシ掲載日数   |
+（太字は以下の分析例で使用する変数。ただし商品AはPBで価格変動が少ないためApは利用しない。）  
+
+**データ出典** ：佐藤（2015）「マーケティングの統計モデル」朝倉書店，第6章
+
+
+### Rコード
+#### 通常のポアソン回帰
+```{r, results='hide'}
+# データの読み込み
+sec6_mixture <- read.csv("data/sec6_mixture.csv")
+
+# ポアソン回帰の実行
+result_glm <- glm(
+  ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
+  family = "poisson", 
+  data = sec6_mixture
+)
+
+# 結果の表示
+summary(result_glm)
+```
+
+**`glm(formula, family, data)` ：ポアソン回帰の推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`family`**：分析モデル（データが従う確率分布）の指定 ⇒ ポアソン回帰の場合は `"poisson"` を指定
+- **`data`**：分析データの指定  
+
+
+##### Rコードの出力
+```{r, echo=FALSE, warning=FALSE}
+summary(result_glm)
+```
+
+
+#### 潜在クラスモデル（有限混合ポアソン回帰）
+```{r, results='hide', message=FALSE}
+# flexmix パッケージのインストール（初回のみ実行）
+# install.packages("flexmix") 
+
+# パッケージの読込み
+library(flexmix)
+
+set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
+
+# セグメント数1～5の潜在クラスポアソン回帰の一括実行
+result_mixture <- initFlexmix(
+  ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),
+  k = 1:5,
+  model = FLXMRglm(family = "poisson"),
+  data = sec6_mixture
+)
+
+# モデル比較（最適セグメント数の決定）
+print(result_mixture)
+
+# 最良モデルの選択（BIC基準）
+best_model <- getModel(result_mixture, which = "BIC")
+
+# 最良モデルのセグメント構成比
+summary(best_model)
+
+# 各セグメントの係数推定値
+summary(refit(best_model))
+```
+
+**`initFlexmix(formula, k, model, data)` ：潜在クラスモデルの推定**
+
+- **`formula`**：目的変数・説明変数の指定
+- **`k`**：推定するセグメント数 ⇒ `k = 1:5` でセグメント数1〜5のモデルを一括で実行可能
+- **`model`**：分析モデルの指定 ⇒ ポアソン回帰の場合は `FLXMRglm(family = "poisson")`，線形回帰分析の場合は不要
+- **`data`**：分析データの指定  
+
+
+##### Rコードの出力
+モデル比較
+```{r, echo=FALSE, warning=FALSE}
+print(result_mixture)
+```
+
+最良モデル (k=4) のセグメント構成比（pior列）
+```{r, echo=FALSE, warning=FALSE}
+summary(best_model)
+```
+
+各セグメントの係数推定値
+```{r, echo=FALSE, warning=FALSE}
+summary(refit(best_model))
+```
+
+
+### 推定結果
+
+```{r echo=FALSE}
+tmp <- refit(best_model)
+df <- cbind(
+  tmp@components[[1]][["Comp.1"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.2"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.3"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  tmp@components[[1]][["Comp.4"]]@.Data[, c("Estimate", "Pr(>|z|)")],
+  summary(result_glm)$coefficients[, c("Estimate", "Pr(>|z|)")]
+)
+
+df <- as.data.frame(df)
+# colnames(df) <- rep(NA, 10)
+
+df %>% 
+  kable(
+    digits = 3,
+    # col.names = c(rep(c("推定値", "p値"), 5))
+    col.names = c(rep(c("Estimate", "p.val"), 5))
+  ) %>%
+  add_header_above(c(" " = 1, "セグメント1" = 2, "セグメント2" = 2, "セグメント3" = 2, "セグメント4" = 2, "（参考：ポアソン回帰）" = 2)) %>%
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+<!-- ```{r echo=FALSE} -->
+<!-- tmp <- refit(best_model) -->
+<!-- df <- cbind( -->
+<!--   tmp@components[[1]][["Comp.1"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.2"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.3"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.4"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   tmp@components[[1]][["Comp.5"]]@.Data[, c("Estimate", "Pr(>|z|)")], -->
+<!--   summary(result_glm)$coefficients[, c("Estimate", "Pr(>|z|)")] -->
+<!-- ) -->
+
+<!-- df %>%  -->
+<!--   kable( -->
+<!--     digits = 3, -->
+<!--     col.names = c(rep(c("推定値", "p値"), 6)) -->
+<!--   ) %>% -->
+<!--   add_header_above(c(" " = 1, "セグメント1 (6.5%)" = 2, "セグメント2 (36.9%)" = 2, "セグメント3 (19.7%)" = 2, "セグメント4 (17.3%)" = 2, "セグメント5 (19.5%)" = 2, "ポアソン回帰" = 2)) %>% -->
+<!--   kable_styling(bootstrap_options = c("striped")) -->
+<!-- ``` -->
+
+
+<!-- |           | セグメント1<br />（49％） | セグメント2<br />（35％） | セグメント3<br />（35％） | セグメント4<br />（26％） | 通常の<br />ポアソン回帰 | -->
+<!-- | --------- | ---------------------------- | --------------------------- | --------------------------- | --------------------------- | ------------ | -->
+<!-- | Intercept | **1.053**                    | **2.283**                   | **0.949**                   | **4.178**                   | **2.636**    | -->
+<!-- | log(Bp)   | 0.687                        | **4.125**                   | -1.274                      | **3.643**                   | **1.464**    | -->
+<!-- | log(Cp)   | -0.016                       | 0.336                       | **1.667**                   | **6.974**                   | **1.833**    | -->
+<!-- | log(Dp)   | 0.078                        | 0.160                       | **-3.145**                  | -1.382                      | **-0.651**   | -->
+<!-- | log(Ep)   | -0.374                       | **-10.093**                 | **-8.800**                  | 2.336                       | **-2.050**   | -->
+<!-- | log(Fp)   | 0.188                        | 0.835                       | **2.827**                   | **-3.337**                  | 0.006        | -->
+<!-- | log(Gp)   | 0.154                        | **5.680**                   | **-6.866**                  | 3.171                       | 0.296        | -->
+<!-- | log(Hp)   | 0.001                        | 0.347                       | **-4.369**                  | **-1.423**                  | **-0.726**   | -->
+<!-- | log(Ip)   | 0.525                        | -**6.032**                  | **5.595**                   | -0.288                      | **1.347**    | -->
+<!-- 括弧内は人数比，太字は5％有意水準で有意に推定された係数。   -->
+<!-- <br /> -->
+
+- 消費者の28％を占めるセグメント1は全ての製品の価格が非有意 ⇒ 家庭内在庫がなくなれば購入する消費者？
+- セグメント2は商品E・Iが値引きされていると購買しやすい
+- セグメント3は商品D・E・G・Hが値引きされていると購買しやすい
+
