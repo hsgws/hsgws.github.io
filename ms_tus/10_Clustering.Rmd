@@ -100,6 +100,9 @@ result <- kmeans(x = kakei2023s, centers = 4)
 # 各セグメントの標準化支出金額の平均値（代表値） & 各都市の所属セグメント番号
 print(result)
 
+# print(sort(result$cluster)) # 参考：所属セグメント番号による都市のソート
+
+
 # 各セグメントの所属都市数・比率
 print(result$size)
 print(result$size/47)	# 比率
@@ -114,10 +117,11 @@ for (i in 1:4) {
 **`kmeans(x, centers)`**：Kmeans法によるクラスター分析
 
 - **`x`**：クラスター分析を実行するデータの指定
-- **`centers`**：セグメント数
-- 各セグメントの代表値は `$centers` で取り出す（上記例では `result$centers`）
-- 各サンプルの所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）  
+- **`centers`**：セグメント数  
+<!-- - 各セグメントの代表値は `$centers` で取り出す（上記例では `result$centers`） -->
+<!-- - 各サンプルの所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）   -->
 <br />
+
 
 ##### Rコードの出力
 
@@ -129,6 +133,7 @@ print(result$centers)
 各都市の所属セグメント番号
 ```{r, echo=FALSE}
 print(result$cluster)
+print(sort(result$cluster))
 ```
 
 各セグメントの所属都市数・比率

@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2026-06-19</h4>
+<h4 class="date">更新：2026-06-23</h4>
 
 </div>
 
@@ -3150,22 +3150,23 @@ font-size: 0.95em;
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># 各セグメントの標準化支出金額の平均値（代表値） &amp; 各都市の所属セグメント番号</span></span>
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">print</span>(result)</span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># 各セグメントの所属都市数・比率</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">print</span>(result<span class="sc">$</span>size)</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="fu">print</span>(result<span class="sc">$</span>size<span class="sc">/</span><span class="dv">47</span>)   <span class="co"># 比率</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co"># （参考）各セグメントの代表値の図示</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">barplot</span>(result<span class="sc">$</span>centers[i,], <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.3</span>), <span class="at">las =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;セグメント&quot;</span>, i))</span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># print(sort(result$cluster)) # 参考：所属セグメント番号による都市のソート</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co"># 各セグメントの所属都市数・比率</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">print</span>(result<span class="sc">$</span>size)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="fu">print</span>(result<span class="sc">$</span>size<span class="sc">/</span><span class="dv">47</span>)   <span class="co"># 比率</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co"># （参考）各セグメントの代表値の図示</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  <span class="fu">barplot</span>(result<span class="sc">$</span>centers[i,], <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.3</span>), <span class="at">las =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;セグメント&quot;</span>, i))</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>}</span></code></pre></div>
 <p><strong><code>kmeans(x, centers)</code></strong>：Kmeans法によるクラスター分析</p>
 <ul>
 <li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
-<li><strong><code>centers</code></strong>：セグメント数</li>
-<li>各セグメントの代表値は <code>$centers</code> で取り出す（上記例では
-<code>result$centers</code>）</li>
-<li>各サンプルの所属セグメントは <code>$cluster</code>
-で取り出す（上記例では <code>result$cluster</code>）<br />
+<li><strong><code>centers</code></strong>：セグメント数<br />
+<!-- - 各セグメントの代表値は `$centers` で取り出す（上記例では `result$centers`） -->
+<!-- - 各サンプルの所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）   -->
 <br /></li>
 </ul>
 <div id="rコードの出力-1" class="section level5">
@@ -3196,6 +3197,20 @@ font-size: 0.95em;
 ##          2          2          3          2          3          3          3 
 ##     熊本市     大分市     宮崎市   鹿児島市     那覇市 
 ##          3          3          3          3          2</code></pre>
+<pre><code>##   宇都宮市 さいたま市     千葉市 東京都区部     横浜市     富山市     金沢市 
+##          1          1          1          1          1          1          1 
+##     静岡市   名古屋市       津市     大津市     京都市     大阪市     神戸市 
+##          1          1          1          1          1          1          1 
+##     奈良市     広島市     水戸市     前橋市     福井市     甲府市     岐阜市 
+##          1          1          2          2          2          2          2 
+##     岡山市     徳島市     高松市     高知市     那覇市     札幌市   和歌山市 
+##          2          2          2          2          2          3          3 
+##     鳥取市     松江市     山口市     松山市     福岡市     佐賀市     長崎市 
+##          3          3          3          3          3          3          3 
+##     熊本市     大分市     宮崎市   鹿児島市     青森市     盛岡市     仙台市 
+##          3          3          3          3          4          4          4 
+##     秋田市     山形市     福島市     新潟市     長野市 
+##          4          4          4          4          4</code></pre>
 <p>各セグメントの所属都市数・比率</p>
 <pre><code>## [1] 16 10 13  8
 ## [1] 0.3404255 0.2127660 0.2765957 0.1702128</code></pre>
@@ -3256,18 +3271,18 @@ font-size: 0.95em;
 <h3>Rコード</h3>
 <div id="通常のポアソン回帰" class="section level4">
 <h4>通常のポアソン回帰</h4>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>sec6_mixture <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec6_mixture.csv&quot;</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># ポアソン回帰の実行</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>result_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, </span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>)</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co"># 結果の表示</span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="fu">summary</span>(result_glm)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># データの読み込み</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>sec6_mixture <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec6_mixture.csv&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># ポアソン回帰の実行</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>result_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>, </span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co"># 結果の表示</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">summary</span>(result_glm)</span></code></pre></div>
 <p><strong><code>glm(formula, family, data)</code>
 ：ポアソン回帰の推定</strong></p>
 <ul>
@@ -3308,33 +3323,33 @@ font-size: 0.95em;
 </div>
 <div id="潜在クラスモデル有限混合ポアソン回帰" class="section level4">
 <h4>潜在クラスモデル（有限混合ポアソン回帰）</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># flexmix パッケージのインストール（初回のみ実行）</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># install.packages(&quot;flexmix&quot;) </span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">library</span>(flexmix)</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co"># セグメント数1～5の潜在クラスポアソン回帰の一括実行</span></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>result_mixture <span class="ot">&lt;-</span> <span class="fu">initFlexmix</span>(</span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">FLXMRglm</span>(<span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>),</span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>)</span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co"># モデル比較（最適セグメント数の決定）</span></span>
-<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="fu">print</span>(result_mixture)</span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a></span>
-<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co"># 最良モデルの選択（BIC基準）</span></span>
-<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">getModel</span>(result_mixture, <span class="at">which =</span> <span class="st">&quot;BIC&quot;</span>)</span>
-<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co"># 最良モデルのセグメント構成比</span></span>
-<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
-<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a></span>
-<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co"># 各セグメントの係数推定値</span></span>
-<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">refit</span>(best_model))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># flexmix パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co"># install.packages(&quot;flexmix&quot;) </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># パッケージの読込み</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">library</span>(flexmix)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># セグメント数1～5の潜在クラスポアソン回帰の一括実行</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>result_mixture <span class="ot">&lt;-</span> <span class="fu">initFlexmix</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">FLXMRglm</span>(<span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>),</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>)</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co"># モデル比較（最適セグメント数の決定）</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="fu">print</span>(result_mixture)</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co"># 最良モデルの選択（BIC基準）</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">getModel</span>(result_mixture, <span class="at">which =</span> <span class="st">&quot;BIC&quot;</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co"># 最良モデルのセグメント構成比</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co"># 各セグメントの係数推定値</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">refit</span>(best_model))</span></code></pre></div>
 <p><strong><code>initFlexmix(formula, k, model, data)</code>
 ：潜在クラスモデルの推定</strong></p>
 <ul>
