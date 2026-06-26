@@ -1,0 +1,481 @@
+---
+title: "データ分析実習③"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+## 実習 1
+### データ
+**映画のクチコミとオピニオン・リーダーに関する調査データ**（data_wom.csv）
+
+```{r, echo=FALSE}
+data_wom <- read_csv("data/data_wom.csv")
+head(data_wom)
+```
+
+| 変数     | 定義                                                         | 潜在変数	|
+| -------- | ------------------------------------------------------------ | ----------- |
+| OPL1       | 友人や近所の人と映画についてよく話しをする                   | オピニオン・リーダー度 (OPL) |
+| OPL2       | 友人や近所の人に映画の情報を教える方だ                       | オピニオン・リーダー度 (OPL) |
+| OPL3       | 友人や近所の人から映画についての情報を求められる方だ         | オピニオン・リーダー度 (OPL) |
+| eOPL1       | インターネット上で映画について投稿したり読んだりする方だ     | eオピニオン・リーダー度 (eOPL) |
+| eOPL2       | インターネット上で映画の情報を教える方だ                     | eオピニオン・リーダー度 (eOPL)|
+| eOPL3       | インターネット上で人から映画についての情報を求められる方だ   | eオピニオン・リーダー度 (eOPL)|
+| WOM1       | 満足，面白いと思った映画について友人などに伝える             | クチコミ発信 (WOM) |
+| WOM2       | 不満，面白くないと思った映画について友人などに伝える         | クチコミ発信 (WOM) |
+| eWOM1       | 満足，面白いと思った映画についてインターネットの掲示板などに書き込む | eクチコミ発信 (eWOM) |
+| eWOM2      | 不満，面白くないと思った映画についてインターネットの掲示板などに書き込む | eクチコミ発 信 (eWOM) |
+| CLM1      | 不満，面白くないと思った映画について映画，配給元に電話する   | 企業への苦情 (CLM) |
+| CLM2      | 不満，面白くないと思った映画について映画，配給元にメールする | 企業への苦情 (CLM) |
+
+**データ出典**：里村（2014）および濱岡・里村（2009）を元に作成したシミュレーションデータ
+
+- 回答者数は200人
+- それぞれの質問項目は7点尺度（1＝全く当てはまらない ～ 7＝非常に当てはまる）の回答
+- 質問項目 OPL1～CLM2 の数値は，里村（2014）に記載された相関係数行列より復元したシミュレーションデータで実際のアンケート回答結果とは異なる
+<br />
+
+**参考文献**  
+[里村卓也 (2014) 『マーケティング・データ分析の基礎』共立出版](http://www.kyoritsu-pub.co.jp/bookdetail/9784320123663)  
+[濱岡豊, 里村卓也 (2009) 『消費者間の相互作用についての基礎研究 : クチコミ、eクチコミを中心に』慶應義塾大学出版](http://www.keio-up.co.jp/np/isbn/9784766415971)
+
+
+### 課題
+以下のパス図で共分散構造分析を実行し，リアルとインターネットでのオピニオンリーダー度（OPLとeOPL）は，リアルとインターネットでのクチコミ発信（WOMとeWOM）にどのような影響を与えているか考察せよ。
+
+- 天井・床効果とクロンバックアルファの確認は省略してよい。
+
+
+#### モデル（パス図）
+<div style="text-align: center;">
+<img src="fig/wom_sem.png" width="70%">
+</div>
+
+<!-- #### 数式表記 -->
+<!-- 測定方程式（確認的因子分析） ⇒ 省略 -->
+
+<!-- 構造方程式（回帰分析） -->
+<!-- $$ -->
+<!-- WOM = \beta_{11} OPL + \beta_{12} eOPL + v_1 \\ -->
+<!-- eWOM = \beta_{21} OPL + \beta_{22} eOPL + v_2 \\ -->
+<!-- CLM = \beta_{31} OPL + \beta_{32} eOPL + \beta_{41} WOM + \beta_{52} eWOM + v_3 -->
+<!-- $$ -->
+
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+library(psych)
+library(lavaan)
+
+# データの読み込み
+data_wom <- read.csv("data/data_wom.csv")
+
+# 信頼性係数（クロンバックのアルファ）の確認
+summary(alpha(data_wom[, 1:3]))  # OPL
+summary(alpha(data_wom[, 4:6]))  # eOPL
+summary(alpha(data_wom[, 7:8]))  # WOM
+summary(alpha(data_wom[, 9:10]))  # eWOM
+summary(alpha(data_wom[, 11:12])) # CLM
+
+# モデル（パス図）定義
+model <- "
+  # 測定方程式
+    OPL =~ OPL1 + OPL2 + OPL3
+    eOPL =~ eOPL1 + eOPL2 + eOPL3
+    WOM =~ WOM1 + WOM2
+    eWOM =~ eWOM1 + eWOM2
+    CLM =~ CLM1 + CLM2
+  # 構造方程式
+    WOM ~ OPL + eOPL
+    eWOM ~ OPL + eOPL
+    CLM ~ OPL + eOPL + WOM + eWOM
+"
+
+# パラメータ推定
+result <- sem(model, data = data_wom)
+
+# 推定結果の表示
+summary(result, standardized = TRUE) 
+
+# モデル比較指標
+fitMeasures(result, fit.measures = c("chisq", "df", "pvalue", "cfi", "gfi", "rmsea"))
+
+# semPlot パッケージによる作図プログラム
+library(semPlot)
+semPaths(result, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE,
+         manifests = c("OPL1","OPL2","OPL3","eOPL1","eOPL2","eOPL3","WOM1","WOM2","CLM1","CLM2","eWOM1","eWOM2"),
+         latents = c("OPL","eOPL","WOM","CLM","eWOM"))
+```
+</div></details>
+
+
+
+## 実習 2
+### データ
+
+**Big Five（個人のパーソナリティ）に関するアンケートデータ** (data_bf.csv)
+
+```{r, echo=FALSE}
+data_bf <- read_csv("data/data_bf.csv")
+head(data_bf)
+```
+
+**データ出典** ：[Open psychology data: Raw data from online personality tests](https://openpsychometrics.org/_rawdata/)
+
+- 上記サイトの "Answers to the Big Five Personality Test, constructed with items from the International Personality Item Pool." を利用
+- 本分析例のため元データの一部を修正・削除した
+
+| 変数名   | 内容                                             |
+| -------- | ------------------------------------------------ |
+| E1 ~ E10 | 外向性（Extraversion）に関する質問項目           |
+| N1 ~ N10 | 神経症的傾向（Neuroticism）に関する質問項目      |
+| A1 ~ A10 | 協調性（Agreeableness）に関する質問項目          |
+| C1 ~ C10 | 誠実性（Conscientiousness）に関する質問項目      |
+| O1 ~ O10 | 開放性（Openness to experience）に関する質問項目 |
+| age      | 年齢                                             |
+| gender   | 性別（0＝男性，1＝女性）                         |
+| race     | 人種（13種類）                                    |
+
+<br />
+**Big Five**：心理学分野で開発された個人パーソナリティの分類するための5指標
+
+- 外向性：自己主張や社交性の高さ
+- 神経症的傾向：心理的ストレスを受けやすさ
+- 協調性：思いやりや調和性の高さ
+- 誠実性：自己コントロール能力や計画性の高さ
+- 開放性：好奇心や想像力の高さ
+
+<br />
+<details><summary>各指標の質問項目と人種の詳細（クリックで表示）</summary><div>
+
+質問文（日本語）は [Wikipedia のビッグファイブ（心理学）](https://ja.wikipedia.org/wiki/%E3%83%93%E3%83%83%E3%82%B0%E3%83%95%E3%82%A1%E3%82%A4%E3%83%96_(%E5%BF%83%E7%90%86%E5%AD%A6))を参考とした。
+
+**外向性（Extraversion）**
+
+| 変数 | 質問文（英語）                                  | 質問文（日本語）                                         |
+| ---- | ----------------------------------------------- | -------------------------------------------------------- |
+| E1   | I am the life of the party.                     | 私は盛り上げ役だ。                                       |
+| E2   | I don't talk a lot.                             | 私はあまり喋らない。（逆転）                             |
+| E3   | I feel comfortable around people.               | 私は多くの人といるとくつろぐ。                           |
+| E4   | I keep in the background.                       | 私は大勢の人がいる中で話すつもりはない。（逆転）         |
+| E5   | I start conversations.                          | 私からよく会話を始める。                                 |
+| E6   | I have little to say.                           | 私は多くを語らない。（逆転）                             |
+| E7   | I talk to a lot of different people at parties. | 私はパーティーではたくさんの色々な人たちと話す。         |
+| E8   | I don't like to draw attention to myself.       | 私は周りのみんなから注目されるのが好きではない。（逆転） |
+| E9   | I don't mind being the center of attention.     | 私はみんなからの注目の的であることを気にしない。         |
+| E10  | I am quiet around strangers.                    | 私は見知らぬ人が周りにいる時は静かにしている。（逆転）   |
+
+**神経症的傾向（Neuroticism）**
+
+| 変数 | 質問文（英語）                 | 質問文（日本語）                                 |
+| ---- | ------------------------------ | ------------------------------------------------ |
+| N1   | I get stressed out easily.     | 私はストレスが溜まりやすい。                     |
+| N2   | I am relaxed most of the time. | 私はほとんどの時間でリラックスしている。（逆転） |
+| N3   | I worry about things.          | 私は物事を心配しがちだ。                         |
+| N4   | I seldom feel blue.            | 私はブルーな気分になることは滅多にない。（逆転） |
+| N5   | I am easily disturbed.         | 私は簡単に動揺する。                             |
+| N6   | I get upset easily.            | 私はすぐにイライラする。                         |
+| N7   | I change my mood a lot.        | 私は頻繁に気分が変わる。                         |
+| N8   | I have frequent mood swings.   | 私は気分にムラがあることが多い。                 |
+| N9   | I get irritated easily.        | 私は簡単にイライラする。                         |
+| N10  | I often feel blue.             | 私はよくブルーな気分になる。                     |
+
+
+**協調性（Agreeableness）**
+
+| 変数 | 質問文（英語）                                  | 質問文（日本語）                                   |
+| ---- | ----------------------------------------------- | -------------------------------------------------- |
+| A1   | I feel little concern for others.               | 私は他の人のことをほとんど心配しません。（逆転）   |
+| A2   | I am interested in people.                      | 私は人に興味がある。                               |
+| A3   | I insult people.                                | 私は人を侮辱する。（逆転）                         |
+| A4   | I sympathize with others' feelings.             | 私は他人の気持ちに共感する。                       |
+| A5   | I am not interested in other people's problems. | 私は他の人が抱えている問題には興味がない。（逆転） |
+| A6   | I have a soft heart.                            | 私には優しい心がある。                             |
+| A7   | I am not really interested in others.           | 私は他人にはあまり興味がない。（逆転）             |
+| A8   | I take time out for others.                     | 私は他の人のために時間をかける。                   |
+| A9   | I feel others' emotions.                        | 私は他人の感情を感じることができる。               |
+| A10  | I make people feel at ease.                     | 私は苦労なく人々を安心させられる。                 |
+
+**誠実性（Conscientiousness）**
+
+| 変数 | 質問文（英語）                                           | 質問文（日本語）                                     |
+| ---- | -------------------------------------------------------- | ---------------------------------------------------- |
+| C1   | I am always prepared.                                    | 私はいつも準備をする。                               |
+| C2   | I leave my belongings around.                            | 私は身の回りのものはほったらかしにする（逆転）       |
+| C3   | I pay attention to details.                              | 私は細部に注意を払う。                               |
+| C4   | I make a mess of things.                                 | 私は物事をぐちゃぐちゃにしてしまう（逆転）           |
+| C5   | I get chores done right away.                            | 私はすぐに雑用を済ませる。                           |
+| C6   | I often forget to put things back in their proper place. | 私は使ったものを元の場所に戻すのをよく忘れる（逆転） |
+| C7   | I like order.                                            | 私は秩序を好む。                                     |
+| C8   | I shirk my duties.                                       | 私はやるべきことを怠る（逆転）                       |
+| C9   | I follow a schedule.                                     | 私は計画通りに物事をこなす。                         |
+| C10  | I am exacting in my work.                                | 私は仕事に追われている。                             |
+
+**開放性（Openness to experience）**
+
+| 変数 | 質問文（英語）                                  | 質問文（日本語）                                           |
+| ---- | ----------------------------------------------- | ---------------------------------------------------------- |
+| O1   | I have a rich vocabulary.                       | 私は豊かな語彙を持つ。                                     |
+| O2   | I have difficulty understanding abstract ideas. | 私にとって抽象的なアイディアを理解するのは難しい。（逆転） |
+| O3   | I have a vivid imagination.                     | 私は行き来とした想像力を持つ。                             |
+| O4   | I am not interested in abstract ideas.          | 私は抽象的なことには興味がない。（逆転）                   |
+| O5   | I have excellent ideas.                         | 私には素晴らしいアイディアがある。                         |
+| O6   | I do not have a good imagination.               | 私には豊かな想像力がない。（逆転）                         |
+| O7   | I am quick to understand things.                | 私は物事をすぐに理解できる。                               |
+| O8   | I use difficult words.                          | 私は難しい言葉を使う。                                     |
+| O9   | I spend time reflecting on things.              | 私は物事をじっくり考える。                                 |
+| O10  | I am full of ideas.                             | 私にはたくさんのアイディアがある。                         |
+
+**人種**
+
+| 番号 | 人種                                                     |
+| ---- | -------------------------------------------------------- |
+| 1    | Mixed Race                                               |
+| 2    | Arctic (Siberian, Eskimo)                                |
+| 3    | Caucasian (European)                                     |
+| 4    | Caucasian (Indian)                                       |
+| 5    | Caucasian (Middle East)                                  |
+| 6    | Caucasian (North African, Other)                         |
+| 7    | Indigenous Australian                                    |
+| 8    | Native American                                          |
+| 9    | North East Asian (Mongol, Tibetan, Korean Japanese, etc) |
+| 10   | Pacific (Polynesian, Micronesian, etc)                   |
+| 11   | South East Asian (Chinese, Thai, Malay, Filipino, etc)   |
+| 12   | West African, Bushmen, Ethiopian                         |
+| 13   | Other                                                    |
+</div></details>
+
+
+### 課題
+1. 計50問の設問を因子分析にかけてパーソナリティ因子を抽出
+2. パーソナリティ因子によって回答者を Kmeans 法でクラスタリング（グループ化）
+3. 各グループのプロファイリング（平均年齢や性別比を計算）
+
+
+### Rコード（因子分析）
+```{r, results='hide'}
+# データの読込
+data_bf <- read.csv("data/data_bf.csv")
+
+# 因子分析
+fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression")
+
+# 因子負荷量
+print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
+
+# 因子スコア（最初の6人分のみ表示）
+head(fa$scores)
+```
+
+**`factanal(data, factors, scores)`**：因子分析の実行
+
+- **`data`**：分析データの指定 ⇒ `data_bf[,1:50]` でデータ内の質問項目（1〜50列）のみ指定
+- **`factors`**：因子数の指定 ⇒ Big Five尺度の通り5を指定
+- **`scores`**：因子スコアの計算方法
+- デフォルトではバリマックス回転で推定される
+  - 回転を変更したい場合は `rotation` の引数を追加（詳細は `factanal` のヘルプを参照）
+
+`factanal` の結果の変数（上記コードでは `fa`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
+結果変数からクラスター分析のために因子スコアを取り出したい場合は，`fa$socres` のように `$` の後ろに取り出したい変数名を指定する。  
+<br />
+
+##### Rコードの出力
+因子負荷量
+```{r, echo=FALSE}
+print(fa, cutoff = 0.3)
+```
+
+因子スコア（最初の6人分のみ表示）
+```{r, echo=FALSE}
+head(fa$scores)
+```
+
+
+### 推定結果（因子分析）
+因子負荷量では，各列で**数値の絶対値**が大きいものを1つの因子としてまとめることが出来る。
+プラスで大きければ，その因子に対して正の影響，マイナスで大きければ負の影響を意味する。
+Big Five データでは，E・N・A・C・O の5指標の質問項目できれいにまとまっていることが確認でき，各因子は以下のように解釈できる。
+
+- Factor 1：外向性（Extraversion）
+- Factor 2：神経症的傾向（Neuroticism）
+- Factor 3：協調性（Agreeableness）
+- Factor 4：誠実性（Conscientiousness）
+- Factor 5：開放性（Openness to experience）
+
+因子スコアからは各回答者（全19,202人）の5指標の強さが分かる。
+1番の回答者は，Factor 1・4 が大きく，Factor 2 が小さいので，「外向性と誠実性が高く，神経症的傾向にない人物」と判断できる。
+次のクラスター分析では，全19,202人分の因子スコアを Kmeans 法でセグメント分けを行う。  
+
+
+### Rコード（K-means 法）
+#### Kmeansによるクラスタリング
+```{r, results='hide'}
+set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
+
+# クラスター分析（kmens法，クラスター数＝4）
+result <- kmeans(x = fa$scores, centers = 4)
+
+# 各セグメントの因子スコアの平均値（代表値）
+print(result$centers)
+
+# 各回答者の所属セグメント番号
+print(result$cluster)
+
+# 各セグメントの所属人数・比率
+print(result$size)
+print(result$size/nrow(data_bf))	# 人数比（nrow はデータの行数を取得する関数）
+```
+
+**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：：クラスター数
+- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `result$centers`）
+- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）  
+<br />
+
+##### Rコードの出力
+各セグメントの因子スコアの平均値（代表値）
+```{r, echo=FALSE}
+print(result$centers)
+```
+
+各回答者の所属セグメント番号（最初の20人分のみ表示）
+```{r, echo=FALSE}
+head(result$cluster, 20)
+```
+
+各セグメントの所属人数・比率
+```{r, echo=FALSE, results='hold'}
+print(result$size)	# 所属人数
+print(result$size/nrow(data_bf))	# 人数比 （nrow はデータの行数を得る関数）
+```
+
+#### 各セグメントのプロファイリング
+```{r, results='hide'}
+## data_bfに各回答者のセグメント所属番号を追加
+data_bf$cluster <- result$cluster 
+print(data_bf) 
+
+# 平均年齢
+mean(data_bf$age) # データ全体
+tapply(data_bf$age, data_bf$cluster, mean)  # セグメント別
+
+# 女性比率
+mean(data_bf$gender)  # データ全体
+tapply(data_bf$gender, data_bf$cluster, mean) # セグメント別
+
+# 人種比率
+table(data_bf$race)/nrow(data_bf) # データ全体
+prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
+```
+
+**`tapply(x, index, fun)`**：グループ毎に関数を適用
+
+- **`x`**：集計したい変数
+- **`index`**：グループ番号 ⇒ セグメント番号
+- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
+ 
+**`table(x1, x2, ...)`**：集計表の作成
+
+- **`x*`**：集計したい変数（2個以上の変数を指定するとクロス集計表を作成）
+- **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
+<br />
+
+##### Rコードの出力
+data_bfに各回答者のセグメント所属番号を追加（最初の6人分のみ表示）
+```{r echo=FALSE, paged.print=FALSE, results='hold'}
+head(data_bf)
+```
+
+
+平均年齢
+```{r, echo=FALSE, results='hold'}
+average_age <- tapply(data_bf$age, result$cluster, mean)
+mean(data_bf$age)
+average_age
+```
+
+女性比率
+```{r, echo=FALSE, results='hold'}
+ratio_gender <- tapply(data_bf$gender, result$cluster, mean)
+mean(data_bf$gender)
+ratio_gender
+```
+
+人種比率
+```{r, echo=FALSE, results='hold'}
+table(data_bf$race)/nrow(data_bf) # データ全体
+prop.table(table(data_bf$cluster,data_bf$race), 1)  # セグメント別
+```
+
+### 推定結果（K-means 法）
+```{r, echo=FALSE, warning=FALSE}
+data.frame(result$centers) %>% 
+  mutate(segment = 1:4, .before = "Factor1") %>% 
+  kable(digits = 3,
+        col.names = c("セグメント", "外向性", "神経症的傾向", "協調性", "勤勉性", "開放性")
+        ) %>% 
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+**各セグメントの解釈**
+
+- セグメント1：協調性が最も低く，開放性が高い
+- セグメント2：神経症的傾向が最も高く，協調性と開放性も高い
+- セグメント3：神経症的傾向が最も低く，外向性と協調性が高い
+- セグメント4：開放性が最も低く，外向性も低い
+
+<br />
+
+```{r, echo=FALSE, warning=FALSE}
+n <- nrow(data_bf)
+prof.df <- data.frame(n = c(result$size, n),
+                      nr = c(result$size/n, 1),
+                      age = c(average_age, mean(data_bf$age)),
+                      gen = c(ratio_gender, mean(data_bf$gender)))
+rownames(prof.df) <- c(1:4, "全体")
+
+prof.df %>% 
+  kable(digits = c(0, 3, 1, 3),
+        col.names = c("人数", "人数比", "平均年齢", "女性比率")) %>% 
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+**プロファイリング**（人種の解釈は省略）
+
+- セグメント1は人数比が最も小さく，全体平均に比べてセグメント構成員の女性比率が低い
+- セグメント3は人数比が最も大きく，全体平均に比べてセグメント構成員の平均年齢が高い
+- セグメント2・4は全体平均に比べてセグメント構成員の女性比率が高い  
+<br />
+
+
+**補足**
+
+分析例では事前にセグメント数を4として Kmeans 法を実行したが，Kmeans 法では最適なセグメント数を明確に決める方法がない。
+セグメント数を変えてクラスター分析を行い，結果が最も解釈がしやすい数を選ぶのがよい。
