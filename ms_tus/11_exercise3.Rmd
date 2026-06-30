@@ -123,9 +123,9 @@ result <- sem(model, data = data_wom)
 summary(result, standardized = TRUE) 
 
 # モデル比較指標
-fitMeasures(result, fit.measures = c("chisq", "df", "pvalue", "cfi", "gfi", "rmsea"))
+fitMeasures(result, fit.measures = c("gfi", "rmsea"))
 
-# semPlot パッケージによる作図プログラム
+# （参考）semPlot パッケージによる作図プログラム
 library(semPlot)
 semPaths(result, what = "std", style = "lisrel", reorder = FALSE, optimizeLatRes = TRUE,
          manifests = c("OPL1","OPL2","OPL3","eOPL1","eOPL2","eOPL3","WOM1","WOM2","CLM1","CLM2","eWOM1","eWOM2"),
@@ -272,9 +272,38 @@ head(data_bf)
 
 
 ### 課題
-1. 計50問の設問を因子分析にかけてパーソナリティ因子を抽出
-2. パーソナリティ因子によって回答者を Kmeans 法でクラスタリング（グループ化）
-3. 各グループのプロファイリング（平均年齢や性別比を計算）
+1. 探索的因子分析により各回答者のビックファイブ得点（5因子の因子スコア）を計算
+2. ビックファイブ得点をクラスター数4の非階層的クラスタリング（K-means）で分析
+3. 各セグメントの平均年齢・性別比も含めてクラスタリング結果を解釈
+
+
+```{r, eval=FALSE}
+# データの読込
+data_bf <- read.csv("data/data_bf.csv")
+
+# 課題1 ----
+fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression")
+
+print(fa, cutoff = 0.3) # 因子負荷量, cutoff = 0.3 で絶対値0.3以上の負荷量のみ表示
+fa$scores  # 因子スコア
+
+# 課題2 ----
+set.seed(1) # 乱数シードの固定
+result <- kmeans(x = fa$scores, centers = 4)
+
+result$centers # 各セグメントの因子スコアの平均値（代表値）
+result$cluster # 各回答者の所属セグメント番号
+result$size/nrow(data_bf) # 各セグメントの所属比率
+
+# 課題3 ----
+data_bf$cluster <- result$cluster # 元データdata_bfに各回答者のセグメント所属番号を追加
+
+aggregate(age ~ cluster, data = data_bf, FUN = mean)    # 平均年齢
+aggregate(gender ~ cluster, data = data_bf, FUN = mean) # 女性比率
+prop.table(table(data_bf$cluster, data_bf$race), 1)     # （参考）人種比率
+```
+
+
 
 
 ### Rコード（因子分析）
