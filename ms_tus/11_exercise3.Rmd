@@ -276,7 +276,8 @@ head(data_bf)
 2. ビックファイブ得点をクラスター数4の非階層的クラスタリング（K-means）で分析
 3. 各セグメントの平均年齢・性別比も含めてクラスタリング結果を解釈
 
-
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
 ```{r, eval=FALSE}
 # データの読込
 data_bf <- read.csv("data/data_bf.csv")
@@ -296,29 +297,24 @@ result$cluster # 各回答者の所属セグメント番号
 result$size/nrow(data_bf) # 各セグメントの所属比率
 
 # 課題3 ----
-data_bf$cluster <- result$cluster # 元データdata_bfに各回答者のセグメント所属番号を追加
+aggregate(data_bf$age ~ result$cluster, FUN = mean)    # 平均年齢
+aggregate(data_bf$gender ~ result$cluster, FUN = mean) # 女性比率
 
-aggregate(age ~ cluster, data = data_bf, FUN = mean)    # 平均年齢
-aggregate(gender ~ cluster, data = data_bf, FUN = mean) # 女性比率
 prop.table(table(data_bf$cluster, data_bf$race), 1)     # （参考）人種比率
 ```
+</div></details>
+<br />
 
-
-
-
-### Rコード（因子分析）
+#### クラスター分析以外のRコード
+##### 因子分析
 ```{r, results='hide'}
 # データの読込
 data_bf <- read.csv("data/data_bf.csv")
 
-# 因子分析
 fa <- factanal(data_bf[,1:50], factors = 5, scores = "regression")
 
-# 因子負荷量
-print(fa, cutoff = 0.3)  # 絶対値で0.3以上の負荷量のみ表示
-
-# 因子スコア（最初の6人分のみ表示）
-head(fa$scores)
+print(fa, cutoff = 0.3) # 因子負荷量, cutoff = 0.3 で絶対値0.3以上の負荷量のみ表示
+fa$scores  # 因子スコア
 ```
 
 **`factanal(data, factors, scores)`**：因子分析の実行
@@ -326,14 +322,8 @@ head(fa$scores)
 - **`data`**：分析データの指定 ⇒ `data_bf[,1:50]` でデータ内の質問項目（1〜50列）のみ指定
 - **`factors`**：因子数の指定 ⇒ Big Five尺度の通り5を指定
 - **`scores`**：因子スコアの計算方法
-- デフォルトではバリマックス回転で推定される
-  - 回転を変更したい場合は `rotation` の引数を追加（詳細は `factanal` のヘルプを参照）
 
-`factanal` の結果の変数（上記コードでは `fa`）には，因子負荷量や因子スコアなど因子分析の様々な分析出力が含まれている（詳細は `?factanal` を実行してヘルプを参照）。
-結果変数からクラスター分析のために因子スコアを取り出したい場合は，`fa$socres` のように `$` の後ろに取り出したい変数名を指定する。  
-<br />
 
-##### Rコードの出力
 因子負荷量
 ```{r, echo=FALSE}
 print(fa, cutoff = 0.3)
@@ -342,169 +332,21 @@ print(fa, cutoff = 0.3)
 因子スコア（最初の6人分のみ表示）
 ```{r, echo=FALSE}
 head(fa$scores)
-```
 
-
-### 推定結果（因子分析）
-因子負荷量では，各列で**数値の絶対値**が大きいものを1つの因子としてまとめることが出来る。
-プラスで大きければ，その因子に対して正の影響，マイナスで大きければ負の影響を意味する。
-Big Five データでは，E・N・A・C・O の5指標の質問項目できれいにまとまっていることが確認でき，各因子は以下のように解釈できる。
-
-- Factor 1：外向性（Extraversion）
-- Factor 2：神経症的傾向（Neuroticism）
-- Factor 3：協調性（Agreeableness）
-- Factor 4：誠実性（Conscientiousness）
-- Factor 5：開放性（Openness to experience）
-
-因子スコアからは各回答者（全19,202人）の5指標の強さが分かる。
-1番の回答者は，Factor 1・4 が大きく，Factor 2 が小さいので，「外向性と誠実性が高く，神経症的傾向にない人物」と判断できる。
-次のクラスター分析では，全19,202人分の因子スコアを Kmeans 法でセグメント分けを行う。  
-
-
-### Rコード（K-means 法）
-#### Kmeansによるクラスタリング
-```{r, results='hide'}
-set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
-
-# クラスター分析（kmens法，クラスター数＝4）
+set.seed(1) # 乱数シードの固定
 result <- kmeans(x = fa$scores, centers = 4)
-
-# 各セグメントの因子スコアの平均値（代表値）
-print(result$centers)
-
-# 各回答者の所属セグメント番号
-print(result$cluster)
-
-# 各セグメントの所属人数・比率
-print(result$size)
-print(result$size/nrow(data_bf))	# 人数比（nrow はデータの行数を取得する関数）
 ```
-
-**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
-
-- **`x`**：クラスター分析を実行するデータの指定
-- **`centers`**：：クラスター数
-- 各セグメントの代表値（因子スコアの平均値）は `$centers` で取り出す（上記例では `result$centers`）
-- 各回答者の所属セグメントは `$cluster` で取り出す（上記例では `result$cluster`）  
 <br />
 
-##### Rコードの出力
-各セグメントの因子スコアの平均値（代表値）
-```{r, echo=FALSE}
-print(result$centers)
-```
-
-各回答者の所属セグメント番号（最初の20人分のみ表示）
-```{r, echo=FALSE}
-head(result$cluster, 20)
-```
-
-各セグメントの所属人数・比率
-```{r, echo=FALSE, results='hold'}
-print(result$size)	# 所属人数
-print(result$size/nrow(data_bf))	# 人数比 （nrow はデータの行数を得る関数）
-```
-
-#### 各セグメントのプロファイリング
+##### クラスター別の集計
 ```{r, results='hide'}
-## data_bfに各回答者のセグメント所属番号を追加
-data_bf$cluster <- result$cluster 
-print(data_bf) 
-
-# 平均年齢
-mean(data_bf$age) # データ全体
-tapply(data_bf$age, data_bf$cluster, mean)  # セグメント別
-
-# 女性比率
-mean(data_bf$gender)  # データ全体
-tapply(data_bf$gender, data_bf$cluster, mean) # セグメント別
-
-# 人種比率
-table(data_bf$race)/nrow(data_bf) # データ全体
-prop.table(table(data_bf$cluster, data_bf$race), 1)  # セグメント別
+# 以下では result を kmeans の出力オブジェクトとする 
+aggregate(data_bf$age ~ result$cluster, FUN = mean)    # 平均年齢
+aggregate(data_bf$gender ~ result$cluster, FUN = mean) # 女性比率
 ```
 
-**`tapply(x, index, fun)`**：グループ毎に関数を適用
+**`aggregate(y ~ x, FUN)`**：データサブセットの要約統計量
 
-- **`x`**：集計したい変数
-- **`index`**：グループ番号 ⇒ セグメント番号
-- **`fun`**：適用したい関数 ⇒ 平均なら `mean`，標準偏差なら `sd` など
- 
-**`table(x1, x2, ...)`**：集計表の作成
-
-- **`x*`**：集計したい変数（2個以上の変数を指定するとクロス集計表を作成）
-- **`prop.table(table, 1)`** で各行の比率を計算できる（クロス集計表を行方向で合計すると1になるよう比率を計算）  
-<br />
-
-##### Rコードの出力
-data_bfに各回答者のセグメント所属番号を追加（最初の6人分のみ表示）
-```{r echo=FALSE, paged.print=FALSE, results='hold'}
-head(data_bf)
-```
-
-
-平均年齢
-```{r, echo=FALSE, results='hold'}
-average_age <- tapply(data_bf$age, result$cluster, mean)
-mean(data_bf$age)
-average_age
-```
-
-女性比率
-```{r, echo=FALSE, results='hold'}
-ratio_gender <- tapply(data_bf$gender, result$cluster, mean)
-mean(data_bf$gender)
-ratio_gender
-```
-
-人種比率
-```{r, echo=FALSE, results='hold'}
-table(data_bf$race)/nrow(data_bf) # データ全体
-prop.table(table(data_bf$cluster,data_bf$race), 1)  # セグメント別
-```
-
-### 推定結果（K-means 法）
-```{r, echo=FALSE, warning=FALSE}
-data.frame(result$centers) %>% 
-  mutate(segment = 1:4, .before = "Factor1") %>% 
-  kable(digits = 3,
-        col.names = c("セグメント", "外向性", "神経症的傾向", "協調性", "勤勉性", "開放性")
-        ) %>% 
-  kable_styling(bootstrap_options = c("striped"))
-```
-
-**各セグメントの解釈**
-
-- セグメント1：協調性が最も低く，開放性が高い
-- セグメント2：神経症的傾向が最も高く，協調性と開放性も高い
-- セグメント3：神経症的傾向が最も低く，外向性と協調性が高い
-- セグメント4：開放性が最も低く，外向性も低い
-
-<br />
-
-```{r, echo=FALSE, warning=FALSE}
-n <- nrow(data_bf)
-prof.df <- data.frame(n = c(result$size, n),
-                      nr = c(result$size/n, 1),
-                      age = c(average_age, mean(data_bf$age)),
-                      gen = c(ratio_gender, mean(data_bf$gender)))
-rownames(prof.df) <- c(1:4, "全体")
-
-prof.df %>% 
-  kable(digits = c(0, 3, 1, 3),
-        col.names = c("人数", "人数比", "平均年齢", "女性比率")) %>% 
-  kable_styling(bootstrap_options = c("striped"))
-```
-
-**プロファイリング**（人種の解釈は省略）
-
-- セグメント1は人数比が最も小さく，全体平均に比べてセグメント構成員の女性比率が低い
-- セグメント3は人数比が最も大きく，全体平均に比べてセグメント構成員の平均年齢が高い
-- セグメント2・4は全体平均に比べてセグメント構成員の女性比率が高い  
-<br />
-
-
-**補足**
-
-分析例では事前にセグメント数を4として Kmeans 法を実行したが，Kmeans 法では最適なセグメント数を明確に決める方法がない。
-セグメント数を変えてクラスター分析を行い，結果が最も解釈がしやすい数を選ぶのがよい。
+- **`y`**：要約する変数
+- **`x`**：データをサブセットに分割する基準 ⇒ 各回答者の所属セグメント番号
+- **`FUN`**：計算する統計量 ⇒ 平均値の場合は `mean`
