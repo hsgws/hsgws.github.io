@@ -2834,7 +2834,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">データ分析実習③</h1>
-<h4 class="date">更新：2026-06-30</h4>
+<h4 class="date">更新：2026-07-01</h4>
 
 </div>
 
@@ -3525,7 +3525,7 @@ Rコード（クリックで表示）
 <span id="cb2-19"><a href="#cb2-19"></a><span class="fu">aggregate</span>(data_bf<span class="sc">$</span>age <span class="sc">~</span> result<span class="sc">$</span>cluster, <span class="at">FUN =</span> mean)    <span class="co"># 平均年齢</span></span>
 <span id="cb2-20"><a href="#cb2-20"></a><span class="fu">aggregate</span>(data_bf<span class="sc">$</span>gender <span class="sc">~</span> result<span class="sc">$</span>cluster, <span class="at">FUN =</span> mean) <span class="co"># 女性比率</span></span>
 <span id="cb2-21"><a href="#cb2-21"></a></span>
-<span id="cb2-22"><a href="#cb2-22"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(data_bf<span class="sc">$</span>cluster, data_bf<span class="sc">$</span>race), <span class="dv">1</span>)     <span class="co"># （参考）人種比率</span></span></code></pre></div>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(result<span class="sc">$</span>cluster, data_bf<span class="sc">$</span>race), <span class="dv">1</span>)     <span class="co"># （参考）人種比率</span></span></code></pre></div>
 </div>
 </details>
 <p><br /></p>

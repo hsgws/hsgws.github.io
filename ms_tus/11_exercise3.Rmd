@@ -300,7 +300,7 @@ result$size/nrow(data_bf) # 各セグメントの所属比率
 aggregate(data_bf$age ~ result$cluster, FUN = mean)    # 平均年齢
 aggregate(data_bf$gender ~ result$cluster, FUN = mean) # 女性比率
 
-prop.table(table(data_bf$cluster, data_bf$race), 1)     # （参考）人種比率
+prop.table(table(result$cluster, data_bf$race), 1)     # （参考）人種比率
 ```
 </div></details>
 <br />
