@@ -1,0 +1,59 @@
+---
+title: "第16章 カウントデータの分析"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    md_extensions: -ascii_identifiers
+    df_print: "paged"
+    # highlight: pygments
+    # theme: lumen
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+```
+
+## データ
+#### count-data.csv
+```{r}
+countdata <- read.csv("dataset/count-data.csv")
+head(countdata)
+```
+
+## 4 カウントデータを用いた市場反応分析
+### ポアソン回帰
+```{r}
+# Model 1
+model1 <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = countdata)
+summary(model1)
+
+# Model 2
+model2 <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, offset = log(k), family = poisson, data = countdata)
+summary(model2)
+```
+
+### 負の二項回帰
+```{r}
+# Model 3
+library(MASS)
+model3 <- glm.nb(y ~ x1 + x2 + x3 + x4 + x5 + x6, link = log, data = countdata)
+summary(model3)
+
+# Model 4
+model4 <- glm.nb(y ~ x1 + x2 + x3 + x4 + x5 + x6 + offset(log(k)), link = log, data = countdata)
+summary(model4)
+```
+
