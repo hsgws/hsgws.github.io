@@ -155,3 +155,37 @@ result %>%
   print()
 ```
 
+
+## 分析例：傾向スコア分析
+
+### Rコード
+```{r, results='hide'}
+library(MatchIt)
+library(cobalt)
+
+# データの読み込み
+data(lalonde)
+
+# 傾向スコアマッチング
+m.out <- matchit(
+  treat ~ age + educ + race + nodegree + married + re74 + re75,
+  data = lalonde,
+  replace = FALSE,
+  caliper = 0.1
+)
+
+# マッチングの概要 
+print(m.out)
+
+# 共変量のバランス確認
+summary(m.out, un = FALSE)
+love.plot(m.out, thresholds = 0.1, abs = TRUE, stars = "raw")
+
+# マッチングデータの作成
+m.data <- match.data(m.out)
+
+# 介入効果（ATT）の推定
+result <- lm(re78 ~ treat + age + educ + race + nodegree + married + re74 + re75, data = m.data)
+summary(result)
+```
+
