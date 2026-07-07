@@ -69,12 +69,12 @@ MineThatData <- read.csv("data/MineThatData.csv")
 # t検定（平均値の差の検定）
 t.test(spend ~ segment, data = MineThatData)
 
-# t.test(spend ~ segment, data = MineThatData, var.equal = TRUE)  # 等分散を仮定した検定
+# t.test(spend ~ segment, data = MineThatData, var.equal = TRUE)  # 参考：等分散を仮定した検定
 ```
 
 **`t.test(fomula, data)`**：データの標準化
 
-- **`fomula`**：目的変数とデータを2つの集団に分割する変数
+- **`fomula`**：目的変数と介入変数の指定
 - **`data`**：データ
 - `var.equal = TRUE` を引数に追加すると等分散を仮定したt検定となる
 <br />
@@ -85,13 +85,13 @@ t.test(spend ~ segment, data = MineThatData)
 ```
 
 
-## 分析例②：DID
+## 分析例②：DID*
 
 ### データ
 **米国の1人あたり年間タバコ購入箱数（data_cigar.csv）**
 
 ```{r, echo=FALSE}
-data_cigar <- read_csv("data/data_cigar.csv")
+data_cigar <- read.csv("data/data_cigar.csv")
 head(data_cigar)
 ```
 \
