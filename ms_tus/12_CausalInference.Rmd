@@ -53,7 +53,7 @@ head(MineThatData)
 | segment         | 配信したプロモーションメールの種類（Mens E-Mail, No E-Mail） |
 | visit           | 配信後2週間のサイト訪問有無                                  |
 | conversion      | 配信後2週間のサイト購買有無                                  |
-| spend           | 購入金額                                                     |
+| spend           | 配信後2週間の購入金額                                                     |
 
 
 - ECサイトのプロモーションで会員を「男性向けメール配信（Mens E-Mail）」「女性向けメール配信（Womens E-Mail）」「メール配信なし（No E-Mail）」のどれか1つにランダムに割当て
@@ -156,14 +156,54 @@ result %>%
 ```
 
 
-## 分析例：傾向スコア分析
+## 分析例③：傾向スコア分析*
+### データ
+**lalonde データ**
+
+```{r, echo=FALSE}
+library(MatchIt)
+data(lalonde)
+head(lalonde)
+```
+
+**データ出典**：[MatchIt パッケージ](https://cran.r-project.org/web/packages/MatchIt/index.html) 
+
+\
+
+| 変数名 | 内容                                                         |
+| ------ | ------------------------------------------------------------ |
+| **treat**  | **1 = 職業訓練に参加，0 = 不参加（処置変数）**           |
+| age  | 年齢       |
+| educ | 教育年数   |
+| race  | 人種（black or hispan or white)                        |
+| married   | 結婚状況（1 = 結婚, 0 = 未婚）                        |
+| nodegree  | 高校学位（1 = なし，0 = あり）                        |
+| re74  | 1974年（プログラム開始前）の実質収入                        |
+| re75  | 1975年（プログラム開始前）の実質収入                        |
+| **re78**  | **1978年（プログラム終了後）の実質収入**                        |
+
+
+- [Lalonde (1986)](https://www.jstor.org/stable/1806062) および [Dehejia and Wahba (1999)](https://www.jstor.org/stable/2669919) が因果推論の手法によってバイアスを含むデータから正しい効果測定ができるか検証するために作成したデータ
+- 元々は1970年代のアメリカで行われた職業訓練プログラムに関するデータで，プログラム自体は参加希望者からランダムに受講者を選別するRCTにより実施
+- 対照群（プログラム未参加者）のデータを意図的に一般労働者のデータに差し替えることで，データに人工的なセレクションバイアスを追加
+- 元データは参加希望者の多くが低所得者だったため，介入群・対照群ともに低所得者がほとんどを占めるデータだったが，対照群を一般労働者のデータに変更することで，対照群は非低所得者・介入群は低所得者というセレクションバイアスを人工的に発生
+
+
+参考文献  
+Dehejia, R. H., & Wahba, S. (1999). Causal Effects in Nonexperimental Studies: Reevaluating the Evaluation of Training Programs. Journal of the American Statistical Association, 94(448), 1053–1062. https://doi.org/10.2307/2669919  
+LaLonde, R. J. (1986). Evaluating the Econometric Evaluations of Training Programs with Experimental Data. The American Economic Review, 76(4), 604–620. http://www.jstor.org/stable/1806062
+
 
 ### Rコード
-```{r, results='hide'}
+```{r, results='hide', fig.keep = "none"}
+# MatchIt & cobalt パッケージのインストール（初回のみ実行）
+# install.packages(c("MatchIt", "cobalt"))
+
+# パッケージの読込み
 library(MatchIt)
 library(cobalt)
 
-# データの読み込み
+# （パッケージ付随）データの読み込み
 data(lalonde)
 
 # 傾向スコアマッチング
@@ -174,7 +214,7 @@ m.out <- matchit(
   caliper = 0.1
 )
 
-# マッチングの概要 
+# マッチング結果の概要 
 print(m.out)
 
 # 共変量のバランス確認
@@ -189,3 +229,19 @@ result <- lm(re78 ~ treat + age + educ + race + nodegree + married + re74 + re75
 summary(result)
 ```
 
+#### Rコードの出力
+
+マッチング結果の概要
+```{r, echo=FALSE}
+print(m.out)
+```
+
+共変量のバランス確認（love.plot）
+```{r, echo=FALSE}
+love.plot(m.out, thresholds = 0.1, abs = TRUE, stars = "raw")
+```
+
+介入効果（ATT）の推定
+```{r, echo=FALSE}
+summary(result)
+```
