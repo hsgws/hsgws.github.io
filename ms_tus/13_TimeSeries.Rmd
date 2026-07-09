@@ -1,0 +1,488 @@
+---
+title: "時系列分析"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 10)
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+## 1.分析例①：売上予測
+### データ
+**緑茶ペットボトルの日次販売本数データ（data_tea.csv）**
+
+- オフィス街のコンビニでの販売データ
+- 13週（91日）のデータを訓練（パラメータ推定期間）11週（77日）と予測期間2週（14日間）に分割して，前半の訓練期間でモデルを構築し，後半の予測期間で予測力の検証を行う
+
+
+```{r, echo=FALSE}
+data_tea <- read.csv("data/data_tea.csv")
+head(data_tea)
+```
+
+| 変数名  | 内容                                        |
+| ------- | ------------------------------------------- |
+| date    | 日付                                        |
+| num     | 販売本数　$(y_t)$                           |
+| holiday | 祝日フラグ（1＝祝日，0＝それ以外）　$(x_t)$ |
+
+**データ出典**：日経NEED POSデータ
+
+
+```{r, echo=FALSE}
+data_tea$date <- as.Date(data_tea$date)
+
+data_tea %>% 
+  ggplot(mapping = aes(x = date, y = num)) +
+  geom_line() +
+  scale_x_date(date_labels = "%m-%d", date_breaks = "1 weeks") +
+  labs(title = "販売本数の日次グラフ")
+```
+
+### モデル
+#### 観測モデル
+$$
+y_t = a_t + s_t + \beta x_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+$$
+
+#### システムモデル
+$$
+a_t = a_{t-1} + v_{a,t}; \qquad  v_{a,t} \sim N(0, \sigma^2_a) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + v_{s,t}; \qquad  v_{s,t} \sim N(0, \sigma^2_s)
+$$
+
+- $y_t$：販売本数
+- $a_t$：トレンド成分
+- $s_t$：曜日周期成分
+- $x_t$：祝日ダミー
+- $\beta$：祝日効果
+
+
+### Rコード（推定）
+#### モデルの定義
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
+# パッケージのインストール（初回のみ実行）
+# install.packages("KFAS")  # 状態空間モデルのパッケージ
+
+# パッケージの読込み
+library(KFAS)
+
+# データの読み込み
+data_tea <- read.csv("data/data_tea.csv")
+
+# 訓練データと予測データへのデータ分割
+train_data <- data_tea[1:77,] # 訓練データ（2015/04/01 ~ 2015/06/16，77日間）
+test_data <- data_tea[78:91,] # 予測データ（2015/06/17 ~ 2015/06/30，14日間）
+
+# 分析モデルの定義
+model <- SSModel(
+  num ~ SSMtrend(1, Q = NA) + SSMseasonal(7, sea.type = "dummy", Q = NA) + holiday,
+  H = NA,
+  data = train_data
+)
+```
+
+**`SSModel(formula, H, data)`：モデルの記述・作成**
+
+- **`formula`**：目的変数・説明変数の指定
+	- `SSMtrend(1, Q = NA)`：1次のトレンド項
+	- `SSMseasonal(period, sea.type = "dummy", Q = NA)`：曜日周期項
+	  - `period` はモデル化する周期 ⇒ 日次データであれば曜日周期で `period = 7`, 月次データであれば月周期で `period = 12`
+	- `Q`：システムモデルの分散（`Q = NA` で分散を推定）
+	- 説明変数は回帰分析などと同様に `+` で追加
+- **`H`**：観測モデルの分散（`H = NA` で分散を推定）
+- **`data`**：観測データの指定
+
+
+#### パラメータ・状態の推定
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide', fig.keep='none'}
+# パラメータの推定
+fit <- fitSSM(model, inits = rep(0, 3))
+
+# 状態の推定（カルマンフィルタ＆平滑化）
+result <- KFS(fit$model)
+
+# 状態の推定値
+result$alphahat
+
+# （参考）状態の推定値の図示
+# install.packages("ggfortify") # 結果図示用のパッケージ，初回のみ実行
+library(ggfortify)
+plot_data <- cbind(train_data$num, result$alphahat[, c("holiday" ,"level", "sea_dummy1")])
+colnames(plot_data) <- c("data", "holiday" ,"level", "sea_dummy1")
+autoplot(plot_data)
+
+# （参考）分散パラメータの推定値
+fit$model$H   # 観測モデルの誤差項の分散
+fit$model$Q   # システムモデルの誤差項の分散
+```
+
+**`fitSSM(model, inits)`：パラメータの推定**
+
+- **`model`**：`SSModel` で作成したモデルの指定
+- **`inits`**：推定パラメータの初期値
+  - パラメータは `SSModel` のモデル定義で `NA` とした3個の分散パラメータ ⇒ `rep(0,3)` は0を3つ並べる関数
+  - 状態の推定は `KFS` 関数で行う
+- `fitSSM` 関数の出力のうちパラメータ推定値は `model`（上記例では `fit$model`）に保存されている。
+
+
+**`KFS(model)`：状態の推定（カルマンフィルタによるフィルタリング＆平滑化）**
+
+- **`model`**：`fitSSM` で推定したモデルの指定（`fit$model`）
+- `KFS` 関数の出力のうち平滑化された状態の推定値は `alphahat`（上記例では `result$alphahat`）に保存されている。その他の出力は `KFS` のヘルプの `Value` を参照。
+
+
+#### Rコードの出力
+##### 状態の推定値（最初の10日分のみ表示）
+```{r echo=FALSE}
+result$alphahat %>% head(10)
+```
+
+- holiday：祝日効果 $\beta$ の推定値
+- level：トレンドの推定値
+- sea_dummy1：曜日周期成分の推定値
+- sea_dummy2 ~ 6：1～5日前までの曜日周期成分の推定値
+
+
+##### （参考）状態の推定値の図示
+
+```{r echo=FALSE}
+autoplot(plot_data)
+```
+
+<!-- ```{r echo=FALSE} -->
+<!-- autoplot(result$alphahat[, c("holiday" ,"level", "sea_dummy1")]) -->
+<!-- ``` -->
+上から，観測データ，祝日効果，トレンド，曜日周期
+
+
+##### （参考）分散パラメータ推定値
+観測モデルの誤差項の分散
+```{r echo=FALSE}
+fit$model$H   # 観測モデルの誤差項の分散
+```
+
+システムモデルの誤差項の分散
+```{r echo=FALSE}
+fit$model$Q   # システムモデルの誤差項の分散
+```
+
+システムモデルの誤差項の分散は対角成分の左上からトレンド成分 $a_t$ の分散 $\sigma^2_a$，曜日周期成分 $s_t$ の分散 $\sigma^2_s$
+
+### Rコード（予測）
+#### 予測
+```{r message=FALSE, warning=FALSE, results='hide', fig.show='hide'}
+# 予測用データの作成
+newdata <- SSModel(
+  rep(NA, 14) ~ SSMtrend(1, Q = NA) + SSMseasonal(7, sea.type = "dummy", Q = NA) + holiday,
+  H = NA, 
+  data = test_data
+)
+
+# fitSSM で推定したパラメータの代入
+newdata$H <- fit$model$H    # 観測モデルの分散
+newdata$Q <- fit$model$Q    # システムモデルの分散
+
+# 予測の実行
+pred <- predict(fit$model, newdata = newdata, interval = "prediction")
+
+# 予測結果
+pred
+```
+
+**`predict(model, newdata, interval)`：予測の実行**
+
+- **`model`**：`fitSSM` で推定したモデル
+- **`newdata`**：予測用の説明変数データ
+	- 予測を行う際にも，予測用の説明変数（今回は祝日フラグ）が入った `SSModel` を作成する必要がある
+	- 目的変数（販売本数）は，予測期間分（14日間）の欠損値 `rep(NA, 14)` を指定
+	- 分散パラメータは `fitSSM` で推定したものを代入
+	- 説明変数がないモデル（例えばトレンドと周期成分のみ）の場合は `newdata` は不要
+- **`interval`**：予測の場合は `prediction` を指定
+
+#### 予測結果の評価
+```{r message=FALSE, warning=FALSE, results='hide', fig.show='hide'}
+# install.packages("Metrics") # 評価指標計算用のパッケージ, 初回のみ実行
+library(Metrics)
+mae(test_data$num, pred[, "fit"])
+mape(test_data$num, pred[, "fit"])
+rmse(test_data$num, pred[, "fit"])
+
+# （参考）予測結果の図示
+test_data$date <- as.Date(test_data$date)
+plot(x = test_data$date, y = test_data$num, type = "l", ylim = c(50, 350), xlab = "date", ylab = "num")
+lines(test_data$date, pred[, "fit"], type = "l", col = "red")
+lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
+lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
+```
+
+**`mae(actual, predicted)`, `mape(actual, predicted)`, `rmse(actual, predicted)`：予測値の評価**
+
+- **`actual`**：実績値（観測データ）
+- **`predicted`**：予測値
+  - KFASパッケージの `predict` 関数の出力の予測値は `pred[, "fit"]` で抜き出す。`pred$fit` では抜き出せないことに注意。
+
+
+#### Rコードの出力
+##### 予測結果
+```{r echo=FALSE}
+pred
+```
+
+- fit：予測値
+- lwr：95％予測区間の下限
+- upr：95％予測区間の上限
+
+
+##### 予測結果の評価
+MAE
+```{r echo=FALSE}
+mae(test_data$num, pred[, "fit"])
+```
+
+MAPE
+```{r echo=FALSE}
+mape(test_data$num, pred[, "fit"])
+```
+
+RMSE
+```{r echo=FALSE}
+rmse(test_data$num, pred[, "fit"])
+```
+
+##### （参考）予測結果の図示
+```{r echo=FALSE}
+par(mar=c(3, 3, 1, 1))
+plot(test_data$date, test_data$num, type = "l", ylim = c(50, 350), xlab = "date", ylab = "num")
+lines(test_data$date, pred[, "fit"], type = "l", col = "red")
+lines(test_data$date, pred[, "lwr"], type = "l", col = "red", lty = "dashed")
+lines(test_data$date, pred[, "upr"], type = "l", col = "red", lty = "dashed")
+```
+
+- 黒の実線：実績値
+- 赤の実線：予測値
+- 赤の点線：予測値の95％予測区間
+
+<!-- ```{r echo=FALSE} -->
+<!-- ggplot(test_data, mapping = aes(y = num, x = date)) + -->
+<!--   geom_line() + -->
+<!--   geom_line(aes(y = fit), colour = "red") + -->
+<!--   geom_line(aes(y = lwr), colour = "red", linetype = "dotted") + -->
+<!--   geom_line(aes(y = upr), colour = "red", linetype = "dotted") + -->
+<!--   scale_x_date(date_labels = "%m-%d", date_breaks = "1 days") -->
+<!-- ``` -->
+
+
+### 説明変数を含まないモデル*
+#### 観測モデル
+$$
+y_t = a_t + s_t + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+$$
+
+#### システムモデル
+$$
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
+s_t = -\sum_{j=1}^6 s_{t-j} + \delta_t; \qquad  \delta_t \sim N(0, \sigma^2_s)
+$$
+
+#### Rコード
+##### 推定
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
+# 分析モデルの定義
+model_noholiday <- SSModel(
+  num ~ SSMtrend(1, Q = NA) + SSMseasonal(7, sea.type = "dummy", Q = NA),
+  H = NA,
+  data = train_data
+)
+
+# パラメータ推定
+fit_noholiday <- fitSSM(model_noholiday, inits = rep(0, 3))
+
+# 状態のフィルタリング＆平滑化
+result_noholiday <- KFS(fit_noholiday$model)
+
+# パラメータ推定値
+fit_noholiday$model$H   # 観測モデルの誤差項の分散
+fit_noholiday$model$Q   # システムモデルの誤差項の分散
+
+# 平滑化状態の推定値
+result_noholiday$alphahat
+
+# 平滑化状態の図示
+autoplot(result_noholiday$alphahat[, c("level", "sea_dummy1")])
+```
+
+##### 予測
+```{r fig.show='hide', message=FALSE, warning=FALSE, results='hide'}
+# 予測の実行
+# 説明変数を含まないモデルは予測用データの作成は不要の代わりに n.ahead で予測期間を指定
+pred_noholiday <- predict(fit_noholiday$model, n.ahead = 14, interval = "prediction")
+
+# 予測結果
+pred_noholiday
+
+# 予測結果の評価
+mae(test_data$num, pred_noholiday[, "fit"])
+mape(test_data$num, pred_noholiday[, "fit"])
+rmse(test_data$num, pred_noholiday[, "fit"])
+```
+
+#### Rコードの出力
+##### パラメータ推定値
+```{r echo=FALSE}
+fit_noholiday$model$H   # 観測モデルの誤差項の分散
+fit_noholiday$model$Q   # システムモデルの誤差項の分散
+```
+
+##### 予測結果
+```{r echo=FALSE}
+pred_noholiday
+```
+
+##### 予測結果の評価
+MAE
+```{r echo=FALSE}
+mae(test_data$num, pred_noholiday[, "fit"])
+```
+
+MAPE
+```{r echo=FALSE}
+mape(test_data$num, pred_noholiday[, "fit"])
+```
+
+RMSE
+```{r echo=FALSE}
+rmse(test_data$num, pred_noholiday[, "fit"])
+```
+
+- 説明変数（祝日ダミー）の有無で予測力を比較すると，指標で評価が分かれる
+  - MAE：18.47（あり）vs. 15.99（なし）
+  - MAPE：0.102（あり）vs. 0.094（なし）
+  - RMSE：23.72（あり）vs. 24.52（なし）
+- RMSEは実績値から大きく離れた予測値を重視して評価する（＝実績値から大きく離れるほど罰則が大きくなる）ので，予測が大きく外れないことを重視する場合は RMSE が小さいモデルを採択した方がよい
+- 誤差項の分散の推定値は「説明変数あり」モデルの方が小さいため，予測値の95％予測区間は「説明変数あり」モデルの方が狭くなる
+
+
+## 2.分析例②：時変回帰係数*
+### データ
+**醤油の日次販売個数データ**（sec8_DLM.csv）
+```{r, echo=FALSE}
+sec8_DLM <- read.csv("data/sec8_DLM.csv")
+head(sec8_DLM)
+```
+
+| 変数名          | 内容                                                         |
+| --------------- | ------------------------------------------------------------ |
+| Date            | 日付（2000/01/02 ~ 2003/09/05，1314日間）                    |
+| LogPI_A         | 商品Aの点数PI（来店客1000人当たり販売点数）の対数値　$(y_t)$ |
+| LogPriceIndex_A | 商品Aの価格掛率の対数値　$(x_{1t})$                          |
+| LogPriceIndex_B | 商品Bの価格掛率の対数値　$(x_{2t})$                          |
+| Display_A       | 商品Aの山積み陳列実施の有無　$(x_{3t})$                      |
+| Display_B       | 商品Bの山積み陳列実施の有無　$(x_{4t})$                      |
+
+**データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（8章）
+
+
+```{r, echo=FALSE}
+# plot.ts(sec8_DLM$LogPI_A, ylab = "LogPI_A", main = "Time series plot")
+
+sec8_DLM$Date <- as.Date(as.character(sec8_DLM$Date),"%Y%m%d")
+sec8_DLM %>% 
+  ggplot(mapping = aes(x = Date, y = LogPI_A)) +
+  geom_line() +
+  scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "6 months") +
+  labs(title = "商品Aの点数PIの日次グラフ")
+```
+
+### モデル
+#### 観測モデル
+$$
+y_t = a_t + \sum_{j=1}^4 \beta_{j,t} x_{j,t} + \varepsilon_t; \qquad  \varepsilon_t \sim N(0, \sigma^2_y)
+$$
+
+#### システムモデル
+$$
+a_t = a_{t-1} + v_t; \qquad  v_t \sim N(0, \sigma^2_a) \\
+\beta_{j,t} = \beta_{j,t-1} + \eta_{j,t}; \qquad  \eta_{j,t} \sim N(0, \sigma^2_{\beta_j})
+$$
+
+### Rコード
+```{r, results='hide', message=FALSE, fig.keep='none'}
+# パッケージの読込み
+library(KFAS)
+library(ggfortify)
+
+# データの読み込み
+sec8_DLM <- read.csv("data/sec8_DLM.csv")
+
+# 分析モデルの定義
+model <- SSModel(
+  LogPI_A ~ SSMtrend(1, Q = NA) + 
+    SSMregression(~ LogPriceIndex_A + LogPriceIndex_B + Display_A + Display_B, Q = diag(NA, 4)),
+  H = NA,
+  data = sec8_DLM
+)
+
+# 分散パラメータの推定
+fit <- fitSSM(model, inits = rep(0,6))
+
+# 分散パラメータの推定値
+fit$model$H   # 観測モデルの誤差項の分散
+fit$model$Q   # システムモデルの誤差項の分散
+
+# 状態（時変係数）の推定（カルマンフィルタ，平滑化）
+result <- KFS(fit$model)
+
+# 状態の推定値
+result$alphahat
+
+# 状態の推定値の図示
+autoplot(result$alphahat)
+```
+
+時変係数を推定する場合は，`SSModel` 関数の引数に `SSMregression` を追加し，`Q = diag(NA, 4)` で回帰係数の分散を推定パラメータとして指定する。
+詳細は下記参考文献を参照。
+
+1. [馬場（2018）『時系列分析と状態空間モデルの基礎』プレアデス出版](https://logics-of-blue.com/tsa-ssm-book-support/)
+2. [佐藤（2015）『マーケティングの統計モデル』朝倉書店，第8章](https://www.asakura.co.jp/detail.php?book_code=12853)
+3. [野村（2016）『カルマンフィルタ（統計学 One Point）』共立出版](https://www.kyoritsu-pub.co.jp/book/b10003774.html)
+
+
+#### Rコードの出力
+##### パラメータ推定値
+```{r echo=FALSE}
+fit$model$H   # 観測モデルの誤差項の分散
+fit$model$Q   # システムモデルの誤差項の分散
+```
+
+##### 状態の推定値
+```{r echo=FALSE}
+head(result$alphahat, 10)
+```
+
+##### 状態の推定値の図示
+```{r echo=FALSE}
+autoplot(result$alphahat)
+```
+
+
