@@ -1,0 +1,197 @@
+---
+title: "データ分析実習④"
+date: "更新：`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: "paged"
+    highlight: pygments
+    # theme: lumen
+    md_extensions: -ascii_identifiers
+    css: "template/style_ch.css"
+    includes:
+      in_header: "template/head.html"
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, attr.source=c(".numberLines .lineAnchors"))
+# packages
+library(plotly)
+library(broom)
+# library(pander)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+
+## 実習 1
+### データ
+**プロモーション動画の実験データ** (data_pv.csv) 
+
+```{r, echo=FALSE}
+data_pv <- read_csv("data/data_pv.csv")
+head(data_pv)
+```
+\
+
+| 変数名 | 内容                                                         |
+| ------ | ------------------------------------------------------------ |
+| speed  | 視聴した動画の再生速度（toubai = 等倍再生，baisoku = 倍速再生）      |
+| q1     | 「この車の機能ひとつひとつを理解できた」への回答（1～5点）   |
+| q2     | 「この動画内での車の機能紹介がわかりやすかった」への回答（1～5点） |
+| q3     | 「動画で説明された機能のうち当てはまるものを選んでください（自動ドア）」への回答<br />（0＝不正解，1＝正解） |
+| q4     | 「動画で説明された機能のうち当てはまるものを選んでください（窓）」への回答<br />（0＝不正解，1＝正解） |
+
+**データ出典** ：学部ゼミで行った実験をもとに作成したシミュレーションデータ
+
+- 等倍再生と倍速再生のサンプル数はそれぞれ100件で合わせると合計200件
+- シミュレーションデータのため，実験で収集した実データとは異なり，t検定のp値なども実データとは異なるが，仮説検定の結果は実データと同じである
+
+
+### 課題
+動画の再生速度の違いによってq1・q2の回答平均，q3・q4の正解率に差はあるか？
+t 検定で仮説検定を行い，結果を考察せよ。
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# データの読み込み
+data_pv <- read_csv("data/data_pv.csv")
+
+# t検定
+t.test(q1 ~ speed, data = data_pv)
+t.test(q2 ~ speed, data = data_pv)
+t.test(q3 ~ speed, data = data_pv)
+t.test(q4 ~ speed, data = data_pv)
+```
+</div></details>
+
+
+
+## 実習 2
+### データ
+**47都道府県の月次宿泊者数データ** (data_travel.csv) 
+
+- データ観測期間は2011年1月～2020年12月の120ヶ月
+- 2020年以降のデータは新型コロナの影響で市場環境が大きく変わっているため，2011年1月～2017年12月（84ヶ月）を推定期間，2018年1月～2019年12月（24ヶ月）を予測期間として分析を行う
+- CSVファイルは1行目が県名になっているので，**ファイルを読み込む際は `read.csv("data/data_travel.csv", skip = 1)` として，`skip = 1` を追加**する必要がある
+
+```{r, echo=FALSE}
+data_travel <- read.csv("data/data_travel.csv")
+head(data_travel)
+```
+
+
+| 変数名 | 内容           |
+| ------ | -------------- |
+| date   | 日付（年-月） |
+| leap    | うるう月ダミー       |
+| holiday    | 休日数（土日・祝日）       |
+| y1 ~ y47    | 月次宿泊者数（単位・千人，y1＝北海道 ~ y47＝沖縄）       |
+
+**データ出典**：[宿泊旅行統計調査（観光庁）](https://www.mlit.go.jp/kankocho/siryou/toukei/shukuhakutoukei.html)
+
+
+```{r, echo=FALSE}
+library(lubridate)
+
+data_travel <- read.csv("data/data_travel.csv", skip = 1)
+
+data_travel %>% 
+  mutate(date = ym(date)) %>% 
+  ggplot(mapping = aes(x = date, y = y1)) +
+  geom_line() +
+  scale_x_date(date_labels = "%y-%m", date_breaks = "6 months") +
+  labs(title = "北海道（y1）の月次宿泊者数データ") +
+  ylab(label = "宿泊者数（単位：千人）")
+```
+
+
+### 課題
+
+47都道府県から1つの都道府県を選び，月次宿泊者数を予測するモデルを以下の手順で構築せよ。
+
+1. データを訓練期間（2011年1月～2017年12月，84ヶ月）と予測期間（2018年1月～2019年12月，24ヶ月）に分割
+2. 訓練期間データで以下のモデルの状態空間モデルを推定
+3. 24ヶ月先までの予測を行いMAPEで予測精度を確認
+
+
+#### モデル
+月次宿泊者数 ＝ トレンド ＋ 12ヶ月周期 ＋ うるう月 ＋ 休日数
+
+- 訓練期間：2011年1月～2017年12月（84ヶ月）⇒ データの1～84行目
+- 予測期間：2018年1月～2019年12月（24ヶ月）⇒ データの85～108行目
+- 「うるう月」と「休日数」の影響は時間不変とする
+- 北海道の宿泊者数を目的変数にする場合は `SSModel` の `formula` で目的変数を `y1` と指定すれば良い
+- 時間が余れば，うるう月や休日数を含まないモデルとの予測力の比較や，複数の都道府県で予測を試してみる
+
+<br />
+<details><summary>Rコード（クリックで表示）</summary><div>
+```{r, eval=FALSE}
+# パッケージの読み込み
+library(KFAS)
+
+# データの読み込み
+data_travel <- read.csv("data/data_travel.csv", skip = 1)
+
+# 訓練・予測期間の分割
+train_data <- data_travel[1:84,]
+test_data <- data_travel[85:108,]
+
+# モデル定義（以下は北海道のケース）
+model <- SSModel(
+  y1 ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
+  H = NA,
+  data = train_data
+)
+
+# パラメータ・状態の推定
+fit <- fitSSM(model, inits = rep(0, 3))
+result <- KFS(fit$model)
+
+result$alphahat
+
+# 予測
+newdata <- SSModel(
+  rep(NA, 24) ~ SSMtrend(1, Q = NA) + SSMseasonal(12, sea.type = "dummy", Q = NA) + leap + holiday,
+  H = NA, 
+  data = test_data
+)
+
+newdata$H <- fit$model$H
+newdata$Q <- fit$model$Q
+
+pred <- predict(fit$model, newdata = newdata, interval = "prediction")
+
+# モデル比較指標
+library(Metrics)
+mae(test_data$y1, pred[, "fit"])
+mape(test_data$y1, pred[, "fit"])
+rmse(test_data$y1, pred[, "fit"])
+
+# “.rs.exprMutatesPackageLibrary(part) でエラー:” と表示される場合があるが，結果は正しい
+
+# （参考）状態の推定値の図示
+library(ggfortify)
+plot_data <- cbind(train_data$y1, result$alphahat[, c("leap" , "holiday", "level", "sea_dummy1")])
+colnames(plot_data) <- c("data", "leap" , "holiday", "level", "sea_dummy1")
+autoplot(plot_data)
+
+# （参考）予測結果の図示
+library(ggplot2)
+library(lubridate)  # 要インストール
+plot_data <- cbind(test_data, pred)
+plot_data$date <- ym(test_data$date)
+
+ggplot(plot_data, mapping = aes(x = date, y = y1)) +
+  geom_line() +
+  geom_line(aes(y = fit), colour = "red", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), fill = "red", alpha = 0.1) +
+  scale_x_date(date_labels = "%y-%m", date_breaks = "2 months")
+```
+</div></details>
+
