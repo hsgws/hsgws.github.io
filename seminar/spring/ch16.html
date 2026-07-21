@@ -2841,13 +2841,8 @@ summary(model2)</code></pre>
 <div id="負の二項回帰" class="section level3">
 <h3>負の二項回帰</h3>
 <pre class="r"><code># Model 3
-library(MASS)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;MASS&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:plotly&#39;:
-## 
-##     select</code></pre>
-<pre class="r"><code>model3 &lt;- glm.nb(y ~ x1 + x2 + x3 + x4 + x5 + x6, link = log, data = countdata)
+library(MASS)
+model3 &lt;- glm.nb(y ~ x1 + x2 + x3 + x4 + x5 + x6, link = log, data = countdata)
 summary(model3)</code></pre>
 <pre><code>## 
 ## Call:

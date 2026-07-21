@@ -46,7 +46,7 @@ summary(model2)
 ```
 
 ### 負の二項回帰
-```{r}
+```{r message=FALSE}
 # Model 3
 library(MASS)
 model3 <- glm.nb(y ~ x1 + x2 + x3 + x4 + x5 + x6, link = log, data = countdata)
