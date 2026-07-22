@@ -33,7 +33,7 @@ library(kableExtra)
 **プロモーション動画の実験データ** (data_pv.csv) 
 
 ```{r, echo=FALSE}
-data_pv <- read_csv("data/data_pv.csv")
+data_pv <- read.csv("data/data_pv.csv")
 head(data_pv)
 ```
 \
