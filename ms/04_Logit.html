@@ -2796,8 +2796,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -2808,7 +2809,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -3057,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2024/10/14</h4>
+<h4 class="date">更新：2026/10/03</h4>
 
 </div>
 
@@ -3934,9 +3935,8 @@ C
 <li><a href="https://doi.org/10.3173/air.17.86">Aizaki, Hideo and
 Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments
 Using R: A Brief Introduction,” Agricultural Information Research, 17
-(2), 86–94.</a></li>
-<li><a href="https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html">続・農産物マーケティング活動の手引き（宮城県）</a>
-→ <a href="https://www.pref.miyagi.jp/documents/20321/617762.pdf">選択制コンジョイント分析</a></li>
+(2), 86–94.</a>
+<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) --></li>
 </ul>
 </div>
 <div id="補足説明" class="section level3">
@@ -3974,7 +3974,7 @@ Using R: A Brief Introduction,” Agricultural Information Research, 17
 </ol>
 <p>本実習のデータの場合は，回答者10人に対して1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。
 このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。</p>
-<p>コンジョイント分析に関しては，以下の参考文献などを参照されたい。</p>
+<p>コンジョイント分析に関しては，以下の参考文献などを参照。</p>
 <ul>
 <li><a href="http://www.yuhikaku.co.jp/books/detail/9784641166080">照井・佐藤（2013）『現代マーケティング・リサーチ
 新版』有斐閣</a>，第8章</li>

@@ -60,8 +60,7 @@ head(data_visit) %>%
 ```{r, echo=FALSE, results='hold'}
 data_visit %>% 
   mutate(visits = as.factor(visits)) %>%
-  group_by(visits) %>% 
-  summarise(n = n()) %>% 
+  count(visits, name = "n") %>% 
   ggplot(aes(x = visits, y = n)) +
   geom_bar(stat = "identity") +
   labs(title = "受診回数と人数", x = "visits（受診回数）", y = "人数") +
@@ -69,6 +68,23 @@ data_visit %>%
     plot.title = element_text(hjust = 0.5)
   )
 ```
+
+</br>
+<details><summary>作図Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+library(tidyverse)
+
+data_visit %>% 
+  mutate(visits = as.factor(visits)) %>%
+  count(visits, name = "n") %>% 
+  ggplot(aes(x = visits, y = n)) +
+  geom_bar(stat = "identity") +
+  labs(title = "受診回数と人数", x = "visits（受診回数）", y = "人数") +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+</div></details>
 
 
 ### モデル
@@ -152,19 +168,19 @@ result %>%
 
 
 ```{r, echo=FALSE, results='hold', out.width="100%", out.height="80%"}
-df <- data.frame(age = seq(0, 0.5, 0.01)) %>% 
-  mutate(
-    female = exp(age*0.77965),
-    male = exp(age*0.77965*1.24868)
-  ) %>% 
-  gather(key = "gender", value = "scale", female, male)
+coef_age <- coef(result)["age"]
+coef_genage <- coef(result)["gendermale:age"]
 
-# df <- data.frame(age = seq(0, 0.5, 0.01)) %>% 
-#   mutate(
-#     female = exp(age*0.77965),
-#     male = exp(age*0.77965*1.24868)
-#   ) %>% 
-#   gather(key = "gender", value = "scale", female, male)
+df <- data.frame(age = seq(0, 0.2, 0.01)) %>% 
+  mutate(
+    female = exp(coef_age * age),
+    male = exp((coef_age + coef_genage) * age)
+  ) %>% 
+  pivot_longer(
+    cols = c(female, male),
+    names_to = "gender",
+    values_to = "scale"
+  )
 
 df %>% 
   ggplot() +
@@ -175,6 +191,34 @@ df %>%
     legend.position = "right"
   )
 ```
+
+</br>
+<details><summary>作図Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+coef_age <- coef(result)["age"]
+coef_genage <- coef(result)["gendermale:age"]
+
+df <- data.frame(age = seq(0, 0.2, 0.01)) %>% 
+  mutate(
+    female = exp(coef_age * age),
+    male = exp((coef_age + coef_genage) * age)
+  ) %>% 
+  pivot_longer(
+    cols = c(female, male),
+    names_to = "gender",
+    values_to = "scale"
+  )
+
+df %>% 
+  ggplot() +
+  geom_line(aes(x = age, y = scale, colour = gender)) +
+  labs(title = "加齢による受診回数増加率の性別比較", x = "年齢の増加分", y = "受診回数の増加倍率") +
+    theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "right"
+  )
+```
+</div></details>
 
 
 ### ゼロ過剰モデル*
@@ -342,20 +386,36 @@ head(count_data) %>%
 **データ出典** ： 照井・佐藤（2022）「現代マーケティング・リサーチ（新版）」有斐閣，第16章
 
 ```{r, echo=FALSE, results='hold'}
-d <- data.frame(x = 0:max(count_data$y), y = 0)
+df <- count_data %>% 
+  count(y, name = "n") %>% 
+  complete(y = 0:max(y), fill = list(n = 0))
 
-for (i in 0:max(count_data$y)) {
-  d$y[i] <- sum(count_data$y == i)
-}
-
-d %>% 
-  ggplot(aes(x = x, y = y)) +
+df %>% 
+  ggplot(aes(x = y, y = n)) +
   geom_bar(stat = "identity") +
   labs(title = "商品Aの販売点数", x = "点数", y = "日数") +
   theme(
     plot.title = element_text(hjust = 0.5)
   )
 ```
+
+
+</br>
+<details><summary>作図Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+df <- count_data %>% 
+  count(y, name = "n") %>% 
+  complete(y = 0:max(y), fill = list(n = 0))
+
+df %>% 
+  ggplot(aes(x = y, y = n)) +
+  geom_bar(stat = "identity") +
+  labs(title = "商品Aの販売点数", x = "点数", y = "日数") +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+</div></details>
 
 
 ### 課題
