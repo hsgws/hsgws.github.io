@@ -238,9 +238,9 @@ result_zip <- zeroinfl(visits ~ gender + age + income + gender:age | gender + ag
 # 推定結果の表示
 summary(result_zip)
 
-# 通常モデルとのAICの比較
-AIC(result)
-AIC(result_zip)
+# 通常モデルとのAIC・BICの比較
+AIC(result, result_zip)
+BIC(result, result_zip)
 ```
 
 **`zeroinfl(formula, data, dist)`：ゼロ過剰モデルの推定**
@@ -257,9 +257,11 @@ result_zip %>%
   summary() %>% 
   print()
 
-cat("\n# 通常モデルとのAICの比較\n")
-AIC(result)
-AIC(result_zip)
+cat("\n# 通常モデルとのAIC・BICの比較\n")
+cat(capture.output(AIC(result, result_zip)), sep = "\n")
+cat(capture.output(BIC(result, result_zip)), sep = "\n")
+# AIC(result, result_zip)
+# BIC(result, result_zip)
 ```
 
 - `Count model coefficients (poisson with log link)`：ポアソン回帰の推定値
@@ -331,9 +333,9 @@ result_nb <- glm.nb(visits ~ gender + age + income + gender:age, data = data_vis
 # 推定結果の表示
 summary(result_nb)
 
-# ポアソン回帰とのAICの比較
-AIC(result)
-AIC(result_nb)
+# ポアソン回帰とのAIC・BICの比較
+AIC(result, result_nb)
+BIC(result, result_nb)
 ```
 
 **`glm.nb(formula, data)`：負の二項回帰モデルの推定**
@@ -349,9 +351,11 @@ result_nb %>%
   summary() %>% 
   print()
 
-cat("\n# ポアソン回帰とのAICの比較\n")
-AIC(result)
-AIC(result_nb)
+cat("\n# ポアソン回帰とのAIC・BICの比較\n")
+cat(capture.output(AIC(result, result_nb)), sep = "\n")
+cat(capture.output(BIC(result, result_nb)), sep = "\n")
+# AIC(result, result_nb)
+# BIC(result, result_nb)
 ```
 
 
@@ -466,7 +470,7 @@ summary(result)
 result_no.offset <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data)
 summary(result_no.offset)
 
-AIC(result)
-AIC(result_no.offset)
+AIC(result, result_no.offset)
+BIC(result, result_no.offset)
 ```
 </div></details>
