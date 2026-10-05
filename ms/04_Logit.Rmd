@@ -145,11 +145,8 @@ prediction_data <- data.frame(
   segment = "Womens E-Mail"  # ⇒ Womens Emailを配信
 )
 
-# 予測の実行
-prediction <- predict(result, newdata = prediction_data, type = "response")
-
-# 予測値：サイト訪問確率
-prediction
+# 予測
+predict(result, newdata = prediction_data, type = "response")
 ```
 
 
@@ -214,9 +211,9 @@ library(mlogit)
 sec4_choice2 <- read.csv("data/sec4_choice2.csv")
 
 # mlogit 関数用にデータを加工
-soydata <- mlogit.data(
+soydata <- dfidx(
   sec4_choice2,
-  choice = "Choice",
+  choice = 3,
   shape = "wide",
   varying = 4:12,
   sep = "."
@@ -230,10 +227,10 @@ summary(result)
 ```
 
 
-**`mlogit.data(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
+**`dfidx(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
 
 - **`data`**：データの指定
-- **`choice`**：データ内の選択結果を示す変数名
+- **`choice`**：データ内の選択結果を示す列番号
 - **`shape`**：データ形式の指定（`long` または `wide`） ⇒ 分析例の醤油データは1行が1購買機会を表す `wide` 形式
 - **`varying`**：説明変数の列番号（`4:12` は4～12列を表す）
 - **`seq`**：説明変数と選択肢を区切る文字の指定（Price.A，Price.B，Price.C の "."）
@@ -244,8 +241,14 @@ summary(result)
   - 「目的変数 ~ 説明変数1 + 説明変数2 + 説明変数3」のように，`~` の左側に目的変数，右側に説明変数を記述
   - 説明変数が2個以上ある場合は，`+` で追加する
 
-- **`data`**：`mlogit.data` コマンドで変換したデータの指定  
+- **`data`**：`dfidx` コマンドで変換したデータの指定  
 - **`reflevel`**：切片を0に基準化する選択肢の指定
+
+##### `dfidx` で変換後のデータ
+```{r echo=FALSE}
+head(soydata)
+```
+
 
 
 ##### Rコードの出力
@@ -376,11 +379,11 @@ library(mlogit)
 data_milk <- read.csv("data/data_milk.csv")
 
 # mlogit 関数用にデータを加工
-data_milk_mlogit <- mlogit.data(
-  data_milk, 
-  choice = "choice", 
-  shape = "wide", 
-  varying = 4:15, 
+data_milk_mlogit <- dfidx(
+  data_milk,
+  choice = "choice",
+  shape = "wide",
+  varying = 4:15,
   sep = "."
 )
 

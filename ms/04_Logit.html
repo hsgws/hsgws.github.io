@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2026/10/03</h4>
+<h4 class="date">更新：2026/10/05</h4>
 
 </div>
 
@@ -3301,11 +3301,8 @@ E-Mail (= -0.230) よりサイト訪問への影響が高い。</p></li>
 <span id="cb3-6"><a href="#cb3-6"></a>  <span class="at">segment =</span> <span class="st">&quot;Womens E-Mail&quot;</span>  <span class="co"># ⇒ Womens Emailを配信</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a>)</span>
 <span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># 予測の実行</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>prediction <span class="ot">&lt;-</span> <span class="fu">predict</span>(result, <span class="at">newdata =</span> prediction_data, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># 予測値：サイト訪問確率</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>prediction</span></code></pre></div>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co"># 予測</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="fu">predict</span>(result, <span class="at">newdata =</span> prediction_data, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
 <pre><code>##         1 
 ## 0.1551088</code></pre>
 </div>
@@ -3409,9 +3406,9 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 <span id="cb5-8"><a href="#cb5-8"></a>sec4_choice2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec4_choice2.csv&quot;</span>)</span>
 <span id="cb5-9"><a href="#cb5-9"></a></span>
 <span id="cb5-10"><a href="#cb5-10"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>soydata <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(</span>
+<span id="cb5-11"><a href="#cb5-11"></a>soydata <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
 <span id="cb5-12"><a href="#cb5-12"></a>  sec4_choice2,</span>
-<span id="cb5-13"><a href="#cb5-13"></a>  <span class="at">choice =</span> <span class="st">&quot;Choice&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>  <span class="at">choice =</span> <span class="dv">3</span>,</span>
 <span id="cb5-14"><a href="#cb5-14"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
 <span id="cb5-15"><a href="#cb5-15"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">12</span>,</span>
 <span id="cb5-16"><a href="#cb5-16"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
@@ -3422,11 +3419,11 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 <span id="cb5-21"><a href="#cb5-21"></a></span>
 <span id="cb5-22"><a href="#cb5-22"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb5-23"><a href="#cb5-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
-<p><strong><code>mlogit.data(data, choice, shape, varying, sep)</code>：mlogit
+<p><strong><code>dfidx(data, choice, shape, varying, sep)</code>：mlogit
 パッケージ用にデータを変換</strong></p>
 <ul>
 <li><strong><code>data</code></strong>：データの指定</li>
-<li><strong><code>choice</code></strong>：データ内の選択結果を示す変数名</li>
+<li><strong><code>choice</code></strong>：データ内の選択結果を示す列番号</li>
 <li><strong><code>shape</code></strong>：データ形式の指定（<code>long</code>
 または <code>wide</code>） ⇒ 分析例の醤油データは1行が1購買機会を表す
 <code>wide</code> 形式</li>
@@ -3444,11 +3441,42 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 の左側に目的変数，右側に説明変数を記述</li>
 <li>説明変数が2個以上ある場合は，<code>+</code> で追加する</li>
 </ul></li>
-<li><strong><code>data</code></strong>：<code>mlogit.data</code>
+<li><strong><code>data</code></strong>：<code>dfidx</code>
 コマンドで変換したデータの指定<br />
 </li>
 <li><strong><code>reflevel</code></strong>：切片を0に基準化する選択肢の指定</li>
 </ul>
+<div id="dfidx-で変換後のデータ" class="section level5">
+<h5><code>dfidx</code> で変換後のデータ</h5>
+<pre><code>## ~~~~~~~
+##  first 10 observations out of 11217 
+## ~~~~~~~
+##        id     Date Choice     Price Display Ad idx
+## 1  100021 20000224  FALSE 0.8028169       0  0 1:A
+## 2  100021 20000224  FALSE 0.8464164       0  0 1:B
+## 3  100021 20000224   TRUE 1.0000000       1  0 1:C
+## 4  100021 20000312  FALSE 1.0000000       0  0 2:A
+## 5  100021 20000312  FALSE 0.8464164       0  0 2:B
+## 6  100021 20000312   TRUE 1.0000000       1  0 2:C
+## 7  100021 20000401  FALSE 0.9084507       0  0 3:A
+## 8  100021 20000401  FALSE 0.8996587       1  0 3:B
+## 9  100021 20000401   TRUE 1.0000000       1  0 3:C
+## 10 100021 20000406  FALSE 0.9084507       0  0 4:A
+## 
+## ~~~ indexes ~~~~
+##    id1 id2
+## 1    1   A
+## 2    1   B
+## 3    1   C
+## 4    2   A
+## 5    2   B
+## 6    2   C
+## 7    3   A
+## 8    3   B
+## 9    3   C
+## 10   4   A
+## indexes:  1, 2</code></pre>
+</div>
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
@@ -4024,29 +4052,29 @@ U_C &amp;= 0 + \varepsilon_C
 Rコード（クリックで表示）
 </summary>
 <div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co"># データの読み込み</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a>data_milk <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_milk.csv&quot;</span>)</span>
-<span id="cb7-5"><a href="#cb7-5"></a></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>data_milk_mlogit <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(</span>
-<span id="cb7-8"><a href="#cb7-8"></a>  data_milk, </span>
-<span id="cb7-9"><a href="#cb7-9"></a>  <span class="at">choice =</span> <span class="st">&quot;choice&quot;</span>, </span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>, </span>
-<span id="cb7-11"><a href="#cb7-11"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">15</span>, </span>
-<span id="cb7-12"><a href="#cb7-12"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a>)</span>
-<span id="cb7-14"><a href="#cb7-14"></a></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="co"># 多項ロジットモデルの推定</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
-<span id="cb7-17"><a href="#cb7-17"></a>  choice <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> int <span class="sc">+</span> haccp <span class="sc">+</span> eco <span class="sc">+</span> price,</span>
-<span id="cb7-18"><a href="#cb7-18"></a>  <span class="at">data =</span> data_milk_mlogit,</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a>)</span>
-<span id="cb7-21"><a href="#cb7-21"></a></span>
-<span id="cb7-22"><a href="#cb7-22"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb7-23"><a href="#cb7-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co"># データの読み込み</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>data_milk <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_milk.csv&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>data_milk_mlogit <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
+<span id="cb8-8"><a href="#cb8-8"></a>  data_milk,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>  <span class="at">choice =</span> <span class="st">&quot;choice&quot;</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
+<span id="cb8-11"><a href="#cb8-11"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">15</span>,</span>
+<span id="cb8-12"><a href="#cb8-12"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>)</span>
+<span id="cb8-14"><a href="#cb8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
+<span id="cb8-17"><a href="#cb8-17"></a>  choice <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> int <span class="sc">+</span> haccp <span class="sc">+</span> eco <span class="sc">+</span> price,</span>
+<span id="cb8-18"><a href="#cb8-18"></a>  <span class="at">data =</span> data_milk_mlogit,</span>
+<span id="cb8-19"><a href="#cb8-19"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>)</span>
+<span id="cb8-21"><a href="#cb8-21"></a></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 </div>
 </details>
 </div>
