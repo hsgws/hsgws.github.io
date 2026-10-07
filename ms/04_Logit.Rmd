@@ -132,7 +132,7 @@ result %>%
 
 - segment（配信したプロモーションメールの種類）に関する係数は，Mens Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens E-Mail (= -0.230) よりサイト訪問への影響が高い。
 
-- ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は $\exp(\beta)$ で計算することができ，newbie の場合，$\exp(\beta_3) = \exp(-0.439) = 	0.645$ となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が 0.645 倍となる。
+<!-- - ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は $\exp(\beta)$ で計算することができ，newbie の場合，$\exp(\beta_3) = \exp(-0.439) = 	0.645$ となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が 0.645 倍となる。 -->
 
 
 ### サイト訪問確率の予測
@@ -148,6 +148,15 @@ prediction_data <- data.frame(
 # 予測
 predict(result, newdata = prediction_data, type = "response")
 ```
+
+### オッズ比
+```{r}
+exp(coef(result))
+```
+
+- 「イベントが起きない確率 $P(y=0)$」に対する「起きる確率 $P(y=1)$」の比率 $\frac{P(y=1)}{P(y=0)}\left(=\frac{P(y=1)}{1-P(y=1)}\right)$ をオッズと呼ぶ
+- 回帰係数の指数値 $\exp(\beta)$ はオッズ比と呼ばれ，説明変数が1単位増加したときに「イベントが起きるオッズが何倍になるか」を表す
+  - 例：最終購買からの経過月数（recency）が1ヶ月増えるとオッズは0.95倍となる（オッズへの倍率であって，サイト訪問確率 $P(y=0)$ が0.95倍になるわけではない）
 
 
 ## 2. 分析例②：多項ロジット
@@ -171,7 +180,7 @@ head(sec4_choice2)
 | Ad.A ~ Ad.C      | ブランドA ~ Cのチラシ掲載の有無（1＝実施，0＝非実施） |
 
 
-**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）
+**データ出典**：佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）
 
 
 ### モデル
@@ -200,9 +209,9 @@ $$
 
 
 ### Rコード
-```{r message=FALSE, warning=FALSE, results='hide'}
+```{r eval=FALSE}
 # mlogit パッケージのインストール（初回のみ実行）
-# install.packages("mlogit")
+install.packages("mlogit")
 
 # mlogit パッケージの読込み
 library(mlogit)
@@ -244,15 +253,26 @@ summary(result)
 - **`data`**：`dfidx` コマンドで変換したデータの指定  
 - **`reflevel`**：切片を0に基準化する選択肢の指定
 
-##### `dfidx` で変換後のデータ
-```{r echo=FALSE}
-head(soydata)
-```
-
-
+<!-- ##### `dfidx` で変換後のデータ -->
+<!-- ```{r echo=FALSE} -->
+<!-- head(soydata) -->
+<!-- ``` -->
 
 ##### Rコードの出力
 ```{r, echo=FALSE}
+library(mlogit)
+sec4_choice2 <- read.csv("data/sec4_choice2.csv")
+
+soydata <- dfidx(
+  sec4_choice2,
+  choice = 3,
+  shape = "wide",
+  varying = 4:12,
+  sep = "."
+)
+
+result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
+
 result %>% 
   summary() %>% 
   print()
@@ -275,7 +295,7 @@ result.df
 - ブランド切片は，ブランドAが $\beta_A =$ `r round(coef[1], 3)`，ブランドBが $\beta_B =$ `r round(coef[2], 3)` となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。
 
 - マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。
-- ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がプロモーション効果が高いと分かる。
+- 山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がオッズ比で約2倍のプロモーション効果を持つことが分かる。
 
 
 ## 3. データ分析実習
@@ -305,7 +325,7 @@ head(data_milk) %>%
 **データ出典** ：
 
 - [Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://doi.org/10.3173/air.17.86)
-<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) -->
+<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf)（リンク切れ） -->
 
 ### 補足説明
 コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。

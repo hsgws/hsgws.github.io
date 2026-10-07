@@ -466,7 +466,14 @@ result <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_da
 # 推定結果の表示
 summary(result)
 
-#（参考）オフセット項なしモデルとの比較
+# 回帰係数の倍率
+exp(coef(result))
+
+#（参考1）価格掛率の影響 = exp(価格係数 * -割引率)
+exp(-4.08155 * -0.05) # 自己価格5%引き
+exp(3.71043 * -0.1)   # 競合価格10%引き
+
+#（参考2）オフセット項なしモデルとの比較
 result_no.offset <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6, family = poisson, data = count_data)
 summary(result_no.offset)
 

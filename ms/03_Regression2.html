@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">回帰分析②</h1>
-<h4 class="date">更新：2026/10/05</h4>
+<h4 class="date">更新：2026/10/07</h4>
 
 </div>
 
@@ -3950,12 +3950,19 @@ Rコード（クリックで表示）
 <span id="cb11-7"><a href="#cb11-7"></a><span class="co"># 推定結果の表示</span></span>
 <span id="cb11-8"><a href="#cb11-8"></a><span class="fu">summary</span>(result)</span>
 <span id="cb11-9"><a href="#cb11-9"></a></span>
-<span id="cb11-10"><a href="#cb11-10"></a><span class="co">#（参考）オフセット項なしモデルとの比較</span></span>
-<span id="cb11-11"><a href="#cb11-11"></a>result_no.offset <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6, <span class="at">family =</span> poisson, <span class="at">data =</span> count_data)</span>
-<span id="cb11-12"><a href="#cb11-12"></a><span class="fu">summary</span>(result_no.offset)</span>
-<span id="cb11-13"><a href="#cb11-13"></a></span>
-<span id="cb11-14"><a href="#cb11-14"></a><span class="fu">AIC</span>(result, result_no.offset)</span>
-<span id="cb11-15"><a href="#cb11-15"></a><span class="fu">BIC</span>(result, result_no.offset)</span></code></pre></div>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="co"># 回帰係数の倍率</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span>
+<span id="cb11-12"><a href="#cb11-12"></a></span>
+<span id="cb11-13"><a href="#cb11-13"></a><span class="co">#（参考1）価格掛率の影響 = exp(価格係数 * -割引率)</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="fu">exp</span>(<span class="sc">-</span><span class="fl">4.08155</span> <span class="sc">*</span> <span class="sc">-</span><span class="fl">0.05</span>) <span class="co"># 自己価格5%引き</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a><span class="fu">exp</span>(<span class="fl">3.71043</span> <span class="sc">*</span> <span class="sc">-</span><span class="fl">0.1</span>)   <span class="co"># 競合価格10%引き</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="co">#（参考2）オフセット項なしモデルとの比較</span></span>
+<span id="cb11-18"><a href="#cb11-18"></a>result_no.offset <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6, <span class="at">family =</span> poisson, <span class="at">data =</span> count_data)</span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="fu">summary</span>(result_no.offset)</span>
+<span id="cb11-20"><a href="#cb11-20"></a></span>
+<span id="cb11-21"><a href="#cb11-21"></a><span class="fu">AIC</span>(result, result_no.offset)</span>
+<span id="cb11-22"><a href="#cb11-22"></a><span class="fu">BIC</span>(result, result_no.offset)</span></code></pre></div>
 </div>
 </details>
 </div>

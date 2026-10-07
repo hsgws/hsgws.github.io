@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2026/10/05</h4>
+<h4 class="date">更新：2026/10/07</h4>
 
 </div>
 
@@ -3284,12 +3284,8 @@ Email と Womens Email
 <li><p>segment（配信したプロモーションメールの種類）に関する係数は，Mens
 Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens
 E-Mail (= -0.230) よりサイト訪問への影響が高い。</p></li>
-<li><p>ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は
-<span class="math inline">\(\exp(\beta)\)</span>
-で計算することができ，newbie の場合，<span class="math inline">\(\exp(\beta_3) = \exp(-0.439) =  0.645\)</span>
-となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が
-0.645 倍となる。</p></li>
 </ul>
+<!-- - ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は $\exp(\beta)$ で計算することができ，newbie の場合，$\exp(\beta_3) = \exp(-0.439) =     0.645$ となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が 0.645 倍となる。 -->
 </div>
 <div id="サイト訪問確率の予測" class="section level3">
 <h3>サイト訪問確率の予測</h3>
@@ -3305,6 +3301,25 @@ E-Mail (= -0.230) よりサイト訪問への影響が高い。</p></li>
 <span id="cb3-10"><a href="#cb3-10"></a><span class="fu">predict</span>(result, <span class="at">newdata =</span> prediction_data, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
 <pre><code>##         1 
 ## 0.1551088</code></pre>
+</div>
+<div id="オッズ比" class="section level3">
+<h3>オッズ比</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span></code></pre></div>
+<pre><code>##          (Intercept)              recency         log(history) 
+##            0.1477733            0.9528490            1.1923981 
+##               newbie segmentWomens E-Mail 
+##            0.6444132            0.7946160</code></pre>
+<ul>
+<li>「イベントが起きない確率 <span class="math inline">\(P(y=0)\)</span>」に対する「起きる確率 <span class="math inline">\(P(y=1)\)</span>」の比率 <span class="math inline">\(\frac{P(y=1)}{P(y=0)}\left(=\frac{P(y=1)}{1-P(y=1)}\right)\)</span>
+をオッズと呼ぶ</li>
+<li>回帰係数の指数値 <span class="math inline">\(\exp(\beta)\)</span>
+はオッズ比と呼ばれ，説明変数が1単位増加したときに「イベントが起きるオッズが何倍になるか」を表す
+<ul>
+<li>例：最終購買からの経過月数（recency）が1ヶ月増えるとオッズは0.95倍となる（オッズへの倍率であって，サイト訪問確率
+<span class="math inline">\(P(y=0)\)</span>
+が0.95倍になるわけではない）</li>
+</ul></li>
+</ul>
 </div>
 </div>
 <div id="分析例②多項ロジット" class="section level2">
@@ -3357,7 +3372,7 @@ E-Mail (= -0.230) よりサイト訪問への影響が高い。</p></li>
 </tr>
 </tbody>
 </table>
-<p><strong>データ出典</strong> ： 佐藤 (2016)
+<p><strong>データ出典</strong>：佐藤 (2016)
 『マーケティングの統計モデル』朝倉書店（mlogitパッケージで分析するためデータ形式を変更）</p>
 </div>
 <div id="モデル-1" class="section level3">
@@ -3396,29 +3411,29 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 </div>
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># mlogit パッケージのインストール（初回のみ実行）</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># install.packages(&quot;mlogit&quot;)</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># mlogit パッケージの読込み</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb5-6"><a href="#cb5-6"></a></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># データの読み込み</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>sec4_choice2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec4_choice2.csv&quot;</span>)</span>
-<span id="cb5-9"><a href="#cb5-9"></a></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a>soydata <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
-<span id="cb5-12"><a href="#cb5-12"></a>  sec4_choice2,</span>
-<span id="cb5-13"><a href="#cb5-13"></a>  <span class="at">choice =</span> <span class="dv">3</span>,</span>
-<span id="cb5-14"><a href="#cb5-14"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
-<span id="cb5-15"><a href="#cb5-15"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">12</span>,</span>
-<span id="cb5-16"><a href="#cb5-16"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a>)</span>
-<span id="cb5-18"><a href="#cb5-18"></a></span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="co"># 多項ロジットモデルの推定</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(Choice <span class="sc">~</span> Price <span class="sc">+</span> Display <span class="sc">+</span> Ad, <span class="at">data =</span> soydata, <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span>)</span>
-<span id="cb5-21"><a href="#cb5-21"></a></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># mlogit パッケージのインストール（初回のみ実行）</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">install.packages</span>(<span class="st">&quot;mlogit&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># mlogit パッケージの読込み</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># データの読み込み</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>sec4_choice2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec4_choice2.csv&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>soydata <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
+<span id="cb7-12"><a href="#cb7-12"></a>  sec4_choice2,</span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="at">choice =</span> <span class="dv">3</span>,</span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">12</span>,</span>
+<span id="cb7-16"><a href="#cb7-16"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18"></a></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(Choice <span class="sc">~</span> Price <span class="sc">+</span> Display <span class="sc">+</span> Ad, <span class="at">data =</span> soydata, <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span>)</span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <p><strong><code>dfidx(data, choice, shape, varying, sep)</code>：mlogit
 パッケージ用にデータを変換</strong></p>
 <ul>
@@ -3446,37 +3461,10 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 </li>
 <li><strong><code>reflevel</code></strong>：切片を0に基準化する選択肢の指定</li>
 </ul>
-<div id="dfidx-で変換後のデータ" class="section level5">
-<h5><code>dfidx</code> で変換後のデータ</h5>
-<pre><code>## ~~~~~~~
-##  first 10 observations out of 11217 
-## ~~~~~~~
-##        id     Date Choice     Price Display Ad idx
-## 1  100021 20000224  FALSE 0.8028169       0  0 1:A
-## 2  100021 20000224  FALSE 0.8464164       0  0 1:B
-## 3  100021 20000224   TRUE 1.0000000       1  0 1:C
-## 4  100021 20000312  FALSE 1.0000000       0  0 2:A
-## 5  100021 20000312  FALSE 0.8464164       0  0 2:B
-## 6  100021 20000312   TRUE 1.0000000       1  0 2:C
-## 7  100021 20000401  FALSE 0.9084507       0  0 3:A
-## 8  100021 20000401  FALSE 0.8996587       1  0 3:B
-## 9  100021 20000401   TRUE 1.0000000       1  0 3:C
-## 10 100021 20000406  FALSE 0.9084507       0  0 4:A
-## 
-## ~~~ indexes ~~~~
-##    id1 id2
-## 1    1   A
-## 2    1   B
-## 3    1   C
-## 4    2   A
-## 5    2   B
-## 6    2   C
-## 7    3   A
-## 8    3   B
-## 9    3   C
-## 10   4   A
-## indexes:  1, 2</code></pre>
-</div>
+<!-- ##### `dfidx` で変換後のデータ -->
+<!-- ```{r echo=FALSE} -->
+<!-- head(soydata) -->
+<!-- ``` -->
 <div id="rコードの出力-1" class="section level5">
 <h5>Rコードの出力</h5>
 <pre><code>## 
@@ -3564,10 +3552,8 @@ V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
 =\)</span> -2.542 となり，ブランドCが基準 (<span class="math inline">\(\beta_C = 0\)</span>)
 となるため，ブランドCのブランドロイヤリティが最も高く推定されている。</p></li>
 <li><p>マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。</p></li>
-<li><p>ダミー変数である山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は
-<span class="math inline">\(\exp(0.275) = 1.317\)</span>，チラシ掲載は
-<span class="math inline">\(\exp(0.964) = 2.622\)</span>
-となり，チラシ掲載の方がプロモーション効果が高いと分かる。</p></li>
+<li><p>山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は <span class="math inline">\(\exp(0.275) = 1.317\)</span>，チラシ掲載は <span class="math inline">\(\exp(0.964) = 2.622\)</span>
+となり，チラシ掲載の方がオッズ比で約2倍のプロモーション効果を持つことが分かる。</p></li>
 </ul>
 </div>
 </div>
@@ -3963,8 +3949,9 @@ C
 <li><a href="https://doi.org/10.3173/air.17.86">Aizaki, Hideo and
 Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments
 Using R: A Brief Introduction,” Agricultural Information Research, 17
-(2), 86–94.</a>
-<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf) --></li>
+(2), 86–94.</a></li>
+<li><a href="https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html">続・農産物マーケティング活動の手引き（宮城県）</a>
+→ <a href="https://www.pref.miyagi.jp/documents/20321/617762.pdf">選択制コンジョイント分析</a>（リンク切れ）</li>
 </ul>
 </div>
 <div id="補足説明" class="section level3">
@@ -4052,29 +4039,29 @@ U_C &amp;= 0 + \varepsilon_C
 Rコード（クリックで表示）
 </summary>
 <div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb8-2"><a href="#cb8-2"></a></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="co"># データの読み込み</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>data_milk <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_milk.csv&quot;</span>)</span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>data_milk_mlogit <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
-<span id="cb8-8"><a href="#cb8-8"></a>  data_milk,</span>
-<span id="cb8-9"><a href="#cb8-9"></a>  <span class="at">choice =</span> <span class="st">&quot;choice&quot;</span>,</span>
-<span id="cb8-10"><a href="#cb8-10"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
-<span id="cb8-11"><a href="#cb8-11"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">15</span>,</span>
-<span id="cb8-12"><a href="#cb8-12"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a>)</span>
-<span id="cb8-14"><a href="#cb8-14"></a></span>
-<span id="cb8-15"><a href="#cb8-15"></a><span class="co"># 多項ロジットモデルの推定</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
-<span id="cb8-17"><a href="#cb8-17"></a>  choice <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> int <span class="sc">+</span> haccp <span class="sc">+</span> eco <span class="sc">+</span> price,</span>
-<span id="cb8-18"><a href="#cb8-18"></a>  <span class="at">data =</span> data_milk_mlogit,</span>
-<span id="cb8-19"><a href="#cb8-19"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a>)</span>
-<span id="cb8-21"><a href="#cb8-21"></a></span>
-<span id="cb8-22"><a href="#cb8-22"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co"># データの読み込み</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>data_milk <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_milk.csv&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co"># mlogit 関数用にデータを加工</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>data_milk_mlogit <span class="ot">&lt;-</span> <span class="fu">dfidx</span>(</span>
+<span id="cb9-8"><a href="#cb9-8"></a>  data_milk,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>  <span class="at">choice =</span> <span class="st">&quot;choice&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10"></a>  <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11"></a>  <span class="at">varying =</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">15</span>,</span>
+<span id="cb9-12"><a href="#cb9-12"></a>  <span class="at">sep =</span> <span class="st">&quot;.&quot;</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>)</span>
+<span id="cb9-14"><a href="#cb9-14"></a></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co"># 多項ロジットモデルの推定</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a>result <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(</span>
+<span id="cb9-17"><a href="#cb9-17"></a>  choice <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> int <span class="sc">+</span> haccp <span class="sc">+</span> eco <span class="sc">+</span> price,</span>
+<span id="cb9-18"><a href="#cb9-18"></a>  <span class="at">data =</span> data_milk_mlogit,</span>
+<span id="cb9-19"><a href="#cb9-19"></a>  <span class="at">reflevel =</span> <span class="st">&quot;C&quot;</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a>)</span>
+<span id="cb9-21"><a href="#cb9-21"></a></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 </div>
 </details>
 </div>
