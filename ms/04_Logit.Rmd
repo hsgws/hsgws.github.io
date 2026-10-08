@@ -86,8 +86,11 @@ $$
 # データの読み込み
 data_email <- read.csv("data/data_email.csv")
 
+data_train <- data_email[1:34100, ]
+data_test <- data_email[34101:42694, ] 
+
 # ロジットモデルの実行
-result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomial, data = data_email)
+result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomial, data = data_train)
 
 # 推定結果の表示
 summary(result)
@@ -130,13 +133,16 @@ result %>%
 
 - newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。
 
-- segment（配信したプロモーションメールの種類）に関する係数は，Mens Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens E-Mail (= -0.230) よりサイト訪問への影響が高い。
+- segment（配信したプロモーションメールの種類）に関する係数は，Mens Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens E-Mail (= -0.23) よりサイト訪問への影響が高い。
 
 <!-- - ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は $\exp(\beta)$ で計算することができ，newbie の場合，$\exp(\beta_3) = \exp(-0.439) = 	0.645$ となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が 0.645 倍となる。 -->
 
 
 ### サイト訪問確率の予測
 ```{r}
+pred_prob <- predict(result, newdata = data_train, type = "response") %>% data.frame()
+pred_y <- pred_prob >= 0.5
+
 # 予測する状況の説明変数
 prediction_data <- data.frame(
   recency = 5,   # ⇒ 最終購買からの経過月数は5ヶ月
