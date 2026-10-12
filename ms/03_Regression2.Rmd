@@ -1,6 +1,6 @@
 ---
 title: "回帰分析②"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true

@@ -1,6 +1,6 @@
 ---
 title: "ロジットモデル"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -94,6 +94,9 @@ result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomi
 
 # 推定結果の表示
 summary(result)
+
+# オッズ比
+exp(coef(result))
 ```
 
 **`glm(formula, family, data)` ：二項ロジットモデルの推定**
@@ -109,60 +112,65 @@ summary(result)
 - **`data`**：分析データの指定  
 
 
-##### Rコードの出力
-```{r, echo=FALSE}
+#### Rコード出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
 result %>% 
   summary() %>% 
   print()
+
+cat("# オッズ比\n")
+exp(coef(result))
 ```
 
 ### 推定結果
 ```{r, echo=FALSE}
 result %>% 
   tidy() %>% 
+  mutate(exp.coef = exp(estimate), .after = estimate) %>% 
   kable(format = "markdown",
         digits = 3,
-        col.names = c("", "回帰係数", "標準誤差", "z 値", "p 値"))
+        col.names = c("", "回帰係数", "オッズ比", "標準誤差", "z 値", "p 値"))
 ```
 
-- p値より全ての説明変数が有意と判断され，サイト訪問確率へ影響があることが分かる。
+<!-- - p値より全ての説明変数が有意と判断され，サイト訪問確率へ影響があることが分かる。 -->
 
-- recency（最終購買からの経過月数）の係数は符号がマイナスに推定されており，最終購買からの経過月数が長いとすでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。
+<!-- - recency（最終購買からの経過月数）の係数は符号がマイナスに推定されており，最終購買からの経過月数が長いとすでに顧客としては離脱してしまっている可能性が高いため，期待されるとおりの結果である。 -->
 
-- history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。
+<!-- - history（昨年の購入金額）も同様に期待通りの結果で，係数は符号がプラスに推定されており，購買金額の高い優良顧客はプロモーションメールへの反応が高いことが分かる。 -->
 
-- newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。
+<!-- - newbie（過去12ヶ月以内の新規顧客）の係数は，符号がマイナスに推定されており，新規顧客のプロモーションメールへの反応が悪いことが分かる。初回の取引に満足できず，すでに顧客として離脱してしまった可能性も考えられる。 -->
 
-- segment（配信したプロモーションメールの種類）に関する係数は，Mens Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens E-Mail (= -0.23) よりサイト訪問への影響が高い。
+<!-- - segment（配信したプロモーションメールの種類）に関する係数は，Mens Email を基準とした相対的な効果を意味し，Mens Email (= 0) が Womens E-Mail (= -0.23) よりサイト訪問への影響が高い。 -->
 
 <!-- - ダミー変数は変数が0から1に変化すると選択確率が何倍になるかをオッズ比で評価することができる。オッズ比は $\exp(\beta)$ で計算することができ，newbie の場合，$\exp(\beta_3) = \exp(-0.439) = 	0.645$ となり，新規顧客はそれ以外の既存顧客に比べて，プロモーションメールへの反応確率が 0.645 倍となる。 -->
 
 
-### サイト訪問確率の予測
-```{r}
-pred_prob <- predict(result, newdata = data_train, type = "response") %>% data.frame()
-pred_y <- pred_prob >= 0.5
+<!-- ### サイト訪問確率の予測 -->
+<!-- ```{r} -->
+<!-- pred_prob <- predict(result, newdata = data_train, type = "response") %>% data.frame() -->
+<!-- pred_y <- pred_prob >= 0.5 -->
 
-# 予測する状況の説明変数
-prediction_data <- data.frame(
-  recency = 5,   # ⇒ 最終購買からの経過月数は5ヶ月
-  history = 50,  # ⇒ 昨年の購入金額は$50
-  newbie = 0,    # ⇒ 過去12ヶ月以内の新規顧客ではない
-  segment = "Womens E-Mail"  # ⇒ Womens Emailを配信
-)
+<!-- # 予測する状況の説明変数 -->
+<!-- prediction_data <- data.frame( -->
+<!--   recency = 5,   # ⇒ 最終購買からの経過月数は5ヶ月 -->
+<!--   history = 50,  # ⇒ 昨年の購入金額は$50 -->
+<!--   newbie = 0,    # ⇒ 過去12ヶ月以内の新規顧客ではない -->
+<!--   segment = "Womens E-Mail"  # ⇒ Womens Emailを配信 -->
+<!-- ) -->
 
-# 予測
-predict(result, newdata = prediction_data, type = "response")
-```
+<!-- # 予測 -->
+<!-- predict(result, newdata = prediction_data, type = "response") -->
+<!-- ``` -->
 
-### オッズ比
-```{r}
-exp(coef(result))
-```
+<!-- ### オッズ比 -->
+<!-- ```{r} -->
+<!-- exp(coef(result)) -->
+<!-- ``` -->
 
-- 「イベントが起きない確率 $P(y=0)$」に対する「起きる確率 $P(y=1)$」の比率 $\frac{P(y=1)}{P(y=0)}\left(=\frac{P(y=1)}{1-P(y=1)}\right)$ をオッズと呼ぶ
-- 回帰係数の指数値 $\exp(\beta)$ はオッズ比と呼ばれ，説明変数が1単位増加したときに「イベントが起きるオッズが何倍になるか」を表す
-  - 例：最終購買からの経過月数（recency）が1ヶ月増えるとオッズは0.95倍となる（オッズへの倍率であって，サイト訪問確率 $P(y=0)$ が0.95倍になるわけではない）
+<!-- - 「イベントが起きない確率 $P(y=0)$」に対する「起きる確率 $P(y=1)$」の比率 $\frac{P(y=1)}{P(y=0)}\left(=\frac{P(y=1)}{1-P(y=1)}\right)$ をオッズと呼ぶ -->
+<!-- - 回帰係数の指数値 $\exp(\beta)$ はオッズ比と呼ばれ，説明変数が1単位増加したときに「イベントが起きるオッズが何倍になるか」を表す -->
+<!--   - 例：最終購買からの経過月数（recency）が1ヶ月増えるとオッズは0.95倍となる（オッズへの倍率であって，サイト訪問確率 $P(y=0)$ が0.95倍になるわけではない） -->
 
 
 ## 2. 分析例②：多項ロジット
@@ -210,14 +218,14 @@ $$
 **目的変数**：購買ブランド（A，B，C）  
 **説明変数**：価格掛率の対数値，山積み陳列，チラシ掲載
 
-- 各ブランドのブランド切片 ($\beta_A, \beta_B, \beta_C$) は，マーケティング変数に依らないブランドの魅力度を表し，ブランドロイヤリティとも呼ばれる。
+<!-- - 各ブランドのブランド切片 ($\beta_A, \beta_B, \beta_C$) は，マーケティング変数に依らないブランドの魅力度を表し，ブランドロイヤリティとも呼ばれる。 -->
 - 多項ロジットモデルではモデルの識別性のため，ブランド切片のどれかひとつをゼロに基準化する必要がある。ここではブランドCの切片を $\beta_C = 0$ とした。
 
 
 ### Rコード
-```{r eval=FALSE}
+```{r results='hide'}
 # mlogit パッケージのインストール（初回のみ実行）
-install.packages("mlogit")
+# install.packages("mlogit")
 
 # mlogit パッケージの読込み
 library(mlogit)
@@ -239,6 +247,9 @@ result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
 
 # 推定結果の表示
 summary(result)
+
+# オッズ比
+exp(coef(result))
 ```
 
 
@@ -264,44 +275,61 @@ summary(result)
 <!-- head(soydata) -->
 <!-- ``` -->
 
-##### Rコードの出力
-```{r, echo=FALSE}
-library(mlogit)
-sec4_choice2 <- read.csv("data/sec4_choice2.csv")
-
-soydata <- dfidx(
-  sec4_choice2,
-  choice = 3,
-  shape = "wide",
-  varying = 4:12,
-  sep = "."
-)
-
-result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
-
+#### Rコード出力
+```{r, echo=FALSE, results='hold'}
+cat("# 推定結果の表示\n")
 result %>% 
   summary() %>% 
   print()
+
+cat("\n# オッズ比\n")
+exp(coef(result))
+
+# library(mlogit)
+# sec4_choice2 <- read.csv("data/sec4_choice2.csv")
+# 
+# soydata <- dfidx(
+#   sec4_choice2,
+#   choice = 3,
+#   shape = "wide",
+#   varying = 4:12,
+#   sep = "."
+# )
+# 
+# result <- mlogit(Choice ~ Price + Display + Ad, data = soydata, reflevel = "C")
+# 
+# result %>% 
+#   summary() %>% 
+#   print()
 ```
 
 
 ### 推定結果
 ```{r, echo=FALSE}
-coef <- result$coefficients
-std.err <- sqrt(-diag(solve(result$hessian)))
-zvalue <- coef/std.err
-pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
-result.df <- data.frame(coef, std.err, coef/std.err, pvalue) %>% 
+coef <- coef(result)
+
+result %>%
+  tidy() %>%
+  mutate(exp.coef = exp(estimate), .after = estimate) %>%
   kable(format = "markdown",
         digits = 3,
-        col.names = c("回帰係数", "標準誤差", "z 値", "p 値"))
-result.df
+        col.names = c("", "回帰係数", "オッズ比", "標準誤差", "z 値", "p 値"))
+
+# coef <- result$coefficients
+# std.err <- sqrt(-diag(solve(result$hessian)))
+# zvalue <- coef/std.err
+# pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+# result.df <- data.frame(coef, std.err, coef/std.err, pvalue) %>% 
+#   kable(format = "markdown",
+#         digits = 3,
+#         col.names = c("回帰係数", "標準誤差", "z 値", "p 値"))
+# result.df
 ```
 
-- ブランド切片は，ブランドAが $\beta_A =$ `r round(coef[1], 3)`，ブランドBが $\beta_B =$ `r round(coef[2], 3)` となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。
+<!-- - ブランド切片は，ブランドAが $\beta_A =$ `r round(coef[1], 3)`，ブランドBが $\beta_B =$ `r round(coef[2], 3)` となり，ブランドCが基準 ($\beta_C = 0$) となるため，ブランドCのブランドロイヤリティが最も高く推定されている。 -->
 
-- マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。
-- 山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がオッズ比で約2倍のプロモーション効果を持つことが分かる。
+<!-- - マーケティング変数が選択確率に与える影響としては，期待通り，価格掛率はマイナス，山積み陳列とチラシ掲載はプラスに推定されている。 -->
+<!-- - 山積み陳列とチラシ掲載のオッズ比を計算すると，山積み陳列は $\exp(0.275) = 1.317$，チラシ掲載は $\exp(0.964) = 2.622$ となり，チラシ掲載の方がオッズ比で約2倍のプロモーション効果を持つことが分かる。 -->
 
 
 ## 3. データ分析実習
@@ -330,11 +358,12 @@ head(data_milk) %>%
 
 **データ出典** ：
 
-- [Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://doi.org/10.3173/air.17.86)
-<!-- - [続・農産物マーケティング活動の手引き（宮城県）](https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://www.pref.miyagi.jp/documents/20321/617762.pdf)（リンク切れ） -->
+- [Aizaki, Hideo and Kazushi Nishimura (2008), “Design and Analysis of Choice Experiments Using R: A Brief Introduction,” Agricultural Information Research, 17 (2), 86–94.](https://www.jstage.jst.go.jp/article/air/17/2/17_2_86/_article/-char/ja)
+- [続・農産物マーケティング活動の手引き（宮城県）](https://web.archive.org/web/20170522182406/https://www.pref.miyagi.jp/soshiki/res_center/marketing-manual.html) → [選択制コンジョイント分析](https://web.archive.org/web/20170527011008/http://www.pref.miyagi.jp/uploaded/attachment/617762.pdf)（リンク切れのため Internet Archive Wayback Machine）
 
-### 補足説明
-コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。
+
+#### 属性と水準
+<!-- コンジョイント分析とは，製品やサービスに対する消費者の選好を属性と水準から理解する分析手法である。課題の牛乳では以下の属性と水準を考える。 -->
 
 | 属性        | 水準                        |
 | ----------- | ---------------------------|
@@ -342,21 +371,21 @@ head(data_milk) %>%
 | エコラベル	| あり，なし （2水準）			|
 | 1リットルあたり価格	| 145円，150円，155円，160円 （4水準）	|
 
-コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。
-牛乳データでは，3属性とそれぞれの水準数を単純に掛け合わせると，2×2×4＝16通りの製品案が作成されるが，直行表を使うことによって比較する製品案を8通りまで減らすことができる。
+<!-- コンジョイント分析では，属性と水準の組合せで仮想的な製品案（プロファイルまたはコンジョイントカード）を作成し，消費者にその製品案の好みを聞くことで，属性と水準が消費者の選好に与える影響を分析する。 -->
+<!-- 牛乳データでは，3属性とそれぞれの水準数を単純に掛け合わせると，2×2×4＝16通りの製品案が作成されるが，直行表を使うことによって比較する製品案を8通りまで減らすことができる。 -->
 
-選択型コンジョイント（または選択ベース・コンジョイント）では1人の消費者に対して以下の手順で製品案に対する選好を調査する。 
+<!-- 選択型コンジョイント（または選択ベース・コンジョイント）では1人の消費者に対して以下の手順で製品案に対する選好を調査する。  -->
 
-1. 全ての製品案から2つの製品案をランダムに選ぶ
-2. 2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう
-3. 同じ消費者に1と2を何回か繰り返す
+<!-- 1. 全ての製品案から2つの製品案をランダムに選ぶ -->
+<!-- 2. 2つの製品案のどちらを買うかまたは「どちらも買わない」を選んでもらう -->
+<!-- 3. 同じ消費者に1と2を何回か繰り返す -->
 
-本実習のデータの場合は，回答者10人に対して1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。 
-このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。
+<!-- 本実習のデータの場合は，回答者10人に対して1人につき1と2を8回繰り返して，「どちらも買わない」を含む3つの選択肢からの選択データを8回分集めている（1つのidにつき，experimentが8回あり，データの行数は10人×8回＝80）。  -->
+<!-- このようにして集めたデータに選択肢が3つの多項ロジット分析を適用することで，回帰係数から消費者の選考に対する各属性・水準の影響を理解することが出来る。 -->
 
-コンジョイント分析に関しては，以下の参考文献などを参照。
+<!-- コンジョイント分析に関しては，以下の参考文献などを参照。 -->
 
-- [照井・佐藤（2013）『現代マーケティング・リサーチ 新版』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641166080)，第8章 
+<!-- - [照井・佐藤（2013）『現代マーケティング・リサーチ 新版』有斐閣](http://www.yuhikaku.co.jp/books/detail/9784641166080)，第8章  -->
 
 <!-- 消費者に製品案の好みを聞く方法としては，「欲しい順番を回答してもらう」，「一番欲しい製品案をひとつ選んでもらう」などがある。 -->
 <!-- しかし，これらの方法は製品案の数が多いと，回答負荷が高くなるため適切な回答を得られない可能性がある。 -->

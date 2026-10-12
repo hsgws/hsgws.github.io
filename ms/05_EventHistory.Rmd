@@ -1,6 +1,6 @@
 ---
 title: "イベント・ヒストリー分析"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -43,7 +43,6 @@ head(sec5_survival)
 | line_ex       | 新製品のタイプ・ライン拡張ダミー         |
 | multi_br      | 新製品のタイプ・マルチブランドダミー    |
 | br_ex         | 新製品のタイプ・ブランド拡張ダミー    |
-| ave_price_ind | 発売後4週間平均価格掛率（1＝定価）⇒ 利用しない            |
 | sum_disp      | 発売後4週間山積み陳列実施日数                 |
 | sum_flier     | 発売後4週間チラシ掲載日数                     |
 | ave_PI        | 発売後4週間平均点数PI                         |
@@ -51,12 +50,15 @@ head(sec5_survival)
 | ave_disc      | 発売後4週間平均値引き率（0＝定価販売）                      |
 
 - データに含まれる商品は主にスーパーマーケット等で販売されている食品や日用品
-- 太字は目的変数の生存時間とイベント発生（市場退出）有無を表す変数
+- **太字**は目的変数の生存時間とイベント発生（市場退出）有無を表す変数
 - 新製品のタイプのダミー変数は新ブランドが基準
 
-**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店
+**データ出典** ： 佐藤 (2016) 『マーケティングの統計モデル』朝倉書店（分析例のため一部列を削除）
 
 ### モデル
+$$
+h(t) =h_0(t)\times\exp(\beta_1x_1+\beta_2x_2+\cdots+\beta_8x_8)
+$$
 
 **目的変数**：time（商品の市場退出までの週数），status（市場退出フラグ）  
 **説明変数**：line_ex, multi_br, br_ex, sum_disp, sum_flier, ave_PI, max_price, ave_disc
@@ -90,7 +92,7 @@ summary(result)
 - **`data`**：分析データの指定
 
 
-##### Rコードの出力
+#### Rコード出力
 ```{r, echo=FALSE}
 result %>% 
   summary() %>% 
@@ -100,59 +102,66 @@ result %>%
 
 ### 推定結果
 ```{r, echo=FALSE}
-coef <- result$coefficients
-exp_coef <- exp(result$coefficients)
-std.err <- sqrt(diag(result$var))
-zvalue <- coef/std.err
-pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
-
-result.df <- data.frame(coef, exp_coef, std.err, zvalue, pvalue) %>% 
+result %>% 
+  tidy() %>% 
+  mutate(exp.coef = exp(estimate), .after = estimate) %>% 
   kable(format = "markdown",
-        digits = 4,
-        col.names = c("回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
-result.df
+        digits = 3,
+        col.names = c("", "回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
+
+# coef <- result$coefficients
+# exp_coef <- exp(result$coefficients)
+# std.err <- sqrt(diag(result$var))
+# zvalue <- coef/std.err
+# pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+# 
+# result.df <- data.frame(coef, exp_coef, std.err, zvalue, pvalue) %>% 
+#   kable(format = "markdown",
+#         digits = 4,
+#         col.names = c("回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
+# result.df
 ```
 
 Cox比例ハザードモデルでは，係数の符号は「プラスはイベントが起きる確率が増える（＝市場退出までの期間が短くなる）」ことを，「マイナスはイベントが起きる確率が減る（＝市場退出までの期間が長くなる）」ことを意味する。  
 </br>
 
-#### 新製品のタイプ
+<!-- #### 新製品のタイプ -->
 
-- ライン拡張（line_ex），マルチブランド（multi_br），ブランド拡張（br_ex）は，新ブランドを基準としたダミー変数のため，解釈は「新ブランドの生存時間に与える効果と比較した効果」となる。
-  - ライン拡張（line_ex）とブランド拡張（br_ex）の回帰係数は5％有意水準で有意に推定されており，係数がマイナスのため，「新ブランドに比べて市場退出までの期間が長い」ことを意味する。
-  - 一方，マルチブランド（multi_br）は，p値が 0.450 であり，有意ではなく，「新ブランドとの差はない」ことを意味する。
+<!-- - ライン拡張（line_ex），マルチブランド（multi_br），ブランド拡張（br_ex）は，新ブランドを基準としたダミー変数のため，解釈は「新ブランドの生存時間に与える効果と比較した効果」となる。 -->
+<!--   - ライン拡張（line_ex）とブランド拡張（br_ex）の回帰係数は5％有意水準で有意に推定されており，係数がマイナスのため，「新ブランドに比べて市場退出までの期間が長い」ことを意味する。 -->
+<!--   - 一方，マルチブランド（multi_br）は，p値が 0.450 であり，有意ではなく，「新ブランドとの差はない」ことを意味する。 -->
 
-- 新ブランドと比較してどの程度退出しやすいかは，exp(回帰係数）から評価することができる。
-  - ライン拡張（line_ex）の exp(回帰係数） は 0.832 と計算されており，「ライン拡張は新ブランドに比べて，他の変数が同じ条件なら市場退出の確率は 0.832 倍」と解釈できる。
-  - 同様にブランド拡張（br_ex）は，0.642 倍である。よって，退出しやすさは「新ブランド≒マルチブランド＞ライン拡張＞ブランド拡張」となる。
+<!-- - 新ブランドと比較してどの程度退出しやすいかは，exp(回帰係数）から評価することができる。 -->
+<!--   - ライン拡張（line_ex）の exp(回帰係数） は 0.832 と計算されており，「ライン拡張は新ブランドに比べて，他の変数が同じ条件なら市場退出の確率は 0.832 倍」と解釈できる。 -->
+<!--   - 同様にブランド拡張（br_ex）は，0.642 倍である。よって，退出しやすさは「新ブランド≒マルチブランド＞ライン拡張＞ブランド拡張」となる。 -->
 
-- 新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。  
-
-
-#### プロモーション
-
-- プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。
-  - exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。
-- 山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。
+<!-- - 新ブランドは，既存ブランド名や企業名の認知度を活用できないため，他の新製品タイプより成功が難しいと言われており，今回の分析結果は想定された通りの結果となっている。   -->
 
 
-#### 価格
+<!-- #### プロモーション -->
 
-- 価格については，最大売価（max_price）の係数が -0.0001 とほぼゼロで有意に推定されているが，1円単位の効果のため解釈には注意が必要である。
-- 符号はマイナスのため，高価格な商品ほど退出までの期間が長いことを意味する。ただし，最大売価については，全23,457商品の価格幅が10～1500円と広いが，約96％が400円以下である。
-- 300円と400円の影響を比較すると，$\exp(-0.0001 \times 300) = 0.970$，$\exp(-0.0001 \times 400) = 0.961$ と計算されるため，最大売価の影響は限定的であるとも考えられる。
-- 本データには商品カテゴリの情報がないが，商品カテゴリを絞って分析を行うと価格帯も近くなるため，最大売価の影響は異なる結果が得られる可能性もある。
+<!-- - プロモーションについては，発売後4週間山積み陳列実施日数（sum_disp）の係数が 0.028 で有意に推定され，山積み陳列実施が増えると，退出までの期間が短くなる結果となった。 -->
+<!--   - exp(回帰係数）からは，山積み陳列実施日数が1日増えると，市場退出確率が 1.028 倍になると解釈できる。 -->
+<!-- - 山積み陳列の係数の符号とは反対に，発売後4週間チラシ掲載日数（sum_flier）の係数は -0.099 で有意に推定され，チラシ掲載日数が増えると退出までの期間が長くなる結果となった。 -->
 
 
-#### その他
+<!-- #### 価格 -->
 
-- 値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。
-  - exp(回帰係数) は1単位増えた場合に，退出確率が何倍になるかを表す指標なので，値引き率（0＝定価）で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。
-- 発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。
+<!-- - 価格については，最大売価（max_price）の係数が -0.0001 とほぼゼロで有意に推定されているが，1円単位の効果のため解釈には注意が必要である。 -->
+<!-- - 符号はマイナスのため，高価格な商品ほど退出までの期間が長いことを意味する。ただし，最大売価については，全23,457商品の価格幅が10～1500円と広いが，約96％が400円以下である。 -->
+<!-- - 300円と400円の影響を比較すると，$\exp(-0.0001 \times 300) = 0.970$，$\exp(-0.0001 \times 400) = 0.961$ と計算されるため，最大売価の影響は限定的であるとも考えられる。 -->
+<!-- - 本データには商品カテゴリの情報がないが，商品カテゴリを絞って分析を行うと価格帯も近くなるため，最大売価の影響は異なる結果が得られる可能性もある。 -->
+
+
+<!-- #### その他 -->
+
+<!-- - 値引きによる影響は，発売後4週間平均値引き率（ave_disc）の係数が -1.355 と推定され，値引きが大きいほど退出までの期間が長くなる結果となった。 -->
+<!--   - exp(回帰係数) は1単位増えた場合に，退出確率が何倍になるかを表す指標なので，値引き率（0＝定価）で解釈する際には注意が必要となる。発売後4週間平均値引き率が10％であれば，exp(-1.355×0.10) = 0.873 と計算でき，定価販売（ave_disc = 0）と比べると，市場退出の確率は 0.873 倍と解釈できる。 -->
+<!-- - 発売後4週間平均点数PI（ave_PI）の係数はマイナスに推定されているおり，プロモーション・価格とあわせて考えると，発売後のスタートダッシュに成功した商品は長生きする傾向にあるといえる。 -->
 
 
 ### 生存率の計算*
-```{r results='hold', fig.show='hold'}
+```{r echo=TRUE, results='hide', fig.show='hide'}
 # 生存確率を計算する製品の属性
 new_data <- data.frame(
   line_ex = 1,
@@ -172,6 +181,31 @@ surv_time <- survfit(result, data = new_data, conf.int = 0.95)
 summary(surv_time)
 
 # 生存確率の図示
+plot(surv_time)
+```
+
+
+```{r echo=FALSE}
+s <- summary(surv_time)
+tmp <- data.frame(
+  time    = s$time,
+  n.risk  = s$n.risk,
+  n.event = s$n.event,
+  survival    = s$surv,
+  std.err = s$std.err,
+  lower   = s$lower,
+  upper   = s$upper
+)
+
+colnames(tmp)[colnames(tmp) == "upper"] <- "upper 95% CI"
+colnames(tmp)[colnames(tmp) == "lower"] <- "lower 95% CI" # 必要に応じて
+
+print(head(tmp))
+```
+（中略）
+```{r echo=FALSE}
+print(tail(tmp))
+
 plot(surv_time)
 ```
 
@@ -227,7 +261,7 @@ summary(result)
 - **`dist`**：確率分布の指定
 
 
-##### Rコードの出力
+#### Rコード出力
 ```{r, echo=FALSE}
 result %>% 
   summary() %>% 
@@ -237,25 +271,32 @@ result %>%
 
 #### 推定結果
 ```{r, echo=FALSE}
-coef <- result$coefficients
-#names(coef)[10] <- "Log(scale)"
-std.err <- sqrt(diag(result$var))
-zvalue <- coef/std.err
-pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
-
-result.df <- data.frame(coef, std.err, zvalue, pvalue) %>% 
+result %>% 
+  tidy() %>% 
+  mutate(exp.coef = exp(estimate), .after = estimate) %>% 
   kable(format = "markdown",
-        digits = 4,
-        col.names = c("係数", "標準誤差", "z 値", "p 値"))
-result.df
+        digits = 3,
+        col.names = c("", "回帰係数", "exp(回帰係数)", "標準誤差", "z 値", "p 値"))
+
+# coef <- result$coefficients
+# #names(coef)[10] <- "Log(scale)"
+# std.err <- sqrt(diag(result$var))
+# zvalue <- coef/std.err
+# pvalue <- pnorm(-abs(zvalue)) + (1-pnorm(abs(zvalue)))
+# 
+# result.df <- data.frame(coef, std.err, zvalue, pvalue) %>% 
+#   kable(format = "markdown",
+#         digits = 4,
+#         col.names = c("係数", "標準誤差", "z 値", "p 値"))
+# result.df
 ```
 
-Rでのパラメトリックモデルは加速故障時間モデル (accelerated failure time model) という方法で説明変数の係数が推定されており，係数の符号の解釈はCox比例ハザードモデルとは逆になる。
-プラスなら生存時間が長くなることを，マイナスなら生存時間が短くなることを意味する。
+Rでのパラメトリックモデルは加速故障時間モデル (AFT: accelerated failure time model) で推定されており，回帰係数の符号の解釈はCox比例ハザードモデルとは逆になる。
+プラスなら生存時間が長くなること（＝イベントが起きにくくなる）を，マイナスなら生存時間が短くなること（＝イベントが起やすくなる）を意味する。
 
 
 ### 生存率の計算
-最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523} の3商品の生存確率の計算と比較を行う。3商品のデータと生存確率の計算コードは以下の通りである。
+最大売価（max_price）が288円で共通の，商品ID＝{52, 686, 20523} の3商品の生存確率の計算と比較を行う。
 
 ```{r, echo=FALSE}
 row <- c(49, 593, 15751)
@@ -282,7 +323,7 @@ matplot(x = t(pred$fit), y = 1 - pct, type = "l",
 legend("topright", legend = sec5_survival$pro_id[row], lty = 1, col = 1:3)
 ```
 
-生存確率が50％となる週は，ID 52が50週，ID 686が21週，ID 20523が9週である。
+生存確率が50％となる週は，ID 52が50週，ID 686が21週，ID 20523が9週。
 
 
 ## 3. データ分析実習
@@ -316,7 +357,7 @@ head(data_churn)
 | PaymentMethod    | 料金支払い方法 </br> ("Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)") |
 | **MonthlyCharges**   | **月額料金**                                                     |
 | TotalCharges     | 総支払い金額                                                 |
-| **Churn**            | **電話回線の解約の有無 ⇒ 1＝解約済み, 0＝契約中（打ち切り) **                                    |
+| **Churn**            | **電話回線の解約の有無 ⇒ 1＝解約済み, 0＝観測終了時点で契約中（打ち切り) **                                    |
 
 （太字は分析で利用する変数）  
 </br>
@@ -345,7 +386,7 @@ MonthlyCharges（月額料金）以外はダミー変数のため，基準とな
 </br>
 **注意点**
 
-gender や Partner などの文字データの変数を，R のモデル式 (fourmula) の説明変数にそのまま指定すれば，R の内部で自動的にダミー変数化され，回帰係数が出力される。推定結果を解釈する際には，どの水準がダミー変数の基準になっているかを注意する必要がある。
+gender や Partner などの文字データの変数を，R のモデル式 (fourmula) の説明変数にそのまま指定すれば，R の内部で自動的にダミー変数化され，回帰係数が出力される。推定結果を解釈する際には，どの水準がダミー変数の基準になっているか注意。
 
 </br>
 <details><summary>Rコード（クリックで表示）</summary><div>
@@ -357,8 +398,10 @@ data_churn <- read.csv("data/data_churn.csv")
 library(survival)
 
 # Cox比例ハザードモデルの推定
-result <- coxph(Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges,
-                data = data_churn)
+result <- coxph(
+  Surv(tenure, Churn) ~ gender + SeniorCitizen + Partner + Dependents + MonthlyCharges,
+  data = data_churn
+)
 
 # 推定結果の表示
 summary(result)
