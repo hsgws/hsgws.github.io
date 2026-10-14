@@ -86,11 +86,8 @@ $$
 # データの読み込み
 data_email <- read.csv("data/data_email.csv")
 
-data_train <- data_email[1:34100, ]
-data_test <- data_email[34101:42694, ] 
-
 # ロジットモデルの実行
-result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomial, data = data_train)
+result <- glm(visit ~ recency + log(history) + newbie + segment, family = binomial, data = data_email)
 
 # 推定結果の表示
 summary(result)

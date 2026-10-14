@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">ロジットモデル</h1>
-<h4 class="date">更新：2026-10-13</h4>
+<h4 class="date">更新：2026-10-14</h4>
 
 </div>
 
@@ -3147,16 +3147,19 @@ E-Mail Analytics And Data Mining Challenge dataset</a></p>
 <h3>モデル</h3>
 <div id="効用関数" class="section level4">
 <h4>効用関数</h4>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{align}
 U &amp; = V + \varepsilon \\
 &amp; = \beta_0 + \beta_1 x_{1} + \beta_2 \log(x_{2}) + \beta_3 x_{3} +
 \beta_4 x_{4} + \varepsilon
-\end{align}\]</span></p>
+\end{align}
+\]</span></p>
 </div>
 <div id="サイト訪問確率" class="section level4">
 <h4>サイト訪問確率</h4>
-<p><span class="math display">\[Pr(y=1) =
-\frac{\exp(V)}{1+\exp(V)}\]</span></p>
+<p><span class="math display">\[
+Pr(y=1) = \frac{\exp(V)}{1+\exp(V)}
+\]</span></p>
 <p><strong>目的変数</strong>：メール配信後2週間以内のサイト訪問の有無（<span class="math inline">\(y=1\)</span>なら訪問あり，<span class="math inline">\(y=0\)</span>なら訪問なし）<br />
 <strong>説明変数</strong>：最終購買からの経過月数，昨年の購入金額，過去12ヶ月以内の新規顧客，配信したプロモーションメールの種類</p>
 <ul>
@@ -3173,17 +3176,14 @@ Email と Womens Email
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines lineAnchors"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># データの読み込み</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>data_email <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/data_email.csv&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a>data_train <span class="ot">&lt;-</span> data_email[<span class="dv">1</span><span class="sc">:</span><span class="dv">34100</span>, ]</span>
-<span id="cb1-5"><a href="#cb1-5"></a>data_test <span class="ot">&lt;-</span> data_email[<span class="dv">34101</span><span class="sc">:</span><span class="dv">42694</span>, ] </span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># ロジットモデルの実行</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(visit <span class="sc">~</span> recency <span class="sc">+</span> <span class="fu">log</span>(history) <span class="sc">+</span> newbie <span class="sc">+</span> segment, <span class="at">family =</span> binomial, <span class="at">data =</span> data_email)</span>
 <span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># ロジットモデルの実行</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>result <span class="ot">&lt;-</span> <span class="fu">glm</span>(visit <span class="sc">~</span> recency <span class="sc">+</span> <span class="fu">log</span>(history) <span class="sc">+</span> newbie <span class="sc">+</span> segment, <span class="at">family =</span> binomial, <span class="at">data =</span> data_train)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">summary</span>(result)</span>
 <span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">summary</span>(result)</span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co"># オッズ比</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span></code></pre></div>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># オッズ比</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">exp</span>(<span class="fu">coef</span>(result))</span></code></pre></div>
 <p><strong><code>glm(formula, family, data)</code>
 ：二項ロジットモデルの推定</strong></p>
 <ul>
@@ -3209,31 +3209,31 @@ Email と Womens Email
 ## 
 ## Call:
 ## glm(formula = visit ~ recency + log(history) + newbie + segment, 
-##     family = binomial, data = data_train)
+##     family = binomial, data = data_email)
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)          -1.899516   0.086937 -21.849  &lt; 2e-16 ***
-## recency              -0.048733   0.004347 -11.211  &lt; 2e-16 ***
-## log(history)          0.176475   0.015080  11.702  &lt; 2e-16 ***
-## newbie               -0.463418   0.029972 -15.462  &lt; 2e-16 ***
-## segmentWomens E-Mail -0.232212   0.029353  -7.911 2.55e-15 ***
+## (Intercept)          -1.912076   0.077503 -24.671   &lt;2e-16 ***
+## recency              -0.048299   0.003886 -12.427   &lt;2e-16 ***
+## log(history)          0.175966   0.013435  13.097   &lt;2e-16 ***
+## newbie               -0.439415   0.026728 -16.440   &lt;2e-16 ***
+## segmentWomens E-Mail -0.229896   0.026233  -8.764   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 30782  on 34099  degrees of freedom
-## Residual deviance: 30196  on 34095  degrees of freedom
-## AIC: 30206
+##     Null deviance: 38525  on 42693  degrees of freedom
+## Residual deviance: 37825  on 42689  degrees of freedom
+## AIC: 37835
 ## 
 ## Number of Fisher Scoring iterations: 4
 ## 
 ## # オッズ比
 ##          (Intercept)              recency         log(history) 
-##            0.1496410            0.9524357            1.1930050 
+##            0.1477733            0.9528490            1.1923981 
 ##               newbie segmentWomens E-Mail 
-##            0.6291297            0.7927779</code></pre>
+##            0.6444132            0.7946160</code></pre>
 </div>
 </div>
 <div id="推定結果" class="section level3">
@@ -3252,42 +3252,42 @@ Email と Womens Email
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-1.900</td>
-<td align="right">0.150</td>
-<td align="right">0.087</td>
-<td align="right">-21.849</td>
+<td align="right">-1.912</td>
+<td align="right">0.148</td>
+<td align="right">0.078</td>
+<td align="right">-24.671</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">recency</td>
-<td align="right">-0.049</td>
-<td align="right">0.952</td>
+<td align="right">-0.048</td>
+<td align="right">0.953</td>
 <td align="right">0.004</td>
-<td align="right">-11.211</td>
+<td align="right">-12.427</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">log(history)</td>
 <td align="right">0.176</td>
-<td align="right">1.193</td>
-<td align="right">0.015</td>
-<td align="right">11.702</td>
+<td align="right">1.192</td>
+<td align="right">0.013</td>
+<td align="right">13.097</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">newbie</td>
-<td align="right">-0.463</td>
-<td align="right">0.629</td>
-<td align="right">0.030</td>
-<td align="right">-15.462</td>
+<td align="right">-0.439</td>
+<td align="right">0.644</td>
+<td align="right">0.027</td>
+<td align="right">-16.440</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">segmentWomens E-Mail</td>
-<td align="right">-0.232</td>
-<td align="right">0.793</td>
-<td align="right">0.029</td>
-<td align="right">-7.911</td>
+<td align="right">-0.230</td>
+<td align="right">0.795</td>
+<td align="right">0.026</td>
+<td align="right">-8.764</td>
 <td align="right">0</td>
 </tr>
 </tbody>
@@ -3378,20 +3378,25 @@ Email と Womens Email
 <h3>モデル</h3>
 <div id="効用関数-1" class="section level4">
 <h4>効用関数</h4>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{align}
 U_A &amp;= \beta_A + \beta_1 Price_A + \beta_2 Display_A + \beta_3 Ad_A
 + \varepsilon_A \\
 U_B &amp;= \beta_B + \beta_1 Price_B + \beta_2 Display_B + \beta_3 Ad_B
 + \varepsilon_B \\
 U_C &amp;= 0 + \beta_1 Price_C + \beta_2 Display_C + \beta_3 Ad_C +
 \varepsilon_C
-\end{align}\]</span></p>
+\end{align}
+\]</span></p>
 </div>
 <div id="ブランド選択確率" class="section level4">
 <h4>ブランド選択確率</h4>
-<p><span class="math display">\[Pr(Choice=A) =
-\frac{\exp(V_A)}{\exp(V_A)+\exp(V_B)+\exp(V_C)}\]</span> <span class="math display">\[V_j = \beta_j + \beta_1 Price_j + \beta_2
-Display_j + \beta_3 Ad_j \quad (j = A, B, C)\]</span></p>
+<p><span class="math display">\[
+Pr(Choice=A) = \frac{\exp(V_A)}{\exp(V_A)+\exp(V_B)+\exp(V_C)}
+\]</span> <span class="math display">\[
+V_j = \beta_j + \beta_1 Price_j + \beta_2 Display_j + \beta_3 Ad_j \quad
+(j = A, B, C)
+\]</span></p>
 <p><strong>目的変数</strong>：購買ブランド（A，B，C）<br />
 <strong>説明変数</strong>：価格掛率の対数値，山積み陳列，チラシ掲載</p>
 <!-- - 各ブランドのブランド切片 ($\beta_A, \beta_B, \beta_C$) は，マーケティング変数に依らないブランドの魅力度を表し，ブランドロイヤリティとも呼ばれる。 -->
@@ -4009,11 +4014,13 @@ Internet Archive Wayback Machine）</li>
 (eco)，1リットルあたり価格 (price)</p>
 <div id="効用関数-2" class="section level4">
 <h4>効用関数</h4>
-<p><span class="math display">\[\begin{align}
+<p><span class="math display">\[
+\begin{align}
 U_j &amp;= \beta_0 + \beta_{1}x_{haccp.j} + \beta_{2}x_{eco.j} +
 \beta_{4}x_{price.j} + \varepsilon_j \qquad (j = A, B) \\
 U_C &amp;= 0 + \varepsilon_C
-\end{align}\]</span></p>
+\end{align}
+\]</span></p>
 <ul>
 <li>選択肢 A・B は直交表から作成された製品案，選択肢 C
 は「どちらも買わない」を表す</li>
