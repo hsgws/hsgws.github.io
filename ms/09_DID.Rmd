@@ -103,7 +103,7 @@ data_cigar
 | sales  | 16才以上人口1人あたりの年間タバコ購入箱数（その他州はカリフォルニア州以外の州の平均値，ただし1988年以降にタバコ増税のあった州は除く）                        |
 
 - 米国カリフォルニア州で1988年に導入された禁煙キャンペーン（介入）によってタバコ購入量が減少したか検証
-  - 禁煙キャンペーンによりタバコ1箱あたり25セントの増税と健康被害教育が導入された（[1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99)）
+- 禁煙キャンペーンによりタバコ1箱あたり25セントの増税と健康被害教育が導入された（[1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99)）
 
 <!-- - カリフォルニア州に禁煙キャンペーンが導入されなかった場合の反事実をその他州から補完 -->
 <!--   - ただし，キャンペーン実施の1988年以降にタバコ増税があった9州は対照群から除いた -->
@@ -149,7 +149,7 @@ $$
 # データの読み込み
 data_cigar <- read.csv("data/data_cigar.csv")
 
-# 回帰分析の実行
+# DID（回帰分析）の実行
 result <- lm(sales ~ post + treat + post:treat + year, data = data_cigar)
 
 # 推定結果の表示
@@ -304,7 +304,7 @@ write_csv(df, "data/house_price.csv")
 ```
 
 ### データ
-**ファーストフード店舗の（house_price.csv）**
+**焼却炉建設前後の住宅価格（house_price.csv）**
 
 ```{r, echo=FALSE}
 house_price <- read_csv("data/house_price.csv")
@@ -315,8 +315,8 @@ house_price %>% head(10)
 | 変数名  | 内容                                       |
 | ------- | ------------------------------------------ |
 | lprice  | 住宅価格の対数値                           |
-| nearinc | 介入ダミー（0=焼却炉の遠く，1=焼却炉の近く）   |
-| y81     | 時点ダミー（0=焼却炉建設前, 1=焼却炉建設後）   |
+| nearinc | 介入ダミー（住宅立地が焼却炉から遠い＝0，近い＝1）   |
+| y81     | 時点ダミー（焼却炉建設前＝0，1=焼却炉建設後＝1）   |
 | age     | 築年数                                     |
 | larea   | 建物延床面積の対数値                       |
 | lland   | 敷地面積の対数値                           |
@@ -326,46 +326,70 @@ house_price %>% head(10)
 
 **データ出典** ：wooldridge パッケージの kielmc データ（分析例のため元データを加工）
 
-### データ
-**チラシ出稿と点数PI（data_did.csv）**
-
-```{r, echo=FALSE}
-data_did <- read_csv("data/data_did.csv")
-data_did
-```
-\
-
-| 変数名 | 内容                                                         |
-| ------ | ------------------------------------------------------------ |
-| store  | 店舗ID（s01～s25の25店舗，分析ではダミー変数化して利用）                     |
-| post   | 時点ダミー（チラシ出稿前＝0，チラシ出稿後＝1）     |
-| treat  | 介入ダミー（チラシ掲載店舗＝1，それ以外＝0）       |
-| PI     | チラシ出稿前およびチラシ出稿後1週間の掲載商品の点数PI（千人あたり販売量） |
-
-- 地域内25店舗のうち，6店舗（s20~s25）を対象としたチラシを出稿した状況を想定
-- 介入群はチラシ対象の6店舗，対照群はその他19店舗
-
-**データ出典** ：架空のシミュレーションデータ
-
 ### 課題
-DIDとして以下の回帰モデルを推定し，チラシによる効果（＝掲載商品の販売量の増加分）を検証せよ。
+DIDとして以下の回帰モデルを推定し，焼却炉建設が住宅価格に与えた影響を考察せよ。
 
-$$
-PI = \alpha + \beta_1 post + \beta_2 treat + \beta_3 post\times treat + \sum_{j=1}^{25}\theta_j store_j + \varepsilon
-$$
+- 目的変数：lprice
+- 介入・時点変数：nearinc, y81
+- 共変量：その他変数（age～lcbd）
 
 <br />
 <details><summary>Rコード（クリックで表示）</summary><div>
 ```{r eval=FALSE, results='hide'}
 # データの読み込み
-data_did <- read_csv("data/data_did.csv")
+house_price <- read_csv("data/house_price.csv")
 
-# 回帰分析の実行
-result <- lm(PI ~ post + treat + post:treat + store, data = data_did)
+# DIDの実行
+result <- lm(lprice ~ y81 + nearinc + y81:nearinc + age + larea + lland + rooms + lintst + lcbd, data = house_price)
+
+# または以下でも実行可能
+# result <- lm(lprice ~ y81:nearinc + ., data = house_price)  # formulaの "." はその他全ての説明変数を意味する
 
 # 推定結果の表示
 summary(result)
 ```
 </div></details>
+
+<!-- ### データ -->
+<!-- **チラシ出稿と点数PI（data_did.csv）** -->
+
+<!-- ```{r, echo=FALSE} -->
+<!-- data_did <- read_csv("data/data_did.csv") -->
+<!-- data_did -->
+<!-- ``` -->
+<!-- \ -->
+
+<!-- | 変数名 | 内容                                                         | -->
+<!-- | ------ | ------------------------------------------------------------ | -->
+<!-- | store  | 店舗ID（s01～s25の25店舗，分析ではダミー変数化して利用）                     | -->
+<!-- | post   | 時点ダミー（チラシ出稿前＝0，チラシ出稿後＝1）     | -->
+<!-- | treat  | 介入ダミー（チラシ掲載店舗＝1，それ以外＝0）       | -->
+<!-- | PI     | チラシ出稿前およびチラシ出稿後1週間の掲載商品の点数PI（千人あたり販売量） | -->
+
+<!-- - 地域内25店舗のうち，6店舗（s20~s25）を対象としたチラシを出稿した状況を想定 -->
+<!-- - 介入群はチラシ対象の6店舗，対照群はその他19店舗 -->
+
+<!-- **データ出典** ：架空のシミュレーションデータ -->
+
+<!-- ### 課題 -->
+<!-- DIDとして以下の回帰モデルを推定し，チラシによる効果（＝掲載商品の販売量の増加分）を検証せよ。 -->
+
+<!-- $$ -->
+<!-- PI = \alpha + \beta_1 post + \beta_2 treat + \beta_3 post\times treat + \sum_{j=1}^{25}\theta_j store_j + \varepsilon -->
+<!-- $$ -->
+
+<!-- <br /> -->
+<!-- <details><summary>Rコード（クリックで表示）</summary><div> -->
+<!-- ```{r eval=FALSE, results='hide'} -->
+<!-- # データの読み込み -->
+<!-- data_did <- read_csv("data/data_did.csv") -->
+
+<!-- # 回帰分析の実行 -->
+<!-- result <- lm(PI ~ post + treat + post:treat + store, data = data_did) -->
+
+<!-- # 推定結果の表示 -->
+<!-- summary(result) -->
+<!-- ``` -->
+<!-- </div></details> -->
 
 
