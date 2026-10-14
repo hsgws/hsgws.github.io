@@ -2893,7 +2893,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 
 
 
-<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc; font-weight: bold; }h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;font-weight: bold;}h4{margin:15pt 0 5pt 0;font-weight: bold;}h5{margin:15pt 0 5pt 0;}h5{margin:5pt 0 5pt 0;}</style>
+<style type="text/css">h1{font-weight: bold;}h2{margin:40px 0 10pt 0;padding-bottom: .25em;border-bottom: 1.5px solid #ccc;}h3{margin:25pt 0 10pt 0;padding:0 .5em;border-left: 4px solid #ccc;}h4{margin:20pt 0 10pt 0;}h5{margin:15pt 0 5pt 0;}h5{margin:10pt 0 5pt 0;}p{line-height: 1.7;}body{font-size: 15px;}</style>
 
 
 
@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2026/10/13</h4>
+<h4 class="date">更新：2026-10-14</h4>
 
 </div>
 
@@ -3150,7 +3150,7 @@ font-size: 0.95em;
 </div>
 </div>
 <div id="分析例②k-means-法" class="section level2">
-<h2>2. 分析例②：K-means 法*</h2>
+<h2>2. 分析例②：K-means 法</h2>
 <div id="データ-1" class="section level3">
 <h3>データ</h3>
 <p>品目別1世帯当たり年間支出金額（都道府県庁所在地） ⇒
@@ -3158,25 +3158,37 @@ font-size: 0.95em;
 </div>
 <div id="rコード-1" class="section level3">
 <h3>Rコード</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># クラスター分析（kmens法，クラスター数＝4）</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(<span class="at">x =</span> kakei2023s, <span class="at">centers =</span> <span class="dv">4</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># 各セグメントの標準化支出金額の平均値（代表値）</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>result<span class="sc">$</span>centers</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># 各都市の所属セグメント番号</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>result<span class="sc">$</span>cluster</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># 各セグメントの所属都市数・比率</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>result<span class="sc">$</span>size</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>result<span class="sc">$</span>size<span class="sc">/</span><span class="dv">47</span>  <span class="co"># 比率</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co"># （参考）各セグメントの代表値の図示</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="fu">barplot</span>(result<span class="sc">$</span>centers[i,], <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.3</span>), <span class="at">las =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;セグメント&quot;</span>, i))</span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># データの読込</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>kakei2023 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/kakei2023.csv&quot;</span>, <span class="at">row.names =</span> <span class="dv">1</span>)  <span class="co"># row.names = 1 で1列目（都市名）を行名に指定</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># 各列の標準化</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>kakei2023s <span class="ot">&lt;-</span> <span class="fu">scale</span>(kakei2023)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># クラスター分析（kmens法，クラスター数＝4）</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(<span class="at">x =</span> kakei2023s, <span class="at">centers =</span> <span class="dv">4</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># 各セグメントの標準化支出金額の平均値（代表値）</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>result<span class="sc">$</span>centers</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># 各都市の所属セグメント番号</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>result<span class="sc">$</span>cluster</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co"># 各セグメントの所属都市数・比率</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>result<span class="sc">$</span>size</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>result<span class="sc">$</span>size<span class="sc">/</span><span class="dv">47</span>  <span class="co"># 比率</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co"># （参考）各セグメントの代表値の図示</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  <span class="fu">barplot</span>(result<span class="sc">$</span>centers[i,], <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.3</span>, <span class="fl">1.3</span>), <span class="at">las =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;セグメント&quot;</span>, i))</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong><code>kmeans(x, centers)</code></strong>：Kmeans法によるクラスター分析</p>
+<ul>
+<li><strong><code>x</code></strong>：クラスター分析を実行するデータの指定</li>
+<li><strong><code>centers</code></strong>：セグメント数</li>
+<li>関数内でランダムに決められる初期値によって分析結果に差（セグメント番号の違いや代表値の微妙な違い）が発生するため，実行前に
+<code>set.seed</code> で乱数のシードを固定しておく</li>
+</ul>
 <div id="rコード出力-1" class="section level4">
 <h4>Rコード出力</h4>
 <p>各セグメントの標準化支出金額の平均値（代表値）</p>

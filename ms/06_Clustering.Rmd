@@ -105,16 +105,21 @@ factoextraパッケージによるデンドログラム
 fviz_dend(hc, k = 5, rect = TRUE, rect_fill = TRUE)
 ```
 
-## 2. 分析例②：K-means 法*
+## 2. 分析例②：K-means 法
 
 ### データ
 品目別1世帯当たり年間支出金額（都道府県庁所在地） ⇒ 分析例①の標準化後データ
 
 ### Rコード
 ```{r, results='hide', fig.show='hide'}
-set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
+# データの読込
+kakei2023 <- read.csv("data/kakei2023.csv", row.names = 1)  # row.names = 1 で1列目（都市名）を行名に指定
+
+# 各列の標準化
+kakei2023s <- scale(kakei2023)
 
 # クラスター分析（kmens法，クラスター数＝4）
+set.seed(1) # 乱数シードの固定（初期値の違いによる分析結果のゆれをなくすための設定）
 result <- kmeans(x = kakei2023s, centers = 4)
 
 # 各セグメントの標準化支出金額の平均値（代表値）
@@ -132,6 +137,12 @@ for (i in 1:4) {
   barplot(result$centers[i,], ylim = c(-1.3, 1.3), las = 2, main = paste("セグメント", i))
 }
 ```
+
+**`kmeans(x, centers)`**：Kmeans法によるクラスター分析
+
+- **`x`**：クラスター分析を実行するデータの指定
+- **`centers`**：セグメント数
+- 関数内でランダムに決められる初期値によって分析結果に差（セグメント番号の違いや代表値の微妙な違い）が発生するため，実行前に `set.seed` で乱数のシードを固定しておく
 
 
 #### Rコード出力

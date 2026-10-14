@@ -1,6 +1,6 @@
 ---
 title: "差分の差分法"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -100,26 +100,39 @@ data_cigar
 | year  | 年（1971~1992年，分析ではダミー変数化して利用）                                                           |
 | post  | 時点ダミー（キャンペーン導入前の1987年以前＝0，導入後の1988年以降＝1）       |
 | treat | 介入ダミー（カリフォルニア州＝1，その他州＝0） |
-| sales  | 16才以上人口1人あたりの年間タバコ購入箱数（その他州はカリフォルニア州以外の州の平均値）                        |
+| sales  | 16才以上人口1人あたりの年間タバコ購入箱数（その他州はカリフォルニア州以外の州の平均値，ただし1988年以降にタバコ増税のあった州は除く）                        |
 
-- 米国カリフォルニア州で1988年に導入された禁煙キャンペーン [1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99) ⇒ 介入
-  - タバコ1箱あたり25セントの増税＋タバコによる健康被害の教育
-- カリフォルニア州に禁煙キャンペーンが導入されなかった場合の反事実をその他州から補完
-  - ただし，キャンペーン実施の1988年以降にタバコ増税があった9州は対照群から除いた
+- 米国カリフォルニア州で1988年に導入された禁煙キャンペーン（介入）によってタバコ購入量が減少したか検証
+  - 禁煙キャンペーンによりタバコ1箱あたり25セントの増税と健康被害教育が導入された（[1988 California Proposition 99 - Wikipedia](https://en.wikipedia.org/wiki/1988_California_Proposition_99)）
+
+<!-- - カリフォルニア州に禁煙キャンペーンが導入されなかった場合の反事実をその他州から補完 -->
+<!--   - ただし，キャンペーン実施の1988年以降にタバコ増税があった9州は対照群から除いた -->
 
 **データ出典** ：[Ecdatパッケージ](https://cran.r-project.org/web/packages/Ecdat/index.html)のCigarデータ および [安井（2020）『効果検証入門』技術評論社](https://gihyo.jp/book/2020/978-4-297-11117-5)
 
 \
 ```{r echo=FALSE}
 data_cigar %>% 
-  mutate(post = factor(post),
-         treat = factor(treat),
-         y = str_remove(year, "y") %>% as.numeric()) %>% 
+  mutate(post = factor(post), treat = factor(treat)) %>% 
   ggplot(mapping = aes(x = post, y = sales, colour = treat)) +
   geom_point(position = position_jitter(width = 0.1), size = 2) +
   geom_smooth(mapping = aes(group = treat), method = "lm", se = FALSE) +
   labs(title = "キャンペーン導入前後の1人あたり年間タバコ購入箱数") 
 ```
+
+</br>
+<details><summary>作図Rコード（クリックで表示）</summary><div>
+```{r eval=FALSE}
+library(tidyverse)
+
+data_cigar %>% 
+  mutate(post = factor(post), treat = factor(treat)) %>% 
+  ggplot(mapping = aes(x = post, y = sales, colour = treat)) +
+  geom_point(position = position_jitter(width = 0.1), size = 2) +
+  geom_smooth(mapping = aes(group = treat), method = "lm", se = FALSE) +
+  labs(title = "キャンペーン導入前後の1人あたり年間タバコ購入箱数") 
+```
+</div></details>
 
 
 ### モデル
@@ -137,22 +150,23 @@ $$
 data_cigar <- read.csv("data/data_cigar.csv")
 
 # 回帰分析の実行
-result <- lm(sales ~ post + treat + post*treat + year, data = data_cigar)
+result <- lm(sales ~ post + treat + post:treat + year, data = data_cigar)
 
 # 推定結果の表示
 summary(result)
 ```
 
-- 回帰分析で説明変数の交差項は `*` で繋げた項を追加することで推定できる
-- 共変量の `year` の係数は関心がないので解釈しない
+<!-- - 回帰分析で説明変数の交差項は `*` で繋げた項を追加することで推定できる -->
+<!-- - 共変量の `year` の係数は関心がないので解釈しない -->
 
-
-#### Rコードの出力
+#### Rコード出力
 ```{r, echo=FALSE}
 result %>% 
   summary() %>% 
   print()
 ```
+
+- "yeary92" の行が "NA" となっているのはダミー変数の基準のため
 
 
 ### 推定結果
@@ -164,8 +178,6 @@ result %>%
         digits = 3,
         col.names = c("", "回帰係数", "標準誤差", "t 値", "p 値"))
 ```
-
-⇒ カリフォルニア州では禁煙キャンペーンの導入により1人あたりのタバコ購入箱数は20.53箱減少
 
 
 ## 2. 分析例②：Causal Impact*
@@ -221,7 +233,7 @@ impact <- CausalImpact(
   model.args = list(nseasons = 12)  # nseasons = 12 で月次周期を予測モデルに追加
 )
 
-# 推定結果の出力
+# 推定結果
 summary(impact)
 
 # 結果の図示
@@ -238,8 +250,8 @@ plot(impact)
 
 参考：[CausalImpact (https://google.github.io/CausalImpact/CausalImpact.html)](https://google.github.io/CausalImpact/CausalImpact.html)
 
-#### Rコードの出力
-##### 推定結果の出力
+#### Rコード出力
+##### 推定結果
 ```{r echo=FALSE}
 summary(impact)
 ```
@@ -252,6 +264,68 @@ plot(impact)
 
 
 ## 3. データ分析実習
+
+```{r eval=FALSE, include=FALSE}
+# データ検討
+## 賃金上昇と従業員 Card and Krueger (1994)
+library(loedata)
+data("Fastfood")
+
+df <- Fastfood %>% 
+  filter(
+    balanced == 1,
+    chain == 1  # burgerking
+  ) %>%
+  select(fte, nj, after, co_owned, nregs, hrsopen) %>% 
+  rename(
+    treat = nj, 
+    post = after
+  ) %>% 
+  na.omit()
+
+lm(fte ~ treat + post + treat:post + ., data = df) %>% 
+  summary()
+
+# write_csv(df, "data/fastfood.csv")
+
+## 焼却炉建築と住宅価格
+install.packages("wooldridge")
+library(wooldridge)
+data("kielmc")
+
+df <- kielmc %>% 
+  mutate(lcbd = log(cbd)) %>% 
+  select(lprice, nearinc, y81, age, larea, lland, rooms, lintst, lcbd)
+
+lm(lprice ~ nearinc:y81 + ., data = df) %>% 
+  summary()
+
+write_csv(df, "data/house_price.csv")
+```
+
+### データ
+**ファーストフード店舗の（house_price.csv）**
+
+```{r, echo=FALSE}
+house_price <- read_csv("data/house_price.csv")
+house_price %>% head(10)
+```
+\
+
+| 変数名  | 内容                                       |
+| ------- | ------------------------------------------ |
+| lprice  | 住宅価格の対数値                           |
+| nearinc | 介入ダミー（0=焼却炉の遠く，1=焼却炉の近く）   |
+| y81     | 時点ダミー（0=焼却炉建設前, 1=焼却炉建設後）   |
+| age     | 築年数                                     |
+| larea   | 建物延床面積の対数値                       |
+| lland   | 敷地面積の対数値                           |
+| rooms   | 部屋数                                     |
+| lintst  | 高速道路ICまでの距離の対数値               |
+| lcbd    | 都市中心部からの距離の対数値               |
+
+**データ出典** ：wooldridge パッケージの kielmc データ（分析例のため元データを加工）
+
 ### データ
 **チラシ出稿と点数PI（data_did.csv）**
 
@@ -287,7 +361,7 @@ $$
 data_did <- read_csv("data/data_did.csv")
 
 # 回帰分析の実行
-result <- lm(PI ~ post + treat + post * treat + store, data = data_did)
+result <- lm(PI ~ post + treat + post:treat + store, data = data_did)
 
 # 推定結果の表示
 summary(result)

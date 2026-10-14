@@ -1,6 +1,6 @@
 ---
 title: "因果推論"
-date: "更新：`r format(Sys.time(), '%Y/%m/%d')`"
+date: "更新：`r Sys.Date()`"
 output:
   html_document:
     toc: true
@@ -26,13 +26,13 @@ library(tidyverse)
 ```
 
 
-## 1.分析例①：t 検定
+## 1.分析例：t 検定
 ### データ
-**ウェブページのA/Bテストデータ（web_page_data.csv）**
+**ウェブページのA/Bテストデータ（webpage.csv）**
 
 ```{r, echo=FALSE}
-web_page_data <- read.csv("data/web_page_data.csv")
-head(web_page_data)
+webpage <- read.csv("data/webpage.csv")
+head(webpage)
 ```
 
 | 変数名  | 内容                                        |
@@ -58,57 +58,61 @@ $$\mu_A \neq \mu_B \qquad \text{or} \qquad \mu_A - \mu_B \neq 0$$
 
 
 ### Rコード
-#### 基礎集計
 ```{r results='hide'}
 # データの読み込み
-web_page_data <- read.csv("data/web_page_data.csv")
+webpage <- read.csv("data/webpage.csv")
 
-# データから Page A または Page B のみの行を抽出
-PageA <- subset(web_page_data, Page == "Page A")
-PageB <- subset(web_page_data, Page == "Page B")
+# Page A と Page B の比較
+aggregate(Time ~ Page, data = webpage, FUN = mean)  # 平均
+aggregate(Time ~ Page, data = webpage, FUN = sd)  # 標準偏差
 
-# 滞在時間の基礎集計
-summary(PageA$Time)
-summary(PageB$Time)
+# t 検定
+t.test(Time ~ Page, data = webpage)
 ```
 
-**`subset(x, subset)`：データから条件が一致する行のみ抽出**
+**`aggregate(formula, data, FUN)`**：データ内のグループごとに関数を適用
 
-- **`x`**：元データ
-- **`subset`**：抽出条件
-
-上記コードでは，web_page_data からサイトデザインが Page A （または Page B）の行のみ抽出。
-Page A の行はデータ内の Page 列が "Page A" の行のため，`Page == "Page A"` で抽出条件を指定（`=` ではなく，`==` であることに注意）。
-
-##### Rコード出力
-```{r echo=FALSE}
-summary(PageA$Time)
-summary(PageB$Time)
-```
-
-#### t 検定
-```{r results='hide'}
-t.test(PageA$Time, PageB$Time)
-# または t.test(Time ~ Page, data = web_page_data)
-```
-
-方法1 **`t.test(x, y)`**
-
-- **`x, y`**：平均値の差を検定したい2つのデータセット
-
-
-方法2 **`t.test(formula, data)`**
+- `formula`：`~` の左側に関数を適用したい変数，右側にグループ分けの基準
+- `data`：データ
+- `FUN`：適用したい関数
+  
+**`t.test(formula, data)`**
 
 - **`formula`**：`~` の左側に目的変数（差を検定したい値），右側にグループ分けの基準
 - **`data`**：観測データの指定
 
 `t.test` はデフォルトでは，比較する2つの集団で分散が異なる可能性を想定したWelchのt検定で両側検定（対立仮説 $x \neq y$）の検定結果が出力される。2つの集団で分散が等しいと想定される場合のt検定や片側検定（対立仮説 $x > y$ または $x < y$）の実行方法は `t.test` のヘルプを参照。
 
-##### Rコード出力
-```{r echo=FALSE}
-t.test(PageA$Time, PageB$Time)
-```
+<!-- ```{r results='hide'} -->
+<!-- # データの読み込み -->
+<!-- webpage <- read.csv("data/webpage.csv") -->
 
+<!-- # データから Page A または Page B のみの行を抽出 -->
+<!-- PageA <- subset(webpage, Page == "Page A") -->
+<!-- PageB <- subset(webpage, Page == "Page B") -->
+
+<!-- # 滞在時間の基礎集計 -->
+<!-- summary(PageA$Time) -->
+<!-- summary(PageB$Time) -->
+<!-- ``` -->
+
+<!-- **`subset(x, subset)`：データから条件が一致する行のみ抽出** -->
+
+<!-- - **`x`**：元データ -->
+<!-- - **`subset`**：抽出条件 -->
+
+<!-- 上記コードでは，webpage からサイトデザインが Page A （または Page B）の行のみ抽出。 -->
+<!-- Page A の行はデータ内の Page 列が "Page A" の行のため，`Page == "Page A"` で抽出条件を指定（`=` ではなく，`==` であることに注意）。 -->
+
+#### Rコード出力
+```{r echo=FALSE, results='hold'}
+cat("# Page A と Page B の比較\n")
+aggregate(Time ~ Page, data = webpage, FUN = mean) %>% print()
+aggregate(Time ~ Page, data = webpage, FUN = sd) %>% print()
+
+cat("\n# t 検定")
+t.test(Time ~ Page, data = webpage)
+```
 
 <!-- ## 2.分析例②：分散分析* -->
 <!-- ### データ -->
@@ -272,8 +276,7 @@ head(data_pv)
 
 **データ出典** ：学部ゼミで行った実験をもとに作成したシミュレーションデータ
 
-- 等倍再生と倍速再生のサンプル数はそれぞれ100件で合わせると合計200件
-- シミュレーションデータのため，実験で収集した実データとは異なり，t検定のp値なども実データとは異なるが，仮説検定の結果は実データと同じとなる
+- 等倍再生と倍速再生のサンプルサイズはそれぞれ100件で合計200件
 
 
 ### 課題
