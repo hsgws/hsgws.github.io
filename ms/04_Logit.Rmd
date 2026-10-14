@@ -253,7 +253,7 @@ exp(coef(result))
 **`dfidx(data, choice, shape, varying, sep)`：mlogit パッケージ用にデータを変換**
 
 - **`data`**：データの指定
-- **`choice`**：データ内の選択結果を示す列番号
+- **`choice`**：データ内の選択結果を示す列番号，または列名
 - **`shape`**：データ形式の指定（`long` または `wide`） ⇒ 分析例の醤油データは1行が1購買機会を表す `wide` 形式
 - **`varying`**：説明変数の列番号（`4:12` は4～12列を表す）
 - **`seq`**：説明変数と選択肢を区切る文字の指定（Price.A，Price.B，Price.C の "."）
