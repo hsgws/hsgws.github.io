@@ -67,11 +67,11 @@ $$
 ### Rコード
 
 ```{r, results='hide', message=FALSE}
-# データの読込
-sec5_survival <- read.csv("data/sec5_survival.csv")
-
 # survival パッケージの読込み
 library(survival)
+
+# データの読込
+sec5_survival <- read.csv("data/sec5_survival.csv")
 
 # Cox比例ハザードモデルの推定
 result <- coxph(
@@ -391,11 +391,11 @@ gender や Partner などの文字データの変数を，R のモデル式 (fou
 </br>
 <details><summary>Rコード（クリックで表示）</summary><div>
 ```{r, eval=FALSE}
-# データの読込
-data_churn <- read.csv("data/data_churn.csv")
-
 # survival パッケージの読込み
 library(survival)
+
+# データの読込
+data_churn <- read.csv("data/data_churn.csv")
 
 # Cox比例ハザードモデルの推定
 result <- coxph(
