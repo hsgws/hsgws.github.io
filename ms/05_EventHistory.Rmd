@@ -79,6 +79,9 @@ result <- coxph(
   data = sec5_survival
 )
 
+# 以下でも実行可能
+# result <- coxph(Surv(time, status) ~ . - pro_id, data = sec5_survival)  # "."で全ての変数, "-"で除外する変数を指定
+
 # 推定結果の表示
 summary(result)
 ```

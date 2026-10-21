@@ -2834,7 +2834,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">イベント・ヒストリー分析</h1>
-<h4 class="date">更新：2026-10-17</h4>
+<h4 class="date">更新：2026-10-21</h4>
 
 </div>
 
@@ -2846,7 +2846,7 @@ font-size: 0.95em;
 <p><strong>新商品の生存期間データ</strong> (sec5_survival.csv)</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["pro_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["time"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["status"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"23","3":"1","4":"1","5":"0","6":"0","7":"0.99675","8":"0","9":"0","10":"0.796825","11":"20","12":"0.00325"},{"1":"2","2":"15","3":"1","4":"1","5":"0","6":"0","7":"1.00000","8":"0","9":"0","10":"0.416575","11":"90","12":"0.00000"},{"1":"3","2":"15","3":"1","4":"0","5":"1","6":"0","7":"1.00000","8":"0","9":"0","10":"0.049350","11":"188","12":"0.00000"},{"1":"4","2":"15","3":"1","4":"0","5":"1","6":"0","7":"1.00000","8":"0","9":"0","10":"0.119400","11":"90","12":"0.00000"},{"1":"6","2":"21","3":"1","4":"1","5":"0","6":"0","7":"0.99550","8":"0","9":"0","10":"0.088550","11":"95","12":"0.00450"},{"1":"7","2":"12","3":"1","4":"1","5":"0","6":"0","7":"0.99550","8":"0","9":"0","10":"0.138150","11":"95","12":"0.00450"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["pro_id"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["time"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["status"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_flier"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["ave_PI"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"23","3":"1","4":"1","5":"0","6":"0","7":"0","8":"0","9":"0.796825","10":"20","11":"0.00325"},{"1":"2","2":"15","3":"1","4":"1","5":"0","6":"0","7":"0","8":"0","9":"0.416575","10":"90","11":"0.00000"},{"1":"3","2":"15","3":"1","4":"0","5":"1","6":"0","7":"0","8":"0","9":"0.049350","10":"188","11":"0.00000"},{"1":"4","2":"15","3":"1","4":"0","5":"1","6":"0","7":"0","8":"0","9":"0.119400","10":"90","11":"0.00000"},{"1":"6","2":"21","3":"1","4":"1","5":"0","6":"0","7":"0","8":"0","9":"0.088550","10":"95","11":"0.00450"},{"1":"7","2":"12","3":"1","4":"1","5":"0","6":"0","7":"0","8":"0","9":"0.138150","10":"95","11":"0.00450"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <table>
@@ -2938,8 +2938,11 @@ sum_flier, ave_PI, max_price, ave_disc</p>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="at">data =</span> sec5_survival</span>
 <span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>)</span>
 <span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># 以下でも実行可能</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># result &lt;- coxph(Surv(time, status) ~ . - pro_id, data = sec5_survival)  # &quot;.&quot;で全ての変数, &quot;-&quot;で除外する変数を指定</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co"># 推定結果の表示</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="fu">summary</span>(result)</span></code></pre></div>
 <p><strong><code>coxph(fourmula, data)</code>：Cox比例ハザードモデルの推定</strong></p>
 <ul>
 <li><strong><code>fourmula</code></strong>：目的変数・説明変数の指定
@@ -3310,7 +3313,7 @@ failure time model)
 の3商品の生存確率の計算と比較を行う。</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["pro_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["time"],"name":[2],"type":["int"],"align":["right"]},{"label":["status"],"name":[3],"type":["int"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["int"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["int"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["int"],"align":["right"]},{"label":["ave_price_ind"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["sum_disp"],"name":[8],"type":["int"],"align":["right"]},{"label":["sum_flier"],"name":[9],"type":["int"],"align":["right"]},{"label":["ave_PI"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0.51","8":"18","9":"0","10":"8.136825","11":"288","12":"0.49","_rn_":"49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"1.00","8":"0","9":"0","10":"0.086600","11":"288","12":"0.00","_rn_":"593"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"1.00","8":"28","9":"0","10":"0.027425","11":"288","12":"0.00","_rn_":"15751"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["pro_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["time"],"name":[2],"type":["int"],"align":["right"]},{"label":["status"],"name":[3],"type":["int"],"align":["right"]},{"label":["line_ex"],"name":[4],"type":["int"],"align":["right"]},{"label":["multi_br"],"name":[5],"type":["int"],"align":["right"]},{"label":["br_ex"],"name":[6],"type":["int"],"align":["right"]},{"label":["sum_disp"],"name":[7],"type":["int"],"align":["right"]},{"label":["sum_flier"],"name":[8],"type":["int"],"align":["right"]},{"label":["ave_PI"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["max_price"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ave_disc"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"52","2":"52","3":"0","4":"1","5":"0","6":"0","7":"18","8":"0","9":"8.136825","10":"288","11":"0.49","_rn_":"49"},{"1":"686","2":"52","3":"0","4":"1","5":"0","6":"0","7":"0","8":"0","9":"0.086600","10":"288","11":"0.00","_rn_":"593"},{"1":"20523","2":"20","3":"1","4":"0","5":"1","6":"0","7":"28","8":"0","9":"0.027425","10":"288","11":"0.00","_rn_":"15751"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>row <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">49</span>, <span class="dv">593</span>, <span class="dv">15751</span>)  <span class="co"># sec5_survivalにおける商品ID＝{52, 686, 20523}の行番号</span></span>
