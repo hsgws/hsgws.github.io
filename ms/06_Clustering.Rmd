@@ -243,6 +243,9 @@ $$
 library(flexmix)
 set.seed(1) # 初期値の違いによる分析結果のゆれをなくすための設定
 
+# データの読込
+sec6_mixture <- read.csv("data/sec6_mixture.csv")
+
 # セグメント数1～5の潜在クラスポアソン回帰の一括実行
 result_mixture <- initFlexmix(
   ALL ~ log(Bp) + log(Cp) + log(Dp) + log(Ep) + log(Fp) + log(Gp) + log(Hp) + log(Ip),

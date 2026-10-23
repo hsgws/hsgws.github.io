@@ -3058,7 +3058,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">クラスタリング</h1>
-<h4 class="date">更新：2026-10-14</h4>
+<h4 class="date">更新：2026-10-23</h4>
 
 </div>
 
@@ -3314,25 +3314,28 @@ Ip\right)\]</span></p>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">library</span>(flexmix)</span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) <span class="co"># 初期値の違いによる分析結果のゆれをなくすための設定</span></span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># セグメント数1～5の潜在クラスポアソン回帰の一括実行</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>result_mixture <span class="ot">&lt;-</span> <span class="fu">initFlexmix</span>(</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">FLXMRglm</span>(<span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>),</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>)</span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co"># モデル比較（最適セグメント数の決定）</span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>result_mixture</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># データの読込</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>sec6_mixture <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/sec6_mixture.csv&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># セグメント数1～5の潜在クラスポアソン回帰の一括実行</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>result_mixture <span class="ot">&lt;-</span> <span class="fu">initFlexmix</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  ALL <span class="sc">~</span> <span class="fu">log</span>(Bp) <span class="sc">+</span> <span class="fu">log</span>(Cp) <span class="sc">+</span> <span class="fu">log</span>(Dp) <span class="sc">+</span> <span class="fu">log</span>(Ep) <span class="sc">+</span> <span class="fu">log</span>(Fp) <span class="sc">+</span> <span class="fu">log</span>(Gp) <span class="sc">+</span> <span class="fu">log</span>(Hp) <span class="sc">+</span> <span class="fu">log</span>(Ip),</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="at">model =</span> <span class="fu">FLXMRglm</span>(<span class="at">family =</span> <span class="st">&quot;poisson&quot;</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="at">data =</span> sec6_mixture</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>)</span>
 <span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co"># 最良モデルの選択（ICL基準）</span></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">getModel</span>(result_mixture, <span class="at">which =</span> <span class="st">&quot;ICL&quot;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co"># モデル比較（最適セグメント数の決定）</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>result_mixture</span>
 <span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co"># 最良モデルのセグメント構成比</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co"># 最良モデルの選択（ICL基準）</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> <span class="fu">getModel</span>(result_mixture, <span class="at">which =</span> <span class="st">&quot;ICL&quot;</span>)</span>
 <span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a></span>
-<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co"># 各セグメントの係数推定値</span></span>
-<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">refit</span>(best_model))</span></code></pre></div>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co"># 最良モデルのセグメント構成比</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="fu">summary</span>(best_model)</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co"># 各セグメントの係数推定値</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">refit</span>(best_model))</span></code></pre></div>
 <p><strong><code>initFlexmix(formula, k, model, data)</code>
 ：ポアソン回帰の推定</strong></p>
 <ul>
