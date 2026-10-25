@@ -106,10 +106,11 @@ model <- "
 result <- sem(model, data = data_cs)
 
 # 推定結果
-summary(result, standardized = TRUE)
+summary(result, standardized = TRUE, fit.measures = TRUE)
 
 # 適合度指標
-fitMeasures(result, fit.measures = c("rmsea", "gfi"))
+fitMeasures(result)
+# fitMeasures(result, fit.measures = c("rmsea", "gfi"))
 ```
 
 **`sem(model, data)`：共分散構造分析の実行**
@@ -257,6 +258,29 @@ summary(CE_alpha)
 summary(PQ_alpha)
 summary(CS_alpha)
 ```
+
+### 間接効果の仮説検定*
+
+```{r}
+model <- "
+  # 測定方程式
+    CE =~ CE1 + CE2 + CE3  # 顧客期待 (CE)
+    PQ =~ PQ1 + PQ2 + PQ3  # 知覚品質 (PQ)
+    CS =~ CS1 + CS2 + CS3  # 顧客満足 (CS)
+  # 構造方程式
+    PQ ~ a * CE
+    CS ~ b * CE + c * PQ
+  # 間接効果
+    indirect := a * c
+    total := b + a * c
+"
+# パラメータ推定
+result <- sem(model, data = data_cs, se = "bootstrap", bootstrap = 1000)
+
+# 推定結果 & 適合度指標
+summary(result, standardized = TRUE, fit.measures = TRUE)
+```
+
 
 
 ### PLS-SEMによる推定*
