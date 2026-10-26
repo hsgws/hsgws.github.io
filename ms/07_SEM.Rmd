@@ -257,6 +257,10 @@ summary(CS_alpha)
 
 ### 間接効果の仮説検定*
 
+<!-- <div style="text-align: center;"> -->
+<!-- <img src="fig/cs2.png" width="30%"> -->
+<!-- </div> -->
+
 ```{r warning=FALSE}
 model <- "
   # 測定方程式
@@ -266,7 +270,7 @@ model <- "
   # 構造方程式
     PQ ~ b1 * CE
     CS ~ b2 * CE + b3 * PQ
-  # 間接効果
+  # 間接 & 総合効果
     indirect := b1 * b3
     total := b2 + b1 * b3
 "
