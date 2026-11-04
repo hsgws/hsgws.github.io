@@ -435,10 +435,7 @@ model <- "
 result <- sem(model, data = data_wom)
 
 # 推定結果の表示
-summary(result, standardized = TRUE) 
-
-# モデル比較指標
-fitMeasures(result, fit.measures = c("gfi", "rmsea"))
+summary(result, standardized = TRUE, fit.measures = TRUE)
 
 # （参考）semPlot パッケージによる作図プログラム
 library(semPlot)
