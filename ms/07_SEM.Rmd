@@ -354,6 +354,7 @@ head(data_wom)
 
 | 変数     | 定義                                                         | 潜在変数	|
 | -------- | ------------------------------------------------------------ | ----------- |
+| SampleID | 回答者ID                                                     |  - |
 | OPL1       | 友人や近所の人と映画についてよく話しをする                   | オピニオン・リーダー度 (OPL) |
 | OPL2       | 友人や近所の人に映画の情報を教える方だ                       | オピニオン・リーダー度 (OPL) |
 | OPL3       | 友人や近所の人から映画についての情報を求められる方だ         | オピニオン・リーダー度 (OPL) |
@@ -411,11 +412,11 @@ library(psych)
 data_wom <- read.csv("data/data_wom.csv")
 
 # （参考）信頼性係数（クロンバックのアルファ）の確認
-summary(alpha(data_wom[, 1:3]))  # OPL
-summary(alpha(data_wom[, 4:6]))  # eOPL
-summary(alpha(data_wom[, 7:8]))  # WOM
-summary(alpha(data_wom[, 9:10]))  # eWOM
-summary(alpha(data_wom[, 11:12])) # CLM
+summary(alpha(data_wom[, 2:4]))  # OPL
+summary(alpha(data_wom[, 5:7]))  # eOPL
+summary(alpha(data_wom[, 8:9]))  # WOM
+summary(alpha(data_wom[, 10:11]))  # eWOM
+summary(alpha(data_wom[, 12:13])) # CLM
 
 # モデル（パス図）定義
 model <- "
