@@ -90,7 +90,7 @@ lm(PI ~ post + treat + post*treat + store, data = data) %>%
 **米国の1人あたり年間タバコ購入箱数（data_cigar.csv）**
 
 ```{r, echo=FALSE}
-data_cigar <- read_csv("data/data_cigar.csv")
+data_cigar <- read.csv("data/data_cigar.csv")
 data_cigar
 ```
 \
@@ -307,7 +307,7 @@ write_csv(df, "data/house_price.csv")
 **焼却炉建設前後の住宅価格（house_price.csv）**
 
 ```{r, echo=FALSE}
-house_price <- read_csv("data/house_price.csv")
+house_price <- read.csv("data/house_price.csv")
 house_price %>% head(10)
 ```
 \
@@ -337,7 +337,7 @@ DIDとして以下の回帰モデルを推定し，焼却炉建設が住宅価�
 <details><summary>Rコード（クリックで表示）</summary><div>
 ```{r eval=FALSE, results='hide'}
 # データの読み込み
-house_price <- read_csv("data/house_price.csv")
+house_price <- read.csv("data/house_price.csv")
 
 # DIDの実行
 result <- lm(lprice ~ y81 + nearinc + y81:nearinc + age + larea + lland + rooms + lintst + lcbd, data = house_price)

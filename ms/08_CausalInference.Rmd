@@ -261,7 +261,7 @@ hist(meanx)
 **プロモーション動画の実験データ (data_pv.csv) **
 
 ```{r, echo=FALSE}
-data_pv <- read_csv("data/data_pv.csv")
+data_pv <- read.csv("data/data_pv.csv")
 head(data_pv)
 ```
 \
@@ -287,7 +287,7 @@ t 検定で仮説検定を行い，結果を考察せよ。
 <details><summary>Rコード（クリックで表示）</summary><div>
 ```{r, eval=FALSE}
 # データの読み込み
-data_pv <- read_csv("data/data_pv.csv")
+data_pv <- read.csv("data/data_pv.csv")
 
 # t検定
 t.test(q1 ~ speed, data = data_pv)
